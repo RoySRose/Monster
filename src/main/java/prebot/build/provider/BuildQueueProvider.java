@@ -1,23 +1,12 @@
 package prebot.build.provider;
 
 import bwapi.TechType;
-import bwapi.Unit;
 import bwapi.UnitType;
 import bwapi.UpgradeType;
-import prebot.build.prebot1.BuildManager;
-import prebot.build.prebot1.BuildOrderItem;
-import prebot.build.prebot1.BuildOrderQueue;
-import prebot.build.prebot1.ConstructionManager;
 import prebot.build.provider.items.building.BuilderHatchery;
 import prebot.build.provider.items.building.BuilderSpawningPool;
 import prebot.build.provider.items.tech.BuilderConsume;
-import prebot.build.provider.items.unit.BuilderGoliath;
-import prebot.build.provider.items.unit.BuilderMarine;
 import prebot.build.provider.items.unit.BuilderDrone;
-import prebot.build.provider.items.unit.BuilderSiegeTank;
-import prebot.build.provider.items.unit.BuilderSupplyDepot;
-import prebot.build.provider.items.unit.BuilderVulture;
-import prebot.build.provider.items.unit.BuilderWraith;
 import prebot.build.provider.items.unit.BuilderZergling;
 import prebot.build.provider.items.upgrade.BuilderMetabolicBoost;
 import prebot.common.LagObserver;
@@ -25,10 +14,7 @@ import prebot.common.MetaType;
 import prebot.common.constant.CommonCode;
 import prebot.main.GameManager;
 import prebot.main.Monster;
-import prebot.common.util.PlayerUtils;
 import prebot.common.util.TimeUtils;
-import prebot.common.util.UnitUtils;
-import prebot.strategy.StrategyIdea;
 
 import java.util.ArrayList;
 import java.util.HashMap;

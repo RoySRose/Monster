@@ -2,7 +2,7 @@ package prebot.build.provider;
 
 
 import bwapi.UnitType;
-import prebot.build.prebot1.BuildManager;
+import prebot.build.base.BuildManager;
 import prebot.main.Monster;
 import prebot.common.util.PlayerUtils;
 import prebot.common.util.UnitUtils;

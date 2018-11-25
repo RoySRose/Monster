@@ -2,7 +2,7 @@ package prebot.build.provider.items.unit;
 
 import bwapi.Race;
 import bwapi.UnitType;
-import prebot.build.prebot1.BuildManager;
+import prebot.build.base.BuildManager;
 import prebot.build.provider.DefaultBuildableItem;
 import prebot.build.provider.FactoryUnitSelector;
 import prebot.common.MetaType;

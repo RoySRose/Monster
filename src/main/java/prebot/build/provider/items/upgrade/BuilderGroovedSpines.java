@@ -1,7 +1,7 @@
 package prebot.build.provider.items.upgrade;
 
 import bwapi.UnitType;
-import prebot.build.prebot1.BuildManager;
+import prebot.build.base.BuildManager;
 import prebot.build.provider.DefaultBuildableItem;
 import prebot.build.provider.ResearchSelector;
 import prebot.common.MetaType;

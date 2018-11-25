@@ -1,7 +1,7 @@
 package prebot.build.provider;
 
 import bwapi.TilePosition;
-import prebot.build.prebot1.BuildOrderItem;
+import prebot.build.base.BuildOrderItem;
 //import prebot.common.util.*;
 
 public class BuildCondition {

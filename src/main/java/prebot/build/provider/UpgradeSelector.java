@@ -4,7 +4,7 @@ package prebot.build.provider;
 import bwapi.Unit;
 import bwapi.UnitType;
 import bwapi.UpgradeType;
-import prebot.build.prebot1.BuildManager;
+import prebot.build.base.BuildManager;
 import prebot.common.MetaType;
 import prebot.common.constant.CommonCode;
 import prebot.main.Monster;
