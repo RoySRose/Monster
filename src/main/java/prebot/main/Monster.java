@@ -20,7 +20,7 @@ import bwapi.Player;
 import bwapi.Position;
 import bwapi.Unit;
 import bwta.BWTA;
-import prebot.common.debug.BigWatch;
+import prebot.common.debugger.BigWatch;
 
 public class Monster extends DefaultBWListener {
 

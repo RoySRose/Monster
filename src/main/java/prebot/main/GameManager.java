@@ -1,6 +1,6 @@
 package prebot.main;
 
-import prebot.common.debug.StopWatch;
+import prebot.common.debugger.StopWatch;
 
 /**
  * @author insaneojw
