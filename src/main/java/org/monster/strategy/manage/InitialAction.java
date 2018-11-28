@@ -2,11 +2,9 @@ package org.monster.strategy.manage;
 
 import bwapi.Race;
 import bwapi.UnitType;
-import org.monster.common.util.BaseUtils;
+import org.monster.common.util.PlayerUtils;
 import org.monster.strategy.action.impl.GasAdjustmentMechanic;
 import org.monster.strategy.action.impl.ScvScoutAfterBuild;
-import org.monster.common.util.InformationManager;
-import org.monster.common.util.PlayerUtils;
 
 /**
  * 종족별 초기 전략을 불러온다.
@@ -16,7 +14,6 @@ public class InitialAction {
     private static InitialAction instance = new InitialAction();
     private boolean terminated = false;
     private boolean assignedFirstScout = false;
-    private boolean assignedSecondScout = false;
     private InitialAction() {
     }
 
@@ -26,7 +23,6 @@ public class InitialAction {
 
     public void update() {
         setUpFirstScoutAndStrategy();
-        setUpSecondScout();
     }
 
     private void setUpFirstScoutAndStrategy() {
@@ -66,17 +62,6 @@ public class InitialAction {
                 ActionManager.Instance().addAction(new ScvScoutAfterBuild(UnitType.Terran_Supply_Depot, 0)); // 서플 완성후 출발
                 assignedFirstScout = true;
             }
-        }
-    }
-
-    private void setUpSecondScout() {
-        if (BaseUtils.enemyMainBase() != null || assignedSecondScout) {
-            return;
-        }
-
-        if (!InformationManager.Instance().isFirstScoutAlive()) {
-            ActionManager.Instance().addAction(new ScvScoutAfterBuild(UnitType.Terran_Supply_Depot, 0));
-            assignedSecondScout = true;
         }
     }
 }

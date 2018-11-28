@@ -4,7 +4,7 @@ import bwapi.UnitType;
 import bwta.BaseLocation;
 import org.monster.common.util.BaseUtils;
 import org.monster.strategy.analyse.UnitAnalyser;
-import org.monster.decisionMakers.decisionTypes.EnemyStrategy;
+import org.monster.decisions.constant.EnemyStrategy;
 import org.monster.common.UnitInfo;
 import org.monster.strategy.analyse.Clue;
 import org.monster.strategy.manage.ClueManager;

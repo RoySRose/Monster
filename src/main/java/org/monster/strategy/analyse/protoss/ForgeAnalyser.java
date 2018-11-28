@@ -3,7 +3,7 @@ package org.monster.strategy.analyse.protoss;
 import bwapi.UnitType;
 import org.monster.common.UnitInfo;
 import org.monster.common.constant.CommonCode;
-import org.monster.decisionMakers.decisionTypes.EnemyStrategy;
+import org.monster.decisions.constant.EnemyStrategy;
 import org.monster.strategy.analyse.Clue;
 import org.monster.strategy.analyse.UnitAnalyser;
 import org.monster.strategy.manage.ClueManager;

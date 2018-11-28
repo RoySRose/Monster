@@ -8,14 +8,13 @@ import bwapi.UnitType;
 import bwta.BWTA;
 import bwta.BaseLocation;
 import bwta.Region;
-import org.monster.common.util.InfoUtils;
-import org.monster.common.util.PlayerUtils;
-import org.monster.main.GameManager;
 import org.monster.common.LagObserver;
 import org.monster.common.util.CommandUtils;
-import org.monster.common.util.InformationManager;
+import org.monster.common.util.InfoUtils;
+import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.TilePositionUtils;
 import org.monster.common.util.TimeUtils;
+import org.monster.main.GameManager;
 import org.monster.main.Monster;
 import org.monster.worker.WorkerManager;
 
@@ -528,8 +527,8 @@ public class ConstructionManager extends GameManager {
                 // 정찰결과 혹은 전투결과, 건설 장소가 아군 점령 Region 이 아니고, 적군이 점령한 Region 이 되었으면 일반적으로는 현실적으로 dead lock 이 된다
                 // (포톤캐논 러시이거나, 적군 점령 Region 근처에서 테란 건물 건설하는 경우에는 예외일테지만..)
                 if (!isDeadlockCase
-                        && !InformationManager.Instance().getOccupiedRegions(InformationManager.Instance().selfPlayer).contains(desiredPositionRegion)
-                        && InformationManager.Instance().getOccupiedRegions(InformationManager.Instance().enemyPlayer).contains(desiredPositionRegion)) {
+                        && !InfoUtils.getOccupiedRegions(PlayerUtils.myPlayer()).contains(desiredPositionRegion)
+                        && InfoUtils.getOccupiedRegions(PlayerUtils.enemyPlayer()).contains(desiredPositionRegion)) {
                     isDeadlockCase = true;
                 }
 

@@ -10,7 +10,7 @@ import bwta.Region;
 import org.monster.board.StrategyBoard;
 import org.monster.common.UnitInfo;
 import org.monster.common.constant.CommonCode;
-import org.monster.common.util.InformationManager;
+
 import org.monster.common.util.MicroUtils;
 import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.UnitUtils;
@@ -207,9 +207,9 @@ public class MicroDecisionMakerPrebot1 {
                 }
 
                 // 아군일 경우 우선순위를 뺀다. priority값이 마이너스(-)가 나올 수도 있다. 이때는 타겟으로 지정하지 않는다.
-                if (unitInSplash.getPlayer() == InformationManager.Instance().enemyPlayer) {
+                if (unitInSplash.getPlayer() == PlayerUtils.enemyPlayer()) {
                     splashScore += priorityInSpash;
-                } else if (unitInSplash.getPlayer() == InformationManager.Instance().selfPlayer) {
+                } else if (unitInSplash.getPlayer() == PlayerUtils.myPlayer()) {
                     splashScore -= priorityInSpash;
                 }
             }
@@ -279,7 +279,9 @@ public class MicroDecisionMakerPrebot1 {
                 return MicroDecision.doNothing(mechanicUnit);
             } else if (existCloakTarget) {
                 if (cloakTargetUnit.getType() == UnitType.Protoss_Dark_Templar) {
-                    if (InformationManager.Instance().isBlockingEnterance()) {
+                    //TODO disable
+                    //if (InformationManager.Instance().isBlockingEnterance()) {
+                    if(true){
                         Region darkRegion = BWTA.getRegion(cloakTargetUnit.getPosition());
                         Region tankRegion = BWTA.getRegion(mechanicUnit.getPosition());
                         if (darkRegion != tankRegion) {

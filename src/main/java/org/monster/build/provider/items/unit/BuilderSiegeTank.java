@@ -5,7 +5,7 @@ import org.monster.build.provider.DefaultBuildableItem;
 import org.monster.build.provider.FactoryUnitSelector;
 import org.monster.common.MetaType;
 import org.monster.common.util.UnitUtils;
-import org.monster.decisionMakers.constant.EnemyStrategyOptions;
+import org.monster.decisions.constant.EnemyStrategyOptions;
 import org.monster.main.Monster;
 import org.monster.board.StrategyBoard;
 

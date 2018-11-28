@@ -13,10 +13,10 @@ import org.monster.common.util.BaseLocationUtils;
 import org.monster.common.util.BaseUtils;
 import org.monster.common.util.CommandUtils;
 import org.monster.common.util.InfoUtils;
-import org.monster.common.util.InformationManager;
 import org.monster.common.util.MicroUtils;
 import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.PositionUtils;
+import org.monster.common.util.ScoutUtils;
 import org.monster.common.util.TimeUtils;
 import org.monster.common.util.UnitUtils;
 import org.monster.common.util.internal.IConditions;
@@ -136,7 +136,7 @@ public class ScvScoutControl extends Control {
     }
 
     private boolean canMoveFirstExpansion(Unit scoutScv, BaseLocation enemyBaseLocation) {
-        Chokepoint nearestChoke = InformationManager.Instance().getFirstChokePoint(InformationManager.Instance().enemyPlayer);
+        Chokepoint nearestChoke = InfoUtils.enemyFirstChoke();
         if (nearestChoke.getCenter().getDistance(scoutScv) < 300 && !scoutScv.isUnderAttack()) {
             return true;
         }
@@ -195,10 +195,11 @@ public class ScvScoutControl extends Control {
         BaseLocation enemyBase = BaseUtils.enemyMainBase();
 
         // calculate enemy region vertices if we haven't yet
-        Vector<Position> regionVertices = InfoUtils.getRegionVertices(enemyBase);
+        Vector<Position> regionVertices = ScoutUtils.getRegionVertices(enemyBase);
         if (regionVertices == null || regionVertices.isEmpty()) {
-            InformationManager.Instance().calculateEnemyRegionVertices(enemyBase);
-            regionVertices = InfoUtils.getRegionVertices(enemyBase);
+            //TODO 이거 다시 계산하는게 맞는건지 확인 필요. 사실상 처음에 전체 계산을 하는데?;
+            ScoutUtils.calculateEnemyRegionVertices(enemyBase);
+            regionVertices = ScoutUtils.getRegionVertices(enemyBase);
         }
 
         if (regionVertices.isEmpty()) {

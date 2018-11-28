@@ -7,8 +7,8 @@ import org.monster.common.constant.CommonCode;
 import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.TimeUtils;
 import org.monster.common.util.UnitUtils;
-import org.monster.decisionMakers.constant.EnemyStrategyOptions;
-import org.monster.decisionMakers.decisionTypes.EnemyStrategy;
+import org.monster.decisions.constant.EnemyStrategyOptions;
+import org.monster.decisions.constant.EnemyStrategy;
 import org.monster.strategy.manage.ClueManager;
 import org.monster.strategy.manage.EnemyBuildTimer;
 

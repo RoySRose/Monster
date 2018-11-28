@@ -2,11 +2,10 @@ package org.monster.strategy.action.impl;
 
 import bwapi.Unit;
 import bwapi.UnitType;
-import org.monster.main.Monster;
-import org.monster.common.constant.CommonCode;
-import org.monster.common.util.InformationManager;
-import org.monster.common.util.UnitUtils;
 import org.monster.board.StrategyBoard;
+import org.monster.common.constant.CommonCode;
+import org.monster.common.util.BaseUtils;
+import org.monster.common.util.UnitUtils;
 import org.monster.strategy.action.Action;
 
 /**
@@ -32,7 +31,7 @@ public class ScvScoutAfterBuild extends Action {
                 marginFrames--;
                 return false;
             } else {
-                if (InformationManager.Instance().getMainBaseLocation(Monster.Broodwar.enemy()) == null) {
+                if (BaseUtils.enemyMainBase() == null) {
                     StrategyBoard.assignScoutScv = true;
                 }
                 return true;

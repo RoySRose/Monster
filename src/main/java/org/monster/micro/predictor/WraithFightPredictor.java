@@ -5,7 +5,7 @@ import bwapi.UnitType;
 import org.monster.common.UnitInfo;
 import org.monster.common.util.MicroUtils;
 import org.monster.common.util.UnitUtils;
-import org.monster.decisionMakers.constant.StrategyCode;
+import org.monster.decisions.constant.StrategyCode;
 
 import java.util.Collection;
 import java.util.HashMap;

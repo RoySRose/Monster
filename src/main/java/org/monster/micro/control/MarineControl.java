@@ -7,24 +7,16 @@ import bwapi.UnitType;
 import bwta.BWTA;
 import bwta.Region;
 import org.monster.board.StrategyBoard;
-import org.monster.build.initialProvider.BlockingEntrance.BlockingEntrance;
 import org.monster.common.LagObserver;
 import org.monster.common.UnitInfo;
 import org.monster.common.constant.CommonCode;
 import org.monster.common.util.BaseUtils;
 import org.monster.common.util.CommandUtils;
 import org.monster.common.util.InfoUtils;
-import org.monster.common.util.InformationManager;
 import org.monster.common.util.MicroUtils;
 import org.monster.common.util.PlayerUtils;
-import org.monster.common.util.PositionUtils;
 import org.monster.common.util.UnitUtils;
-import org.monster.micro.FleeOption;
 import org.monster.micro.KitingOption;
-import org.monster.micro.MicroDecision;
-import org.monster.micro.MicroDecisionMaker;
-import org.monster.micro.constant.MicroConfig;
-import org.monster.micro.targeting.DefaultTargetCalculator;
 import org.monster.strategy.manage.PositionFinder;
 import org.monster.strategy.manage.PositionFinder.CampType;
 
@@ -39,178 +31,179 @@ public class MarineControl extends Control {
     @Override
     public void control(Collection<Unit> unitList, Collection<UnitInfo> euiList) {
 
-        Region campRegion = BWTA.getRegion(StrategyBoard.campPosition);
-        Unit bunker = getCompleteBunker(campRegion);
-        Unit inCompleteBunker = getCompleteBunker(campRegion);
-        if (bunker == null) {
-            inCompleteBunker = getIncompleteBunker(campRegion);
-        }
-
-        // 벙커가 있다면 벙커 주위로 회피
-        Position fleePosition = StrategyBoard.campPosition;
-        if (bunker != null) {
-            fleePosition = bunker.getPosition();
-        }
-        MicroDecisionMaker decisionMaker = new MicroDecisionMaker(new DefaultTargetCalculator());
-        FleeOption fOption = new FleeOption(fleePosition, true, MicroConfig.Angles.WIDE);
-        KitingOption kOption = new KitingOption(fOption, KitingOption.CoolTimeAttack.COOLTIME_ALWAYS);
-
-        if (bunker == null && inCompleteBunker == null) {
-            PositionFinder.CampType campType = StrategyBoard.campType;
-            for (Unit marine : unitList) {
-                if (skipControl(marine)) {
-                    continue;
-                }
-
-                Position safePosition = InformationManager.Instance().isSafePosition();
-                Position holdConPosition = InformationManager.Instance().isHoldConPosition();
-                safePosition = (InformationManager.Instance().isSafePosition() == null) ? BlockingEntrance.Instance().first_supple.toPosition() : safePosition;
-                holdConPosition = (InformationManager.Instance().isHoldConPosition() == null) ? InformationManager.Instance().getFirstChokePoint(InformationManager.Instance().selfPlayer).getPoint() : holdConPosition;
-                Position firstCheokePoint = InformationManager.Instance().getFirstChokePoint(InformationManager.Instance().selfPlayer).getCenter();
-
-                MicroDecision decision = decisionMaker.makeDecision(marine, euiList);
-
-                if (marineDangerousOutOfMyRegion(marine, decision.eui)) {
-                    Position randomPosition = PositionUtils.randomPosition(safePosition, 5);
-                    marine.move(randomPosition);
-                    continue;
-                }
-                if (decision.type == MicroDecision.MicroDecisionType.FLEE_FROM_UNIT) {
-                    //if(InformationManager.Instance().isBlockingEnterance()){
-                    if (decision.eui.getUnit().getDistance(safePosition) > 30) {
-                        CommandUtils.attackMove(marine, safePosition);
-                    } else {
-                        MicroUtils.flee(marine, decision.eui.getLastPosition(), fOption);
-                    }
-                } else if (decision.type == MicroDecision.MicroDecisionType.KITING_UNIT) {
-                    //if(InformationManager.Instance().isBlockingEnterance()){
-                    // 베이스 지역 OK
-                    if ((campType == PositionFinder.CampType.INSIDE || campType == PositionFinder.CampType.FIRST_CHOKE)
-                            && decision.eui.getUnit().getDistance(safePosition) > 30) {
-                        if (MicroUtils.isRangeUnit(decision.eui.getType()) && !decision.eui.getType().isWorker()) {
-                            //MicroUtils.BlockingKiting(marine, decision.eui, kOption, safePosition);
-                            if (marine.getDistance(holdConPosition) < 20) {
-                                CommandUtils.holdPosition(marine);
-                            } else {
-                                CommandUtils.attackMove(marine, holdConPosition);
-                            }
-                        } else if (decision.eui.getType().isBuilding() || decision.eui.getType().isWorker()) {
-                            MicroUtils.kiting(marine, decision.eui, kOption);
-                        } else {
-                            if (kitingMarine == null || !kitingMarine.exists()) {//마린 한마리만 왔다갔다 카이팅
-                                kitingMarine = marine;
-                            } else if (kitingMarine == marine) {
-                                MicroUtils.BlockingKiting(marine, decision.eui, kOption, safePosition);
-                            } else {
-                                if (marine.getDistance(safePosition) < 30) {
-                                    CommandUtils.holdPosition(marine);
-                                } else {
-                                    CommandUtils.attackMove(marine, safePosition);
-                                }
-                            }
-                        }
-                    } else {
-                        //MicroUtils.BlockingKiting(marine, decision.eui, kOption, safePosition);
-                        //MicroUtils.kiting(marine, decision.eui, kOption);
-                        if (MicroUtils.arrivedToPosition(marine, StrategyBoard.mainSquadLeaderPosition)) {
-                            if (MicroUtils.timeToRandomMove(marine)) {
-                                Position randomPosition = PositionUtils.randomPosition(marine.getPosition(), MicroConfig.RANDOM_MOVE_DISTANCE);
-                                CommandUtils.attackMove(marine, randomPosition);
-                            }
-                        } else {
-                            CommandUtils.attackMove(marine, StrategyBoard.mainSquadLeaderPosition);
-                        }
-                    }
-                } else {
-                    if (campType != PositionFinder.CampType.INSIDE && campType != PositionFinder.CampType.FIRST_CHOKE) {
-                        if (MicroUtils.arrivedToPosition(marine, StrategyBoard.mainSquadLeaderPosition)) {
-                            if (MicroUtils.timeToRandomMove(marine)) {
-                                Position randomPosition = PositionUtils.randomPosition(marine.getPosition(), MicroConfig.RANDOM_MOVE_DISTANCE);
-                                CommandUtils.attackMove(marine, randomPosition);
-                            }
-                        } else {
-                            CommandUtils.attackMove(marine, StrategyBoard.mainSquadLeaderPosition);
-                        }
-                    } else {
-                        CommandUtils.attackMove(marine, StrategyBoard.campPosition);
-                    }
-                }
-
-            }
-        } else if (bunker == null && inCompleteBunker != null) {
-            for (Unit marine : unitList) {
-                if (skipControl(marine)) {
-                    continue;
-                }
-
-                MicroDecision decision = decisionMaker.makeDecision(marine, euiList);
-                if (decision.type == MicroDecision.MicroDecisionType.KITING_UNIT) {
-                    if (marineDangerousOutOfMyRegion(marine, decision.eui)) {
-                        CommandUtils.attackMove(marine, inCompleteBunker.getPosition());
-                    }
-
-                    MicroUtils.kiting(marine, decision.eui, kOption);
-                } else {
-                    CommandUtils.attackMove(marine, inCompleteBunker.getPosition());
-                }
-            }
-        } else {
-            boolean rangeUnit = false;
-            for (Unit marine : unitList) {
-                if (skipControl(marine)) {
-                    continue;
-                }
-
-
-                MicroDecision decision = decisionMaker.makeDecision(marine, euiList);
-                if (decision.type == MicroDecision.MicroDecisionType.KITING_UNIT) {
-                    Unit enemyInSight = UnitUtils.unitInSight(decision.eui);
-
-                    if (marineDangerousOutOfMyRegion(marine, decision.eui)) {
-                        intoTheBunker(bunker, marine);
-                        continue;
-                    }
-
-
-                    if (enemyInSight != null) {
-                        if (MicroUtils.isRangeUnit(enemyInSight.getType())) {
-                            rangeUnit = true;
-                        }
-                        if (rangeUnit && !enemyInSight.getType().isWorker()) {
-                            intoTheBunker(bunker, marine);
-                            continue;
-                        } else if (enemyInSight.getType().isWorker() || enemyInSight.getType() == UnitType.Zerg_Overlord) {
-                            outOfTheBunker(marine, bunker, decision.eui, kOption);
-                            continue;
-                        } else if (enemyInSight.isInWeaponRange(marine) || marine.isInWeaponRange(enemyInSight) || enemyInSight.isInWeaponRange(bunker) || bunker.isInWeaponRange(enemyInSight)) {
-                            intoTheBunker(bunker, marine);
-                        } else {
-                            if (!enemyInSight.getType().isWorker() && enemyInSight.getType() != UnitType.Zerg_Overlord
-                                    && marine.getDistance(bunker) > 300) {
-                                intoTheBunker(bunker, marine);
-                            }
-                            if (bunker.getLoadedUnits().size() > Math.round((unitList.size() / 2))) {
-                                outOfTheBunker(marine, bunker, decision.eui, kOption);
-                            } else {
-                                //MicroUtils.BlockingKiting(marine, decision.eui, kOption, bunker.getPosition());
-                                MicroUtils.kiting(marine, decision.eui, kOption);
-                            }
-                        }
-                    } else {
-                        intoTheBunker(bunker, marine);
-                    }
-
-                } else {
-                    if (bunker.getLoadedUnits().size() >= 4) {
-                        CommandUtils.attackMove(marine, bunker.getPosition());
-                    } else {
-                        intoTheBunker(bunker, marine);
-                    }
-                }
-
-
-            }
-        }
+//        Region campRegion = BWTA.getRegion(StrategyBoard.campPosition);
+//        Unit bunker = getCompleteBunker(campRegion);
+//        Unit inCompleteBunker = getCompleteBunker(campRegion);
+//        if (bunker == null) {
+//            inCompleteBunker = getIncompleteBunker(campRegion);
+//        }
+//
+//        // 벙커가 있다면 벙커 주위로 회피
+//        Position fleePosition = StrategyBoard.campPosition;
+//        if (bunker != null) {
+//            fleePosition = bunker.getPosition();
+//        }
+//        MicroDecisionMaker decisionMaker = new MicroDecisionMaker(new DefaultTargetCalculator());
+//        FleeOption fOption = new FleeOption(fleePosition, true, MicroConfig.Angles.WIDE);
+//        KitingOption kOption = new KitingOption(fOption, KitingOption.CoolTimeAttack.COOLTIME_ALWAYS);
+//
+//        if (bunker == null && inCompleteBunker == null) {
+//            PositionFinder.CampType campType = StrategyBoard.campType;
+//            for (Unit marine : unitList) {
+//                if (skipControl(marine)) {
+//                    continue;
+//                }
+//
+//                Position safePosition = InformationManager.Instance().isSafePosition();
+//                //TODO remove
+//                Position holdConPosition = null; //InformationManager.Instance().isHoldConPosition();
+//                safePosition = (InformationManager.Instance().isSafePosition() == null) ? BlockingEntrance.Instance().first_supple.toPosition() : safePosition;
+//                holdConPosition = InfoUtils.myFirstChoke().getPoint();
+//                Position firstCheokePoint = InfoUtils.myFirstChoke().getCenter();
+//
+//                MicroDecision decision = decisionMaker.makeDecision(marine, euiList);
+//
+//                if (marineDangerousOutOfMyRegion(marine, decision.eui)) {
+//                    Position randomPosition = PositionUtils.randomPosition(safePosition, 5);
+//                    marine.move(randomPosition);
+//                    continue;
+//                }
+//                if (decision.type == MicroDecision.MicroDecisionType.FLEE_FROM_UNIT) {
+//                    //if(InformationManager.Instance().isBlockingEnterance()){
+//                    if (decision.eui.getUnit().getDistance(safePosition) > 30) {
+//                        CommandUtils.attackMove(marine, safePosition);
+//                    } else {
+//                        MicroUtils.flee(marine, decision.eui.getLastPosition(), fOption);
+//                    }
+//                } else if (decision.type == MicroDecision.MicroDecisionType.KITING_UNIT) {
+//                    //if(InformationManager.Instance().isBlockingEnterance()){
+//                    // 베이스 지역 OK
+//                    if ((campType == PositionFinder.CampType.INSIDE || campType == PositionFinder.CampType.FIRST_CHOKE)
+//                            && decision.eui.getUnit().getDistance(safePosition) > 30) {
+//                        if (MicroUtils.isRangeUnit(decision.eui.getType()) && !decision.eui.getType().isWorker()) {
+//                            //MicroUtils.BlockingKiting(marine, decision.eui, kOption, safePosition);
+//                            if (marine.getDistance(holdConPosition) < 20) {
+//                                CommandUtils.holdPosition(marine);
+//                            } else {
+//                                CommandUtils.attackMove(marine, holdConPosition);
+//                            }
+//                        } else if (decision.eui.getType().isBuilding() || decision.eui.getType().isWorker()) {
+//                            MicroUtils.kiting(marine, decision.eui, kOption);
+//                        } else {
+//                            if (kitingMarine == null || !kitingMarine.exists()) {//마린 한마리만 왔다갔다 카이팅
+//                                kitingMarine = marine;
+//                            } else if (kitingMarine == marine) {
+//                                MicroUtils.BlockingKiting(marine, decision.eui, kOption, safePosition);
+//                            } else {
+//                                if (marine.getDistance(safePosition) < 30) {
+//                                    CommandUtils.holdPosition(marine);
+//                                } else {
+//                                    CommandUtils.attackMove(marine, safePosition);
+//                                }
+//                            }
+//                        }
+//                    } else {
+//                        //MicroUtils.BlockingKiting(marine, decision.eui, kOption, safePosition);
+//                        //MicroUtils.kiting(marine, decision.eui, kOption);
+//                        if (MicroUtils.arrivedToPosition(marine, StrategyBoard.mainSquadLeaderPosition)) {
+//                            if (MicroUtils.timeToRandomMove(marine)) {
+//                                Position randomPosition = PositionUtils.randomPosition(marine.getPosition(), MicroConfig.RANDOM_MOVE_DISTANCE);
+//                                CommandUtils.attackMove(marine, randomPosition);
+//                            }
+//                        } else {
+//                            CommandUtils.attackMove(marine, StrategyBoard.mainSquadLeaderPosition);
+//                        }
+//                    }
+//                } else {
+//                    if (campType != PositionFinder.CampType.INSIDE && campType != PositionFinder.CampType.FIRST_CHOKE) {
+//                        if (MicroUtils.arrivedToPosition(marine, StrategyBoard.mainSquadLeaderPosition)) {
+//                            if (MicroUtils.timeToRandomMove(marine)) {
+//                                Position randomPosition = PositionUtils.randomPosition(marine.getPosition(), MicroConfig.RANDOM_MOVE_DISTANCE);
+//                                CommandUtils.attackMove(marine, randomPosition);
+//                            }
+//                        } else {
+//                            CommandUtils.attackMove(marine, StrategyBoard.mainSquadLeaderPosition);
+//                        }
+//                    } else {
+//                        CommandUtils.attackMove(marine, StrategyBoard.campPosition);
+//                    }
+//                }
+//
+//            }
+//        } else if (bunker == null && inCompleteBunker != null) {
+//            for (Unit marine : unitList) {
+//                if (skipControl(marine)) {
+//                    continue;
+//                }
+//
+//                MicroDecision decision = decisionMaker.makeDecision(marine, euiList);
+//                if (decision.type == MicroDecision.MicroDecisionType.KITING_UNIT) {
+//                    if (marineDangerousOutOfMyRegion(marine, decision.eui)) {
+//                        CommandUtils.attackMove(marine, inCompleteBunker.getPosition());
+//                    }
+//
+//                    MicroUtils.kiting(marine, decision.eui, kOption);
+//                } else {
+//                    CommandUtils.attackMove(marine, inCompleteBunker.getPosition());
+//                }
+//            }
+//        } else {
+//            boolean rangeUnit = false;
+//            for (Unit marine : unitList) {
+//                if (skipControl(marine)) {
+//                    continue;
+//                }
+//
+//
+//                MicroDecision decision = decisionMaker.makeDecision(marine, euiList);
+//                if (decision.type == MicroDecision.MicroDecisionType.KITING_UNIT) {
+//                    Unit enemyInSight = UnitUtils.unitInSight(decision.eui);
+//
+//                    if (marineDangerousOutOfMyRegion(marine, decision.eui)) {
+//                        intoTheBunker(bunker, marine);
+//                        continue;
+//                    }
+//
+//
+//                    if (enemyInSight != null) {
+//                        if (MicroUtils.isRangeUnit(enemyInSight.getType())) {
+//                            rangeUnit = true;
+//                        }
+//                        if (rangeUnit && !enemyInSight.getType().isWorker()) {
+//                            intoTheBunker(bunker, marine);
+//                            continue;
+//                        } else if (enemyInSight.getType().isWorker() || enemyInSight.getType() == UnitType.Zerg_Overlord) {
+//                            outOfTheBunker(marine, bunker, decision.eui, kOption);
+//                            continue;
+//                        } else if (enemyInSight.isInWeaponRange(marine) || marine.isInWeaponRange(enemyInSight) || enemyInSight.isInWeaponRange(bunker) || bunker.isInWeaponRange(enemyInSight)) {
+//                            intoTheBunker(bunker, marine);
+//                        } else {
+//                            if (!enemyInSight.getType().isWorker() && enemyInSight.getType() != UnitType.Zerg_Overlord
+//                                    && marine.getDistance(bunker) > 300) {
+//                                intoTheBunker(bunker, marine);
+//                            }
+//                            if (bunker.getLoadedUnits().size() > Math.round((unitList.size() / 2))) {
+//                                outOfTheBunker(marine, bunker, decision.eui, kOption);
+//                            } else {
+//                                //MicroUtils.BlockingKiting(marine, decision.eui, kOption, bunker.getPosition());
+//                                MicroUtils.kiting(marine, decision.eui, kOption);
+//                            }
+//                        }
+//                    } else {
+//                        intoTheBunker(bunker, marine);
+//                    }
+//
+//                } else {
+//                    if (bunker.getLoadedUnits().size() >= 4) {
+//                        CommandUtils.attackMove(marine, bunker.getPosition());
+//                    } else {
+//                        intoTheBunker(bunker, marine);
+//                    }
+//                }
+//
+//
+//            }
+//        }
     }
 
     public Unit getCompleteBunker(Region campRegion) {
@@ -264,7 +257,7 @@ public class MarineControl extends Control {
         CampType campType = StrategyBoard.campType;
         // 베이스 지역 OK
         if (campType == PositionFinder.CampType.INSIDE || campType == PositionFinder.CampType.FIRST_CHOKE) {
-            Position firstCheokePoint = InformationManager.Instance().getFirstChokePoint(InformationManager.Instance().selfPlayer).getPoint();
+            Position firstCheokePoint = InfoUtils.myFirstChoke().getPoint();
 
             if (eui != null && !MicroUtils.isRangeUnit(eui.getType())) {
                 if (marine.getDistance(firstCheokePoint) < NEAR_BASE_DISTANCE) {

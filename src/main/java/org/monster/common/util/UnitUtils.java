@@ -14,7 +14,7 @@ import org.monster.common.UnitInfo;
 import org.monster.common.constant.CommonCode;
 import org.monster.common.util.internal.IConditions;
 import org.monster.common.util.internal.SpecificValueCache;
-import org.monster.decisionMakers.constant.StrategyConfig;
+import org.monster.decisions.constant.StrategyConfig;
 import org.monster.main.Monster;
 import org.monster.worker.WorkerManager;
 import org.monster.micro.targeting.TargetFilter;

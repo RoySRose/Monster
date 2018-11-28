@@ -14,7 +14,7 @@ import org.monster.common.util.MicroUtils;
 import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.TimeUtils;
 import org.monster.common.util.UnitUtils;
-import org.monster.decisionMakers.constant.StrategyCode;
+import org.monster.decisions.constant.StrategyCode;
 import org.monster.main.Monster;
 import org.monster.micro.CombatManager;
 import org.monster.micro.constant.MicroConfig;

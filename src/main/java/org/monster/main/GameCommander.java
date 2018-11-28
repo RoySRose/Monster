@@ -11,8 +11,8 @@ import org.monster.build.base.ConstructionPlaceFinder;
 import org.monster.build.initialProvider.InitialBuildProvider;
 import org.monster.build.provider.BuildQueueProvider;
 import org.monster.common.MapGrid;
-import org.monster.common.debugger.BigWatch;
-import org.monster.common.debugger.chat.ChatBot;
+import org.monster.debugger.BigWatch;
+import org.monster.debugger.chat.ChatBot;
 import org.monster.common.util.CollectorManager;
 import org.monster.common.util.UnitCache;
 import org.monster.micro.CombatManager;
@@ -68,11 +68,20 @@ public class GameCommander {
         try {
             BigWatch.start("... GAME COMMANDER ...");
 
-            //InformationManager.Instance().updateTimeCheck();
+            /**
+             * Eyes
+             */
             CollectorManager.Instance().updateTimeCheck();
             MapGrid.Instance().updateTimeCheck();
+
+            /**
+             * Brain
+             */
             StrategyManager.Instance().updateTimeCheck();
 
+            /**
+             * Hands
+             */
             // progressive & complete => initial end
             InitialBuildProvider.Instance().updateInitialBuild();
             BuildQueueProvider.Instance().updateTimeCheck();

@@ -4,7 +4,7 @@ import bwapi.TilePosition;
 import bwapi.UnitType;
 import org.monster.common.constant.CommonCode;
 import org.monster.common.util.UnitUtils;
-import org.monster.decisionMakers.constant.EnemyStrategyOptions;
+import org.monster.decisions.constant.EnemyStrategyOptions;
 
 /// 봇 프로그램 설정
 public class AdaptNewStrategy extends BaseBuild {

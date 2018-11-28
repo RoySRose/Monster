@@ -15,18 +15,17 @@ import org.monster.common.constant.CommonCode;
 import org.monster.common.util.BaseLocationUtils;
 import org.monster.common.util.BaseUtils;
 import org.monster.common.util.InfoUtils;
-import org.monster.common.util.InformationManager;
 import org.monster.common.util.MicroUtils;
 import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.PositionUtils;
 import org.monster.common.util.TimeUtils;
 import org.monster.common.util.UnitUtils;
 import org.monster.common.util.internal.IConditions;
-import org.monster.decisionMakers.constant.EnemyStrategyOptions;
+import org.monster.common.util.internal.MapSpecificInformation;
+import org.monster.decisions.constant.EnemyStrategyOptions;
 import org.monster.main.Monster;
 import org.monster.micro.PositionReserveInfo;
 import org.monster.micro.constant.MicroConfig;
-import org.monster.common.util.internal.MapSpecificInformation;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -61,10 +60,10 @@ public class SpiderMineManger {
         }
 
         List<BaseLocation> otherBases = BaseUtils.enemyOtherExpansions();
-        Position myReadyToAttackPos = InformationManager.Instance().getReadyToAttackPosition(InformationManager.Instance().selfPlayer);
+        Position myReadyToAttackPos = InfoUtils.myReadyToPosition();
         Chokepoint mySecondChoke = InfoUtils.mySecondChoke();
 
-        Position enemyReadyToAttackPos = InformationManager.Instance().getReadyToAttackPosition(InformationManager.Instance().enemyPlayer);
+        Position enemyReadyToAttackPos = InfoUtils.enemyReadyToPosition();
         BaseLocation enemyFirstExpansion = BaseUtils.enemyFirstExpansion();
         Chokepoint enemySecondChoke = InfoUtils.enemySecondChoke();
 
@@ -202,13 +201,15 @@ public class SpiderMineManger {
         if (TimeUtils.afterTime(9, 0)) {
             // 다음 확장지역의 스파이더 마인
             if (TimeUtils.elapsedFrames(mineInNextExpansionFrame) > 20 * TimeUtils.SECOND) {
-                BaseLocation nextExpansion = InformationManager.Instance().getNextExpansionLocation();
-                if (nextExpansion != null) {
-                    List<Unit> spiderMines = UnitUtils.getUnitsInRadius(CommonCode.PlayerRange.SELF, nextExpansion.getPosition(), 300, UnitType.Terran_Vulture_Spider_Mine);
-                    for (Unit mine : spiderMines) {
-                        mineRemoveMap.put(mine.getID(), new PositionReserveInfo(mine.getID(), mine.getPosition(), TimeUtils.getFrame() + 20 * TimeUtils.SECOND)); // 20초 이상 길게 유지
-                    }
-                }
+
+                //TODO expansion logic 변경으로인해 주석. 어차피 불필요한 클래스
+//                BaseLocation nextExpansion = InformationManager.Instance().getNextExpansionLocation();
+//                if (nextExpansion != null) {
+//                    List<Unit> spiderMines = UnitUtils.getUnitsInRadius(CommonCode.PlayerRange.SELF, nextExpansion.getPosition(), 300, UnitType.Terran_Vulture_Spider_Mine);
+//                    for (Unit mine : spiderMines) {
+//                        mineRemoveMap.put(mine.getID(), new PositionReserveInfo(mine.getID(), mine.getPosition(), TimeUtils.getFrame() + 20 * TimeUtils.SECOND)); // 20초 이상 길게 유지
+//                    }
+//                }
 
                 List<BaseLocation> otherExpansions = BaseUtils.enemyOtherExpansions();
                 for (BaseLocation base : otherExpansions) {
@@ -420,9 +421,12 @@ public class SpiderMineManger {
 
     public List<BaseLocation> getMyExpansionBaseLocation() {
         List<BaseLocation> bases = new ArrayList<>();
-        BaseLocation expansion1 = InformationManager.Instance().getSecondStartPosition();
-        List<BaseLocation> addbase = InformationManager.Instance().getFutureCloseButFarFromEnemyLocation();
-        bases.addAll(addbase);
+
+        BaseLocation expansion1 = null;//InformationManager.Instance().getSecondStartPosition();
+
+        //TODO disable
+        //List<BaseLocation> addbase = InformationManager.Instance().getFutureCloseButFarFromEnemyLocation();
+        //bases.addAll(addbase);
         bases.add(expansion1);
 
         int times = 2;
@@ -461,4 +465,101 @@ public class SpiderMineManger {
         ONLY_GOOD_POSITION
     }
 
+
+//    public List<BaseLocation> getFutureCloseButFarFromEnemyLocation() {
+//        List<BaseLocation> resultBase = new ArrayList<>();
+//
+//        BaseLocation base1 = null;
+//        BaseLocation base2 = null;
+//        BaseLocation mainBaseLocation = mainBaseLocations.get(selfPlayer);
+//        BaseLocation enemyBaseLocation = mainBaseLocations.get(enemyPlayer);
+//
+//        BaseLocation firstExpansion = firstExpansionLocation.get(selfPlayer);
+//
+//
+//        double firstExpansionToOccupied = 0;
+//        double enemyBaseToOccupied = 0;
+//        double closeFromMyExpansionButFarFromEnemy = 0;
+//
+//        double closestDistance = 1000000000;
+//
+//        for (BaseLocation base : BWTA.getBaseLocations()) {
+//            if (base.isStartLocation())
+//                continue;
+//            if (base.getTilePosition().equals(mainBaseLocation.getTilePosition()))
+//                continue;
+//            if (base.getTilePosition().equals(enemyBaseLocation.getTilePosition()))
+//                continue;
+//            if (base.getTilePosition().equals(firstExpansion.getTilePosition()))
+//                continue;
+//            if (firstExpansionLocation.get(enemyPlayer) != null) {
+//                if (base.getTilePosition().equals(firstExpansionLocation.get(enemyPlayer).getTilePosition()))
+//                    continue;
+//            }
+//            if (base.getTilePosition().equals(secondStartPosition.getTilePosition()))
+//                continue;
+//
+//            TilePosition findGeyser = ConstructionPlaceFinder.Instance()
+//                    .getRefineryPositionNear(base.getTilePosition());
+//            if (findGeyser != null) {
+//                if (findGeyser.getDistance(base.getTilePosition()) * 32 > 300) {
+//                    continue;
+//                }
+//            }
+//
+//
+//            firstExpansionToOccupied = firstExpansion.getGroundDistance(base); // 내 앞마당 ~ 내 점령지역 지상거리
+//            enemyBaseToOccupied = enemyBaseLocation.getGroundDistance(base); // 적 베이스 ~ 내 점령지역 지상거리
+//            closeFromMyExpansionButFarFromEnemy = firstExpansionToOccupied - enemyBaseToOccupied;
+//
+//            if (closeFromMyExpansionButFarFromEnemy < closestDistance && firstExpansionToOccupied > 0) {
+//                closestDistance = closeFromMyExpansionButFarFromEnemy;
+//                base2 = base1;
+//                base1 = base;
+//            }
+//        }
+//
+//        if (base2 == null) {
+//            for (BaseLocation base : BWTA.getBaseLocations()) {
+//                if (base.isStartLocation())
+//                    continue;
+//                if (base.getTilePosition().equals(mainBaseLocation.getTilePosition()))
+//                    continue;
+//                if (base.getTilePosition().equals(enemyBaseLocation.getTilePosition()))
+//                    continue;
+//                if (base.getTilePosition().equals(firstExpansion.getTilePosition()))
+//                    continue;
+//                if (firstExpansionLocation.get(enemyPlayer) != null) {
+//                    if (base.getTilePosition().equals(firstExpansionLocation.get(enemyPlayer).getTilePosition()))
+//                        continue;
+//                }
+//                if (base.getTilePosition().equals(secondStartPosition.getTilePosition()))
+//                    continue;
+//                if (base.getTilePosition().equals(base1.getTilePosition()))
+//                    continue;
+//
+//                TilePosition findGeyser = ConstructionPlaceFinder.Instance()
+//                        .getRefineryPositionNear(base.getTilePosition());
+//                if (findGeyser != null) {
+//                    if (findGeyser.getDistance(base.getTilePosition()) * 32 > 300) {
+//                        continue;
+//                    }
+//                }
+//
+//                firstExpansionToOccupied = firstExpansion.getGroundDistance(base); // 내 앞마당 ~ 내 점령지역 지상거리
+//                enemyBaseToOccupied = enemyBaseLocation.getGroundDistance(base); // 적 베이스 ~ 내 점령지역 지상거리
+//                closeFromMyExpansionButFarFromEnemy = firstExpansionToOccupied - enemyBaseToOccupied;
+//
+//                if (closeFromMyExpansionButFarFromEnemy < closestDistance && firstExpansionToOccupied > 0) {
+//                    closestDistance = closeFromMyExpansionButFarFromEnemy;
+//                    base2 = base;
+//                }
+//            }
+//        }
+//
+//        resultBase.add(base1);
+//        resultBase.add(base2);
+//
+//        return resultBase;
+//    }
 }

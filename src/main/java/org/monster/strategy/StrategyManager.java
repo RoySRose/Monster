@@ -9,9 +9,6 @@ import org.monster.common.constant.CommonCode;
 import org.monster.common.util.BaseUtils;
 import org.monster.common.util.TimeUtils;
 import org.monster.common.util.UnitUtils;
-import org.monster.decisionMakers.constant.EnemyStrategyOptions;
-import org.monster.macro.AttackDecisionMaker;
-import org.monster.macro.Decision;
 import org.monster.main.GameManager;
 import org.monster.micro.constant.MicroConfig;
 import org.monster.strategy.manage.ActionManager;
@@ -68,19 +65,20 @@ public class StrategyManager extends GameManager {
 
     /// 테스트용 임시 공격 타이밍
     private void changeMainSquadMode() {
-        if (AttackDecisionMaker.Instance().decision == Decision.NO_MERCY_ATTACK) {
+        //TODO 일단 무조건 공격
+//        if (AttackDecisionMaker.Instance().decision == Decision.NO_MERCY_ATTACK) {
             StrategyBoard.mainSquadMode = MicroConfig.MainSquadMode.NO_MERCY;
 
-        } else if (AttackDecisionMaker.Instance().decision == Decision.FULL_ATTACK) {
-            if (StrategyBoard.buildTimeMap.featureEnabled(EnemyStrategyOptions.BuildTimeMap.Feature.QUICK_ATTACK)) {
-                StrategyBoard.mainSquadMode = MicroConfig.MainSquadMode.SPEED_ATTCK;
-            } else {
-                StrategyBoard.mainSquadMode = MicroConfig.MainSquadMode.ATTCK;
-            }
-
-        } else {
-            StrategyBoard.mainSquadMode = MicroConfig.MainSquadMode.NORMAL;
-        }
+//        } else if (AttackDecisionMaker.Instance().decision == Decision.FULL_ATTACK) {
+//            if (StrategyBoard.buildTimeMap.featureEnabled(EnemyStrategyOptions.BuildTimeMap.Feature.QUICK_ATTACK)) {
+//                StrategyBoard.mainSquadMode = MicroConfig.MainSquadMode.SPEED_ATTCK;
+//            } else {
+//                StrategyBoard.mainSquadMode = MicroConfig.MainSquadMode.ATTCK;
+//            }
+//
+//        } else {
+//            StrategyBoard.mainSquadMode = MicroConfig.MainSquadMode.NORMAL;
+//        }
     }
 
     private void expansionOkay() {

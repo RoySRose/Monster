@@ -5,7 +5,7 @@ import org.monster.board.StrategyBoard;
 import org.monster.common.constant.CommonCode;
 import org.monster.common.util.TimeUtils;
 import org.monster.common.util.UnitUtils;
-import org.monster.decisionMakers.constant.EnemyStrategyOptions;
+import org.monster.decisions.constant.EnemyStrategyOptions;
 import org.monster.main.Monster;
 import org.monster.strategy.action.Action;
 

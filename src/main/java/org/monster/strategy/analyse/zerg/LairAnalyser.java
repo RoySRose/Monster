@@ -2,7 +2,7 @@ package org.monster.strategy.analyse.zerg;
 
 import bwapi.Unit;
 import bwapi.UnitType;
-import org.monster.decisionMakers.decisionTypes.EnemyStrategy;
+import org.monster.decisions.constant.EnemyStrategy;
 import org.monster.common.UnitInfo;
 import org.monster.common.util.TimeUtils;
 import org.monster.common.util.UnitUtils;

@@ -13,7 +13,7 @@ import org.monster.common.util.CommandUtils;
 import org.monster.common.util.MicroUtils;
 import org.monster.common.util.PositionUtils;
 import org.monster.common.util.UnitUtils;
-import org.monster.decisionMakers.decisionTypes.EnemyStrategy;
+import org.monster.decisions.constant.EnemyStrategy;
 import org.monster.main.Monster;
 import org.monster.micro.FleeOption;
 import org.monster.micro.constant.MicroConfig;

@@ -3,8 +3,8 @@ package org.monster.micro.targeting;
 import bwapi.Unit;
 import bwapi.UnitType;
 import org.monster.common.UnitInfo;
-import org.monster.common.util.InformationManager;
 import org.monster.common.util.MicroUtils;
+import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.UnitUtils;
 import org.monster.micro.constant.MicroConfig;
 
@@ -42,9 +42,9 @@ public class TankTargetCalculator extends TargetScoreCalculator {
             }
 
             // 아군일 경우 우선순위를 뺀다. priority값이 마이너스(-)가 나올 수도 있다. 이때는 타겟으로 지정하지 않는다.
-            if (unitInSplash.getPlayer() == InformationManager.Instance().enemyPlayer) {
+            if (unitInSplash.getPlayer() == PlayerUtils.enemyPlayer()) {
                 splashScore += priorityInSpash;
-            } else if (unitInSplash.getPlayer() == InformationManager.Instance().selfPlayer) {
+            } else if (unitInSplash.getPlayer() == PlayerUtils.myPlayer()) {
                 splashScore -= priorityInSpash;
             }
         }

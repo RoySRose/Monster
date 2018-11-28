@@ -6,7 +6,7 @@ import bwapi.UnitType;
 import org.monster.board.StrategyBoard;
 import org.monster.common.UnitInfo;
 import org.monster.common.util.InfoUtils;
-import org.monster.common.util.InformationManager;
+
 import org.monster.common.util.MicroUtils;
 import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.TimeUtils;

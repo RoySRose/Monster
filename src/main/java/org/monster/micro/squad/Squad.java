@@ -5,7 +5,7 @@ import bwapi.Unit;
 import bwapi.UnitType;
 import org.monster.common.LagObserver;
 import org.monster.common.UnitInfo;
-import org.monster.common.debugger.BigWatch;
+import org.monster.debugger.BigWatch;
 import org.monster.common.util.TimeUtils;
 import org.monster.common.util.UnitUtils;
 import org.monster.micro.CombatManager;

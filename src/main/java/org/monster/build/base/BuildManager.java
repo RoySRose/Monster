@@ -19,8 +19,8 @@ import org.monster.build.provider.BuildQueueProvider;
 import org.monster.common.LagObserver;
 import org.monster.common.MetaType;
 import org.monster.common.constant.CommonCode;
+import org.monster.common.util.BaseUtils;
 import org.monster.common.util.InfoUtils;
-import org.monster.common.util.InformationManager;
 import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.TilePositionUtils;
 import org.monster.common.util.TimeUtils;
@@ -426,14 +426,14 @@ public class BuildManager extends GameManager {
 
         switch (seedLocationStrategy) {
             case MainBaseLocation:
-                tempBaseLocation = InformationManager.Instance().getMainBaseLocation(Monster.Broodwar.self());
+                tempBaseLocation = BaseUtils.myMainBase();
                 if (tempBaseLocation != null) {
                     seedPosition = tempBaseLocation.getPosition();
                 }
                 break;
             case MainBaseBackYard:
-                tempBaseLocation = InformationManager.Instance().getMainBaseLocation(Monster.Broodwar.self());
-                tempChokePoint = InformationManager.Instance().getFirstChokePoint(InformationManager.Instance().selfPlayer);
+                tempBaseLocation = BaseUtils.myMainBase();
+                tempChokePoint = InfoUtils.myFirstChoke();
                 tempBaseRegion = BWTA.getRegion(tempBaseLocation.getPosition());
 
                 if (tempBaseLocation != null && tempChokePoint != null) {
@@ -485,21 +485,21 @@ public class BuildManager extends GameManager {
                 break;
 
             case FirstExpansionLocation:
-                tempBaseLocation = InformationManager.Instance().getFirstExpansionLocation(Monster.Broodwar.self());
+                tempBaseLocation = InfoUtils.myFirstExpansion();
                 if (tempBaseLocation != null) {
                     seedPosition = tempBaseLocation.getPosition();
                 }
                 break;
 
             case FirstChokePoint:
-                tempChokePoint = InformationManager.Instance().getFirstChokePoint(InformationManager.Instance().selfPlayer);
+                tempChokePoint = InfoUtils.myFirstChoke();
                 if (tempChokePoint != null) {
                     seedPosition = tempChokePoint.getCenter();
                 }
                 break;
 
             case SecondChokePoint:
-                tempChokePoint = InformationManager.Instance().getSecondChokePoint(Monster.Broodwar.self());
+                tempChokePoint = InfoUtils.mySecondChoke();
                 if (tempChokePoint != null) {
                     seedPosition = tempChokePoint.getCenter();
                 }

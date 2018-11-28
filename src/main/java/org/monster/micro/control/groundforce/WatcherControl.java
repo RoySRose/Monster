@@ -16,7 +16,7 @@ import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.PositionUtils;
 import org.monster.common.util.TimeUtils;
 import org.monster.common.util.UnitUtils;
-import org.monster.decisionMakers.decisionTypes.EnemyStrategy;
+import org.monster.decisions.constant.EnemyStrategy;
 import org.monster.micro.FleeOption;
 import org.monster.micro.KitingOption;
 import org.monster.micro.MicroDecision;

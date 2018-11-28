@@ -10,13 +10,13 @@ import org.monster.board.StrategyBoard;
 import org.monster.common.LagObserver;
 import org.monster.common.UnitInfo;
 import org.monster.common.constant.CommonCode;
-import org.monster.common.debugger.BigWatch;
 import org.monster.common.util.BaseUtils;
-import org.monster.common.util.InformationManager;
+import org.monster.common.util.InfoUtils;
 import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.TimeUtils;
 import org.monster.common.util.UnitUtils;
 import org.monster.common.util.internal.IConditions;
+import org.monster.debugger.BigWatch;
 import org.monster.main.GameManager;
 import org.monster.main.Monster;
 import org.monster.micro.constant.MicroConfig;
@@ -283,7 +283,7 @@ public class CombatManager extends GameManager {
 
         if (PlayerUtils.enemyRace() == Race.Terran) {
             Region enemyRegion = BWTA.getRegion(BaseUtils.enemyMainBase().getPosition());
-            Set<Region> occupiedRegions = InformationManager.Instance().getOccupiedRegions(Monster.Broodwar.self());
+            Set<Region> occupiedRegions = InfoUtils.getOccupiedRegions(Monster.Broodwar.self());
 
             for (BaseLocation base : BWTA.getStartLocations()) {
                 Region region = BWTA.getRegion(base.getPosition());

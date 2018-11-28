@@ -21,7 +21,8 @@ import org.monster.build.base.ConstructionPlaceFinder;
 import org.monster.build.base.ConstructionTask;
 import org.monster.common.MapGrid;
 import org.monster.common.UnitInfo;
-import org.monster.common.util.InformationManager;
+import org.monster.common.util.BaseUtils;
+import org.monster.common.util.InfoUtils;
 import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.TimeUtils;
 import org.monster.common.util.UnitUtils;
@@ -148,8 +149,8 @@ public class UXManager {
     // 게임 개요 정보를 Screen 에 표시합니다
     public void drawGameInformationOnScreen(int x, int y) {
         Monster.Broodwar.drawTextScreen(x, y, white + "Players : ");
-        Monster.Broodwar.drawTextScreen(x + 50, y, Monster.Broodwar.self().getTextColor() + Monster.Broodwar.self().getName() + "(" + InformationManager.Instance().selfRace + ") " + white + " vs.  " +
-                InformationManager.Instance().enemyPlayer.getTextColor() + InformationManager.Instance().enemyPlayer.getName() + "(" + PlayerUtils.enemyRace() + ")");
+        //Monster.Broodwar.drawTextScreen(x + 50, y, Monster.Broodwar.self().getTextColor() + Monster.Broodwar.self().getName() + "(" + InformationManager.Instance().selfRace + ") " + white + " vs.  " +
+        //        PlayerUtils.enemyPlayer().getTextColor() + PlayerUtils.enemyPlayer().getName() + "(" + PlayerUtils.enemyRace() + ")");
         y += 12;
 
         Monster.Broodwar.drawTextScreen(x, y, white + "Map : ");
@@ -253,7 +254,7 @@ public class UXManager {
 
         // draw neutral units and our units
         for (Unit unit : Monster.Broodwar.getAllUnits()) {
-            if (unit.getPlayer() == InformationManager.Instance().enemyPlayer) {
+            if (unit.getPlayer() == PlayerUtils.enemyPlayer()) {
                 continue;
             }
 
@@ -538,38 +539,38 @@ public class UXManager {
             }
 
             // OccupiedBaseLocation 을 원으로 표시
-            for (BaseLocation baseLocation : InformationManager.Instance().getOccupiedBaseLocations(InformationManager.Instance().selfPlayer)) {
-                Monster.Broodwar.drawCircleMap(baseLocation.getPosition(), 10 * Config.TILE_SIZE, Color.Blue);
-            }
-            for (BaseLocation baseLocation : InformationManager.Instance().getOccupiedBaseLocations(InformationManager.Instance().enemyPlayer)) {
-                Monster.Broodwar.drawCircleMap(baseLocation.getPosition(), 10 * Config.TILE_SIZE, Color.Red);
-            }
+//            for (BaseLocation baseLocation : InformationManager.Instance().getOccupiedBaseLocations(PlayerUtils.myPlayer())) {
+//                Monster.Broodwar.drawCircleMap(baseLocation.getPosition(), 10 * Config.TILE_SIZE, Color.Blue);
+//            }
+//            for (BaseLocation baseLocation : InfoUtils.getOccupiedBaseLocations(PlayerUtils.enemyPlayer())) {
+//                Monster.Broodwar.drawCircleMap(baseLocation.getPosition(), 10 * Config.TILE_SIZE, Color.Red);
+//            }
 
             // ChokePoint, BaseLocation 을 텍스트로 표시
-            if (InformationManager.Instance().getFirstChokePoint(Monster.Broodwar.self()) != null) {
-                Monster.Broodwar.drawTextMap(InformationManager.Instance().getMainBaseLocation(Monster.Broodwar.self()).getPosition(), "My MainBaseLocation");
+            if (InfoUtils.myFirstChoke() != null) {
+                Monster.Broodwar.drawTextMap(BaseUtils.myMainBase().getPosition(), "My MainBaseLocation");
             }
-            if (InformationManager.Instance().getFirstChokePoint(Monster.Broodwar.self()) != null) {
-                Monster.Broodwar.drawTextMap(InformationManager.Instance().getFirstChokePoint(Monster.Broodwar.self()).getCenter(), "My First ChokePoint");
+            if (InfoUtils.myFirstChoke() != null) {
+                Monster.Broodwar.drawTextMap(InfoUtils.myFirstChoke().getCenter(), "My First ChokePoint");
             }
-            if (InformationManager.Instance().getSecondChokePoint(Monster.Broodwar.self()) != null) {
-                Monster.Broodwar.drawTextMap(InformationManager.Instance().getSecondChokePoint(Monster.Broodwar.self()).getCenter(), "My Second ChokePoint");
+            if (InfoUtils.mySecondChoke() != null) {
+                Monster.Broodwar.drawTextMap(InfoUtils.mySecondChoke().getCenter(), "My Second ChokePoint");
             }
-            if (InformationManager.Instance().getFirstExpansionLocation(Monster.Broodwar.self()) != null) {
-                Monster.Broodwar.drawTextMap(InformationManager.Instance().getFirstExpansionLocation(Monster.Broodwar.self()).getPosition(), "My First ExpansionLocation");
+            if (InfoUtils.myFirstExpansion() != null) {
+                Monster.Broodwar.drawTextMap(InfoUtils.myFirstExpansion().getPosition(), "My First ExpansionLocation");
             }
 
-            if (InformationManager.Instance().getFirstChokePoint(InformationManager.Instance().enemyPlayer) != null) {
-                Monster.Broodwar.drawTextMap(InformationManager.Instance().getMainBaseLocation(InformationManager.Instance().enemyPlayer).getPosition(), "Enemy MainBaseLocation");
+//            if (InformationManager.Instance().getFirstChokePoint(PlayerUtils.enemyPlayer()) != null) {
+//                Monster.Broodwar.drawTextMap(BaseUtils.enemyMainBase().getPosition(), "Enemy MainBaseLocation");
+//            }
+//            if (InformationManager.Instance().getFirstChokePoint(PlayerUtils.enemyPlayer()) != null) {
+//                Monster.Broodwar.drawTextMap(InformationManager.Instance().getFirstChokePoint(PlayerUtils.enemyPlayer()).getCenter(), "Enemy First ChokePoint");
+//            }
+            if (InfoUtils.enemySecondChoke() != null) {
+                Monster.Broodwar.drawTextMap(InfoUtils.enemySecondChoke().getCenter(), "Enemy Second ChokePoint");
             }
-            if (InformationManager.Instance().getFirstChokePoint(InformationManager.Instance().enemyPlayer) != null) {
-                Monster.Broodwar.drawTextMap(InformationManager.Instance().getFirstChokePoint(InformationManager.Instance().enemyPlayer).getCenter(), "Enemy First ChokePoint");
-            }
-            if (InformationManager.Instance().getSecondChokePoint(InformationManager.Instance().enemyPlayer) != null) {
-                Monster.Broodwar.drawTextMap(InformationManager.Instance().getSecondChokePoint(InformationManager.Instance().enemyPlayer).getCenter(), "Enemy Second ChokePoint");
-            }
-            if (InformationManager.Instance().getFirstExpansionLocation(InformationManager.Instance().enemyPlayer) != null) {
-                Monster.Broodwar.drawTextMap(InformationManager.Instance().getFirstExpansionLocation(InformationManager.Instance().enemyPlayer).getPosition(), "Enemy First ExpansionLocation");
+            if (InfoUtils.enemyFirstExpansion() != null) {
+                Monster.Broodwar.drawTextMap(InfoUtils.enemyFirstExpansion().getPosition(), "Enemy First ExpansionLocation");
             }
 
         }

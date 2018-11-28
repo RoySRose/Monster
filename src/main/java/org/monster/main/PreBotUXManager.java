@@ -29,20 +29,16 @@ import org.monster.common.MetaType;
 import org.monster.common.UnitInfo;
 import org.monster.common.constant.CommonCode;
 import org.monster.common.constant.CommonConfig;
-import org.monster.common.debugger.BigWatch;
-import org.monster.common.debugger.UxColor;
 import org.monster.common.util.BaseUtils;
 import org.monster.common.util.InfoUtils;
-import org.monster.common.util.InformationManager;
 import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.PositionUtils;
 import org.monster.common.util.TimeUtils;
 import org.monster.common.util.UnitUtils;
-import org.monster.decisionMakers.constant.StrategyCode;
-import org.monster.decisionMakers.decisionTypes.EnemyStrategy;
-import org.monster.macro.AttackDecisionMaker;
-import org.monster.macro.EnemyCommandInfo;
-import org.monster.macro.util.MutableFloat;
+import org.monster.debugger.BigWatch;
+import org.monster.debugger.UxColor;
+import org.monster.decisions.constant.EnemyStrategy;
+import org.monster.decisions.constant.StrategyCode;
 import org.monster.micro.CombatManager;
 import org.monster.micro.MicroDecision;
 import org.monster.micro.Minerals;
@@ -67,7 +63,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.Vector;
 
@@ -162,7 +157,7 @@ public class PreBotUXManager {
                 drawTilesToAvoidOnMap();
                 drawReservedBuildingTilesOnMap();
             } else if (uxOption == 8) {
-                drawExpectedResource();
+//                drawExpectedResource();
                 //drawExpectedResource2();
             }
 
@@ -188,85 +183,85 @@ public class PreBotUXManager {
     }
 
 
-    private void drawExpectedResource2() {
-        int m = 190;
-        //Monster.Broodwar.drawTextScreen(190, 10, "EnemyPredictedUnitLIst: " + AttackDecisionMaker.Instance().predictedTotalEnemyAttackUnit.size());
-        System.out.println("EnemyPredictedUnitLIst: " + AttackDecisionMaker.Instance().predictedTotalEnemyAttackUnit.size());
-        int l = 10;
-        for (Entry<UnitType, MutableFloat> enenmy : AttackDecisionMaker.Instance().predictedTotalEnemyAttackUnit.entrySet()) {
-            float cnt = enenmy.getValue().get();
-            UnitType unitType = enenmy.getKey();
-            System.out.println(unitType.toString().substring(7, 14) + " : " + cnt);
-            //Monster.Broodwar.drawTextScreen(m, l+=10, unitType.toString().substring(7, 14)+" : "+cnt);
-        }
-    }
-
-    private void drawExpectedResource() {
-        Map<UnitInfo, EnemyCommandInfo> enemyCommandInfoMap = AttackDecisionMaker.Instance().enemyResourceDepotInfoMap;
-
-        int y = 0;
-        Monster.Broodwar.drawTextScreen(10, y += 10, "this mymineral  : " + Monster.Broodwar.self().gatheredMinerals());
-        Monster.Broodwar.drawTextScreen(10, y += 10, "total enemy cnt : " + enemyCommandInfoMap.size());
-        Monster.Broodwar.drawTextScreen(10, y += 10, "mygas           : " + Monster.Broodwar.self().gatheredGas());
-        Monster.Broodwar.drawTextScreen(10, y += 10, "mywrkcnt(real)  : " + Monster.Broodwar.self().completedUnitCount(UnitType.Terran_SCV));
-        Monster.Broodwar.drawTextScreen(10, y += 10, "frame ==== " + TimeUtils.getFrame());
-
-        y = drawCalculation(10, y);
-
-
-        y += 10;
-        if (enemyCommandInfoMap.size() == 0) {
-            Monster.Broodwar.drawTextScreen(10, y += 10, "No enemy base info");
-        } else {
-
-            int k = 1;
-            int x = 10;
-            int temp = y;
-            for (Map.Entry<UnitInfo, EnemyCommandInfo> entry : enemyCommandInfoMap.entrySet()) {
-                y = temp;
-                UnitInfo unitInfo = entry.getKey();
-                EnemyCommandInfo enemyCommandInfo = entry.getValue();
-
-                if (AttackDecisionMaker.Instance().skipResourceDepot.size() == 0) {
-                    Monster.Broodwar.drawTextScreen(10, y += 10, "skipped base : no skipped base");
-                } else {
-                    for (UnitInfo skip : AttackDecisionMaker.Instance().skipResourceDepot) {
-                        Monster.Broodwar.drawTextScreen(10, y += 10, "skipped base : " + skip.getLastPosition());
-                    }
-                }
-
-                Monster.Broodwar.drawTextScreen(x, y += 10, k++ + " base" + unitInfo.getLastPosition() + ", " + enemyCommandInfo.mineralCalculator.getMineralCount());
-                Monster.Broodwar.drawTextScreen(x, y += 10, "isMainBase      : " + enemyCommandInfo.isMainBase);
-                Monster.Broodwar.drawTextScreen(x, y += 10, "has gas         : " + enemyCommandInfo.gasCalculator.hasGasBuilding());
-                Monster.Broodwar.drawTextScreen(x, y += 10, "mineral(real)   : " + ((int) enemyCommandInfo.mineralCalculator.getFullCheckMineral() + (int) 50));
-                Monster.Broodwar.drawTextScreen(x, y += 10, "mineral(r+p):   : " + ((int) enemyCommandInfo.uxmineral + (int) 50));
-                Monster.Broodwar.drawTextScreen(x, y += 10, "gas(real)       : " + enemyCommandInfo.gasCalculator.getRealGas());
-                Monster.Broodwar.drawTextScreen(x, y += 10, "gas(r+p)        : " + enemyCommandInfo.gasCalculator.getGas());
-                Monster.Broodwar.drawTextScreen(x, y += 10, "fullWorkerFrame : " + enemyCommandInfo.fullWorkerFrame);
-                Monster.Broodwar.drawTextScreen(x, y += 10, "halfWorkerFrame : " + enemyCommandInfo.halfWorkerFrame);
-                Monster.Broodwar.drawTextScreen(x, y += 10, "wrkcnt(real)    : " + enemyCommandInfo.workerCounter.realWorkerCount);
-                Monster.Broodwar.drawTextScreen(x, y += 10, "wrkcnt(r+p)     : " + ((int) enemyCommandInfo.workerCounter.getWorkerCount(enemyCommandInfo.lastFullCheckFrame)));
-                Monster.Broodwar.drawTextScreen(x, y += 10, "fwrkcnt         : " + ((int) enemyCommandInfo.lastFullCheckWorkerCount));
-                Monster.Broodwar.drawTextScreen(x, y += 10, "last full check : " + enemyCommandInfo.lastFullCheckFrame);
-                x += 140;
-            }
-
-        }
-
-    }
-
-    private int drawCalculation(int x, int y) {
-        y += 10;
-        Monster.Broodwar.drawTextScreen(x, y += 10, UxColor.CHAR_RED + "Decision : " + AttackDecisionMaker.Instance().decision + ", phase3: " + StrategyAnalyseManager.Instance().getPhase() + ", strategy" + StrategyBoard.currentStrategy.name());
-        Monster.Broodwar.drawTextScreen(x, y += 10, "MineralToPredict: " + AttackDecisionMaker.Instance().UXMineralToPredict);
-        Monster.Broodwar.drawTextScreen(x, y += 10, "GasToPredict    : " + AttackDecisionMaker.Instance().UXGasToPredict);
-        Monster.Broodwar.drawTextScreen(x, y += 10, "MineralMinus:   : " + AttackDecisionMaker.Instance().UXMinusMineralToPredict);
-        Monster.Broodwar.drawTextScreen(x, y += 10, "GasMinus        : " + AttackDecisionMaker.Instance().UXMinusGasToPredict);
-
-        Monster.Broodwar.drawTextScreen(x, y += 10, "my point        : " + AttackDecisionMaker.Instance().tempMypoint);
-        Monster.Broodwar.drawTextScreen(x, y += 10, "enemy point     : " + AttackDecisionMaker.Instance().tempEnemypoint);
-        return y;
-    }
+//    private void drawExpectedResource2() {
+//        int m = 190;
+//        //Monster.Broodwar.drawTextScreen(190, 10, "EnemyPredictedUnitLIst: " + AttackDecisionMaker.Instance().predictedTotalEnemyAttackUnit.size());
+//        System.out.println("EnemyPredictedUnitLIst: " + AttackDecisionMaker.Instance().predictedTotalEnemyAttackUnit.size());
+//        int l = 10;
+//        for (Entry<UnitType, MutableFloat> enenmy : AttackDecisionMaker.Instance().predictedTotalEnemyAttackUnit.entrySet()) {
+//            float cnt = enenmy.getValue().get();
+//            UnitType unitType = enenmy.getKey();
+//            System.out.println(unitType.toString().substring(7, 14) + " : " + cnt);
+//            //Monster.Broodwar.drawTextScreen(m, l+=10, unitType.toString().substring(7, 14)+" : "+cnt);
+//        }
+//    }
+//
+//    private void drawExpectedResource() {
+//        Map<UnitInfo, EnemyCommandInfo> enemyCommandInfoMap = AttackDecisionMaker.Instance().enemyResourceDepotInfoMap;
+//
+//        int y = 0;
+//        Monster.Broodwar.drawTextScreen(10, y += 10, "this mymineral  : " + Monster.Broodwar.self().gatheredMinerals());
+//        Monster.Broodwar.drawTextScreen(10, y += 10, "total enemy cnt : " + enemyCommandInfoMap.size());
+//        Monster.Broodwar.drawTextScreen(10, y += 10, "mygas           : " + Monster.Broodwar.self().gatheredGas());
+//        Monster.Broodwar.drawTextScreen(10, y += 10, "mywrkcnt(real)  : " + Monster.Broodwar.self().completedUnitCount(UnitType.Terran_SCV));
+//        Monster.Broodwar.drawTextScreen(10, y += 10, "frame ==== " + TimeUtils.getFrame());
+//
+//        y = drawCalculation(10, y);
+//
+//
+//        y += 10;
+//        if (enemyCommandInfoMap.size() == 0) {
+//            Monster.Broodwar.drawTextScreen(10, y += 10, "No enemy base info");
+//        } else {
+//
+//            int k = 1;
+//            int x = 10;
+//            int temp = y;
+//            for (Map.Entry<UnitInfo, EnemyCommandInfo> entry : enemyCommandInfoMap.entrySet()) {
+//                y = temp;
+//                UnitInfo unitInfo = entry.getKey();
+//                EnemyCommandInfo enemyCommandInfo = entry.getValue();
+//
+//                if (AttackDecisionMaker.Instance().skipResourceDepot.size() == 0) {
+//                    Monster.Broodwar.drawTextScreen(10, y += 10, "skipped base : no skipped base");
+//                } else {
+//                    for (UnitInfo skip : AttackDecisionMaker.Instance().skipResourceDepot) {
+//                        Monster.Broodwar.drawTextScreen(10, y += 10, "skipped base : " + skip.getLastPosition());
+//                    }
+//                }
+//
+//                Monster.Broodwar.drawTextScreen(x, y += 10, k++ + " base" + unitInfo.getLastPosition() + ", " + enemyCommandInfo.mineralCalculator.getMineralCount());
+//                Monster.Broodwar.drawTextScreen(x, y += 10, "isMainBase      : " + enemyCommandInfo.isMainBase);
+//                Monster.Broodwar.drawTextScreen(x, y += 10, "has gas         : " + enemyCommandInfo.gasCalculator.hasGasBuilding());
+//                Monster.Broodwar.drawTextScreen(x, y += 10, "mineral(real)   : " + ((int) enemyCommandInfo.mineralCalculator.getFullCheckMineral() + (int) 50));
+//                Monster.Broodwar.drawTextScreen(x, y += 10, "mineral(r+p):   : " + ((int) enemyCommandInfo.uxmineral + (int) 50));
+//                Monster.Broodwar.drawTextScreen(x, y += 10, "gas(real)       : " + enemyCommandInfo.gasCalculator.getRealGas());
+//                Monster.Broodwar.drawTextScreen(x, y += 10, "gas(r+p)        : " + enemyCommandInfo.gasCalculator.getGas());
+//                Monster.Broodwar.drawTextScreen(x, y += 10, "fullWorkerFrame : " + enemyCommandInfo.fullWorkerFrame);
+//                Monster.Broodwar.drawTextScreen(x, y += 10, "halfWorkerFrame : " + enemyCommandInfo.halfWorkerFrame);
+//                Monster.Broodwar.drawTextScreen(x, y += 10, "wrkcnt(real)    : " + enemyCommandInfo.workerCounter.realWorkerCount);
+//                Monster.Broodwar.drawTextScreen(x, y += 10, "wrkcnt(r+p)     : " + ((int) enemyCommandInfo.workerCounter.getWorkerCount(enemyCommandInfo.lastFullCheckFrame)));
+//                Monster.Broodwar.drawTextScreen(x, y += 10, "fwrkcnt         : " + ((int) enemyCommandInfo.lastFullCheckWorkerCount));
+//                Monster.Broodwar.drawTextScreen(x, y += 10, "last full check : " + enemyCommandInfo.lastFullCheckFrame);
+//                x += 140;
+//            }
+//
+//        }
+//
+//    }
+//
+//    private int drawCalculation(int x, int y) {
+//        y += 10;
+//        Monster.Broodwar.drawTextScreen(x, y += 10, UxColor.CHAR_RED + "Decision : " + AttackDecisionMaker.Instance().decision + ", phase3: " + StrategyAnalyseManager.Instance().getPhase() + ", strategy" + StrategyBoard.currentStrategy.name());
+//        Monster.Broodwar.drawTextScreen(x, y += 10, "MineralToPredict: " + AttackDecisionMaker.Instance().UXMineralToPredict);
+//        Monster.Broodwar.drawTextScreen(x, y += 10, "GasToPredict    : " + AttackDecisionMaker.Instance().UXGasToPredict);
+//        Monster.Broodwar.drawTextScreen(x, y += 10, "MineralMinus:   : " + AttackDecisionMaker.Instance().UXMinusMineralToPredict);
+//        Monster.Broodwar.drawTextScreen(x, y += 10, "GasMinus        : " + AttackDecisionMaker.Instance().UXMinusGasToPredict);
+//
+//        Monster.Broodwar.drawTextScreen(x, y += 10, "my point        : " + AttackDecisionMaker.Instance().tempMypoint);
+//        Monster.Broodwar.drawTextScreen(x, y += 10, "enemy point     : " + AttackDecisionMaker.Instance().tempEnemypoint);
+//        return y;
+//    }
 
     private void drawDecision() {
         for (Integer unitId : decisionListForUx.keySet()) {
@@ -357,7 +352,7 @@ public class PreBotUXManager {
     public void drawGameInformationOnScreen(int x, int y) {
 //		Monster.Broodwar.drawTextScreen(x, y, white + "Players : ");
 //		Monster.Broodwar.drawTextScreen(x + 50, y, Monster.Broodwar.self().getTextColor() + Monster.Broodwar.self().getName() + "(" + InformationManager.Instance().selfRace + ") " + white + " vs.  " +
-//				InformationManager.Instance().enemyPlayer.getTextColor() + InformationManager.Instance().enemyPlayer.getName() + "(" + PlayerUtils.enemyRace() + ")");
+//				PlayerUtils.enemyPlayer().getTextColor() + PlayerUtils.enemyPlayer().getName() + "(" + PlayerUtils.enemyRace() + ")");
 //		y += 12;
 //
 //		Monster.Broodwar.drawTextScreen(x, y, white + "Map : ");
@@ -517,7 +512,7 @@ public class PreBotUXManager {
 
         // draw neutral units and our units
         for (Unit unit : Monster.Broodwar.getAllUnits()) {
-            if (unit.getPlayer() == InformationManager.Instance().enemyPlayer) {
+            if (unit.getPlayer() == PlayerUtils.enemyPlayer()) {
                 continue;
             }
 
@@ -640,7 +635,7 @@ public class PreBotUXManager {
 			TilePosition p = baseLocation.getTilePosition();
 			Position c = baseLocation.getPosition();
 
-			//draw outline of Base location 
+			//draw outline of Base location
 			Monster.Broodwar.drawBoxMap(p.getX() * 32, p.getY() * 32, p.getX() * 32 + 4 * 32, p.getY() * 32 + 3 * 32, Color.Blue);
 
 			//draw a circle at each mineral patch
@@ -810,41 +805,39 @@ public class PreBotUXManager {
             }
 
             // OccupiedBaseLocation 을 원으로 표시
-            for (BaseLocation baseLocation : InformationManager.Instance().getOccupiedBaseLocations(InformationManager.Instance().selfPlayer)) {
-                Monster.Broodwar.drawCircleMap(baseLocation.getPosition(), 10 * CommonConfig.UxConfig.TILE_SIZE, Color.Blue);
-            }
-            for (BaseLocation baseLocation : InformationManager.Instance().getOccupiedBaseLocations(InformationManager.Instance().enemyPlayer)) {
-                Monster.Broodwar.drawCircleMap(baseLocation.getPosition(), 10 * CommonConfig.UxConfig.TILE_SIZE, Color.Red);
+//            for (BaseLocation baseLocation : InfoUtils.getOccupiedBaseLocations(PlayerUtils.myPlayer())) {
+//                Monster.Broodwar.drawCircleMap(baseLocation.getPosition(), 10 * CommonConfig.UxConfig.TILE_SIZE, Color.Blue);
+//            }
+//            for (BaseLocation baseLocation : InfoUtils.getOccupiedBaseLocations(PlayerUtils.enemyPlayer())) {
+//                Monster.Broodwar.drawCircleMap(baseLocation.getPosition(), 10 * CommonConfig.UxConfig.TILE_SIZE, Color.Red);
             }
 
             // ChokePoint, BaseLocation 을 텍스트로 표시
-            if (InformationManager.Instance().getFirstChokePoint(Monster.Broodwar.self()) != null) {
-                Monster.Broodwar.drawTextMap(InformationManager.Instance().getMainBaseLocation(Monster.Broodwar.self()).getPosition(), "My MainBaseLocation");
+            if (InfoUtils.myFirstChoke() != null) {
+                Monster.Broodwar.drawTextMap(BaseUtils.myMainBase().getPosition(), "My MainBaseLocation");
             }
-            if (InformationManager.Instance().getFirstChokePoint(Monster.Broodwar.self()) != null) {
-                Monster.Broodwar.drawTextMap(InformationManager.Instance().getFirstChokePoint(Monster.Broodwar.self()).getCenter(), "My First ChokePoint");
+            if (InfoUtils.myFirstChoke() != null) {
+                Monster.Broodwar.drawTextMap(InfoUtils.myFirstChoke().getCenter(), "My First ChokePoint");
             }
-            if (InformationManager.Instance().getSecondChokePoint(Monster.Broodwar.self()) != null) {
-                Monster.Broodwar.drawTextMap(InformationManager.Instance().getSecondChokePoint(Monster.Broodwar.self()).getCenter(), "My Second ChokePoint");
+            if (InfoUtils.mySecondChoke() != null) {
+                Monster.Broodwar.drawTextMap(InfoUtils.mySecondChoke().getCenter(), "My Second ChokePoint");
             }
-            if (InformationManager.Instance().getFirstExpansionLocation(Monster.Broodwar.self()) != null) {
-                Monster.Broodwar.drawTextMap(InformationManager.Instance().getFirstExpansionLocation(Monster.Broodwar.self()).getPosition(), "My First ExpansionLocation");
-            }
-
-            if (InformationManager.Instance().getFirstChokePoint(InformationManager.Instance().enemyPlayer) != null) {
-                Monster.Broodwar.drawTextMap(InformationManager.Instance().getMainBaseLocation(InformationManager.Instance().enemyPlayer).getPosition(), "Enemy MainBaseLocation");
-            }
-            if (InformationManager.Instance().getFirstChokePoint(InformationManager.Instance().enemyPlayer) != null) {
-                Monster.Broodwar.drawTextMap(InformationManager.Instance().getFirstChokePoint(InformationManager.Instance().enemyPlayer).getCenter(), "Enemy First ChokePoint");
-            }
-            if (InformationManager.Instance().getSecondChokePoint(InformationManager.Instance().enemyPlayer) != null) {
-                Monster.Broodwar.drawTextMap(InformationManager.Instance().getSecondChokePoint(InformationManager.Instance().enemyPlayer).getCenter(), "Enemy Second ChokePoint");
-            }
-            if (InformationManager.Instance().getFirstExpansionLocation(InformationManager.Instance().enemyPlayer) != null) {
-                Monster.Broodwar.drawTextMap(InformationManager.Instance().getFirstExpansionLocation(InformationManager.Instance().enemyPlayer).getPosition(), "Enemy First ExpansionLocation");
+            if (InfoUtils.myFirstExpansion() != null) {
+                Monster.Broodwar.drawTextMap(InfoUtils.myFirstExpansion().getPosition(), "My First ExpansionLocation");
             }
 
-        }
+//            if (InfoUtils.enemyFirstChoke().getFirstChokePoint(PlayerUtils.enemyPlayer()) != null) {
+//                Monster.Broodwar.drawTextMap(BaseUtils.enemyMainBase().getPosition(), "Enemy MainBaseLocation");
+//            }
+//            if (InfoUtils.getFirstChokePoint(PlayerUtils.enemyPlayer()) != null) {
+//                Monster.Broodwar.drawTextMap(InformationManager.Instance().getFirstChokePoint(PlayerUtils.enemyPlayer()).getCenter(), "Enemy First ChokePoint");
+//            }
+            if (InfoUtils.enemySecondChoke() != null) {
+                Monster.Broodwar.drawTextMap(InfoUtils.enemySecondChoke().getCenter(), "Enemy Second ChokePoint");
+            }
+            if (InfoUtils.enemyFirstExpansion() != null) {
+                Monster.Broodwar.drawTextMap(InfoUtils.enemyFirstExpansion().getPosition(), "Enemy First ExpansionLocation");
+            }
     }
 
     /// Tile Position 그리드를 Map 에 표시합니다
@@ -1084,45 +1077,45 @@ public class PreBotUXManager {
 //		Position nextBuild = InformationManager.Instance().getLastBuildingLocation().toPosition();
 //		Position lastBuild2 = InformationManager.Instance().getLastBuildingLocation2().toPosition();
 
-        BaseLocation getExpansionLocation = InformationManager.Instance().getExpansionLocation;
-        BaseLocation secondStartPosition = InformationManager.Instance().getSecondStartPosition();
-        TilePosition getLastBuildingLocation = InformationManager.Instance().getLastBuildingLocation;
-        TilePosition getLastBuildingFinalLocation = InformationManager.Instance().getLastBuildingFinalLocation;
-
-
-        if (secondStartPosition != null) {
-            Monster.Broodwar.drawTextScreen(10, 120, "secondStartPosition: " + secondStartPosition.getTilePosition());
-            Monster.Broodwar.drawTextMap(secondStartPosition.getPosition(), "secondStartPosition");
-        } else {
-            Monster.Broodwar.drawTextScreen(10, 120, "secondStartPosition: null");
-        }
-        if (getExpansionLocation != null) {
-            Monster.Broodwar.drawTextScreen(10, 130, "getExpansionLocation: " + getExpansionLocation.getTilePosition());
-            Monster.Broodwar.drawTextMap(getExpansionLocation.getPosition(), "nextEX");
-        } else {
-            Monster.Broodwar.drawTextScreen(10, 130, "getExpansionLocation: null");
-        }
-        if (getLastBuildingLocation != null) {
-            Monster.Broodwar.drawTextScreen(10, 140, "getLastBuildingLocation: " + getLastBuildingLocation);
-            Monster.Broodwar.drawTextMap(getLastBuildingLocation.toPosition(), "nextBuild");
-        } else {
-            Monster.Broodwar.drawTextScreen(10, 140, "getLastBuildingLocation: null");
-        }
-        if (getLastBuildingFinalLocation != null) {
-            Monster.Broodwar.drawTextScreen(10, 150, "getLastBuildingFinalLocation: " + getLastBuildingFinalLocation);
-            Monster.Broodwar.drawTextMap(getLastBuildingFinalLocation.toPosition(), "LastBuild");
-        } else {
-            Monster.Broodwar.drawTextScreen(10, 150, "getLastBuildingFinalLocation: null");
-        }
-
-
-        Monster.Broodwar.drawTextScreen(10, 160, "mainBaseLocationFull: " + BuildManager.Instance().mainBaseLocationFull);
-        Monster.Broodwar.drawTextScreen(10, 170, "secondChokePointFull: " + BuildManager.Instance().secondChokePointFull);
-        Monster.Broodwar.drawTextScreen(10, 180, "secondStartLocationFull: " + BuildManager.Instance().secondStartLocationFull);
-        Monster.Broodwar.drawTextScreen(10, 190, "fisrtSupplePointFull: " + BuildManager.Instance().fisrtSupplePointFull);
-
-        Monster.Broodwar.drawTextScreen(10, 200, "myMainbaseLocation : " + InformationManager.Instance().getMainBaseLocation(Monster.Broodwar.self()).getTilePosition());
-        Monster.Broodwar.drawTextScreen(10, 210, "enemyMainbaseLocation : " + InformationManager.Instance().getMainBaseLocation(Monster.Broodwar.enemy()).getTilePosition());
+//        BaseLocation getExpansionLocation = InformationManager.Instance().getExpansionLocation;
+//        BaseLocation secondStartPosition = null;//InformationManager.Instance().getSecondStartPosition();
+//        TilePosition getLastBuildingLocation = InformationManager.Instance().getLastBuildingLocation;
+//        TilePosition getLastBuildingFinalLocation = InformationManager.Instance().getLastBuildingFinalLocation;
+//
+//
+//        if (secondStartPosition != null) {
+//            Monster.Broodwar.drawTextScreen(10, 120, "secondStartPosition: " + secondStartPosition.getTilePosition());
+//            Monster.Broodwar.drawTextMap(secondStartPosition.getPosition(), "secondStartPosition");
+//        } else {
+//            Monster.Broodwar.drawTextScreen(10, 120, "secondStartPosition: null");
+//        }
+//        if (getExpansionLocation != null) {
+//            Monster.Broodwar.drawTextScreen(10, 130, "getExpansionLocation: " + getExpansionLocation.getTilePosition());
+//            Monster.Broodwar.drawTextMap(getExpansionLocation.getPosition(), "nextEX");
+//        } else {
+//            Monster.Broodwar.drawTextScreen(10, 130, "getExpansionLocation: null");
+//        }
+//        if (getLastBuildingLocation != null) {
+//            Monster.Broodwar.drawTextScreen(10, 140, "getLastBuildingLocation: " + getLastBuildingLocation);
+//            Monster.Broodwar.drawTextMap(getLastBuildingLocation.toPosition(), "nextBuild");
+//        } else {
+//            Monster.Broodwar.drawTextScreen(10, 140, "getLastBuildingLocation: null");
+//        }
+//        if (getLastBuildingFinalLocation != null) {
+//            Monster.Broodwar.drawTextScreen(10, 150, "getLastBuildingFinalLocation: " + getLastBuildingFinalLocation);
+//            Monster.Broodwar.drawTextMap(getLastBuildingFinalLocation.toPosition(), "LastBuild");
+//        } else {
+//            Monster.Broodwar.drawTextScreen(10, 150, "getLastBuildingFinalLocation: null");
+//        }
+//
+//
+//        Monster.Broodwar.drawTextScreen(10, 160, "mainBaseLocationFull: " + BuildManager.Instance().mainBaseLocationFull);
+//        Monster.Broodwar.drawTextScreen(10, 170, "secondChokePointFull: " + BuildManager.Instance().secondChokePointFull);
+//        Monster.Broodwar.drawTextScreen(10, 180, "secondStartLocationFull: " + BuildManager.Instance().secondStartLocationFull);
+//        Monster.Broodwar.drawTextScreen(10, 190, "fisrtSupplePointFull: " + BuildManager.Instance().fisrtSupplePointFull);
+//
+//        Monster.Broodwar.drawTextScreen(10, 200, "myMainbaseLocation : " + BaseUtils.myMainBase().getTilePosition());
+//        Monster.Broodwar.drawTextScreen(10, 210, "enemyMainbaseLocation : " + BaseUtils.enemyMainBase().getTilePosition());
 
     }
 
@@ -1240,7 +1233,7 @@ public class PreBotUXManager {
 //		}
 
         // get the enemy base location, if we have one
-        BaseLocation enemyBaseLocation = InformationManager.Instance().getMainBaseLocation(InformationManager.Instance().enemyPlayer);
+        BaseLocation enemyBaseLocation = BaseUtils.enemyMainBase();
 
         if (enemyBaseLocation != null) {
             Monster.Broodwar.drawTextScreen(x, y, "Enemy MainBaseLocation : (" + enemyBaseLocation.getTilePosition().getX() + ", " + enemyBaseLocation.getTilePosition().getY() + ")");
@@ -1431,15 +1424,16 @@ public class PreBotUXManager {
 
     private void drawManagerTimeSpent(int x, int y) {
         List<GameManager> gameManagers = Arrays.asList(
-                InformationManager.Instance(),
+                //InformationManager.Instance(),
                 StrategyManager.Instance(),
                 MapGrid.Instance(),
                 BuildManager.Instance(),
                 BuildQueueProvider.Instance(),
                 ConstructionManager.Instance(),
                 WorkerManager.Instance(),
-                CombatManager.Instance(),
-                AttackDecisionMaker.Instance());
+                CombatManager.Instance()
+//                AttackDecisionMaker.Instance()
+                );
 
 
         int currentY = y;

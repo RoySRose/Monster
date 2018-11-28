@@ -26,6 +26,7 @@ public class CollectorManager extends GameManager {
         infoCollectors.add(TimeInfoCollector.Instance());
         infoCollectors.add(MapInfoCollector.Instance());
         infoCollectors.add(UpgradeInfoCollector.Instance());
+        infoCollectors.add(ScoutInfoCollector.Instance());
 
 
 //        infoCollectors.add(MapInfoCollector.Instance());

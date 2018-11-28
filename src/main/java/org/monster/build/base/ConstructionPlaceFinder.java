@@ -14,7 +14,6 @@ import org.monster.build.initialProvider.InitialBuildProvider;
 import org.monster.common.constant.CommonCode;
 import org.monster.common.util.BaseUtils;
 import org.monster.common.util.InfoUtils;
-import org.monster.common.util.InformationManager;
 import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.PositionUtils;
 import org.monster.common.util.StaticMapUtils;
@@ -62,7 +61,7 @@ public class ConstructionPlaceFinder {
     public static ConstructionPlaceFinder Instance() {
         if (!isInitialized) {
             instance.setTilesToAvoid();
-            instance.setTilesToAvoidForFirstGas();
+//            instance.setTilesToAvoidForFirstGas();
             isInitialized = true;
         }
         return instance;
@@ -131,6 +130,8 @@ public class ConstructionPlaceFinder {
             case NextExpansionPoint:
 //            	//FileUtils.appendTextToFile("log.txt", "\n getBuildLocationWithSeedPositionAndStrategy NextExpansionPoint start");
 //            	//FileUtils.appendTextToFile("log.txt", "\n getBuildLocationWithSeedPositionAndStrategy placeFinder before :: " + System.currentTimeMillis()+ " :: " + buildingType + " :: " + seedPositionStrategy);
+                //TODO 멀티지역 판단 로직 재 처리. NextPosFinder 통해서 찾는다.
+                /*
                 BaseLocation nextExpansionLocation = InformationManager.Instance().getNextExpansionLocation();
 //                //FileUtils.appendTextToFile("log.txt", "\n getBuildLocationWithSeedPositionAndStrategy placeFinder after :: " + System.currentTimeMillis()+ " :: " + buildingType + " :: " + seedPositionStrategy);
                 if (nextExpansionLocation != null) {
@@ -144,6 +145,7 @@ public class ConstructionPlaceFinder {
 //                    //FileUtils.appendTextToFile("log.txt", "\n getBuildLocationWithSeedPositionAndStrategy placeFinder after :: " + System.currentTimeMillis()+ " :: " + buildingType + " :: nextExpansionLocation == null");
                 }
 //                //FileUtils.appendTextToFile("log.txt", "\n getBuildLocationWithSeedPositionAndStrategy desiredPosition ==>> " + buildingType + " :: " + desiredPosition);
+                */
                 break;
 
             case NextSupplePoint:
@@ -163,30 +165,32 @@ public class ConstructionPlaceFinder {
                 break;
 
             case SecondMainBaseLocation:
-
-                if ((buildingType == UnitType.Terran_Supply_Depot || buildingType == UnitType.Terran_Academy || buildingType == UnitType.Terran_Armory) && BuildManager.Instance().fisrtSupplePointFull) {
-                    desiredPosition = getBuildLocationNear(buildingType, BlockingEntrance.Instance().getSupplyPosition(InformationManager.Instance().secondStartPosition.getTilePosition()));
-                } else {
-                    desiredPosition = getBuildLocationNear(buildingType, InformationManager.Instance().getSecondStartPosition().getTilePosition(), true);
-                }
-                if (desiredPosition == null) {
-                    BuildManager.Instance().secondStartLocationFull = true;
-                }
+                //TODO disable for now
+//                if ((buildingType == UnitType.Terran_Supply_Depot || buildingType == UnitType.Terran_Academy || buildingType == UnitType.Terran_Armory) && BuildManager.Instance().fisrtSupplePointFull) {
+//                    desiredPosition = getBuildLocationNear(buildingType, BlockingEntrance.Instance().getSupplyPosition(InformationManager.Instance().secondStartPosition.getTilePosition()));
+//                } else {
+//                    desiredPosition = getBuildLocationNear(buildingType, InformationManager.Instance().getSecondStartPosition().getTilePosition(), true);
+//                }
+//                if (desiredPosition == null) {
+//                    BuildManager.Instance().secondStartLocationFull = true;
+//                }
                 break;
 
             case LastBuilingPoint:
-                BaseLocation temp = InformationManager.Instance().getLastBuildingLocation();
-                if (temp != null) {
-                    desiredPosition = temp.getTilePosition();
-                } else {
-                    desiredPosition = null;
-                }
+                //TODO disable for now
+//                BaseLocation temp = InformationManager.Instance().getLastBuildingLocation();
+//                if (temp != null) {
+//                    desiredPosition = temp.getTilePosition();
+//                } else {
+//                    desiredPosition = null;
+//                }
 
                 break;
 
             case getLastBuilingFinalLocation: // 이놈이 마지막이니까.... NULL 일수가 없다.
-                TilePosition lastBuilingFinalLocation = InformationManager.Instance().getLastBuilingFinalLocation();
-                desiredPosition = getBuildLocationNear(buildingType, lastBuilingFinalLocation);
+                //TODO disable for now
+//                TilePosition lastBuilingFinalLocation = InformationManager.Instance().getLastBuilingFinalLocation();
+//                desiredPosition = getBuildLocationNear(buildingType, lastBuilingFinalLocation);
                 break;
 
             default:
@@ -1114,7 +1118,7 @@ public class ConstructionPlaceFinder {
         for (BaseLocation base : BWTA.getBaseLocations()) {
             // Island 일 경우 건물 지을 공간이 절대적으로 좁기 때문에 건물 안짓는 공간을 두지 않는다
             if (base.isIsland()) continue;
-            if (BWTA.isConnected(base.getTilePosition(), InformationManager.Instance().getMainBaseLocation(Monster.Broodwar.self()).getTilePosition()) == false)
+            if (BWTA.isConnected(base.getTilePosition(), BaseUtils.myMainBase().getTilePosition()) == false)
                 continue;
 
             // dimensions of the base location
@@ -1182,21 +1186,22 @@ public class ConstructionPlaceFinder {
         }
     }
 
-    public void setTilesToAvoidForFirstGas() {
-        Unit firstgas = InformationManager.Instance().getMyfirstGas();
-
-        int fromx = firstgas.getTilePosition().getX() - 1;
-        int fromy = firstgas.getTilePosition().getY() - 1;
-
-        for (int x = fromx; x >= 0 && x < fromx + 8 && x < Monster.Broodwar.mapWidth(); x++) {
-            for (int y = fromy; y >= 0 && y < fromy + 6 && y < Monster.Broodwar.mapHeight(); y++) {
-                if (fromx < x && x < fromx + 5 && fromy < y && y < fromy + 3) {
-                    continue;
-                }
-                tilesToAvoid[x][y] = true;
-            }
-        }
-    }
+    //TODO 일단 주석처리해놓음, avoid tile은 필요할지 모르겠지만 필요하더라도 리팩토링해서 construction 밖으로
+//    public void setTilesToAvoidForFirstGas() {
+//        Unit firstgas = InformationManager.Instance().getMyfirstGas();
+//
+//        int fromx = firstgas.getTilePosition().getX() - 1;
+//        int fromy = firstgas.getTilePosition().getY() - 1;
+//
+//        for (int x = fromx; x >= 0 && x < fromx + 8 && x < Monster.Broodwar.mapWidth(); x++) {
+//            for (int y = fromy; y >= 0 && y < fromy + 6 && y < Monster.Broodwar.mapHeight(); y++) {
+//                if (fromx < x && x < fromx + 5 && fromy < y && y < fromy + 3) {
+//                    continue;
+//                }
+//                tilesToAvoid[x][y] = true;
+//            }
+//        }
+//    }
 
     public boolean getTilesToAvoid(int x, int y) {
         return tilesToAvoid[x][y];
@@ -1392,34 +1397,6 @@ public class ConstructionPlaceFinder {
                     }
 
                 }
-            }
-        }
-    }
-
-    public void debugBuildLocationSet() {
-        BaseLocation temp = InformationManager.Instance().getLastBuildingLocation();
-        if (lastBuilding.size() == 0) {
-            lastBuilding.add(temp.getTilePosition());
-        } else {
-            for (TilePosition lastBuildingP : lastBuilding) {
-                if (TilePositionUtils.equals(lastBuildingP, temp.getTilePosition())) {
-                    break;
-                }
-                lastBuilding.add(temp.getTilePosition());
-            }
-        }
-
-        TilePosition lastBuilingFinalLocation = InformationManager.Instance().getLastBuilingFinalLocation();
-        if (lastBuildingFinal.size() == 0) {
-            lastBuilding.add(lastBuilingFinalLocation);
-        } else {
-
-
-            for (TilePosition lastBuildingFinalP : lastBuildingFinal) {
-                if (TilePositionUtils.equals(lastBuildingFinalP, lastBuilingFinalLocation)) {
-                    break;
-                }
-                lastBuildingFinal.add(lastBuilingFinalLocation);
             }
         }
     }

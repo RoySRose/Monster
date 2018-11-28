@@ -1,7 +1,7 @@
 package org.monster.main;
 
 import bwapi.Game;
-import org.monster.common.debugger.StopWatch;
+import org.monster.debugger.StopWatch;
 
 public abstract class GameManager {
 

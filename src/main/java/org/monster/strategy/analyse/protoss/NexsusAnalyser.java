@@ -1,7 +1,7 @@
 package org.monster.strategy.analyse.protoss;
 
 import bwapi.UnitType;
-import org.monster.decisionMakers.decisionTypes.EnemyStrategy;
+import org.monster.decisions.constant.EnemyStrategy;
 import org.monster.common.UnitInfo;
 import org.monster.common.constant.CommonCode;
 

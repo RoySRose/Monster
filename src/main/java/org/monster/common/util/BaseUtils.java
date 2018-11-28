@@ -37,7 +37,9 @@ public class BaseUtils {
 
 
     public static List<BaseLocation> enemyOtherExpansions() {
-        return InformationManager.Instance().getOtherExpansionLocations();
+        //TODO disable
+        return null;
+//        return InformationManager.Instance().getOtherExpansionLocations();
     }
 
     public static boolean enemyFirstExpansionOccupied() {

@@ -6,10 +6,9 @@ import bwapi.Unit;
 import bwapi.UnitType;
 import bwta.BWTA;
 import org.monster.build.constant.BuildConfig;
-import org.monster.common.util.InformationManager;
 import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.TimeUtils;
-import org.monster.decisionMakers.constant.StrategyConfig;
+import org.monster.decisions.constant.StrategyConfig;
 import org.monster.main.GameManager;
 import org.monster.main.Monster;
 
@@ -185,7 +184,7 @@ public class MapGrid extends GameManager {
         List<Unit> units = new ArrayList<>();
         List<Unit> unitsInRadius = Monster.Broodwar.getUnitsInRadius(position, radius);
         for (Unit u : unitsInRadius) {
-            if (oppUnits && u.getPlayer() == InformationManager.Instance().enemyPlayer) {
+            if (oppUnits && u.getPlayer() == PlayerUtils.enemyPlayer()) {
 
                 if (PlayerUtils.enemyRace() == Race.Protoss) {
                     if (u.getType() == UnitType.Protoss_Dragoon
@@ -230,12 +229,12 @@ public class MapGrid extends GameManager {
         List<Unit> units = new ArrayList<>();
         List<Unit> unitsInRadius = Monster.Broodwar.getUnitsInRadius(position, radius);
         for (Unit u : unitsInRadius) {
-            if (ourUnits && u.getPlayer() == InformationManager.Instance().selfPlayer) {
+            if (ourUnits && u.getPlayer() == PlayerUtils.myPlayer()) {
                 if ((unitType == null || u.getType() == unitType) && !units.contains(u)) {
                     units.add(u);
                 }
 
-            } else if (oppUnits && u.getPlayer() == InformationManager.Instance().enemyPlayer) {
+            } else if (oppUnits && u.getPlayer() == PlayerUtils.enemyPlayer()) {
                 if ((unitType == null || u.getType() == unitType) && !units.contains(u)) {
                     units.add(u);
                 }

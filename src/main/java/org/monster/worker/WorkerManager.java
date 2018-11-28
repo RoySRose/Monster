@@ -6,7 +6,6 @@ import bwapi.TilePosition;
 import bwapi.Unit;
 import bwapi.UnitType;
 import bwta.BWTA;
-import bwta.BaseLocation;
 import bwta.Region;
 import org.monster.board.StrategyBoard;
 import org.monster.build.initialProvider.BlockingEntrance.BlockingEntrance;
@@ -14,7 +13,6 @@ import org.monster.common.LagObserver;
 import org.monster.common.constant.CommonCode;
 import org.monster.common.util.BaseUtils;
 import org.monster.common.util.CommandUtils;
-import org.monster.common.util.InformationManager;
 import org.monster.common.util.TilePositionUtils;
 import org.monster.common.util.TimeUtils;
 import org.monster.common.util.UnitUtils;
@@ -111,15 +109,16 @@ public class WorkerManager extends GameManager {
                 }
 
             }
-            //입막 후 밖 scv가 있는지 확
-            if (InformationManager.Instance().isBlockingEnterance()) {
-                BaseLocation expansionBase = BaseUtils.myFirstExpansion();
-                double compareDistance = BlockingEntrance.Instance().second_supple.toPosition().getDistance(expansionBase.getPosition());
-                double scvDistance = worker.getPosition().getDistance(expansionBase.getPosition());
-                if (compareDistance > scvDistance + 100 && workerData.getWorkerJob(worker) != WorkerData.WorkerJob.Combat) {
-                    scvIsOut = true;
-                }
-            }
+            //TODO diasbled
+//            //입막 후 밖 scv가 있는지 확
+//            if (InformationManager.Instance().isBlockingEnterance()) {
+//                BaseLocation expansionBase = BaseUtils.myFirstExpansion();
+//                double compareDistance = BlockingEntrance.Instance().second_supple.toPosition().getDistance(expansionBase.getPosition());
+//                double scvDistance = worker.getPosition().getDistance(expansionBase.getPosition());
+//                if (compareDistance > scvDistance + 100 && workerData.getWorkerJob(worker) != WorkerData.WorkerJob.Combat) {
+//                    scvIsOut = true;
+//                }
+//            }
         }
     }
 
@@ -637,7 +636,7 @@ public class WorkerManager extends GameManager {
     // {
     // int unitCnt = 0;
     // BaseLocation myBaseLocation =
-    // InformationManager.Instance().getMainBaseLocation(Monster.Broodwar.self());
+    // BaseUtils.myMainBase();
     // //본진일때는 무조건 false
     // if (myBaseLocation == null ||
     // depot.getDistance(myBaseLocation.getPosition()) < 5 * Config.TILE_SIZE)

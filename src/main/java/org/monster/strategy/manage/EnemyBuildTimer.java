@@ -10,8 +10,8 @@ import org.monster.common.util.InfoUtils;
 import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.TimeUtils;
 import org.monster.common.util.UnitUtils;
-import org.monster.decisionMakers.constant.EnemyStrategyOptions;
-import org.monster.decisionMakers.decisionTypes.EnemyStrategy;
+import org.monster.decisions.constant.EnemyStrategyOptions;
+import org.monster.decisions.constant.EnemyStrategy;
 
 import java.util.Arrays;
 import java.util.HashMap;

@@ -6,7 +6,7 @@ import bwapi.TechType;
 import bwapi.UnitType;
 import bwapi.UpgradeType;
 import org.monster.common.LagObserver;
-import org.monster.common.util.InformationManager;
+import org.monster.common.util.PlayerUtils;
 import org.monster.main.Monster;
 
 import java.util.HashMap;
@@ -218,7 +218,7 @@ public class MicroConfig {
             if (tech == TechType.Tank_Siege_Mode) {
                 if (siegeModeUpgrade) {
                     return true;
-                } else if (InformationManager.Instance().selfPlayer.hasResearched(TechType.Tank_Siege_Mode)) {
+                } else if (PlayerUtils.myPlayer().hasResearched(TechType.Tank_Siege_Mode)) {
                     siegeModeUpgrade = true;
 //					Monster.Broodwar.sendText("Siege Mode Upgraded!");
                     return true;
@@ -226,7 +226,7 @@ public class MicroConfig {
             } else if (tech == TechType.Spider_Mines) {
                 if (spiderMineUpgrade) {
                     return true;
-                } else if (InformationManager.Instance().selfPlayer.hasResearched(TechType.Spider_Mines)) {
+                } else if (PlayerUtils.myPlayer().hasResearched(TechType.Spider_Mines)) {
                     spiderMineUpgrade = true;
 //					Monster.Broodwar.sendText("Spider Mines Upgraded!");
                     return true;

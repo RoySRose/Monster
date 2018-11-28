@@ -18,7 +18,6 @@ import org.monster.common.constant.CommonCode;
 import org.monster.common.util.BaseLocationUtils;
 import org.monster.common.util.BaseUtils;
 import org.monster.common.util.InfoUtils;
-import org.monster.common.util.InformationManager;
 import org.monster.common.util.MicroUtils;
 import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.PositionUtils;
@@ -26,8 +25,8 @@ import org.monster.common.util.TilePositionUtils;
 import org.monster.common.util.TimeUtils;
 import org.monster.common.util.UnitUtils;
 import org.monster.common.util.internal.IConditions;
-import org.monster.decisionMakers.constant.EnemyStrategyOptions;
-import org.monster.decisionMakers.constant.StrategyCode;
+import org.monster.decisions.constant.EnemyStrategyOptions;
+import org.monster.decisions.constant.StrategyCode;
 import org.monster.main.Monster;
 import org.monster.micro.CombatManager;
 import org.monster.micro.constant.MicroConfig;
@@ -836,7 +835,8 @@ public class PositionFinder {
 					(int) (10 * Math.sin(radian))); // 이동벡터
 			firstChokeDefensePosition = new Position(firstSupplePos.getX() + fleeVector.getX(),
 					firstSupplePos.getY() + fleeVector.getY());*/
-            firstChokeDefensePosition = InformationManager.Instance().isSafePosition();
+			//TODO disable cause of isSafePosition() deletion
+            firstChokeDefensePosition = null;//InformationManager.Instance().isSafePosition();
 
         }
         if (PositionUtils.isValidPosition(firstChokeDefensePosition)) {
@@ -938,8 +938,8 @@ public class PositionFinder {
 
     //
     // private Position getNextChokePosition(Squad squad) {
-    // BaseLocation enemyBaseLocation = InformationManager.Instance().getMainBaseLocation(InformationManager.Instance().enemyPlayer);
-    // Chokepoint enemyFirstChoke = InformationManager.Instance().getFirstChokePoint(InformationManager.Instance().enemyPlayer);
+    // BaseLocation enemyBaseLocation = BaseUtils.enemyMainBase();
+    // Chokepoint enemyFirstChoke = InformationManager.Instance().getFirstChokePoint(PlayerUtils.enemyPlayer());
     //
     // if (squad.getName().equals(SquadName.MAIN_ATTACK) && enemyBaseLocation != null && enemyFirstChoke != null) {
     // if (squad.getUnitSet().isEmpty()) {
