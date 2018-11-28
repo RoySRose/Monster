@@ -4,9 +4,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.prebot</groupId>
-    <artifactId>PrebotRebooted</artifactId>
-    <version>2.0</version>
+    <groupId>org.monster</groupId>
+    <artifactId>Monster</artifactId>
+    <version>0.1</version>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
@@ -16,9 +16,10 @@
      <dependencies>
 
         <dependency>
-            <groupId>bwapi</groupId>
-            <artifactId>prebot</artifactId>
-            <version>2.0</version>
+            <groupId>org.monster</groupId>
+            <artifactId>monster</artifactId>
+            <version>0.1</version>
+            <scope>system</scope>
             <systemPath>${project.basedir}/lib/bwmirror_v2_5.jar</systemPath>
         </dependency>
 
@@ -26,13 +27,34 @@
              <groupId>junit</groupId>
              <artifactId>junit</artifactId>
              <version>4.12</version>
+             <scope>test</scope>
          </dependency>
          <dependency>
              <groupId>org.mockito</groupId>
              <artifactId>mockito-core</artifactId>
              <version> 2.7.22</version>
+             <scope>test</scope>
          </dependency>
 
+         <!-- Logging dependencies -->
+         <dependency>
+             <groupId>org.slf4j</groupId>
+             <artifactId>slf4j-api</artifactId>
+             <version>1.7.21</version>
+             <scope>test</scope>
+         </dependency>
+         <dependency>
+             <groupId>org.slf4j</groupId>
+             <artifactId>slf4j-log4j12</artifactId>
+             <version>1.7.21</version>
+             <scope>test</scope>
+         </dependency>
+         <dependency>
+             <groupId>log4j</groupId>
+             <artifactId>log4j</artifactId>
+             <version>1.2.17</version>
+             <scope>test</scope>
+         </dependency>
     </dependencies>
 
 </project>
