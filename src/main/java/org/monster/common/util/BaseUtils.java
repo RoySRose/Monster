@@ -8,27 +8,27 @@ import java.util.List;
 public class BaseUtils {
 
     public static BaseLocation myMainBase() {
-        return BaseInfoCollector.Instance().mainBaseLocation.get(PlayerUtils.myRace());
+        return BaseInfoCollector.Instance().mainBaseLocation.get(PlayerUtils.myPlayer());
     }
 
     public static BaseLocation enemyMainBase() {
-        return BaseInfoCollector.Instance().mainBaseLocation.get(PlayerUtils.enemyRace());
+        return BaseInfoCollector.Instance().mainBaseLocation.get(PlayerUtils.enemyPlayer());
     }
 
     public static BaseLocation myFirstExpansion() {
-        return BaseInfoCollector.Instance().firstExpansionLocation.get(PlayerUtils.myRace());
+        return BaseInfoCollector.Instance().firstExpansionLocation.get(PlayerUtils.myPlayer());
     }
 
     public static BaseLocation enemyFirstExpansion() {
-        return BaseInfoCollector.Instance().firstExpansionLocation.get(PlayerUtils.enemyRace());
+        return BaseInfoCollector.Instance().firstExpansionLocation.get(PlayerUtils.enemyPlayer());
     }
 
     public static List<BaseLocation> myOccupiedBases() {
-        return BaseInfoCollector.Instance().occupiedBaseLocations.get(PlayerUtils.myRace());
+        return BaseInfoCollector.Instance().occupiedBaseLocations.get(PlayerUtils.myPlayer());
     }
 
     public static List<BaseLocation> enemyOccupiedBases() {
-        return BaseInfoCollector.Instance().occupiedBaseLocations.get(PlayerUtils.enemyRace());
+        return BaseInfoCollector.Instance().occupiedBaseLocations.get(PlayerUtils.enemyPlayer());
     }
 
     public static List<BaseLocation> getIslandBaseLocations() {

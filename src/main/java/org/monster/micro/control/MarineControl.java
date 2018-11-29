@@ -11,8 +11,8 @@ import org.monster.common.LagObserver;
 import org.monster.common.UnitInfo;
 import org.monster.common.constant.CommonCode;
 import org.monster.common.util.BaseUtils;
+import org.monster.common.util.ChokePointUtils;
 import org.monster.common.util.CommandUtils;
-import org.monster.common.util.InfoUtils;
 import org.monster.common.util.MicroUtils;
 import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.UnitUtils;
@@ -58,8 +58,8 @@ public class MarineControl extends Control {
 //                //TODO remove
 //                Position holdConPosition = null; //InformationManager.Instance().isHoldConPosition();
 //                safePosition = (InformationManager.Instance().isSafePosition() == null) ? BlockingEntrance.Instance().first_supple.toPosition() : safePosition;
-//                holdConPosition = InfoUtils.myFirstChoke().getPoint();
-//                Position firstCheokePoint = InfoUtils.myFirstChoke().getCenter();
+//                holdConPosition = ChokePointUtils.myFirstChoke().getPoint();
+//                Position firstCheokePoint = ChokePointUtils.myFirstChoke().getCenter();
 //
 //                MicroDecision decision = decisionMaker.makeDecision(marine, euiList);
 //
@@ -208,12 +208,12 @@ public class MarineControl extends Control {
 
     public Unit getCompleteBunker(Region campRegion) {
         Collection<Unit> bunkers = UnitUtils.getUnitList(CommonCode.UnitFindRange.COMPLETE, UnitType.Terran_Bunker);
-        return UnitUtils.getClosestUnitToPosition(bunkers, InfoUtils.mySecondChoke().getCenter());
+        return UnitUtils.getClosestUnitToPosition(bunkers, ChokePointUtils.mySecondChoke().getCenter());
     }
 
     private Unit getIncompleteBunker(Region campRegion) {
         Collection<Unit> bunkers = UnitUtils.getUnitList(CommonCode.UnitFindRange.INCOMPLETE, UnitType.Terran_Bunker);
-        return UnitUtils.getClosestUnitToPosition(bunkers, InfoUtils.mySecondChoke().getCenter());
+        return UnitUtils.getClosestUnitToPosition(bunkers, ChokePointUtils.mySecondChoke().getCenter());
     }
 
     private void intoTheBunker(Unit bunker, Unit marine) {
@@ -257,7 +257,7 @@ public class MarineControl extends Control {
         CampType campType = StrategyBoard.campType;
         // 베이스 지역 OK
         if (campType == PositionFinder.CampType.INSIDE || campType == PositionFinder.CampType.FIRST_CHOKE) {
-            Position firstCheokePoint = InfoUtils.myFirstChoke().getPoint();
+            Position firstCheokePoint = ChokePointUtils.myFirstChoke().getPoint();
 
             if (eui != null && !MicroUtils.isRangeUnit(eui.getType())) {
                 if (marine.getDistance(firstCheokePoint) < NEAR_BASE_DISTANCE) {

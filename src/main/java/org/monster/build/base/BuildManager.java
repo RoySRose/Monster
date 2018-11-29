@@ -20,6 +20,7 @@ import org.monster.common.LagObserver;
 import org.monster.common.MetaType;
 import org.monster.common.constant.CommonCode;
 import org.monster.common.util.BaseUtils;
+import org.monster.common.util.ChokePointUtils;
 import org.monster.common.util.InfoUtils;
 import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.TilePositionUtils;
@@ -433,7 +434,7 @@ public class BuildManager extends GameManager {
                 break;
             case MainBaseBackYard:
                 tempBaseLocation = BaseUtils.myMainBase();
-                tempChokePoint = InfoUtils.myFirstChoke();
+                tempChokePoint = ChokePointUtils.myFirstChoke();
                 tempBaseRegion = BWTA.getRegion(tempBaseLocation.getPosition());
 
                 if (tempBaseLocation != null && tempChokePoint != null) {
@@ -485,21 +486,21 @@ public class BuildManager extends GameManager {
                 break;
 
             case FirstExpansionLocation:
-                tempBaseLocation = InfoUtils.myFirstExpansion();
+                tempBaseLocation = BaseUtils.myFirstExpansion();
                 if (tempBaseLocation != null) {
                     seedPosition = tempBaseLocation.getPosition();
                 }
                 break;
 
             case FirstChokePoint:
-                tempChokePoint = InfoUtils.myFirstChoke();
+                tempChokePoint = ChokePointUtils.myFirstChoke();
                 if (tempChokePoint != null) {
                     seedPosition = tempChokePoint.getCenter();
                 }
                 break;
 
             case SecondChokePoint:
-                tempChokePoint = InfoUtils.mySecondChoke();
+                tempChokePoint = ChokePointUtils.mySecondChoke();
                 if (tempChokePoint != null) {
                     seedPosition = tempChokePoint.getCenter();
                 }

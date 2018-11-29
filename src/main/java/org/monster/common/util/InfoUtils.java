@@ -1,12 +1,9 @@
 package org.monster.common.util;
 
-import bwapi.Player;
 import bwapi.Position;
 import bwapi.Race;
 import bwapi.Unit;
 import bwapi.UnitType;
-import bwta.BaseLocation;
-import bwta.Chokepoint;
 import bwta.Region;
 import org.monster.common.UnitInfo;
 import org.monster.common.util.internal.MapSpecificInformation;
@@ -18,65 +15,6 @@ import java.util.List;
 import java.util.Set;
 
 public class InfoUtils {
-
-
-    /// 해당 Player (아군 or 적군) 가 건물을 건설해서 점령한 Region 목록을 리턴합니다
-    public static Set<Region> getOccupiedRegions(Player player) {
-        //TODO disable
-        return null;
-//        return occupiedRegions.get(player);
-    }
-
-    /// 해당 Player (아군 or 적군) 의 건물을 건설해서 점령한 BaseLocation 목록을 리턴합니다
-    public List<BaseLocation> getOccupiedBaseLocations(Player player) {
-
-        //TODO disable
-        return null;
-//        return occupiedBaseLocations.get(player);
-    }
-
-    /// 해당 Player (아군 or 적군) 의 Main BaseLocation 을 리턴합니다
-    public BaseLocation getMainBaseLocation(Player player) {
-        //TODO disable
-        return null;
-//        return mainBaseLocations.get(player);
-    }
-
-    public static BaseLocation myFirstExpansion() {
-        //TODO disable
-        return null;
-        //return InfoUtils.myFirstChoke();
-    }
-
-    public static BaseLocation enemyFirstExpansion() {
-        //TODO disable
-        return null;
-        //return InfoUtils.myFirstChoke();
-    }
-    public static Chokepoint myFirstChoke() {
-        //TODO disable
-        return null;
-        //return InfoUtils.myFirstChoke();
-    }
-
-    public static Chokepoint enemyFirstChoke() {
-        //TODO disable
-        return null;
-        //return InfoUtils.enemyFirstChoke();
-    }
-
-    public static Chokepoint mySecondChoke() {
-
-        //TODO disable
-        return null;
-//        return InfoUtils.mySecondChoke();
-    }
-
-    public static Chokepoint enemySecondChoke() {
-        //TODO disable
-        return null;
-//        return InfoUtils.getSecondChokePoint(Monster.Broodwar.enemy());
-    }
 
     public static Position myReadyToPosition() {
 

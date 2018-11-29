@@ -11,8 +11,8 @@ import org.monster.common.UnitInfo;
 import org.monster.common.constant.CommonCode;
 import org.monster.common.util.BaseLocationUtils;
 import org.monster.common.util.BaseUtils;
+import org.monster.common.util.ChokePointUtils;
 import org.monster.common.util.CommandUtils;
-import org.monster.common.util.InfoUtils;
 import org.monster.common.util.MicroUtils;
 import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.PositionUtils;
@@ -136,7 +136,7 @@ public class ScvScoutControl extends Control {
     }
 
     private boolean canMoveFirstExpansion(Unit scoutScv, BaseLocation enemyBaseLocation) {
-        Chokepoint nearestChoke = InfoUtils.enemyFirstChoke();
+        Chokepoint nearestChoke = ChokePointUtils.enemyFirstChoke();
         if (nearestChoke.getCenter().getDistance(scoutScv) < 300 && !scoutScv.isUnderAttack()) {
             return true;
         }

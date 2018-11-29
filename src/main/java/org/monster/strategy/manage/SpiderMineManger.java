@@ -14,6 +14,7 @@ import org.monster.common.LagObserver;
 import org.monster.common.constant.CommonCode;
 import org.monster.common.util.BaseLocationUtils;
 import org.monster.common.util.BaseUtils;
+import org.monster.common.util.ChokePointUtils;
 import org.monster.common.util.InfoUtils;
 import org.monster.common.util.MicroUtils;
 import org.monster.common.util.PlayerUtils;
@@ -61,11 +62,11 @@ public class SpiderMineManger {
 
         List<BaseLocation> otherBases = BaseUtils.enemyOtherExpansions();
         Position myReadyToAttackPos = InfoUtils.myReadyToPosition();
-        Chokepoint mySecondChoke = InfoUtils.mySecondChoke();
+        Chokepoint mySecondChoke = ChokePointUtils.mySecondChoke();
 
         Position enemyReadyToAttackPos = InfoUtils.enemyReadyToPosition();
         BaseLocation enemyFirstExpansion = BaseUtils.enemyFirstExpansion();
-        Chokepoint enemySecondChoke = InfoUtils.enemySecondChoke();
+        Chokepoint enemySecondChoke = ChokePointUtils.enemySecondChoke();
 
         if (!otherBases.isEmpty() && myReadyToAttackPos != null && mySecondChoke != null
                 && enemyReadyToAttackPos != null && enemyFirstExpansion != null && enemySecondChoke != null) {

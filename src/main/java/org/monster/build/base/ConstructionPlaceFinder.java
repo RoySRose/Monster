@@ -13,6 +13,7 @@ import org.monster.build.initialProvider.BlockingEntrance.Location;
 import org.monster.build.initialProvider.InitialBuildProvider;
 import org.monster.common.constant.CommonCode;
 import org.monster.common.util.BaseUtils;
+import org.monster.common.util.ChokePointUtils;
 import org.monster.common.util.InfoUtils;
 import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.PositionUtils;
@@ -106,9 +107,9 @@ public class ConstructionPlaceFinder {
                 break;
 
             case FirstChokePoint:
-                if (InfoUtils.myFirstChoke() != null) {
+                if (ChokePointUtils.myFirstChoke() != null) {
 //                	//FileUtils.appendTextToFile("log.txt", "\n getBuildLocationWithSeedPositionAndStrategy placeFinder before :: " + System.currentTimeMillis()+ " :: " + buildingType + " :: " + seedPositionStrategy);
-                    desiredPosition = getBuildLocationNear(buildingType, InfoUtils.myFirstChoke().getCenter().toTilePosition());
+                    desiredPosition = getBuildLocationNear(buildingType, ChokePointUtils.myFirstChoke().getCenter().toTilePosition());
 //                    //FileUtils.appendTextToFile("log.txt", "\n getBuildLocationWithSeedPositionAndStrategy placeFinder after :: " + System.currentTimeMillis()+ " :: " + buildingType + " :: " + seedPositionStrategy);
                     if (desiredPosition == null) {
                         BuildManager.Instance().firstChokePointFull = true;
@@ -117,9 +118,9 @@ public class ConstructionPlaceFinder {
                 break;
 
             case SecondChokePoint:
-                if (InfoUtils.mySecondChoke() != null) {
+                if (ChokePointUtils.mySecondChoke() != null) {
 //                	//FileUtils.appendTextToFile("log.txt", "\n getBuildLocationWithSeedPositionAndStrategy placeFinder before :: " + System.currentTimeMillis()+ " :: " + buildingType + " :: " + seedPositionStrategy);
-                    desiredPosition = getBuildLocationNear(buildingType, InfoUtils.mySecondChoke().getCenter().toTilePosition());
+                    desiredPosition = getBuildLocationNear(buildingType, ChokePointUtils.mySecondChoke().getCenter().toTilePosition());
 //                    //FileUtils.appendTextToFile("log.txt", "\n getBuildLocationWithSeedPositionAndStrategy placeFinder after :: " + System.currentTimeMillis()+ " :: " + buildingType + " :: " + seedPositionStrategy);
                     if (desiredPosition == null) {
                         BuildManager.Instance().secondChokePointFull = true;

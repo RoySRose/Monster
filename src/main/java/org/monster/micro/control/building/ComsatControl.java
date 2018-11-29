@@ -200,7 +200,7 @@ public class ComsatControl extends Control {
 //        if (BaseUtils.enemyFirstExpansion() != null) {
 //            scanTilePositionCandidate.add(BaseUtils.enemyFirstExpansion().getTilePosition());
 //            if (PlayerUtils.enemyRace() == Race.Protoss || PlayerUtils.enemyRace() == Race.Terran) {
-//                scanTilePositionCandidate.add(InfoUtils.enemySecondChoke().getCenter().toTilePosition());
+//                scanTilePositionCandidate.add(ChokePointUtils.enemySecondChoke().getCenter().toTilePosition());
 //            }
 //        }
 //

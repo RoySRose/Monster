@@ -30,6 +30,7 @@ import org.monster.common.UnitInfo;
 import org.monster.common.constant.CommonCode;
 import org.monster.common.constant.CommonConfig;
 import org.monster.common.util.BaseUtils;
+import org.monster.common.util.ChokePointUtils;
 import org.monster.common.util.InfoUtils;
 import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.PositionUtils;
@@ -813,17 +814,17 @@ public class PreBotUXManager {
             }
 
             // ChokePoint, BaseLocation 을 텍스트로 표시
-            if (InfoUtils.myFirstChoke() != null) {
+            if (ChokePointUtils.myFirstChoke() != null) {
                 Monster.Broodwar.drawTextMap(BaseUtils.myMainBase().getPosition(), "My MainBaseLocation");
             }
-            if (InfoUtils.myFirstChoke() != null) {
-                Monster.Broodwar.drawTextMap(InfoUtils.myFirstChoke().getCenter(), "My First ChokePoint");
+            if (ChokePointUtils.myFirstChoke() != null) {
+                Monster.Broodwar.drawTextMap(ChokePointUtils.myFirstChoke().getCenter(), "My First ChokePoint");
             }
-            if (InfoUtils.mySecondChoke() != null) {
-                Monster.Broodwar.drawTextMap(InfoUtils.mySecondChoke().getCenter(), "My Second ChokePoint");
+            if (ChokePointUtils.mySecondChoke() != null) {
+                Monster.Broodwar.drawTextMap(ChokePointUtils.mySecondChoke().getCenter(), "My Second ChokePoint");
             }
-            if (InfoUtils.myFirstExpansion() != null) {
-                Monster.Broodwar.drawTextMap(InfoUtils.myFirstExpansion().getPosition(), "My First ExpansionLocation");
+            if (BaseUtils.myFirstExpansion() != null) {
+                Monster.Broodwar.drawTextMap(BaseUtils.myFirstExpansion().getPosition(), "My First ExpansionLocation");
             }
 
 //            if (InfoUtils.enemyFirstChoke().getFirstChokePoint(PlayerUtils.enemyPlayer()) != null) {
@@ -832,11 +833,11 @@ public class PreBotUXManager {
 //            if (InfoUtils.getFirstChokePoint(PlayerUtils.enemyPlayer()) != null) {
 //                Monster.Broodwar.drawTextMap(InformationManager.Instance().getFirstChokePoint(PlayerUtils.enemyPlayer()).getCenter(), "Enemy First ChokePoint");
 //            }
-            if (InfoUtils.enemySecondChoke() != null) {
-                Monster.Broodwar.drawTextMap(InfoUtils.enemySecondChoke().getCenter(), "Enemy Second ChokePoint");
+            if (ChokePointUtils.enemySecondChoke() != null) {
+                Monster.Broodwar.drawTextMap(ChokePointUtils.enemySecondChoke().getCenter(), "Enemy Second ChokePoint");
             }
-            if (InfoUtils.enemyFirstExpansion() != null) {
-                Monster.Broodwar.drawTextMap(InfoUtils.enemyFirstExpansion().getPosition(), "Enemy First ExpansionLocation");
+            if (BaseUtils.enemyFirstExpansion() != null) {
+                Monster.Broodwar.drawTextMap(BaseUtils.enemyFirstExpansion().getPosition(), "Enemy First ExpansionLocation");
             }
     }
 
@@ -1715,8 +1716,8 @@ public class PreBotUXManager {
     public void drawTurretMap() {
         BaseLocation myBase = BaseUtils.myMainBase();
         BaseLocation myFirstExpansion = BaseUtils.myFirstExpansion();
-        Chokepoint myFirstChoke = InfoUtils.myFirstChoke();
-        Chokepoint mySecondChoke = InfoUtils.mySecondChoke();
+        Chokepoint myFirstChoke = ChokePointUtils.myFirstChoke();
+        Chokepoint mySecondChoke = ChokePointUtils.mySecondChoke();
 
         int turretCount = Monster.Broodwar.self().completedUnitCount(UnitType.Terran_Missile_Turret);
 

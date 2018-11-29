@@ -17,6 +17,7 @@ import org.monster.common.UnitInfo;
 import org.monster.common.constant.CommonCode;
 import org.monster.common.util.BaseLocationUtils;
 import org.monster.common.util.BaseUtils;
+import org.monster.common.util.ChokePointUtils;
 import org.monster.common.util.InfoUtils;
 import org.monster.common.util.MicroUtils;
 import org.monster.common.util.PlayerUtils;
@@ -277,7 +278,7 @@ public class PositionFinder {
             return expansionDefensePosition();
 
         } else if (campType == PositionFinder.CampType.SECOND_CHOKE) {
-            return InfoUtils.mySecondChoke().getCenter();
+            return ChokePointUtils.mySecondChoke().getCenter();
 
         } else { // if (campType == PositionFinder.CampType.READY_TO) {
             return InfoUtils.myReadyToPosition();
@@ -334,7 +335,7 @@ public class PositionFinder {
         if (StrategyBoard.mainSquadMode.isAttackMode) {
             BaseLocation enemyBase = BaseUtils.enemyMainBase();
             if (enemyBase == null) {
-                return InfoUtils.mySecondChoke().getCenter();
+                return ChokePointUtils.mySecondChoke().getCenter();
             }
 
             if (!enemyBaseDestroyed(enemyBase)) {
@@ -538,14 +539,14 @@ public class PositionFinder {
                 if (zeroToNSeconds < (nSeconds / 2)) {
                     watcherPosition = BaseUtils.myMainBase().getPosition();
                 } else {
-                    watcherPosition = InfoUtils.mySecondChoke().getCenter();
+                    watcherPosition = ChokePointUtils.mySecondChoke().getCenter();
                 }
 
             } else if (StrategyBoard.buildTimeMap.featureEnabled(EnemyStrategyOptions.BuildTimeMap.Feature.DEFENSE_FRONT)) {
 
                 // 앞라인 방어인 경우 second choke (단, 딕텍팅을 대비하는 경우라면, 시간에 맞추어서 secondChoke로 변경)
                 if (!StrategyBoard.buildTimeMap.featureEnabled(EnemyStrategyOptions.BuildTimeMap.Feature.DETECT_IMPORTANT) || TimeUtils.after(StrategyBoard.turretBuildStartFrame)) {
-                    watcherPosition = InfoUtils.mySecondChoke().getCenter();
+                    watcherPosition = ChokePointUtils.mySecondChoke().getCenter();
                 } else if (BaseUtils.enemyMainBase() != null) {
                     watcherPosition = BaseUtils.enemyMainBase().getPosition();
                 }
@@ -574,7 +575,7 @@ public class PositionFinder {
                 }
 
             } else {
-                watcherPosition = InfoUtils.mySecondChoke().getCenter();
+                watcherPosition = ChokePointUtils.mySecondChoke().getCenter();
             }
         }
 
@@ -746,13 +747,13 @@ public class PositionFinder {
 
     public Position baseFirstChokeMiddlePosition() {
         if (firstExpansionOccupied()) {
-            return InfoUtils.myFirstChoke().getCenter();
+            return ChokePointUtils.myFirstChoke().getCenter();
 
         } else {
             if (this.basefirstChokeMiddlePosition != null) {
                 return basefirstChokeMiddlePosition;
             }
-            Position firstChokePosition = InfoUtils.myFirstChoke().getCenter();
+            Position firstChokePosition = ChokePointUtils.myFirstChoke().getCenter();
             Position myBasePosition = BaseUtils.myMainBase().getPosition();
             double radian = MicroUtils.targetDirectionRadian(firstChokePosition, myBasePosition);
 
@@ -766,8 +767,8 @@ public class PositionFinder {
             return expansionDefensePosition;
         }
 
-        Chokepoint firstChoke = InfoUtils.myFirstChoke();
-        Chokepoint secondChoke = InfoUtils.mySecondChoke();
+        Chokepoint firstChoke = ChokePointUtils.myFirstChoke();
+        Chokepoint secondChoke = ChokePointUtils.mySecondChoke();
         BaseLocation firstExpansion = BaseUtils.myFirstExpansion();
 
         int x = (firstChoke.getX() + secondChoke.getX() + firstExpansion.getPosition().getX()) / 3;
@@ -791,9 +792,9 @@ public class PositionFinder {
             return expansionDefensePositionSiege;
         }
         Position myBasePosition = BaseUtils.myMainBase().getPosition();
-        Position firstChokePosition = InfoUtils.myFirstChoke().getCenter();
+        Position firstChokePosition = ChokePointUtils.myFirstChoke().getCenter();
 
-        Pair<Position, Position> secondChokeSides = InfoUtils.mySecondChoke().getSides();
+        Pair<Position, Position> secondChokeSides = ChokePointUtils.mySecondChoke().getSides();
         double firstDistance = myBasePosition.getDistance(secondChokeSides.first);
         double secondDistance = myBasePosition.getDistance(secondChokeSides.second);
 
@@ -821,7 +822,7 @@ public class PositionFinder {
 
     /// First Choke Point 방어지역
     public Position firstChokeDefensePosition() {
-        Position firstChokePosition = InfoUtils.myFirstChoke().getCenter();
+        Position firstChokePosition = ChokePointUtils.myFirstChoke().getCenter();
         Position firstChokeDefensePosition = firstChokePosition;
         double radian = 0;
         if (PlayerUtils.enemyRace() == Race.Zerg) {
