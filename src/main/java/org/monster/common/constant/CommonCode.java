@@ -8,8 +8,8 @@ public class CommonCode {
     public static final int NONE = -1;
     public static final int UNKNOWN = -1;
 
-    public static final int INT_MAX = 100000000;
-    public static final double DOUBLE_MAX = 100000000.0;
+    public static final int INT_MAX = Integer.MAX_VALUE;
+    public static final double DOUBLE_MAX = Double.MAX_VALUE;
 
     public static final Position Center = new Position(2048, 2048);
 

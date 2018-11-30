@@ -42,7 +42,7 @@ public class BaseUtils {
 //        return InformationManager.Instance().getOtherExpansionLocations();
     }
 
-    public static boolean enemyFirstExpansionOccupied() {
+    public static boolean isEnemyFirstExpansionOccupied() {
         Boolean enemyFirstExpansionOccupied = SpecificValueCache.get(SpecificValueCache.ValueType.ENEMY_FIRST_EXPANSION_OCCUPIED, Boolean.class);
         if (enemyFirstExpansionOccupied != null) {
             return enemyFirstExpansionOccupied;

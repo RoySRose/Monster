@@ -31,12 +31,7 @@ public class BaseInfoCollector implements InfoCollector {
     Game Broodwar;
 
 
-    /// 해당 Player의 주요 건물들이 있는 BaseLocation. <br>
-    /// 처음에는 StartLocation 으로 지정. mainBaseLocation 내 모든 건물이 파괴될 경우 재지정<br>
-    /// 건물 여부를 기준으로 파악하기 때문에 부적절하게 판단할수도 있습니다
     protected Map<Player, BaseLocation> mainBaseLocation = new HashMap();
-    /// 해당 Player의 mainBaseLocation 이 변경되었는가 (firstChokePoint, secondChokePoint,
-    /// firstExpansionLocation 를 재지정 했는가)
     protected Map<Player, Boolean> mainBaseLocationChanged = new HashMap();
     /// 해당 Player가 점령하고 있는 Region 이 있는 BaseLocation<br>
     /// 건물 여부를 기준으로 파악하기 때문에 부적절하게 판단할수도 있습니다
@@ -55,40 +50,42 @@ public class BaseInfoCollector implements InfoCollector {
     //TODO needed?
     protected List<BaseLocation> otherExpansionLocations = new ArrayList();
 
-
-
     private Player selfPlayer;
     private Player enemyPlayer;
 
-    private EnemyBaseFinder enemyBaseFinder;
+    private EnemyBaseFinder enemyBaseFinder = new EnemyBaseFinder(Broodwar);;
+
+    ChokeInfoCollector chokeInfoCollector = ChokeInfoCollector.Instance();
+//    ChokeInfoCollector chokeInfoCollector = ChokeInfoCollector.Instance();
 
     @Override
     public void onStart(Game Broodwar) {
         this.Broodwar = Broodwar;
-
         selfPlayer = Broodwar.self();
         enemyPlayer = Broodwar.enemy();
 
-        occupiedBaseLocations.put(selfPlayer, new ArrayList<>());
-        occupiedBaseLocations.put(enemyPlayer, new ArrayList<>());
+        initialize();
 
-        occupiedBaseLocations.get(selfPlayer).add(mainBaseLocation.get(selfPlayer));
-
+        updateIslandBases();
         updateMyMainBase();
 
         mainBaseLocation.put(enemyPlayer, null);
         mainBaseLocationChanged.put(enemyPlayer, new Boolean(false));
 
-        updateIslandBases();
-        enemyBaseFinder = new EnemyBaseFinder(Broodwar);
         //TODO
         //updateChokePointAndExpansionLocation();
     }
 
+    private void initialize(){
+        occupiedBaseLocations.put(selfPlayer, new ArrayList<>());
+        occupiedBaseLocations.put(enemyPlayer, new ArrayList<>());
+    }
 
     private void updateMyMainBase() {
         mainBaseLocation.put(selfPlayer, BWTA.getStartLocation(selfPlayer));
         mainBaseLocationChanged.put(selfPlayer, new Boolean(true));
+        occupiedBaseLocations.get(selfPlayer).add(mainBaseLocation.get(selfPlayer));
+
         checkChangesOfBase(selfPlayer);
     }
 
@@ -102,12 +99,13 @@ public class BaseInfoCollector implements InfoCollector {
 
             if (mainBaseLocation.get(player) != null) {
                 BaseLocation myMainBaseLocation = mainBaseLocation.get(player);
-                System.out.println("* my base changed" + myMainBaseLocation.getTilePosition());
+                System.out.println("* my MainBase changed" + myMainBaseLocation.getTilePosition());
 
-                BaseLocation myFirstExpansionLocation = findClosestFirstExapansion(myMainBaseLocation);
+                //TODO 뒷마당 있는 맵에서는 vector 로 처리하거나, center air distance 추가 필요
+                BaseLocation myFirstExpansionLocation = findClosestBase(myMainBaseLocation);
                 firstExpansionLocation.put(player, myFirstExpansionLocation);
 
-                calculateClosestChokePoints(player, myMainBaseLocation);
+                chokeInfoCollector.updateClosestChokePoints(player, myMainBaseLocation);
                 calculateThirdRegion(player);
 
                 //this.updateOtherExpansionLocation(myMainBaseLocation);
@@ -116,31 +114,6 @@ public class BaseInfoCollector implements InfoCollector {
             TimeInfoCollector.Instance().clearBaseToBaseFrame();
         }
     }
-
-    private void calculateClosestChokePoints(Player player, BaseLocation sourceBaseLocation) {
-
-        double tempDistance;
-        double closestDistance = 1000000000;
-        Chokepoint closestChokepoint = null;
-
-        firstChokePoint.put(player, BWTA.getNearestChokepoint(sourceBaseLocation.getTilePosition()));
-
-        for (Chokepoint chokepoint : BWTA.getChokepoints()) {
-            if (chokepoint.getCenter().equals(firstChokePoint.get(player).getCenter()))
-                continue;
-
-            tempDistance = PositionUtils.getGroundDistance(sourceBaseLocation.getPosition(),
-                    chokepoint.getPoint()) * 1.1;
-            tempDistance += PositionUtils.getGroundDistance(CommonCode.Center, chokepoint.getPoint());
-
-            if (tempDistance < closestDistance && tempDistance > 0) {
-                closestDistance = tempDistance;
-                closestChokepoint = chokepoint;
-            }
-        }
-        secondChokePoint.put(player, closestChokepoint);
-    }
-
 
     private void calculateThirdRegion(Player player) {
         double radian = MicroUtils.targetDirectionRadian(
@@ -151,20 +124,20 @@ public class BaseInfoCollector implements InfoCollector {
         thirdRegion.put(player, myThirdRegion);
     }
 
-    private BaseLocation findClosestFirstExapansion(BaseLocation sourceBaseLocation) {
+    protected BaseLocation findClosestBase(BaseLocation sourceBase) {
 
-        double tempDistance;
-        double closestDistance = 1000000000;
+        int tempDistance;
+        int closestDistance = CommonCode.INT_MAX;
         BaseLocation closestFirstExpansion = null;
-        for (BaseLocation targetBaseLocation : BWTA.getBaseLocations()) {
-            if (targetBaseLocation.getTilePosition().equals(sourceBaseLocation.getTilePosition()))
+        for (BaseLocation targetBase : BWTA.getBaseLocations()) {
+            if (targetBase.getTilePosition().equals(sourceBase.getTilePosition()))
                 continue;
 
-            tempDistance = PositionUtils.getGroundDistance(sourceBaseLocation.getPosition(), targetBaseLocation.getPosition());
+            tempDistance = PositionUtils.getGroundDistance(sourceBase.getPosition(), targetBase.getPosition());
 
             if (tempDistance < closestDistance && tempDistance > 0) {
                 closestDistance = tempDistance;
-                closestFirstExpansion = targetBaseLocation;
+                closestFirstExpansion = targetBase;
             }
         }
         return closestFirstExpansion;

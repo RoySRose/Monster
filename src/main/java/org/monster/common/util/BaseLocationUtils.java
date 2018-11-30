@@ -77,7 +77,7 @@ public class BaseLocationUtils {
     }
 
     /**
-     * baseList 중 position에 가장 가까운 base 리턴
+     * baseList 중 position에 가장 먼 base 리턴
      */
     public static BaseLocation getGroundFarthestBaseToPosition(List<BaseLocation> baseList, BaseLocation fromBase, IConditions.BaseCondition baseCondition) {
         if (baseList.size() == 0) {

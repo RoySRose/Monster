@@ -350,7 +350,7 @@ public class PositionFinder {
                         return InfoUtils.enemyReadyToPosition();
                     }
                     BaseLocation enemyFirstExpansion = BaseUtils.enemyFirstExpansion();
-                    if (enemyFirstExpansion != null && BaseUtils.enemyFirstExpansionOccupied()) {
+                    if (enemyFirstExpansion != null && BaseUtils.isEnemyFirstExpansionOccupied()) {
                         return enemyFirstExpansion.getPosition();
                     } else {
                         return enemyBase.getPosition();
