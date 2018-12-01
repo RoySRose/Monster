@@ -31,11 +31,11 @@ public class GasAdjustment8Barrack111 extends Action {
             StrategyBoard.gasAdjustmentWorkerCount = 2;
         } else {
             StrategyBoard.gasAdjustment = true;
-            int workerCount = UnitUtils.getUnitCount(CommonCode.UnitFindRange.COMPLETE, UnitType.Terran_SCV);
+            int workerCount = UnitUtils.getUnitCount(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_SCV);
             if (workerCount < 8) {
                 StrategyBoard.gasAdjustmentWorkerCount = 0;
             } else {
-                if (UnitUtils.getUnitCount(CommonCode.UnitFindRange.ALL_AND_CONSTRUCTION_QUEUE, UnitType.Terran_Factory) > 0 || Monster.Broodwar.self().gas() >= 100) {
+                if (UnitUtils.getUnitCount(CommonCode.UnitFindStatus.ALL_AND_CONSTRUCTION_QUEUE, UnitType.Terran_Factory) > 0 || Monster.Broodwar.self().gas() >= 100) {
                     StrategyBoard.gasAdjustmentWorkerCount = 1;
                 } else {
                     StrategyBoard.gasAdjustmentWorkerCount = 2;

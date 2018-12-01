@@ -60,7 +60,7 @@ public class SpiderMineManger {
             return false;
         }
 
-        List<BaseLocation> otherBases = BaseUtils.enemyOtherExpansions();
+        List<BaseLocation> otherBases = BaseUtils.otherExpansions();
         Position myReadyToAttackPos = InfoUtils.myReadyToPosition();
         Chokepoint mySecondChoke = ChokePointUtils.mySecondChoke();
 
@@ -123,8 +123,8 @@ public class SpiderMineManger {
             return;
         }
 
-        int vultureCount = UnitUtils.getUnitCount(CommonCode.UnitFindRange.COMPLETE, UnitType.Terran_Vulture);
-        int mineCount = UnitUtils.getUnitCount(CommonCode.UnitFindRange.COMPLETE, UnitType.Terran_Vulture_Spider_Mine);
+        int vultureCount = UnitUtils.getUnitCount(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Vulture);
+        int mineCount = UnitUtils.getUnitCount(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Vulture_Spider_Mine);
 
         int mineNumPerPosition = Math.min(vultureCount / 3 + 1, 8);
         if (StrategyBoard.buildTimeMap.featureEnabled(EnemyStrategyOptions.BuildTimeMap.Feature.DEFENSE_FRONT)) {
@@ -176,7 +176,7 @@ public class SpiderMineManger {
 
         // 탱크 주변 마인 (테란 상대로는 제거 안함)
         if (PlayerUtils.enemyRace() != Race.Terran) {
-            List<Unit> siegeList = UnitUtils.getUnitList(CommonCode.UnitFindRange.COMPLETE, UnitType.Terran_Siege_Tank_Siege_Mode);
+            List<Unit> siegeList = UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Siege_Tank_Siege_Mode);
             for (Unit siegeTank : siegeList) {
                 List<Unit> nearMineList = UnitUtils.getUnitsInRadius(CommonCode.PlayerRange.SELF, siegeTank.getPosition(), MINE_REMOVE_TANK_DIST, UnitType.Terran_Vulture_Spider_Mine);
                 for (Unit mine : nearMineList) {
@@ -212,7 +212,7 @@ public class SpiderMineManger {
 //                    }
 //                }
 
-                List<BaseLocation> otherExpansions = BaseUtils.enemyOtherExpansions();
+                List<BaseLocation> otherExpansions = BaseUtils.otherExpansions();
                 for (BaseLocation base : otherExpansions) {
                     boolean centerExist = false;
                     List<Unit> centerList = UnitUtils.getUnitsInRadius(CommonCode.PlayerRange.SELF, base.getPosition(), 300, UnitType.Terran_Command_Center);
@@ -240,7 +240,7 @@ public class SpiderMineManger {
             if (LagObserver.groupsize() <= 10) {
                 if (StrategyBoard.watcherMinePositionLevel == SpiderMineManger.MinePositionLevel.NOT_MY_OCCUPIED) {
                     if (InfoUtils.euiListInBase() != null && InfoUtils.euiListInBase().isEmpty()) {
-                        List<Unit> spiderMineList = UnitUtils.getUnitList(CommonCode.UnitFindRange.COMPLETE, UnitType.Terran_Vulture_Spider_Mine);
+                        List<Unit> spiderMineList = UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Vulture_Spider_Mine);
 
                         Region myBaseRegion = BWTA.getRegion(BaseUtils.myMainBase().getPosition());
                         for (Unit spiderMine : spiderMineList) {

@@ -710,7 +710,7 @@ public class MicroUtils {
 
     public static int totalComsatCount() {
         int count = 0;
-        List<Unit> comsatList = UnitUtils.getUnitList(CommonCode.UnitFindRange.COMPLETE, UnitType.Terran_Comsat_Station);
+        List<Unit> comsatList = UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Comsat_Station);
         for (Unit comsat : comsatList) {
             if (comsat.getEnergy() >= 50) {
                 count++;

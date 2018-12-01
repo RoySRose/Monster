@@ -1300,7 +1300,7 @@ public class ConstructionPlaceFinder {
                 }
             }
 
-            for (Unit resetAvoid : UnitUtils.getUnitList(CommonCode.UnitFindRange.ALL, UnitType.Terran_Factory, UnitType.Terran_Starport)) {
+            for (Unit resetAvoid : UnitUtils.getUnitList(CommonCode.UnitFindStatus.ALL, UnitType.Terran_Factory, UnitType.Terran_Starport)) {
                 if (resetAvoid.isCompleted() || resetAvoid.isConstructing()) {
                     ConstructionPlaceFinder.Instance().setTilesToAvoidAddonBuilding(resetAvoid);
                 }

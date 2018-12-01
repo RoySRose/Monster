@@ -111,7 +111,7 @@ public class BuilderSupplyDepot extends DefaultBuildableItem {
 //        Factory 와 Starport 에서 유닛이 생산되는중인지 체크.
 //        기본적으로 유닛생산 건물수 만큼의 여유분이 있어야 하고, 현재 생산되고 있는 유닛만큼 여유분이 더 있어야 한다.
 
-        List<Unit> factory = UnitUtils.getUnitList(CommonCode.UnitFindRange.COMPLETE, UnitType.Terran_Factory);
+        List<Unit> factory = UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Factory);
         for (Unit unit : factory) {
 
             Faccnt++;
@@ -121,7 +121,7 @@ public class BuilderSupplyDepot extends DefaultBuildableItem {
 
         }
 
-        List<Unit> starport = UnitUtils.getUnitList(CommonCode.UnitFindRange.COMPLETE, UnitType.Terran_Starport);
+        List<Unit> starport = UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Starport);
         for (Unit unit : starport) {
 
             Starportcnt++;
@@ -156,7 +156,7 @@ public class BuilderSupplyDepot extends DefaultBuildableItem {
         if (currentSupplyShortage > 0) {
             // 생산/건설 중인 Supply를 센다
             int onBuildingSupplyCount = 0;
-            // 저그 종족이 아닌 경우, 건설중인 Protoss_Pylon, Terran_Supply_Depot 를 센다. Nexus, Command Center 등 건물은 세지 않는다
+            // 저그 종족이 아닌 경우, 건설중인 Protoss_Pylon, Terran_Supply_Depot 를 센다. Nexus, Command CENTER_POS 등 건물은 세지 않는다
             onBuildingSupplyCount += ConstructionManager.Instance().getConstructionQueueItemCount(
                     UnitType.Terran_Supply_Depot, null)
                     * UnitType.Terran_Supply_Depot.supplyProvided();

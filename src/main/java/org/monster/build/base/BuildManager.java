@@ -190,7 +190,7 @@ public class BuildManager extends GameManager {
 
         // make a set of all candidate producers
         List<Unit> candidateProducers = new ArrayList<Unit>();
-        List<Unit> selectPorducer = UnitUtils.getUnitList(CommonCode.UnitFindRange.COMPLETE);
+        List<Unit> selectPorducer = UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE);
         for (Unit unit : selectPorducer) {
 
             if (unit == null)
@@ -381,7 +381,7 @@ public class BuildManager extends GameManager {
                     seedPositionStrategy = BuildOrderItem.SeedPositionStrategy.getLastBuilingFinalLocation;
                 }
                 if (seedPositionStrategy == BuildOrderItem.SeedPositionStrategy.NextExpansionPoint) {
-                    System.out.println("No Place for Command Center. wait or no construct");
+                    System.out.println("No Place for Command CENTER_POS. wait or no construct");
                     break;
                 }
             } else {

@@ -33,11 +33,6 @@ public class ChokeInfoCollector implements InfoCollector {
         enemyPlayer = Broodwar.enemy();
     }
 
-    @Override
-    public void update() {
-
-    }
-
     protected void updateClosestChokePoints(Player player, BaseLocation sourceBase) {
 
         firstChokePoint.put(player, BWTA.getNearestChokepoint(sourceBase.getTilePosition()));
@@ -58,7 +53,7 @@ public class ChokeInfoCollector implements InfoCollector {
 
             tempDistance = PositionUtils.getGroundDistance(sourceBase.getPosition(),
                     chokepoint.getPoint()) * 1.1;
-            tempDistance += PositionUtils.getGroundDistance(CommonCode.Center, chokepoint.getPoint());
+            tempDistance += PositionUtils.getGroundDistance(CommonCode.CENTER_POS, chokepoint.getPoint());
 
             if (tempDistance < closestDistance && tempDistance > 0) {
                 closestDistance = tempDistance;
@@ -66,5 +61,12 @@ public class ChokeInfoCollector implements InfoCollector {
             }
         }
         return closestChokepoint;
+    }
+
+    @Override
+    public void update() {
+        /**
+         * 현재까진느 Base가 정해져야 나오는 정보 들이므로 매 프레임 업데이트 할것이 없음
+         */
     }
 }

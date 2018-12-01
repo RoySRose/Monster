@@ -13,7 +13,6 @@ import org.monster.common.LagObserver;
 import org.monster.common.constant.CommonCode;
 import org.monster.common.util.BaseUtils;
 import org.monster.common.util.CommandUtils;
-import org.monster.common.util.TilePositionUtils;
 import org.monster.common.util.TimeUtils;
 import org.monster.common.util.UnitUtils;
 import org.monster.main.GameManager;
@@ -123,7 +122,7 @@ public class WorkerManager extends GameManager {
     }
 
     public void handleGasWorkers() {
-        for (Unit scv : UnitUtils.getUnitList(CommonCode.UnitFindRange.COMPLETE, UnitType.Terran_SCV)) {
+        for (Unit scv : UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_SCV)) {
             if (scv.isGatheringGas() && !scv.isCarryingGas()) {
                 if (workerData.getWorkerJob(scv) != WorkerData.WorkerJob.Gas) {
                     workerData.setWorkerJob(scv, WorkerData.WorkerJob.Idle, (Unit) null);
@@ -131,7 +130,7 @@ public class WorkerManager extends GameManager {
             }
         }
 
-        for (Unit refinery : UnitUtils.getUnitList(CommonCode.UnitFindRange.COMPLETE, UnitType.Terran_Refinery)) {
+        for (Unit refinery : UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Refinery)) {
             // refinery 가 건설 completed 되었으면,
             // get the number of workers currently assigned to it
             int numAssigned = workerData.getNumAssignedWorkers(refinery);
@@ -175,7 +174,7 @@ public class WorkerManager extends GameManager {
             return StrategyBoard.gasAdjustmentWorkerCount;
 
         } else {
-            int workerCount = UnitUtils.getUnitList(CommonCode.UnitFindRange.COMPLETE, UnitType.Terran_SCV).size();
+            int workerCount = UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_SCV).size();
             if (workerCount >= 30) {
                 int gasunbalance = Monster.Broodwar.self().gas() - Monster.Broodwar.self().minerals();
                 if (gasunbalance > 2000) {
@@ -191,7 +190,7 @@ public class WorkerManager extends GameManager {
                 return 0;
 
             } else {
-                int refineryCount = UnitUtils.getUnitList(CommonCode.UnitFindRange.COMPLETE, UnitType.Terran_Refinery).size();
+                int refineryCount = UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Refinery).size();
                 int workersPerRefinery = (int) (workerCount - 7) / (refineryCount * 3);
 
                 if (workersPerRefinery > MicroConfig.WORKERS_PER_REFINERY) {
@@ -512,7 +511,7 @@ public class WorkerManager extends GameManager {
         // check if there is a mineral available to send the worker to
         /// 해당 일꾼 유닛 unit 으로부터 가장 가까운 ResourceDepot 건물을 리턴합니다
         Unit depot = getClosestResourceDepotFromWorker(unit);
-        // if there is a valid ResourceDepot (Command Center, Nexus, Hatchery)
+        // if there is a valid ResourceDepot (Command CENTER_POS, Nexus, Hatchery)
         if (depot != null) {
             // update workerData with the new job
             workerData.setWorkerJob(unit, WorkerData.WorkerJob.Minerals, depot);
@@ -529,7 +528,7 @@ public class WorkerManager extends GameManager {
 
         // check if there is a mineral available to send the worker to
         /// 해당 일꾼 유닛 unit 으로부터 가장 가까운 ResourceDepot 건물을 리턴합니다
-        // if there is a valid ResourceDepot (Command Center, Nexus, Hatchery)
+        // if there is a valid ResourceDepot (Command CENTER_POS, Nexus, Hatchery)
         if (depot != null && depot.isCompleted()) {
             // update workerData with the new job
             workerData.setWorkerJob(unit, WorkerData.WorkerJob.Minerals, depot);
@@ -571,7 +570,7 @@ public class WorkerManager extends GameManager {
         // 중에서
         // 첫째로 미네랄 일꾼수가 꽉 차지않은 곳
         // 둘째로 가까운 곳을 찾는다
-        for (Unit unit : UnitUtils.getUnitList(CommonCode.UnitFindRange.COMPLETE, UnitType.Terran_Command_Center)) {
+        for (Unit unit : UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Command_Center)) {
             if (unit == null)
                 continue;
 
@@ -591,7 +590,7 @@ public class WorkerManager extends GameManager {
         // 모든 ResourceDepot 이 다 일꾼수가 꽉 차있거나, 완성된 ResourceDepot 이 하나도 없고 건설중이라면,
         // ResourceDepot 주위에 미네랄이 남아있는 곳 중에서 가까운 곳이 선택되도록 한다
         if (closestDepot == null) {
-            for (Unit unit : UnitUtils.getUnitList(CommonCode.UnitFindRange.COMPLETE, UnitType.Terran_Command_Center)) {
+            for (Unit unit : UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Command_Center)) {
                 if (unit == null)
                     continue;
 
@@ -612,7 +611,7 @@ public class WorkerManager extends GameManager {
         }
         // 모든 ResourceDepot 주위에 미네랄이 하나도 없다면, 일꾼에게 가장 가까운 곳을 선택한다
         if (closestDepot == null) {
-            for (Unit unit : UnitUtils.getUnitList(CommonCode.UnitFindRange.COMPLETE, UnitType.Terran_Command_Center)) {
+            for (Unit unit : UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Command_Center)) {
                 if (unit == null)
                     continue;
                 if (unit.getType().isResourceDepot()) {
@@ -1099,7 +1098,7 @@ public class WorkerManager extends GameManager {
      * 초기 미네랄 패스 위해 정보 (초기1회)
      */
     public void defaltMineralInfo() {
-        for (Unit depot : UnitUtils.getUnitList(CommonCode.UnitFindRange.COMPLETE, UnitType.Terran_Command_Center)) {
+        for (Unit depot : UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Command_Center)) {
             mineralPath(depot);
         }
     }
@@ -1189,7 +1188,7 @@ public class WorkerManager extends GameManager {
 
     public boolean isReapirZone(Unit unit) {
         Position myBase = BaseUtils.myMainBase().getPosition();
-        double maxReparitDistance = myBase.getDistance(TilePositionUtils.getCenterTilePosition().toPosition());
+        double maxReparitDistance = myBase.getDistance(CommonCode.CENTER_POS);
         if (myBase.getDistance(unit) > maxReparitDistance) {
             return true;
         } else {

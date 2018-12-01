@@ -1,5 +1,6 @@
 package org.monster.common.util;
 
+import bwapi.Player;
 import bwta.BaseLocation;
 import org.monster.common.util.internal.SpecificValueCache;
 
@@ -31,15 +32,34 @@ public class BaseUtils {
         return BaseInfoCollector.Instance().occupiedBaseLocations.get(PlayerUtils.enemyPlayer());
     }
 
-    public static List<BaseLocation> getIslandBaseLocations() {
+    public static List<BaseLocation> getIslandBases() {
         return BaseInfoCollector.Instance().islandBaseLocations;
     }
 
+    public static BaseLocation getClosestBase(BaseLocation sourceBase) {
+        return BaseInfoCollector.Instance().findClosestBase(sourceBase);
+    }
 
-    public static List<BaseLocation> enemyOtherExpansions() {
+    public static boolean equals(BaseLocation a, BaseLocation b){
+        if (a.getTilePosition().equals(b.getTilePosition())) {
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    public static List<BaseLocation> otherExpansions() {
         //TODO disable
         return null;
 //        return InformationManager.Instance().getOtherExpansionLocations();
+    }
+
+    public static boolean hasBuildingAroundBaseLocation(BaseLocation baseLocation, Player player) {
+        return BaseInfoCollector.Instance().hasBuildingAroundBaseLocation(baseLocation, player, 10);
+    }
+
+    public static boolean hasBuildingAroundBaseLocation(BaseLocation baseLocation, Player player, int radius) {
+        return BaseInfoCollector.Instance().hasBuildingAroundBaseLocation(baseLocation, player, radius);
     }
 
     public static boolean isEnemyFirstExpansionOccupied() {

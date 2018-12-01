@@ -149,7 +149,7 @@ public class CombatManager extends GameManager {
         }
 
         if (Monster.Broodwar.self().supplyUsed() < 100 || TimeUtils.executeRotation(LagObserver.managerExecuteRotation(LagObserver.MANAGER7, 0), LagObserver.managerRotationSize())) {
-            List<Unit> squadTypeUnitList = UnitUtils.getUnitList(CommonCode.UnitFindRange.COMPLETE, squad.getUnitTypes());
+            List<Unit> squadTypeUnitList = UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE, squad.getUnitTypes());
 
             List<Unit> assignableUnitList = new ArrayList<>();
             for (Unit unit : squadTypeUnitList) {
@@ -244,7 +244,7 @@ public class CombatManager extends GameManager {
         }
 
         // create defense squad
-        List<Unit> commandCenters = UnitUtils.getUnitList(CommonCode.UnitFindRange.ALL, UnitType.Terran_Command_Center);
+        List<Unit> commandCenters = UnitUtils.getUnitList(CommonCode.UnitFindStatus.ALL, UnitType.Terran_Command_Center);
 
         Region baseRegion = BWTA.getRegion(BaseUtils.myMainBase().getPosition());
         Region expansionRegion = BWTA.getRegion(BaseUtils.myFirstExpansion().getPosition());
@@ -312,7 +312,7 @@ public class CombatManager extends GameManager {
     }
 
     private boolean assign(List<Squad> updatedSquadList, Set<Integer> defenseTankIdSet) {
-        List<Unit> tankList = UnitUtils.getUnitList(CommonCode.UnitFindRange.COMPLETE, UnitType.Terran_Siege_Tank_Tank_Mode, UnitType.Terran_Siege_Tank_Siege_Mode);
+        List<Unit> tankList = UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Siege_Tank_Tank_Mode, UnitType.Terran_Siege_Tank_Siege_Mode);
 
         for (Squad defenseSquad : updatedSquadList) {
             MultiDefenseSquad squad = (MultiDefenseSquad) defenseSquad;
@@ -361,11 +361,11 @@ public class CombatManager extends GameManager {
                 maxRatio = 0.0d;
             }
 
-            int vultureCount = UnitUtils.getUnitCount(CommonCode.UnitFindRange.COMPLETE, UnitType.Terran_Vulture);
+            int vultureCount = UnitUtils.getUnitCount(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Vulture);
             int maxCount = (int) (vultureCount * maxRatio);
 
             List<Unit> assignableVultures = new ArrayList<>();
-            List<Unit> squadTypeUnitList = UnitUtils.getUnitList(CommonCode.UnitFindRange.COMPLETE, UnitType.Terran_Vulture);
+            List<Unit> squadTypeUnitList = UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Vulture);
             for (Unit unit : squadTypeUnitList) {
                 Squad unitSqaud = squadData.getSquad(unit);
                 if (unitSqaud instanceof GuerillaSquad) {

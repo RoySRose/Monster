@@ -53,7 +53,7 @@ public abstract class UnitAnalyser {
         }
 
 
-        List<UnitInfo> unitInfos = UnitUtils.getEnemyUnitInfoList(CommonCode.EnemyUnitFindRange.VISIBLE, unitType);
+        List<UnitInfo> unitInfos = UnitUtils.getEnemyUnitInfoList(CommonCode.EnemyUnitVisibleStatus.VISIBLE, unitType);
         if (unitInfos.isEmpty()) {
             return;
         }

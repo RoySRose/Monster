@@ -524,7 +524,7 @@ public class AttackExpansionManager {
     }
 
     private boolean enemyExspansioning() {
-        List<UnitInfo> enemyResourceDepot = UnitUtils.getEnemyUnitInfoList(CommonCode.EnemyUnitFindRange.ALL, InfoUtils.getBasicResourceDepotBuildingType(PlayerUtils.enemyRace()));
+        List<UnitInfo> enemyResourceDepot = UnitUtils.getEnemyUnitInfoList(CommonCode.EnemyUnitVisibleStatus.ALL, InfoUtils.getBasicResourceDepotBuildingType(PlayerUtils.enemyRace()));
         for (UnitInfo enemyDepot : enemyResourceDepot) {
             if (enemyDepot.isCompleted()) {
                 return true;
@@ -535,10 +535,10 @@ public class AttackExpansionManager {
 
     private int selfExspansioningCount() {
         int count = 0;
-        List<Unit> incompleteCenters = UnitUtils.getUnitList(CommonCode.UnitFindRange.INCOMPLETE, UnitType.Terran_Command_Center);
+        List<Unit> incompleteCenters = UnitUtils.getUnitList(CommonCode.UnitFindStatus.INCOMPLETE, UnitType.Terran_Command_Center);
         count += incompleteCenters.size();
 
-        for (Unit commandcenter : UnitUtils.getUnitList(CommonCode.UnitFindRange.COMPLETE, UnitType.Terran_Command_Center)) {
+        for (Unit commandcenter : UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Command_Center)) {
             if (WorkerManager.Instance().getWorkerData().getNumAssignedWorkers(commandcenter) < 7) {
                 count++;
             }

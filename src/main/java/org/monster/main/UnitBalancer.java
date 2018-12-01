@@ -58,7 +58,7 @@ public class UnitBalancer {
         int count = 0;
         for (UnitType unitType : listType) {
 
-            List<Unit> units = UnitUtils.getUnitList(CommonCode.UnitFindRange.COMPLETE, unitType);
+            List<Unit> units = UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE, unitType);
             for (Unit unit : units) {
                 mapper.put(unit.getID(), count);
                 count++;
@@ -67,7 +67,7 @@ public class UnitBalancer {
                 }
             }
             if (unitType == UnitType.Terran_Siege_Tank_Tank_Mode) {
-                List<Unit> units2 = UnitUtils.getUnitList(CommonCode.UnitFindRange.COMPLETE, UnitType.Terran_Siege_Tank_Siege_Mode);
+                List<Unit> units2 = UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Siege_Tank_Siege_Mode);
                 for (Unit unit : units2) {
                     mapper.put(unit.getID(), count);
                     count++;

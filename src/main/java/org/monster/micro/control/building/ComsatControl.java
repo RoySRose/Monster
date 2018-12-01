@@ -64,14 +64,14 @@ public class ComsatControl extends Control {
 //
 //        Unit comsatToUse = null;
 //        int usableEnergy = 150;
-//        int comsatCnt = UnitUtils.getUnitCount(CommonCode.UnitFindRange.COMPLETE, UnitType.Terran_Comsat_Station);
+//        int comsatCnt = UnitUtils.getUnitCount(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Comsat_Station);
 //        if (comsatCnt > 1) {
 //            usableEnergy = 135;
 //        }
 //        if (comsatCnt > 2) {
 //
 //            if (comsatCnt < 6) {
-//                usableEnergy -= 20 * (UnitUtils.getUnitCount(CommonCode.UnitFindRange.COMPLETE, UnitType.Terran_Comsat_Station) - 2);
+//                usableEnergy -= 20 * (UnitUtils.getUnitCount(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Comsat_Station) - 2);
 //            } else {
 //                usableEnergy -= 20 * 3;
 //            }
@@ -81,7 +81,7 @@ public class ComsatControl extends Control {
 //        if (UnitUtils.invisibleEnemyDiscovered() || StrategyBoard.buildTimeMap.featureEnabled(EnemyStrategyOptions.BuildTimeMap.Feature.DETECT_IMPORTANT)) {
 //            usableEnergy += 50;
 //
-//            if (UnitUtils.getUnitCount(CommonCode.UnitFindRange.COMPLETE, UnitType.Terran_Science_Vessel) > 0) {
+//            if (UnitUtils.getUnitCount(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Science_Vessel) > 0) {
 //                usableEnergy -= 25;
 //            }
 //
@@ -139,7 +139,7 @@ public class ComsatControl extends Control {
 //                }
 //            }
 //
-//            List<Unit> myAttackUnits = UnitUtils.getUnitList(CommonCode.UnitFindRange.COMPLETE, UnitType.Terran_Vulture,
+//            List<Unit> myAttackUnits = UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Vulture,
 //                    UnitType.Terran_Siege_Tank_Tank_Mode, UnitType.Terran_Siege_Tank_Siege_Mode, UnitType.Terran_Goliath);
 //
 //            Race enemyRace = PlayerUtils.enemyRace();
@@ -177,7 +177,7 @@ public class ComsatControl extends Control {
 //                        if (myAttackUnitInWeaponRangeCount >= 5
 //                                || myAttackUnit.getType() == UnitType.Terran_Siege_Tank_Tank_Mode
 //                                || myAttackUnit.getType() == UnitType.Terran_Siege_Tank_Siege_Mode
-//                                || (myAttackUnit.getType() == UnitType.Terran_Bunker && UnitUtils.getUnitCount(UnitFindRange.COMPLETE, UnitType.Terran_Marine) > 0)) {
+//                                || (myAttackUnit.getType() == UnitType.Terran_Bunker && UnitUtils.getUnitCount(UnitFindStatus.COMPLETE, UnitType.Terran_Marine) > 0)) {
 //                            return eui.getLastPosition();
 //                        }
 //                    }

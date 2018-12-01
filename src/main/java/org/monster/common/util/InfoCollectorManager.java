@@ -6,11 +6,11 @@ import org.monster.main.GameManager;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CollectorManager extends GameManager {
+public class InfoCollectorManager extends GameManager {
 
-    private static CollectorManager instance = new CollectorManager();
+    private static InfoCollectorManager instance = new InfoCollectorManager();
 
-    public static CollectorManager Instance() {
+    public static InfoCollectorManager Instance() {
         return instance;
     }
 
@@ -23,6 +23,8 @@ public class CollectorManager extends GameManager {
         infoCollectors.add(StaticMapInfoCollector.Instance());
         infoCollectors.add(UnitCache.getCurrentCache());
         infoCollectors.add(BaseInfoCollector.Instance());
+        infoCollectors.add(ChokeInfoCollector.Instance());
+        infoCollectors.add(RegionInfoCollector.Instance());
         infoCollectors.add(TimeInfoCollector.Instance());
         infoCollectors.add(MapInfoCollector.Instance());
         infoCollectors.add(UpgradeInfoCollector.Instance());

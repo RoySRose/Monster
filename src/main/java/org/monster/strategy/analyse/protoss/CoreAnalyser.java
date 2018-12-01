@@ -49,7 +49,7 @@ public class CoreAnalyser extends UnitAnalyser {
             return;
         }
 
-        List<UnitInfo> coreList = UnitUtils.getEnemyUnitInfoList(CommonCode.EnemyUnitFindRange.VISIBLE, UnitType.Protoss_Cybernetics_Core);
+        List<UnitInfo> coreList = UnitUtils.getEnemyUnitInfoList(CommonCode.EnemyUnitVisibleStatus.VISIBLE, UnitType.Protoss_Cybernetics_Core);
         if (!coreList.isEmpty() && coreList.get(0).getUnit().isUpgrading()) {
             ClueManager.Instance().addClueInfo(Clue.ClueInfo.DRAGOON_RANGE_FAST);
         }

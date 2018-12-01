@@ -3,15 +3,14 @@ package org.monster.strategy.manage;
 import bwapi.TilePosition;
 import bwapi.Unit;
 import bwta.BaseLocation;
-import org.monster.common.util.BaseUtils;
-import org.monster.main.Monster;
 import org.monster.common.UnitInfo;
 import org.monster.common.constant.CommonCode;
 import org.monster.common.util.BaseLocationUtils;
-import org.monster.common.util.TilePositionUtils;
+import org.monster.common.util.BaseUtils;
 import org.monster.common.util.TimeUtils;
 import org.monster.common.util.UnitUtils;
 import org.monster.common.util.internal.IConditions;
+import org.monster.main.Monster;
 import org.monster.micro.constant.MicroConfig;
 import org.monster.micro.predictor.GuerillaScore;
 import org.monster.micro.predictor.VultureFightPredictor;
@@ -77,7 +76,7 @@ public class VultureTravelManager {
         if (!travelSites.isEmpty()) {
             return;
         }
-        List<BaseLocation> otherBases = BaseUtils.enemyOtherExpansions();
+        List<BaseLocation> otherBases = BaseUtils.otherExpansions();
         if (otherBases.isEmpty()) {
             return;
         }
@@ -87,7 +86,7 @@ public class VultureTravelManager {
 
         BaseLocation beforeBase = null;
         BaseLocation closeBase = null;
-        TilePosition centerTilePosition = TilePositionUtils.getCenterTilePosition();
+        TilePosition centerTilePosition = CommonCode.CENTER_TILE_POS;
         for (int i = 0; i < otherBases.size(); i++) {
             if (beforeBase == null) {
                 beforeBase = BaseUtils.myFirstExpansion();

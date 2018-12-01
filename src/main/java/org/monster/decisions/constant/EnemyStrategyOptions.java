@@ -109,7 +109,7 @@ public class EnemyStrategyOptions {
                 case EXPANSION: // 앞마당
                     boolean baseCommandCentertOk = false;
                     boolean expansionCommandCenterOk = false;
-                    List<Unit> commandCenterList = UnitUtils.getUnitList(CommonCode.UnitFindRange.ALL, UnitType.Terran_Command_Center);
+                    List<Unit> commandCenterList = UnitUtils.getUnitList(CommonCode.UnitFindStatus.ALL, UnitType.Terran_Command_Center);
                     for (Unit commandCenter : commandCenterList) {
                         if (commandCenter.isLifted()) {
                             continue;
@@ -131,7 +131,7 @@ public class EnemyStrategyOptions {
 
                 case COMSAT_OK: // 컴셋에너지보유
                     boolean comsatReady = false;
-                    List<Unit> comsatList = UnitUtils.getUnitList(CommonCode.UnitFindRange.COMPLETE, UnitType.Terran_Comsat_Station);
+                    List<Unit> comsatList = UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Comsat_Station);
                     int totalComsatEnergy = 0;
                     for (Unit comsat : comsatList) {
                         totalComsatEnergy += comsat.getEnergy();
@@ -145,7 +145,7 @@ public class EnemyStrategyOptions {
                 case TURRET_OK: // 베이스터렛OK, 앞마당 터렛OK
                     boolean baseTurretOk = false;
                     boolean expansionTurretOk = false;
-                    List<Unit> turretList = UnitUtils.getUnitList(CommonCode.UnitFindRange.COMPLETE, UnitType.Terran_Missile_Turret);
+                    List<Unit> turretList = UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Missile_Turret);
                     for (Unit turret : turretList) {
                         CommonCode.RegionType regionType = PositionUtils.positionToRegionType(turret.getPosition());
                         if (regionType == CommonCode.RegionType.MY_BASE) {
@@ -157,13 +157,13 @@ public class EnemyStrategyOptions {
                     return baseTurretOk && expansionTurretOk;
 
                 case VULTURE: // 충분한 벌처
-                    return UnitUtils.getUnitList(CommonCode.UnitFindRange.COMPLETE, UnitType.Terran_Vulture).size() >= 3;
+                    return UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Vulture).size() >= 3;
 
                 case TANK: // 충분한 탱크
-                    return UnitUtils.getUnitList(CommonCode.UnitFindRange.COMPLETE, UnitType.Terran_Vulture).size() >= 3;
+                    return UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Vulture).size() >= 3;
 
                 case GOLIATH: // 충분한 골리앗
-                    return UnitUtils.getUnitList(CommonCode.UnitFindRange.COMPLETE, UnitType.Terran_Vulture).size() >= 3;
+                    return UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Vulture).size() >= 3;
 
                 case RETREAT: // 공격모드 해제
                     return StrategyBoard.attackStartedFrame > 0 && !StrategyBoard.mainSquadMode.isAttackMode;

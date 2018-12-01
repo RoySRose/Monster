@@ -25,7 +25,7 @@ public class BuilderMarine extends DefaultBuildableItem {
 
     public final boolean buildCondition() {
 
-        List<Unit> barracks = UnitUtils.getUnitList(CommonCode.UnitFindRange.COMPLETE, UnitType.Terran_Barracks);
+        List<Unit> barracks = UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Barracks);
         for (Unit unit : barracks) {
             if (!unit.isLifted()) {
                 liftChecker = true;
@@ -39,7 +39,7 @@ public class BuilderMarine extends DefaultBuildableItem {
         int nowMarine = Monster.Broodwar.self().completedUnitCount(UnitType.Terran_Marine);
 
 //    	마린이 2마리가 생산된 상태에서 팩토리가 없다면 팩토리 먼저
-        if (nowMarine == 2 && UnitUtils.getUnitCount(CommonCode.UnitFindRange.ALL_AND_CONSTRUCTION_QUEUE, UnitType.Terran_Factory) == 0) {
+        if (nowMarine == 2 && UnitUtils.getUnitCount(CommonCode.UnitFindStatus.ALL_AND_CONSTRUCTION_QUEUE, UnitType.Terran_Factory) == 0) {
             return false;
         }
 

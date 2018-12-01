@@ -18,7 +18,7 @@ public class ReadyToAttackPosFinder implements PositionFinder {
 //        try {
 //            Position myExpansionPosition = firstExpansionLocation.get(selfPlayer).getPosition();
 //            Position enemyExpansionPosition = firstExpansionLocation.get(enemyPlayer).getPosition();
-//            Position centerTilePosition = TilePositionUtils.getCenterTilePosition().toPosition();
+//            Position centerTilePosition = CommonCode.CENTER_POS;
 //
 //            int myX = myExpansionPosition.getX() + centerTilePosition.getX();
 //            int myY = myExpansionPosition.getY() + centerTilePosition.getY();

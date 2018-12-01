@@ -22,7 +22,6 @@ import org.monster.common.util.InfoUtils;
 import org.monster.common.util.MicroUtils;
 import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.PositionUtils;
-import org.monster.common.util.TilePositionUtils;
 import org.monster.common.util.TimeUtils;
 import org.monster.common.util.UnitUtils;
 import org.monster.common.util.internal.IConditions;
@@ -139,7 +138,7 @@ public class PositionFinder {
             boolean firstExpansionDetectingOk = true;
             if (UnitUtils.enemyUnitDiscovered(UnitType.Protoss_Dark_Templar, UnitType.Protoss_Templar_Archives, UnitType.Zerg_Lurker, UnitType.Zerg_Lurker_Egg)) {
                 firstExpansionDetectingOk = false;
-                List<Unit> turretList = UnitUtils.getUnitList(CommonCode.UnitFindRange.COMPLETE, UnitType.Terran_Missile_Turret);
+                List<Unit> turretList = UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Missile_Turret);
                 for (Unit turret : turretList) {
                     CommonCode.RegionType regionType = PositionUtils.positionToRegionType(turret.getPosition());
                     if (regionType == CommonCode.RegionType.MY_FIRST_EXPANSION || regionType == CommonCode.RegionType.MY_THIRD_REGION) {
@@ -148,7 +147,7 @@ public class PositionFinder {
                     }
                 }
                 if (!firstExpansionDetectingOk) {
-                    List<Unit> scannerList = UnitUtils.getUnitList(CommonCode.UnitFindRange.COMPLETE, UnitType.Terran_Comsat_Station);
+                    List<Unit> scannerList = UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Comsat_Station);
                     for (Unit scanner : scannerList) {
                         if (scanner.getEnergy() >= 50) {
                             firstExpansionDetectingOk = true;
@@ -222,7 +221,7 @@ public class PositionFinder {
             }
             // 병력이 조금 있거나 앞마당이 차지되었다면 expansion에서 방어한다.
             if (myTankSupplyCount >= 2 * 4 || firstExpansionOccupied()) {
-                int tankCount = UnitUtils.getUnitCount(CommonCode.UnitFindRange.COMPLETE, UnitType.Terran_Siege_Tank_Tank_Mode, UnitType.Terran_Siege_Tank_Siege_Mode);
+                int tankCount = UnitUtils.getUnitCount(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Siege_Tank_Tank_Mode, UnitType.Terran_Siege_Tank_Siege_Mode);
                 if (tankCount >= 1) {
                     return PositionFinder.CampType.SECOND_CHOKE;
                 } else {
@@ -397,7 +396,7 @@ public class PositionFinder {
         int sumOfTotalY = 0;
         int totalCount = 0;
 
-        List<UnitInfo> euiList = UnitUtils.getEnemyUnitInfoList(CommonCode.EnemyUnitFindRange.ALL);
+        List<UnitInfo> euiList = UnitUtils.getEnemyUnitInfoList(CommonCode.EnemyUnitVisibleStatus.ALL);
         for (UnitInfo eui : euiList) {
             if (!TargetFilter.excludeByFilter(eui, TargetFilter.LARVA_LURKER_EGG | TargetFilter.UNFIGHTABLE | TargetFilter.SPIDER_MINE | TargetFilter.BUILDING)) {
                 sumOfTotalX += eui.getLastPosition().getX();
@@ -592,7 +591,7 @@ public class PositionFinder {
         if (!myOccupiedBases.isEmpty()) {
             BaseLocation myOccupiedNeedDefense = null;
             Set<UnitInfo> enemyUnitInfosInRadius = new HashSet<>();
-            Position centerPosition = TilePositionUtils.getCenterTilePosition().toPosition();
+            Position centerPosition = CommonCode.CENTER_POS;
             for (BaseLocation occupiedBase : myOccupiedBases) {
                 if (occupiedBase.getPosition().getDistance(centerPosition) < 500) {
                     continue;
@@ -618,7 +617,7 @@ public class PositionFinder {
             }
         }
 
-//		boolean canGoOtherPosition = UnitUtils.getUnitCount(CommonCode.UnitFindRange.COMPLETE, UnitType.Terran_Siege_Tank_Tank_Mode, UnitType.Terran_Siege_Tank_Siege_Mode) >= 10;
+//		boolean canGoOtherPosition = UnitUtils.getUnitCount(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Siege_Tank_Tank_Mode, UnitType.Terran_Siege_Tank_Siege_Mode) >= 10;
 //
 //		if (!canGoOtherPosition) {
 //			if (PlayerUtils.enemyRace() == Race.Zerg) {
@@ -636,7 +635,7 @@ public class PositionFinder {
         if (PlayerUtils.enemyRace() == Race.Terran) {
             List<BaseLocation> enemyOccupiedBases = BaseUtils.enemyOccupiedBases();
             if (!enemyOccupiedBases.isEmpty()) {
-                Position centerPosition = TilePositionUtils.getCenterTilePosition().toPosition();
+                Position centerPosition = CommonCode.CENTER_POS;
                 BaseLocation enemyOccupied = BaseLocationUtils.getGroundClosestBaseToPosition(enemyOccupiedBases, BaseUtils.enemyFirstExpansion(), new IConditions.BaseCondition() {
                     @Override
                     public boolean correspond(BaseLocation base) {
@@ -666,7 +665,7 @@ public class PositionFinder {
 
     /// 첫번째 확장기지를 차지하였는지 여부
     private boolean firstExpansionOccupied() {
-        List<Unit> commandCenterOrDefenseTowerList = UnitUtils.getUnitList(CommonCode.UnitFindRange.ALL,
+        List<Unit> commandCenterOrDefenseTowerList = UnitUtils.getUnitList(CommonCode.UnitFindStatus.ALL,
                 UnitType.Terran_Command_Center, UnitType.Terran_Missile_Turret, UnitType.Terran_Bunker);
         for (Unit bunkerOrTurret : commandCenterOrDefenseTowerList) {
             CommonCode.RegionType towerRegionType = PositionUtils.positionToRegionType(bunkerOrTurret.getPosition());
@@ -704,7 +703,7 @@ public class PositionFinder {
     /// 커맨드센터와 미네랄 사이의 방어지역
     public Position commandCenterInsidePosition() {
         TilePosition baseTile = BaseUtils.myMainBase().getTilePosition();
-        List<Unit> commandCenterList = UnitUtils.getUnitList(CommonCode.UnitFindRange.COMPLETE, UnitType.Terran_Command_Center);
+        List<Unit> commandCenterList = UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Command_Center);
 
         for (Unit commandCenter : commandCenterList) {
             if (commandCenter.getTilePosition().equals(baseTile)) {
@@ -859,7 +858,7 @@ public class PositionFinder {
 
     // 쥐 함수
     private Position letsfindRatPosition() {
-        List<UnitInfo> enemyResourceDepots = UnitUtils.getEnemyUnitInfoList(CommonCode.EnemyUnitFindRange.ALL, UnitType.Terran_Command_Center, UnitType.Protoss_Nexus
+        List<UnitInfo> enemyResourceDepots = UnitUtils.getEnemyUnitInfoList(CommonCode.EnemyUnitVisibleStatus.ALL, UnitType.Terran_Command_Center, UnitType.Protoss_Nexus
                 , UnitType.Zerg_Hatchery, UnitType.Zerg_Lair, UnitType.Zerg_Hive);
 
         if (!enemyResourceDepots.isEmpty()) {
@@ -896,7 +895,7 @@ public class PositionFinder {
         }
 
         // 제 3멀티 중에서 탐험되지 않은 지역
-        List<BaseLocation> otherExpansions = BaseUtils.enemyOtherExpansions();
+        List<BaseLocation> otherExpansions = BaseUtils.otherExpansions();
         if (otherExpansions != null) {
             for (BaseLocation otherExpansion : otherExpansions) {
                 if (!Monster.Broodwar.isExplored(otherExpansion.getTilePosition())) {

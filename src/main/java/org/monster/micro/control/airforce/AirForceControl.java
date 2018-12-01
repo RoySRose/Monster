@@ -6,7 +6,6 @@ import bwapi.UnitType;
 import bwapi.WeaponType;
 import org.monster.common.UnitInfo;
 import org.monster.common.constant.CommonCode;
-import org.monster.common.constant.CommonCode.EnemyUnitFindRange;
 import org.monster.common.util.CommandUtils;
 import org.monster.common.util.MicroUtils;
 import org.monster.common.util.PositionUtils;
@@ -52,12 +51,12 @@ public class AirForceControl extends Control {
 
 //		if (true) {
 
-        int enemySize = UnitUtils.getEnemyUnitInfoList(EnemyUnitFindRange.ALL).size();
+        int enemySize = UnitUtils.getEnemyUnitInfoList(CommonCode.EnemyUnitVisibleStatus.ALL).size();
         if (TimeUtils.afterTime(10, 0) && enemySize <= 3) {
             findRat(airunits);
             return;
         }
-        if (Monster.Broodwar.self().supplyUsed() > 300 && UnitUtils.getEnemyUnitInfoList(CommonCode.EnemyUnitFindRange.ALL).size() <= 3 && UnitUtils.enemyAirUnitPower() == 0) {
+        if (Monster.Broodwar.self().supplyUsed() > 300 && UnitUtils.getEnemyUnitInfoList(CommonCode.EnemyUnitVisibleStatus.ALL).size() <= 3 && UnitUtils.enemyAirUnitPower() == 0) {
             for (Unit airunit : airunits) {
                 CommandUtils.attackMove(airunit, StrategyBoard.mainPosition);
             }
@@ -261,9 +260,9 @@ public class AirForceControl extends Control {
 //	private Unit closestAssistant(Unit wraith, UnitInfo eui) {
 //		List<Unit> assistUnitList = null;
 //		if (eui.getType().isFlyer()) {
-//			assistUnitList = UnitUtils.getUnitList(CommonCode.UnitFindRange.COMPLETE, UnitType.Terran_Missile_Turret, UnitType.Terran_Goliath);
+//			assistUnitList = UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Missile_Turret, UnitType.Terran_Goliath);
 //		} else {
-//			assistUnitList = UnitUtils.getUnitList(CommonCode.UnitFindRange.COMPLETE, UnitType.Terran_Vulture, UnitType.Terran_Siege_Tank_Tank_Mode, UnitType.Terran_Siege_Tank_Tank_Mode, UnitType.Terran_Goliath);
+//			assistUnitList = UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Vulture, UnitType.Terran_Siege_Tank_Tank_Mode, UnitType.Terran_Siege_Tank_Tank_Mode, UnitType.Terran_Goliath);
 //		}
 //		Unit closeAssistant = UnitUtils.getClosestUnitToPosition(assistUnitList, wraith.getPosition());
 //		if (closeAssistant == null || MicroUtils.isInWeaponRange(closeAssistant, eui)) { // 도와줄 아군이 없거나 이미 근처에 있는 경우

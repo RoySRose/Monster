@@ -84,7 +84,7 @@ public class StrategyManager extends GameManager {
     private void expansionOkay() {
         boolean expansionOkay = false;
         BaseLocation myFirstExpansion = BaseUtils.myFirstExpansion();
-        List<Unit> commandCenterList = UnitUtils.getUnitList(CommonCode.UnitFindRange.COMPLETE, UnitType.Terran_Command_Center);
+        List<Unit> commandCenterList = UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Command_Center);
         for (Unit commandCenter : commandCenterList) {
             if (commandCenter.isLifted()) {
                 continue;

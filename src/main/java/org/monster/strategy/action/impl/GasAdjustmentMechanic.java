@@ -32,7 +32,7 @@ public class GasAdjustmentMechanic extends Action {
         StrategyBoard.gasAdjustment = true;
 
         int adjustGasWorkerCount = 0;
-        int workerCount = UnitUtils.getUnitCount(CommonCode.UnitFindRange.COMPLETE, UnitType.Terran_SCV);
+        int workerCount = UnitUtils.getUnitCount(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_SCV);
         if (workerCount > 8) {
             adjustGasWorkerCount = 3;
             if (!UnitUtils.myUnitDiscovered(UnitType.Terran_Factory)) {
@@ -41,7 +41,7 @@ public class GasAdjustmentMechanic extends Action {
                 }
             } else {
                 if (StrategyBoard.expansionOption == EnemyStrategyOptions.ExpansionOption.ONE_FACTORY) {
-                    if (UnitUtils.getUnitCount(CommonCode.UnitFindRange.ALL, UnitType.Terran_Command_Center) < 2) {
+                    if (UnitUtils.getUnitCount(CommonCode.UnitFindStatus.ALL, UnitType.Terran_Command_Center) < 2) {
                         if (Monster.Broodwar.self().gas() <= 250) {
                             adjustGasWorkerCount = 2;
                         } else {
@@ -51,7 +51,7 @@ public class GasAdjustmentMechanic extends Action {
                         gasAjustmentFinshed = true;
                     }
                 } else {
-                    if (UnitUtils.getUnitCount(CommonCode.UnitFindRange.ALL, UnitType.Terran_Command_Center) < 2) {
+                    if (UnitUtils.getUnitCount(CommonCode.UnitFindStatus.ALL, UnitType.Terran_Command_Center) < 2) {
                         if (Monster.Broodwar.self().gas() <= 100) {
                             adjustGasWorkerCount = 3;
                         } else {

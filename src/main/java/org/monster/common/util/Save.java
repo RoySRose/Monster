@@ -208,7 +208,7 @@
 //        TilePosition firstSupplePos = BlockingEntrance.Instance().first_supple;
 //        TilePosition secondSupplePos = BlockingEntrance.Instance().second_supple;
 //
-//        for (Unit supple : UnitUtils.getUnitList(CommonCode.UnitFindRange.ALL, UnitType.Terran_Supply_Depot)) {
+//        for (Unit supple : UnitUtils.getUnitList(CommonCode.UnitFindStatus.ALL, UnitType.Terran_Supply_Depot)) {
 //            if (supple.getTilePosition().equals(firstSupplePos)) {
 //                firstSupple = true;
 //                if (safePosition == null) {
@@ -220,7 +220,7 @@
 //            }
 //        }
 //
-//        for (Unit barrack : UnitUtils.getUnitList(CommonCode.UnitFindRange.ALL, UnitType.Terran_Barracks)) {
+//        for (Unit barrack : UnitUtils.getUnitList(CommonCode.UnitFindStatus.ALL, UnitType.Terran_Barracks)) {
 //            if (barrack.getTilePosition().equals(firstBarracks) && !barrack.isLifted()) {
 //                firstBarrack = true;
 //                break;

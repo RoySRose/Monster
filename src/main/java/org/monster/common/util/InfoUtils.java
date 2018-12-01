@@ -106,7 +106,6 @@ public class InfoUtils {
         }
     }
 
-    // 해당 종족의 UnitType 중 ResourceDepot 기능을 하는 UnitType을 리턴합니다
     public static UnitType getBasicResourceDepotBuildingType(Race race) {
         if (race == Race.Protoss) {
             return UnitType.Protoss_Nexus;
@@ -114,6 +113,42 @@ public class InfoUtils {
             return UnitType.Terran_Command_Center;
         } else if (race == Race.Zerg) {
             return UnitType.Zerg_Hatchery;
+        } else {
+            return UnitType.None;
+        }
+    }
+
+    public static UnitType getBasicProduceBuildingType(Race race) {
+        if (race == Race.Protoss) {
+            return UnitType.Protoss_Gateway;
+        } else if (race == Race.Terran) {
+            return UnitType.Terran_Barracks;
+        } else if (race == Race.Zerg) {
+            return UnitType.Zerg_Spawning_Pool;
+        } else {
+            return UnitType.None;
+        }
+    }
+
+    public static UnitType getBasicDefenseBuildingType(Race race) {
+        if (race == Race.Protoss) {
+            return UnitType.Protoss_Photon_Cannon;
+        } else if (race == Race.Terran) {
+            return UnitType.Terran_Bunker;
+        } else if (race == Race.Zerg) {
+            return UnitType.Zerg_Sunken_Colony;
+        } else {
+            return UnitType.None;
+        }
+    }
+
+    public static UnitType getBasicSupplyBuildingType(Race race) {
+        if (race == Race.Protoss) {
+            return UnitType.Protoss_Pylon;
+        } else if (race == Race.Terran) {
+            return UnitType.Terran_Supply_Depot;
+        } else if (race == Race.Zerg) {
+            return UnitType.Zerg_Overlord;
         } else {
             return UnitType.None;
         }

@@ -13,7 +13,7 @@ import org.monster.build.provider.BuildQueueProvider;
 import org.monster.common.MapGrid;
 import org.monster.debugger.BigWatch;
 import org.monster.debugger.chat.ChatBot;
-import org.monster.common.util.CollectorManager;
+import org.monster.common.util.InfoCollectorManager;
 import org.monster.common.util.UnitCache;
 import org.monster.micro.CombatManager;
 import org.monster.strategy.StrategyManager;
@@ -39,7 +39,7 @@ public class GameCommander {
             return;
         }
 
-        CollectorManager.Instance().onStart(Broodwar);
+        InfoCollectorManager.Instance().onStart(Broodwar);
         //BlockingEntrance.Instance().onStart(Broodwar);
         ConstructionPlaceFinder.Instance().setTilesToAvoidSupply();
         ConstructionPlaceFinder.Instance().setTilesToAvoidBaseLocation();
@@ -71,7 +71,7 @@ public class GameCommander {
             /**
              * Eyes
              */
-            CollectorManager.Instance().updateTimeCheck();
+            InfoCollectorManager.Instance().updateTimeCheck();
             MapGrid.Instance().updateTimeCheck();
 
             /**

@@ -27,7 +27,7 @@ public class MultiDefenseSquad extends Squad {
         super(MicroConfig.SquadInfo.MULTI_DEFENSE_, basePosition);
         setUnitType(UnitType.Terran_Siege_Tank_Tank_Mode, UnitType.Terran_Siege_Tank_Siege_Mode, UnitType.Terran_Vulture);
 
-        Position centerPosition = TilePositionUtils.getCenterTilePosition().toPosition();
+        Position centerPosition = CommonCode.CENTER_POS;
         double radian = MicroUtils.targetDirectionRadian(centerPosition, basePosition);
         Position defensePosition = MicroUtils.getMovePosition(centerPosition, radian, 1000).makeValid();
 

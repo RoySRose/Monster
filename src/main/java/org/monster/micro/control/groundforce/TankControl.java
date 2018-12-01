@@ -59,7 +59,7 @@ public class TankControl extends Control {
             return;
         }
 
-        List<Unit> vultureAndGoliath = UnitUtils.getUnitList(CommonCode.UnitFindRange.COMPLETE, UnitType.Terran_Vulture, UnitType.Terran_Goliath);
+        List<Unit> vultureAndGoliath = UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Vulture, UnitType.Terran_Goliath);
         this.hasEnoughBackUpUnitToSiege = vultureAndGoliath.size() > ENOUGH_BACKUP_VULTURE_AND_GOLIATH;
         this.siegeModeSpreadRadius = StrategyBoard.mainSquadCoverRadius;
         if (StrategyBoard.campType == PositionFinder.CampType.INSIDE

@@ -164,7 +164,7 @@ public abstract class DefaultBuildableItem implements BuildableItem {
         if (!metaType.isUnit() || metaType.getUnitType().isBuilding()) {
             return true;
         }
-        List<Unit> producerList = UnitUtils.getUnitList(CommonCode.UnitFindRange.COMPLETE, producerOfUnit);
+        List<Unit> producerList = UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE, producerOfUnit);
         for (Unit producer : producerList) {
             if (!producer.isTraining() && !producer.isConstructing() && !producer.isResearching() && !producer.isUpgrading()) {
                 return true;

@@ -46,7 +46,7 @@ public class ScvScoutAfterBuild extends Action {
         if (assigned) {
             return;
         }
-        for (Unit building : UnitUtils.getUnitList(CommonCode.UnitFindRange.ALL, buildingType)) {
+        for (Unit building : UnitUtils.getUnitList(CommonCode.UnitFindStatus.ALL, buildingType)) {
             if (building.getType() == buildingType && building.getRemainingBuildTime() <= remainingFrames) {
                 assigned = true;
                 break;

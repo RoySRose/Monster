@@ -21,7 +21,7 @@ public class TankAnalyser extends UnitAnalyser {
     @Override
     public void analyse() {
         // 시즈탱크는 부득이하게 UnitUtils, TimeUtils를 써야겠다.
-        List<UnitInfo> enemyTanks = UnitUtils.getEnemyUnitInfoList(CommonCode.EnemyUnitFindRange.ALL,
+        List<UnitInfo> enemyTanks = UnitUtils.getEnemyUnitInfoList(CommonCode.EnemyUnitVisibleStatus.ALL,
                 UnitType.Terran_Siege_Tank_Tank_Mode, UnitType.Terran_Siege_Tank_Siege_Mode);
 
         if (!enemyTanks.isEmpty()) {

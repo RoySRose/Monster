@@ -87,7 +87,7 @@ public abstract class Strategist {
 
         } else {
             // default mission
-            if (UnitUtils.getUnitList(CommonCode.UnitFindRange.COMPLETE, UnitType.Terran_Command_Center).size() < 2) {
+            if (UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Command_Center).size() < 2) {
                 return false;
             }
 

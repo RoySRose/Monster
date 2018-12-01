@@ -118,7 +118,7 @@ public class BuildQueueProvider extends GameManager {
 //        if (tempbuildQueue.isEmpty()) {
 //            return;
 //        }
-//        List<Unit> factories = UnitUtils.getUnitList(CommonCode.UnitFindRange.COMPLETE, UnitType.Terran_Factory);
+//        List<Unit> factories = UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Factory);
 //        if (factories.isEmpty()) {
 //            return;
 //        }

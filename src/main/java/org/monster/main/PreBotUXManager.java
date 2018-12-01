@@ -384,9 +384,9 @@ public class PreBotUXManager {
         Monster.Broodwar.drawTextScreen(x + 100, y, "" + UxColor.CHAR_WHITE + history);
         y += 11;
 
-        int vultureCount = UnitUtils.getUnitCount(CommonCode.UnitFindRange.ALL, UnitType.Terran_Vulture);
-        int tankCount = UnitUtils.getUnitCount(CommonCode.UnitFindRange.ALL, UnitType.Terran_Siege_Tank_Tank_Mode, UnitType.Terran_Siege_Tank_Siege_Mode);
-        int goliathCount = UnitUtils.getUnitCount(CommonCode.UnitFindRange.ALL, UnitType.Terran_Goliath);
+        int vultureCount = UnitUtils.getUnitCount(CommonCode.UnitFindStatus.ALL, UnitType.Terran_Vulture);
+        int tankCount = UnitUtils.getUnitCount(CommonCode.UnitFindStatus.ALL, UnitType.Terran_Siege_Tank_Tank_Mode, UnitType.Terran_Siege_Tank_Siege_Mode);
+        int goliathCount = UnitUtils.getUnitCount(CommonCode.UnitFindStatus.ALL, UnitType.Terran_Goliath);
 
 //        UnitType selected = BuildQueueProvider.Instance().getFactoryUnitSelector().getSelected();
 //        if (selected != UnitType.None) {
@@ -399,11 +399,11 @@ public class PreBotUXManager {
         y += 11;
 
         Monster.Broodwar.drawTextScreen(x, y, UxColor.CHAR_WHITE + "Wraith Count : ");
-        Monster.Broodwar.drawTextScreen(x + 75, y, "" + UxColor.CHAR_WHITE + StrategyBoard.wraithCount + " / " + UnitUtils.getUnitCount(CommonCode.UnitFindRange.COMPLETE, UnitType.Terran_Wraith));
+        Monster.Broodwar.drawTextScreen(x + 75, y, "" + UxColor.CHAR_WHITE + StrategyBoard.wraithCount + " / " + UnitUtils.getUnitCount(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Wraith));
         y += 11;
 
         Monster.Broodwar.drawTextScreen(x, y, UxColor.CHAR_WHITE + "Valkyrie Count : ");
-        Monster.Broodwar.drawTextScreen(x + 75, y, "" + UxColor.CHAR_WHITE + StrategyBoard.valkyrieCount + " / " + UnitUtils.getUnitCount(CommonCode.UnitFindRange.COMPLETE, UnitType.Terran_Valkyrie));
+        Monster.Broodwar.drawTextScreen(x + 75, y, "" + UxColor.CHAR_WHITE + StrategyBoard.valkyrieCount + " / " + UnitUtils.getUnitCount(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Valkyrie));
         y += 11;
 
         Monster.Broodwar.drawTextScreen(x, y, UxColor.CHAR_RED + "MYKillScore : ");
@@ -1405,7 +1405,7 @@ public class PreBotUXManager {
 
         y += 15;
         Monster.Broodwar.drawTextScreen(x, y, "" + "*" + "SCV");
-        Monster.Broodwar.drawTextScreen(x + 120, y, "" + UnitUtils.getUnitCount(CommonCode.UnitFindRange.COMPLETE, UnitType.Terran_SCV));
+        Monster.Broodwar.drawTextScreen(x + 120, y, "" + UnitUtils.getUnitCount(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_SCV));
         y += 10;
         for (Squad squad : CombatManager.Instance().squadData.getSquadMap().values()) {
             Color squadColor = UxColor.SQUAD_COLOR.get(squad.getClass());
@@ -1549,7 +1549,7 @@ public class PreBotUXManager {
     }
 
     private void drawEnemyAirDefenseRange() {
-        List<UnitInfo> airDefenseEuiList = UnitUtils.getEnemyUnitInfoList(CommonCode.EnemyUnitFindRange.ALL, UnitUtils.enemyAirDefenseUnitType());
+        List<UnitInfo> airDefenseEuiList = UnitUtils.getEnemyUnitInfoList(CommonCode.EnemyUnitVisibleStatus.ALL, UnitUtils.enemyAirDefenseUnitType());
         for (UnitInfo eui : airDefenseEuiList) {
             if (eui.getType() == UnitType.Terran_Bunker) {
                 Monster.Broodwar.drawCircleMap(eui.getLastPosition(), Monster.Broodwar.enemy().weaponMaxRange(UnitType.Terran_Marine.groundWeapon()) + 96, Color.White);
@@ -1557,7 +1557,7 @@ public class PreBotUXManager {
                 Monster.Broodwar.drawCircleMap(eui.getLastPosition(), eui.getType().airWeapon().maxRange(), Color.White);
             }
         }
-        List<UnitInfo> wraithKillerEuiList = UnitUtils.getEnemyUnitInfoList(CommonCode.EnemyUnitFindRange.ALL, UnitUtils.wraithKillerUnitType());
+        List<UnitInfo> wraithKillerEuiList = UnitUtils.getEnemyUnitInfoList(CommonCode.EnemyUnitVisibleStatus.ALL, UnitUtils.wraithKillerUnitType());
         for (UnitInfo eui : wraithKillerEuiList) {
             Monster.Broodwar.drawCircleMap(eui.getLastPosition(), eui.getType().airWeapon().maxRange(), Color.Grey);
         }
@@ -1705,7 +1705,7 @@ public class PreBotUXManager {
     private void drawCCtoScvCount() {
 
         int y = 100;
-        for (Unit depot : UnitUtils.getUnitList(CommonCode.UnitFindRange.COMPLETE, UnitType.Terran_Command_Center)) {
+        for (Unit depot : UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Command_Center)) {
             // update workerData with the new job
             Monster.Broodwar.drawTextScreen(500, y, "depot.getID() : " + depot.getID() + " cnt : " + WorkerData.depotWorkerCount.get(depot.getID()));
             y += 10;

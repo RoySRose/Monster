@@ -5,15 +5,15 @@ import bwapi.Unit;
 import bwapi.UnitType;
 import bwta.BWTA;
 import bwta.Region;
+import org.monster.board.StrategyBoard;
 import org.monster.common.LagObserver;
 import org.monster.common.UnitInfo;
+import org.monster.common.constant.CommonCode;
 import org.monster.common.util.BaseUtils;
 import org.monster.common.util.CommandUtils;
 import org.monster.common.util.InfoUtils;
 import org.monster.common.util.PositionUtils;
-import org.monster.common.util.TilePositionUtils;
 import org.monster.common.util.TimeUtils;
-import org.monster.board.StrategyBoard;
 import org.monster.strategy.manage.PositionFinder;
 
 import java.util.Collection;
@@ -45,7 +45,7 @@ public abstract class Control {
     }
 
     public boolean findRat(Collection<Unit> unitList) {
-        Position centerPosition = TilePositionUtils.getCenterTilePosition().toPosition();
+        Position centerPosition = CommonCode.CENTER_POS;
         for (Unit unit : unitList) {
             if (skipControl(unit)) {
                 continue;
