@@ -16,7 +16,7 @@ import org.monster.micro.CombatManager;
 import org.monster.micro.constant.MicroConfig;
 import org.monster.micro.control.airforce.ValkyrieControl;
 import org.monster.micro.targeting.TargetFilter;
-import org.monster.strategy.manage.PositionFinder;
+import org.monster.decisions.strategy.manage.PositionFinder;
 
 import java.util.ArrayList;
 import java.util.List;

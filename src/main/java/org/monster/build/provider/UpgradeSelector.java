@@ -9,7 +9,7 @@ import org.monster.common.MetaType;
 import org.monster.common.constant.CommonCode;
 import org.monster.common.util.UnitUtils;
 import org.monster.main.Monster;
-import org.monster.strategy.manage.AttackExpansionManager;
+import org.monster.decisions.strategy.manage.AttackExpansionManager;
 
 //EXAMPLE
 @Deprecated

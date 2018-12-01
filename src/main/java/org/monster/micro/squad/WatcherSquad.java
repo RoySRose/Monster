@@ -19,9 +19,9 @@ import org.monster.main.Monster;
 import org.monster.micro.CombatManager;
 import org.monster.micro.constant.MicroConfig;
 import org.monster.micro.control.groundforce.WatcherControl;
-import org.monster.micro.predictor.VultureFightPredictor;
+import org.monster.micro.compute.VultureFightPredictor;
 import org.monster.micro.targeting.TargetFilter;
-import org.monster.strategy.manage.PositionFinder;
+import org.monster.decisions.strategy.manage.PositionFinder;
 
 import java.util.Collection;
 import java.util.List;

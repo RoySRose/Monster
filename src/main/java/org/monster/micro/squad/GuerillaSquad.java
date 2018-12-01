@@ -7,7 +7,7 @@ import org.monster.common.util.MicroUtils;
 import org.monster.common.util.UnitUtils;
 import org.monster.micro.constant.MicroConfig;
 import org.monster.micro.targeting.TargetFilter;
-import org.monster.strategy.manage.VultureTravelManager;
+import org.monster.decisions.strategy.manage.VultureTravelManager;
 
 import java.util.List;
 

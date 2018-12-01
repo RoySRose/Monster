@@ -7,7 +7,7 @@ import bwapi.UnitType;
 import org.monster.common.UnitInfo;
 import org.monster.common.constant.CommonCode;
 import org.monster.common.util.MicroUtils;
-import org.monster.strategy.manage.AirForceManager;
+import org.monster.decisions.strategy.manage.AirForceManager;
 import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.UnitUtils;
 

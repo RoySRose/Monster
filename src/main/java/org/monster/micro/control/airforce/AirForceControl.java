@@ -18,9 +18,9 @@ import org.monster.micro.constant.MicroConfig;
 import org.monster.micro.control.Control;
 import org.monster.micro.targeting.WraithTargetCalculator;
 import org.monster.board.StrategyBoard;
-import org.monster.strategy.manage.AirForceManager;
-import org.monster.strategy.manage.AirForceTeam;
-import org.monster.strategy.manage.PositionFinder;
+import org.monster.decisions.strategy.manage.AirForceManager;
+import org.monster.decisions.strategy.manage.AirForceTeam;
+import org.monster.decisions.strategy.manage.PositionFinder;
 
 import java.util.Arrays;
 import java.util.Collection;

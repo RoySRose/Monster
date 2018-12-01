@@ -8,8 +8,8 @@ import org.monster.decisions.constant.EnemyStrategyOptions;
 import org.monster.decisions.constant.StrategyCode;
 import org.monster.decisions.constant.EnemyStrategy;
 import org.monster.micro.constant.MicroConfig;
-import org.monster.strategy.manage.PositionFinder;
-import org.monster.strategy.manage.SpiderMineManger;
+import org.monster.decisions.strategy.manage.PositionFinder;
+import org.monster.decisions.strategy.manage.SpiderMineManger;
 
 import java.util.ArrayList;
 import java.util.List;

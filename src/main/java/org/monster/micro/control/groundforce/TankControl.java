@@ -23,8 +23,8 @@ import org.monster.micro.constant.MicroConfig;
 import org.monster.micro.constant.MicroConfig.MainSquadMode;
 import org.monster.micro.control.Control;
 import org.monster.board.StrategyBoard;
-import org.monster.strategy.manage.PositionFinder;
-import org.monster.strategy.manage.TankPositionManager;
+import org.monster.decisions.strategy.manage.PositionFinder;
+import org.monster.decisions.strategy.manage.TankPositionManager;
 
 import java.util.ArrayList;
 import java.util.Collection;

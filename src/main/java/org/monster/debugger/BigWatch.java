@@ -7,7 +7,7 @@ import org.monster.common.MapGrid;
 import org.monster.common.util.TimeUtils;
 import org.monster.main.GameManager;
 import org.monster.micro.CombatManager;
-import org.monster.strategy.StrategyManager;
+import org.monster.decisions.strategy.StrategyManager;
 import org.monster.worker.WorkerManager;
 
 import java.util.Arrays;

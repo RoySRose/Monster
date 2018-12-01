@@ -318,7 +318,7 @@ public class BaseInfoCollector implements InfoCollector {
         }
 
         private void search(){
-            if(!enemyStartLocationFound){
+            if(enemyStartLocationFound){
                 return;
             }
 

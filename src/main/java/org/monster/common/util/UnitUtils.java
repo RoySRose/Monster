@@ -19,7 +19,7 @@ import org.monster.main.Monster;
 import org.monster.worker.WorkerManager;
 import org.monster.micro.targeting.TargetFilter;
 import org.monster.board.StrategyBoard;
-import org.monster.strategy.manage.PositionFinder;
+import org.monster.decisions.strategy.manage.PositionFinder;
 
 import java.util.ArrayList;
 import java.util.Collection;

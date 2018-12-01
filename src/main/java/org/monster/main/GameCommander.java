@@ -16,7 +16,7 @@ import org.monster.debugger.chat.ChatBot;
 import org.monster.common.util.InfoCollectorManager;
 import org.monster.common.util.UnitCache;
 import org.monster.micro.CombatManager;
-import org.monster.strategy.StrategyManager;
+import org.monster.decisions.strategy.StrategyManager;
 import org.monster.worker.WorkerManager;
 
 public class GameCommander {
@@ -40,12 +40,15 @@ public class GameCommander {
         }
 
         InfoCollectorManager.Instance().onStart(Broodwar);
+
         //BlockingEntrance.Instance().onStart(Broodwar);
         ConstructionPlaceFinder.Instance().setTilesToAvoidSupply();
         ConstructionPlaceFinder.Instance().setTilesToAvoidBaseLocation();
         InitialBuildProvider.Instance().onStart();
         StrategyManager.Instance().onStart();
         //AttackDecisionMaker.Instance().onStart();
+
+
         CombatManager.Instance().onStart();
         System.out.println("onStart() finished");
     }
@@ -78,15 +81,15 @@ public class GameCommander {
              * Brain
              */
             StrategyManager.Instance().updateTimeCheck();
+//            AttackDecisionMaker.Instance().updateTimeCheck();
 
             /**
              * Hands
              */
-            // progressive & complete => initial end
+
             InitialBuildProvider.Instance().updateInitialBuild();
             BuildQueueProvider.Instance().updateTimeCheck();
             BuildManager.Instance().updateTimeCheck();
-
             ConstructionManager.Instance().updateTimeCheck();
 
             //TODO 일단은 disable unitBalancer
@@ -94,7 +97,6 @@ public class GameCommander {
 
             WorkerManager.Instance().updateTimeCheck();
             CombatManager.Instance().updateTimeCheck();
-//            AttackDecisionMaker.Instance().updateTimeCheck();
 
             BigWatch.record("... GAME COMMANDER ...");
 

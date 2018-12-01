@@ -24,7 +24,7 @@ import org.monster.micro.MicroDecisionMakerPrebot1;
 import org.monster.micro.constant.MicroConfig;
 import org.monster.micro.control.Control;
 import org.monster.board.StrategyBoard;
-import org.monster.strategy.manage.SpiderMineManger;
+import org.monster.decisions.strategy.manage.SpiderMineManger;
 
 import java.util.ArrayList;
 import java.util.Collection;
