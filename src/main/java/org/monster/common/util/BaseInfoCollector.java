@@ -28,7 +28,6 @@ public class BaseInfoCollector implements InfoCollector {
 
     Game Broodwar;
 
-
     protected Map<Player, BaseLocation> mainBaseLocation = new HashMap();
     protected Map<Player, Boolean> mainBaseLocationChanged = new HashMap();
     /// 해당 Player가 점령하고 있는 Region 이 있는 BaseLocation<br>
@@ -85,14 +84,14 @@ public class BaseInfoCollector implements InfoCollector {
         occupiedBaseLocations.put(enemyPlayer, new ArrayList<>());
     }
 
-    private void setMyStartBaseLocation(){
-        mainBaseLocation.put(selfPlayer, BWTA.getStartLocation(selfPlayer));
-        mainBaseLocationChanged.put(selfPlayer, new Boolean(true));
-    }
-
     private void updateMyMainBase() {
         setMyStartBaseLocation();
         updateInfoByMainBaseChange(selfPlayer);
+    }
+
+    private void setMyStartBaseLocation(){
+        mainBaseLocation.put(selfPlayer, BWTA.getStartLocation(selfPlayer));
+        mainBaseLocationChanged.put(selfPlayer, new Boolean(true));
     }
 
     @Override
