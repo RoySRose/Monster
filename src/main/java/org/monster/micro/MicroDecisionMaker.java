@@ -12,13 +12,13 @@ import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.UnitUtils;
 import org.monster.decisions.constant.StrategyCode;
 import org.monster.decisions.constant.StrategyConfig;
-import org.monster.main.Monster;
-import org.monster.micro.constant.MicroConfig;
-import org.monster.micro.compute.WraithFightPredictor;
-import org.monster.micro.targeting.TargetScoreCalculator;
-import org.monster.micro.targeting.WraithTargetCalculator;
 import org.monster.decisions.strategy.manage.AirForceManager;
 import org.monster.decisions.strategy.manage.AirForceTeam;
+import org.monster.bootstrap.Monster;
+import org.monster.micro.compute.WraithFightPredictor;
+import org.monster.micro.constant.MicroConfig;
+import org.monster.micro.targeting.TargetScoreCalculator;
+import org.monster.micro.targeting.WraithTargetCalculator;
 
 import java.util.ArrayList;
 import java.util.Collection;

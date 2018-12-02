@@ -1,11 +1,11 @@
 package org.monster.decisions.strategy.analyse.zerg.unit;
 
 import bwapi.UnitType;
-import org.monster.decisions.strategy.analyse.UnitAnalyser;
 import org.monster.common.UnitInfo;
 import org.monster.common.constant.CommonCode;
 import org.monster.common.util.TimeUtils;
 import org.monster.decisions.strategy.analyse.Clue;
+import org.monster.decisions.strategy.analyse.UnitAnalyser;
 import org.monster.decisions.strategy.manage.ClueManager;
 import org.monster.decisions.strategy.manage.EnemyBuildTimer;
 

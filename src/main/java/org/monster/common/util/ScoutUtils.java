@@ -11,8 +11,8 @@ public class ScoutUtils {
         return ScoutInfoCollector.Instance().getRegionVertices(base);
     }
 
-    public static void calculateEnemyRegionVertices(BaseLocation base){
-        ScoutInfoCollector.Instance().calculateEnemyRegionVertices(base);     
+    public static void calculateEnemyRegionVertices(BaseLocation base) {
+        ScoutInfoCollector.Instance().calculateEnemyRegionVertices(base);
     }
-    
+
 }

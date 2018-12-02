@@ -1,7 +1,7 @@
 package org.monster.debugger.chat.impl;
 
-import org.monster.main.Monster;
 import org.monster.debugger.chat.ChatExecuter;
+import org.monster.bootstrap.Monster;
 
 public class GameSpeedAdjuster extends ChatExecuter {
     public GameSpeedAdjuster(char type) {

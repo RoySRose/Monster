@@ -14,7 +14,7 @@ import org.monster.common.util.MicroUtils;
 import org.monster.common.util.PositionUtils;
 import org.monster.common.util.UnitUtils;
 import org.monster.decisions.constant.EnemyStrategy;
-import org.monster.main.Monster;
+import org.monster.bootstrap.Monster;
 import org.monster.micro.FleeOption;
 import org.monster.micro.constant.MicroConfig;
 import org.monster.micro.control.Control;
@@ -83,6 +83,7 @@ public class VesselControl extends Control {
 
     /**
      * 회피지점의 위험도
+     *
      * @param unitType
      * @param position
      * @param radius

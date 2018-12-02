@@ -10,13 +10,13 @@ import bwapi.WeaponType;
 import org.monster.common.LagObserver;
 import org.monster.common.UnitInfo;
 import org.monster.common.constant.CommonCode;
-import org.monster.main.Monster;
+import org.monster.decisions.strategy.manage.AirForceManager;
+import org.monster.bootstrap.Monster;
 import org.monster.micro.FleeOption;
 import org.monster.micro.KitingOption;
 import org.monster.micro.MirrorBugFixed;
 import org.monster.micro.constant.MicroConfig;
 import org.monster.micro.targeting.TargetFilter;
-import org.monster.decisions.strategy.manage.AirForceManager;
 
 import java.util.Collection;
 import java.util.HashMap;

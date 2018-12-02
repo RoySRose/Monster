@@ -7,7 +7,7 @@ import bwapi.UnitType;
 import bwapi.Unitset;
 import bwta.BWTA;
 import org.monster.common.util.TimeUtils;
-import org.monster.main.Monster;
+import org.monster.bootstrap.Monster;
 
 import java.util.Vector;
 

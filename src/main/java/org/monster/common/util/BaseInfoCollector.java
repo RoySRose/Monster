@@ -21,13 +21,6 @@ import java.util.Map;
 public class BaseInfoCollector implements InfoCollector {
 
     private static BaseInfoCollector instance = new BaseInfoCollector();
-
-    public static BaseInfoCollector Instance() {
-        return instance;
-    }
-
-    Game Broodwar;
-
     protected Map<Player, BaseLocation> mainBaseLocation = new HashMap();
     protected Map<Player, Boolean> mainBaseLocationChanged = new HashMap();
     /// 해당 Player가 점령하고 있는 Region 이 있는 BaseLocation<br>
@@ -35,19 +28,19 @@ public class BaseInfoCollector implements InfoCollector {
     protected Map<Player, List<BaseLocation>> occupiedBaseLocations = new HashMap();
     protected Map<Player, BaseLocation> firstExpansionLocation = new HashMap();
     protected List<BaseLocation> islandBaseLocations = new ArrayList();
-
     protected BaseLocation enemyBaseExpected; // 적base 예상 지점
-
     //TODO needed?
     protected List<BaseLocation> otherExpansionLocations = new ArrayList();
-
+    Game Broodwar;
     private Player selfPlayer;
     private Player enemyPlayer;
-
     private EnemyBaseLocator enemyBaseLocator;
-
     private ChokeInfoCollector chokeInfoCollector;
     private RegionInfoCollector regionInfoCollector;
+
+    public static BaseInfoCollector Instance() {
+        return instance;
+    }
 
     @Override
     public void onStart(Game Broodwar) {
@@ -79,17 +72,16 @@ public class BaseInfoCollector implements InfoCollector {
         }
     }
 
-    private void initialize(){
+    private void initialize() {
         occupiedBaseLocations.put(selfPlayer, new ArrayList<>());
         occupiedBaseLocations.put(enemyPlayer, new ArrayList<>());
     }
 
     private void updateMyMainBase() {
         setMyStartBaseLocation();
-        updateInfoByMainBaseChange(selfPlayer);
     }
 
-    private void setMyStartBaseLocation(){
+    private void setMyStartBaseLocation() {
         mainBaseLocation.put(selfPlayer, BWTA.getStartLocation(selfPlayer));
         mainBaseLocationChanged.put(selfPlayer, new Boolean(true));
     }
@@ -117,11 +109,11 @@ public class BaseInfoCollector implements InfoCollector {
 
         if (mainBaseLocation.get(player) != null) {
 
-        TilePosition baseTile = mainBaseLocation.get(player).getTilePosition();
+            TilePosition baseTile = mainBaseLocation.get(player).getTilePosition();
 
             if (existsPlayerBuildingInRegion(BWTA.getRegion(baseTile), player) == false) {
 
-                if(player == PlayerUtils.enemyPlayer() && !Broodwar.isExplored(baseTile)){
+                if (player == PlayerUtils.enemyPlayer() && !Broodwar.isExplored(baseTile)) {
                     return;
                 }
                 repickMainBase(player);
@@ -304,25 +296,25 @@ public class BaseInfoCollector implements InfoCollector {
     }
 
 
-    private class EnemyBaseLocator {
+    private class EnemyBaseLocator{
 
         private int exploredStartLocations;
         private boolean enemyStartLocationFound;
         private BaseLocation enemyBaseExpected;
 
-        EnemyBaseLocator(){
-            exploredStartLocations=0;
+        public EnemyBaseLocator() {
+            exploredStartLocations = 0;
             enemyStartLocationFound = false;
             enemyBaseExpected = null;
         }
 
-        private void search(){
-            if(enemyStartLocationFound){
+        public void search() {
+            if (enemyStartLocationFound) {
                 return;
             }
 
             BaseLocation enemyMainBase = locateEnemyMainBase();
-            if(enemyMainBase!=null) {
+            if (enemyMainBase != null) {
                 updateEnemyMainBaseInfo(enemyMainBase);
             }
         }
@@ -399,7 +391,7 @@ public class BaseInfoCollector implements InfoCollector {
                 return predictedByScout;
             }
 
-            BaseLocation rand=null;
+            BaseLocation rand = null;
             for (BaseLocation startLocation : BWTA.getStartLocations()) {
                 if (BaseUtils.equals(startLocation, BaseUtils.myMainBase())) {
                     continue;
@@ -407,7 +399,7 @@ public class BaseInfoCollector implements InfoCollector {
                 if (Broodwar.isExplored(startLocation.getTilePosition())) {
                     continue;
                 }
-                rand=startLocation;
+                rand = startLocation;
             }
             return rand;
         }
@@ -416,22 +408,22 @@ public class BaseInfoCollector implements InfoCollector {
             BaseLocation baseExpected = null;
 
             for (BaseLocation startLocation : BWTA.getStartLocations()) {
-                if (BaseUtils.equals(startLocation,BaseUtils.myMainBase())) {
+                if (BaseUtils.equals(startLocation, BaseUtils.myMainBase())) {
                     continue;
                 }
                 if (Broodwar.isExplored(startLocation.getTilePosition())) {
                     continue;
                 }
 
-                baseExpected = searchWithBuilding(startLocation, InfoUtils.getBasicResourceDepotBuildingType(PlayerUtils.enemyRace()));
-                if(baseExpected == null){
-                    baseExpected = searchWithBuilding(startLocation, InfoUtils.getBasicDefenseBuildingType(PlayerUtils.enemyRace()));
+                baseExpected = searchWithBuilding(startLocation, InfoTypeUtils.getBasicResourceDepotBuildingType(PlayerUtils.enemyRace()));
+                if (baseExpected == null) {
+                    baseExpected = searchWithBuilding(startLocation, InfoTypeUtils.getBasicDefenseBuildingType(PlayerUtils.enemyRace()));
                 }
-                if(baseExpected == null){
-                    baseExpected = searchWithBuilding(startLocation, InfoUtils.getBasicProduceBuildingType(PlayerUtils.enemyRace()));
+                if (baseExpected == null) {
+                    baseExpected = searchWithBuilding(startLocation, InfoTypeUtils.getBasicProduceBuildingType(PlayerUtils.enemyRace()));
                 }
-                if(baseExpected == null){
-                    baseExpected = searchWithBuilding(startLocation, InfoUtils.getBasicSupplyBuildingType(PlayerUtils.enemyRace()));
+                if (baseExpected == null) {
+                    baseExpected = searchWithBuilding(startLocation, InfoTypeUtils.getBasicSupplyBuildingType(PlayerUtils.enemyRace()));
                 }
             }
 

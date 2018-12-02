@@ -1,22 +1,22 @@
-package org.monster.micro.control.factory;
+package org.monster.micro.control.groundforce;
 
 import bwapi.Position;
 import bwapi.Race;
 import bwapi.Unit;
+import org.monster.board.StrategyBoard;
 import org.monster.common.UnitInfo;
 import org.monster.common.util.CommandUtils;
-import org.monster.common.util.InfoUtils;
 import org.monster.common.util.MicroUtils;
 import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.PositionUtils;
 import org.monster.common.util.TimeUtils;
+import org.monster.common.util.UnitUtils;
 import org.monster.micro.FleeOption;
 import org.monster.micro.KitingOption;
 import org.monster.micro.MicroDecision;
 import org.monster.micro.MicroDecisionMakerPrebot1;
 import org.monster.micro.constant.MicroConfig;
 import org.monster.micro.control.Control;
-import org.monster.board.StrategyBoard;
 
 import java.util.Collection;
 
@@ -60,7 +60,7 @@ public class GoliathControl extends Control {
                     continue;
                 }
             } else {
-                if (InfoUtils.euiListInBase().isEmpty() && InfoUtils.euiListInExpansion().isEmpty()) {
+                if (UnitUtils.euiListInBase().isEmpty() && UnitUtils.euiListInExpansion().isEmpty()) {
                     if (unit.getDistance(StrategyBoard.mainSquadCenter) > coverRadius) {
                         CommandUtils.move(unit, StrategyBoard.mainSquadCenter);
                         continue;

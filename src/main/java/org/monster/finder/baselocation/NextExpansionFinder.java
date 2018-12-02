@@ -1,16 +1,25 @@
 package org.monster.finder.baselocation;
 
-import bwapi.Position;
-import org.monster.finder.position.PositionFinder;
-
-import java.util.List;
+import org.monster.board.Location;
+import org.monster.finder.DefaultBaseLocationFinder;
+import org.monster.finder.LocationFinder;
 
 //TODO
-public class SecondMainBaseFinder implements PositionFinder {
+public class NextExpansionFinder extends DefaultBaseLocationFinder implements LocationFinder {
+
+    public NextExpansionFinder() {
+        super(Location.MyNextExpansion);
+    }
 
     @Override
-    public List<Position> getPosition() {
-        return null;
+    public boolean calculateLocation() {
+        return false;
+        //return StrategyBoard.decisions.getOrDefault(Decision.ExpandMyExpansion, false);
+    }
+
+    @Override
+    public void decisionLogic() {
+
     }
 }
 

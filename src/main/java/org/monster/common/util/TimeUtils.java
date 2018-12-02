@@ -10,9 +10,10 @@ public class TimeUtils {
     public static final int SECOND = 24;
     public static final int MINUTE = 24 * 60;
 
-    public static int getFrame(){
+    public static int getFrame() {
         return TimeInfoCollector.Instance().getframe();
     }
+
     /// 이전 프레임이면 true
     public static boolean beforeTime(int minutes, int seconds) {
         return before(timeToFrames(minutes, seconds));
@@ -124,8 +125,8 @@ public class TimeUtils {
     public static boolean executeUnitRotation(Unit unit, int rotationSize) {
         //TODO UnitBalancer비활성화로 주석처리
         //return !UnitBalancer.skipControl(unit);
-		int unitGroup = unit.getID() % rotationSize;
-		return executeRotation(unitGroup, rotationSize);
+        int unitGroup = unit.getID() % rotationSize;
+        return executeRotation(unitGroup, rotationSize);
     }
 
     public static int baseToBaseFrame(UnitType unitType) {

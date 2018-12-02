@@ -2,14 +2,14 @@ package org.monster.build.provider.items.unit;
 
 import bwapi.Unit;
 import bwapi.UnitType;
+import org.monster.board.StrategyBoard;
 import org.monster.build.base.BuildManager;
 import org.monster.build.base.ConstructionManager;
 import org.monster.build.provider.DefaultBuildableItem;
 import org.monster.common.MetaType;
 import org.monster.common.constant.CommonCode;
 import org.monster.common.util.UnitUtils;
-import org.monster.main.Monster;
-import org.monster.board.StrategyBoard;
+import org.monster.bootstrap.Monster;
 
 import java.util.List;
 

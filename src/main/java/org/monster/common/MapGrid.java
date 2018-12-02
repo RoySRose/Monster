@@ -9,8 +9,8 @@ import org.monster.build.constant.BuildConfig;
 import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.TimeUtils;
 import org.monster.decisions.constant.StrategyConfig;
-import org.monster.main.GameManager;
-import org.monster.main.Monster;
+import org.monster.bootstrap.GameManager;
+import org.monster.bootstrap.Monster;
 
 import java.util.ArrayList;
 import java.util.List;

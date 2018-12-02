@@ -1,17 +1,27 @@
 package org.monster.finder.chokepoint;
 
-import bwapi.Position;
-import org.monster.finder.position.PositionFinder;
-
-import java.util.List;
+import org.monster.board.Location;
+import org.monster.finder.DefaultChokePointFinder;
+import org.monster.finder.LocationFinder;
 
 //TODO 일단 옮겨놓긴 했는데 다음 초크 포인트 찾는거는 유틸성으로 보임. util 쪽으로 옮겨야할지도. 참고용
-public class NextChokePointFinder implements PositionFinder {
+public class BestChokePointToDefenceFinder extends DefaultChokePointFinder implements LocationFinder {
+
+    public BestChokePointToDefenceFinder() {
+        super(Location.BestChokePointToDefence);
+    }
 
     @Override
-    public List<Position> getPosition() {
-        return null;
+    public boolean calculateLocation() {
+        //every frame?
+        return true;
     }
+
+    @Override
+    public void decisionLogic() {
+
+    }
+
 }
 //
 //

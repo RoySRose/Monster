@@ -5,16 +5,16 @@ import bwapi.UnitType;
 import bwapi.UpgradeType;
 import org.monster.build.provider.items.building.BuilderHatchery;
 import org.monster.build.provider.items.building.BuilderSpawningPool;
-import org.monster.build.provider.items.unit.BuilderDrone;
-import org.monster.build.provider.items.upgrade.BuilderMetabolicBoost;
-import org.monster.main.GameManager;
 import org.monster.build.provider.items.tech.BuilderConsume;
+import org.monster.build.provider.items.unit.BuilderDrone;
 import org.monster.build.provider.items.unit.BuilderZergling;
+import org.monster.build.provider.items.upgrade.BuilderMetabolicBoost;
 import org.monster.common.LagObserver;
 import org.monster.common.MetaType;
 import org.monster.common.constant.CommonCode;
 import org.monster.common.util.TimeUtils;
-import org.monster.main.Monster;
+import org.monster.bootstrap.GameManager;
+import org.monster.bootstrap.Monster;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,19 +25,11 @@ public class BuildQueueProvider extends GameManager {
 
     private static BuildQueueProvider instance = new BuildQueueProvider();
     List<BuildableItem> buildableList = new ArrayList<>();
-
-    private Map<Integer, Integer> notOperatingFactoryTime = new HashMap<>();
-    private Map<UpgradeType, Integer> upgradeStartMap = new HashMap<>();
-
     ResearchSelector researchSelector;
     UpgradeSelector upgradeSelector;
     FactoryUnitSelector factoryUnitSelector;
-
-    /// static singleton 객체를 리턴합니다
-    public static BuildQueueProvider Instance() {
-        return instance;
-    }
-
+    private Map<Integer, Integer> notOperatingFactoryTime = new HashMap<>();
+    private Map<UpgradeType, Integer> upgradeStartMap = new HashMap<>();
 
     public BuildQueueProvider() {
 
@@ -70,6 +62,10 @@ public class BuildQueueProvider extends GameManager {
 
     }
 
+    /// static singleton 객체를 리턴합니다
+    public static BuildQueueProvider Instance() {
+        return instance;
+    }
 
     public void startUpgrade(UpgradeType upgradeType) {
         upgradeStartMap.put(upgradeType, TimeUtils.elapsedFrames());

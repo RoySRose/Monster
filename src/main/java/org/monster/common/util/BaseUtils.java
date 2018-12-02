@@ -40,10 +40,10 @@ public class BaseUtils {
         return BaseInfoCollector.Instance().findClosestBase(sourceBase);
     }
 
-    public static boolean equals(BaseLocation a, BaseLocation b){
+    public static boolean equals(BaseLocation a, BaseLocation b) {
         if (a.getTilePosition().equals(b.getTilePosition())) {
             return true;
-        }else{
+        } else {
             return false;
         }
     }

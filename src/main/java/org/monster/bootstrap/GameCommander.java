@@ -1,22 +1,24 @@
-package org.monster.main;
+package org.monster.bootstrap;
 
 import bwapi.Game;
 import bwapi.Player;
 import bwapi.Position;
 import bwapi.TilePosition;
 import bwapi.Unit;
+import org.monster.board.StrategyBoard;
 import org.monster.build.base.BuildManager;
 import org.monster.build.base.ConstructionManager;
-import org.monster.build.base.ConstructionPlaceFinder;
 import org.monster.build.initialProvider.InitialBuildProvider;
 import org.monster.build.provider.BuildQueueProvider;
 import org.monster.common.MapGrid;
-import org.monster.debugger.BigWatch;
-import org.monster.debugger.chat.ChatBot;
 import org.monster.common.util.InfoCollectorManager;
 import org.monster.common.util.UnitCache;
-import org.monster.micro.CombatManager;
+import org.monster.debugger.BigWatch;
+import org.monster.debugger.chat.ChatBot;
+import org.monster.decisions.DecisionManager;
 import org.monster.decisions.strategy.StrategyManager;
+import org.monster.finder.LocationManager;
+import org.monster.micro.CombatManager;
 import org.monster.worker.WorkerManager;
 
 public class GameCommander {
@@ -39,17 +41,29 @@ public class GameCommander {
             return;
         }
 
-        InfoCollectorManager.Instance().onStart(Broodwar);
+        try {
+            StrategyBoard.Instance().init();
 
-        //BlockingEntrance.Instance().onStart(Broodwar);
-        ConstructionPlaceFinder.Instance().setTilesToAvoidSupply();
-        ConstructionPlaceFinder.Instance().setTilesToAvoidBaseLocation();
-        InitialBuildProvider.Instance().onStart();
-        StrategyManager.Instance().onStart();
-        //AttackDecisionMaker.Instance().onStart();
+            InfoCollectorManager.Instance().onStart(Broodwar);
+
+            //BlockingEntrance.Instance().onStart(Broodwar);
+
+            //TODO 2건 풀면 오류 발생( onStart 를 complete 하지 못함)
+    //        ConstructionPlaceFinder.Instance().setTilesToAvoidSupply();
+    //        ConstructionPlaceFinder.Instance().setTilesToAvoidBaseLocation();
 
 
-        CombatManager.Instance().onStart();
+            InitialBuildProvider.Instance().onStart();
+
+            StrategyManager.Instance().onStart();
+            DecisionManager.Instance().onStart();
+            LocationManager.Instance().onStart();
+            //AttackDecisionMaker.Instance().onStart();
+
+            CombatManager.Instance().onStart();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         System.out.println("onStart() finished");
     }
 
@@ -82,7 +96,8 @@ public class GameCommander {
              */
             StrategyManager.Instance().updateTimeCheck();
 //            AttackDecisionMaker.Instance().updateTimeCheck();
-
+            DecisionManager.Instance().updateTimeCheck();
+            LocationManager.Instance().updateTimeCheck();
             /**
              * Hands
              */

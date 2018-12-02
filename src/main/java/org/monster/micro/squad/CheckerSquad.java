@@ -5,10 +5,11 @@ import bwapi.UnitType;
 import org.monster.board.StrategyBoard;
 import org.monster.common.UnitInfo;
 import org.monster.common.util.UnitUtils;
+import org.monster.decisions.strategy.manage.VultureTravelManager;
 import org.monster.micro.CombatManager;
 import org.monster.micro.constant.MicroConfig;
+import org.monster.micro.control.groundforce.VultureControl;
 import org.monster.micro.targeting.TargetFilter;
-import org.monster.decisions.strategy.manage.VultureTravelManager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,7 +21,7 @@ import java.util.Map;
 import java.util.Set;
 
 public class CheckerSquad extends Squad {
-    private org.monster.micro.control.factory.VultureControl vultureControl = new org.monster.micro.control.factory.VultureControl();
+    private VultureControl vultureControl = new VultureControl();
 
     public CheckerSquad() {
         super(MicroConfig.SquadInfo.CHECKER);

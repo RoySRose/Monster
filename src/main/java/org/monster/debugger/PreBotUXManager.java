@@ -16,6 +16,8 @@ import bwta.Chokepoint;
 import bwta.Polygon;
 import bwta.Region;
 import org.monster.board.StrategyBoard;
+import org.monster.bootstrap.GameManager;
+import org.monster.bootstrap.Monster;
 import org.monster.build.base.BuildManager;
 import org.monster.build.base.BuildOrderItem;
 import org.monster.build.base.ConstructionManager;
@@ -31,27 +33,23 @@ import org.monster.common.constant.CommonCode;
 import org.monster.common.constant.CommonConfig;
 import org.monster.common.util.BaseUtils;
 import org.monster.common.util.ChokePointUtils;
-import org.monster.common.util.InfoUtils;
 import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.PositionUtils;
 import org.monster.common.util.TimeUtils;
 import org.monster.common.util.UnitUtils;
 import org.monster.decisions.constant.EnemyStrategy;
 import org.monster.decisions.constant.StrategyCode;
-import org.monster.main.GameManager;
-import org.monster.main.Monster;
-import org.monster.micro.CombatManager;
-import org.monster.micro.MicroDecision;
-import org.monster.micro.Minerals;
-import org.monster.micro.squad.Squad;
-import org.monster.micro.squad.WatcherSquad;
 import org.monster.decisions.strategy.StrategyManager;
 import org.monster.decisions.strategy.manage.AirForceManager;
 import org.monster.decisions.strategy.manage.AirForceTeam;
 import org.monster.decisions.strategy.manage.ClueManager;
 import org.monster.decisions.strategy.manage.EnemyBuildTimer;
 import org.monster.decisions.strategy.manage.StrategyAnalyseManager;
-import org.monster.decisions.strategy.manage.VultureTravelManager;
+import org.monster.micro.CombatManager;
+import org.monster.micro.MicroDecision;
+import org.monster.micro.Minerals;
+import org.monster.micro.squad.Squad;
+import org.monster.micro.squad.WatcherSquad;
 import org.monster.worker.WorkerData;
 import org.monster.worker.WorkerManager;
 
@@ -449,7 +447,7 @@ public class PreBotUXManager {
     public void drawUnitExtendedInformationOnMap() {
         int verticalOffset = -10;
 
-        for(UnitInfo ui : UnitUtils.getEnemyUnitInfoList()){
+        for (UnitInfo ui : UnitUtils.getEnemyUnitInfoList()) {
 
             UnitType type = ui.getType();
             int hitPoints = ui.getLastHealth();
@@ -806,39 +804,39 @@ public class PreBotUXManager {
             }
 
             // OccupiedBaseLocation 을 원으로 표시
-//            for (BaseLocation baseLocation : InfoUtils.getOccupiedBaseLocations(PlayerUtils.myPlayer())) {
+//            for (BaseLocation baseLocation : InfoTypeUtils.getOccupiedBaseLocations(PlayerUtils.myPlayer())) {
 //                Monster.Broodwar.drawCircleMap(baseLocation.getPosition(), 10 * CommonConfig.UxConfig.TILE_SIZE, Color.Blue);
 //            }
-//            for (BaseLocation baseLocation : InfoUtils.getOccupiedBaseLocations(PlayerUtils.enemyPlayer())) {
+//            for (BaseLocation baseLocation : InfoTypeUtils.getOccupiedBaseLocations(PlayerUtils.enemyPlayer())) {
 //                Monster.Broodwar.drawCircleMap(baseLocation.getPosition(), 10 * CommonConfig.UxConfig.TILE_SIZE, Color.Red);
-            }
+        }
 
-            // ChokePoint, BaseLocation 을 텍스트로 표시
-            if (ChokePointUtils.myFirstChoke() != null) {
-                Monster.Broodwar.drawTextMap(BaseUtils.myMainBase().getPosition(), "My MainBaseLocation");
-            }
-            if (ChokePointUtils.myFirstChoke() != null) {
-                Monster.Broodwar.drawTextMap(ChokePointUtils.myFirstChoke().getCenter(), "My First ChokePoint");
-            }
-            if (ChokePointUtils.mySecondChoke() != null) {
-                Monster.Broodwar.drawTextMap(ChokePointUtils.mySecondChoke().getCenter(), "My Second ChokePoint");
-            }
-            if (BaseUtils.myFirstExpansion() != null) {
-                Monster.Broodwar.drawTextMap(BaseUtils.myFirstExpansion().getPosition(), "My First ExpansionLocation");
-            }
+        // ChokePoint, BaseLocation 을 텍스트로 표시
+        if (ChokePointUtils.myFirstChoke() != null) {
+            Monster.Broodwar.drawTextMap(BaseUtils.myMainBase().getPosition(), "My MainBaseLocation");
+        }
+        if (ChokePointUtils.myFirstChoke() != null) {
+            Monster.Broodwar.drawTextMap(ChokePointUtils.myFirstChoke().getCenter(), "My First ChokePoint");
+        }
+        if (ChokePointUtils.mySecondChoke() != null) {
+            Monster.Broodwar.drawTextMap(ChokePointUtils.mySecondChoke().getCenter(), "My Second ChokePoint");
+        }
+        if (BaseUtils.myFirstExpansion() != null) {
+            Monster.Broodwar.drawTextMap(BaseUtils.myFirstExpansion().getPosition(), "My First ExpansionLocation");
+        }
 
-//            if (InfoUtils.enemyFirstChoke().getFirstChokePoint(PlayerUtils.enemyPlayer()) != null) {
+//            if (InfoTypeUtils.enemyFirstChoke().getFirstChokePoint(PlayerUtils.enemyPlayer()) != null) {
 //                Monster.Broodwar.drawTextMap(BaseUtils.enemyMainBase().getPosition(), "Enemy MainBaseLocation");
 //            }
-//            if (InfoUtils.getFirstChokePoint(PlayerUtils.enemyPlayer()) != null) {
+//            if (InfoTypeUtils.getFirstChokePoint(PlayerUtils.enemyPlayer()) != null) {
 //                Monster.Broodwar.drawTextMap(InformationManager.Instance().getFirstChokePoint(PlayerUtils.enemyPlayer()).getCenter(), "Enemy First ChokePoint");
 //            }
-            if (ChokePointUtils.enemySecondChoke() != null) {
-                Monster.Broodwar.drawTextMap(ChokePointUtils.enemySecondChoke().getCenter(), "Enemy Second ChokePoint");
-            }
-            if (BaseUtils.enemyFirstExpansion() != null) {
-                Monster.Broodwar.drawTextMap(BaseUtils.enemyFirstExpansion().getPosition(), "Enemy First ExpansionLocation");
-            }
+        if (ChokePointUtils.enemySecondChoke() != null) {
+            Monster.Broodwar.drawTextMap(ChokePointUtils.enemySecondChoke().getCenter(), "Enemy Second ChokePoint");
+        }
+        if (BaseUtils.enemyFirstExpansion() != null) {
+            Monster.Broodwar.drawTextMap(BaseUtils.enemyFirstExpansion().getPosition(), "Enemy First ExpansionLocation");
+        }
     }
 
     /// Tile Position 그리드를 Map 에 표시합니다
@@ -1383,18 +1381,18 @@ public class PreBotUXManager {
                 }
             }
 
-            Map<Integer, Integer> checkerSiteMap = VultureTravelManager.Instance().getCheckerSiteMap2();
-            List<BaseLocation> baseList = VultureTravelManager.Instance().getBaseLocationsCheckerOrdered();
-            for (Integer checkerId : checkerSiteMap.keySet()) {
-                Unit unit = Monster.Broodwar.getUnit(checkerId);
-                if (UnitUtils.isValidUnit(unit)) {
-                    Integer index = checkerSiteMap.get(checkerId);
-                    if (index != null) {
-                        Monster.Broodwar.drawTextMap(unit.getPosition().getX() - 20, unit.getPosition().getY() - 5, UxColor.CHAR_ORANGE + baseList.get(index).getPosition().toString());
-                    }
-
-                }
-            }
+//            Map<Integer, Integer> checkerSiteMap = VultureTravelManager.Instance().getCheckerSiteMap2();
+//            List<BaseLocation> baseList = VultureTravelManager.Instance().getBaseLocationsCheckerOrdered();
+//            for (Integer checkerId : checkerSiteMap.keySet()) {
+//                Unit unit = Monster.Broodwar.getUnit(checkerId);
+//                if (UnitUtils.isValidUnit(unit)) {
+//                    Integer index = checkerSiteMap.get(checkerId);
+//                    if (index != null) {
+//                        Monster.Broodwar.drawTextMap(unit.getPosition().getX() - 20, unit.getPosition().getY() - 5, UxColor.CHAR_ORANGE + baseList.get(index).getPosition().toString());
+//                    }
+//
+//                }
+//            }
         }
     }
 
@@ -1434,7 +1432,7 @@ public class PreBotUXManager {
                 WorkerManager.Instance(),
                 CombatManager.Instance()
 //                AttackDecisionMaker.Instance()
-                );
+        );
 
 
         int currentY = y;
@@ -1689,11 +1687,11 @@ public class PreBotUXManager {
             Monster.Broodwar.drawTextMap(StrategyBoard.totalEnemyCneterPosition, "totalEnemySq");
             Monster.Broodwar.drawCircleMap(StrategyBoard.totalEnemyCneterPosition, 250, Color.Red);
         }
-        if (InfoUtils.myReadyToPosition() != null) {
-            Monster.Broodwar.drawTextMap(InfoUtils.myReadyToPosition(), "myReadyTo");
+        if (PositionUtils.myReadyToPosition() != null) {
+            Monster.Broodwar.drawTextMap(PositionUtils.myReadyToPosition(), "myReadyTo");
         }
-        if (InfoUtils.enemyReadyToPosition() != null) {
-            Monster.Broodwar.drawTextMap(InfoUtils.enemyReadyToPosition(), "enemyReadyTo");
+        if (PositionUtils.enemyReadyToPosition() != null) {
+            Monster.Broodwar.drawTextMap(PositionUtils.enemyReadyToPosition(), "enemyReadyTo");
         }
 //		if (VultureTravelManager.Instance().getTravelSites() != null) {
 //			for (TravelSite site : VultureTravelManager.Instance().getTravelSites()) {
@@ -1745,7 +1743,7 @@ public class PreBotUXManager {
 //		
 //		Position betweenChoke2 = Position.None;
 //		
-//		if (StaticMapUtils.getMapSpecificInformation().getMap() == MapSpecificInformation.GameMap.FIGHTING_SPIRITS) {
+//		if (StaticMapUtils.getMapSpecificInformation().getMap() == GameMap.FIGHTING_SPIRITS) {
 //			betweenChoke2 = new Position((firstChokeMainHalf.getX() * 4 + mySecondChoke.getX() * 7) / 11,
 //			(firstChokeMainHalf.getY() * 4 + mySecondChoke.getY() * 7) / 11);
 //		}else {

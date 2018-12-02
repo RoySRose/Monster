@@ -3,21 +3,23 @@ package org.monster.common.util;
 import bwapi.Game;
 import bwta.BWTA;
 import bwta.BaseLocation;
-import org.monster.common.util.internal.MapSpecificInformation;
+import org.monster.common.util.internal.GameMap;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class StaticMapInfoCollector implements InfoCollector{
+public class StaticMapInfoCollector implements InfoCollector {
 
     private static StaticMapInfoCollector instance = new StaticMapInfoCollector();
+    /*Info*/
+    Game Broodwar;
+
+    protected GameMap map;
+    protected List<BaseLocation> startingBaseLocation = new ArrayList<>();
+
     protected static StaticMapInfoCollector Instance() {
         return instance;
     }
-    Game Broodwar;
-
-    /*Info*/
-    protected MapSpecificInformation mapSpecificInformation;
 
     @Override
     public void onStart(Game Broodwar) {
@@ -33,15 +35,15 @@ public class StaticMapInfoCollector implements InfoCollector{
     }
 
     public void updateMapSpecificInformation() {
-        // name으로 map 판단
-        MapSpecificInformation.GameMap gameMap = MapSpecificInformation.GameMap.UNKNOWN;
+
+        GameMap gameMap = GameMap.UNKNOWN;
         String mapName = Broodwar.mapFileName().toUpperCase();
         if (mapName.matches(".*CIRCUIT.*")) {
-            gameMap = MapSpecificInformation.GameMap.CIRCUITBREAKER;
+            gameMap = GameMap.CIRCUITBREAKER;
         } else if (mapName.matches(".*SPIRIT.*")) {
-            gameMap = MapSpecificInformation.GameMap.FIGHTING_SPIRITS;
+            gameMap = GameMap.FIGHTING_SPIRITS;
         } else {
-            gameMap = MapSpecificInformation.GameMap.UNKNOWN;
+            gameMap = GameMap.UNKNOWN;
         }
 
         List<BaseLocation> startingBase = new ArrayList<>();
@@ -51,11 +53,9 @@ public class StaticMapInfoCollector implements InfoCollector{
             }
         }
 
-        MapSpecificInformation mapInfo = new MapSpecificInformation();
-        mapInfo.setMap(gameMap);
-        mapInfo.setStartingBaseLocation(startingBase);
-
-        this.mapSpecificInformation = mapInfo;
+        map = gameMap;
+        startingBaseLocation = startingBase;
     }
+
 
 }

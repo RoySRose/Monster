@@ -15,13 +15,13 @@ import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.TimeUtils;
 import org.monster.common.util.UnitUtils;
 import org.monster.decisions.constant.StrategyCode;
-import org.monster.main.Monster;
+import org.monster.decisions.strategy.manage.PositionFinder;
+import org.monster.bootstrap.Monster;
 import org.monster.micro.CombatManager;
+import org.monster.micro.compute.VultureFightPredictor;
 import org.monster.micro.constant.MicroConfig;
 import org.monster.micro.control.groundforce.WatcherControl;
-import org.monster.micro.compute.VultureFightPredictor;
 import org.monster.micro.targeting.TargetFilter;
-import org.monster.decisions.strategy.manage.PositionFinder;
 
 import java.util.Collection;
 import java.util.List;
@@ -33,7 +33,7 @@ public class WatcherSquad extends Squad {
     private StrategyCode.SmallFightPredict smallFightPredict = StrategyCode.SmallFightPredict.ATTACK;
     private int watcherFleeStartFrame = 0;
 
-//	private Position otherWatcherPosition;
+    //	private Position otherWatcherPosition;
 //	private Position[] regroupPositions = new Position[MAX_REGROUP_POSITION_SIZE];
 //	private int regroupPositionIndex = 0;
 //	private int otherWatcherPositionIndex = 0;

@@ -5,20 +5,19 @@ import bwapi.UnitType;
 import bwta.BWTA;
 import bwta.BaseLocation;
 import bwta.Region;
+import org.monster.board.StrategyBoard;
 import org.monster.common.UnitInfo;
 import org.monster.common.constant.CommonCode;
 import org.monster.common.util.BaseUtils;
 import org.monster.common.util.CommandUtils;
-import org.monster.common.util.InfoUtils;
 import org.monster.common.util.MicroUtils;
 import org.monster.common.util.UnitUtils;
-import org.monster.micro.targeting.DefaultTargetCalculator;
-import org.monster.board.StrategyBoard;
 import org.monster.micro.FleeOption;
 import org.monster.micro.KitingOption;
 import org.monster.micro.MicroDecision;
 import org.monster.micro.MicroDecisionMaker;
 import org.monster.micro.constant.MicroConfig;
+import org.monster.micro.targeting.DefaultTargetCalculator;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -42,7 +41,7 @@ public class ScoutDefenseSquad extends Squad {
     public List<Unit> recruit(List<Unit> assignableUnitList) {
         BaseLocation myBase = BaseUtils.myMainBase();
         Region myRegion = BWTA.getRegion(myBase.getPosition());
-        List<UnitInfo> euiList = InfoUtils.euiListInMyRegion(myRegion);
+        List<UnitInfo> euiList = UnitUtils.euiListInMyRegion(myRegion);
 
         List<Unit> enemyUnitList = new ArrayList<>(); // 메인베이스 지역 내의 시야에 있는 적 리스트
         for (UnitInfo eui : euiList) {

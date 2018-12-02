@@ -14,6 +14,7 @@ public class InitialAction {
     private static InitialAction instance = new InitialAction();
     private boolean terminated = false;
     private boolean assignedFirstScout = false;
+
     private InitialAction() {
     }
 

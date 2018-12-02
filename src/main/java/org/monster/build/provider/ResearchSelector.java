@@ -5,12 +5,12 @@ import bwapi.TechType;
 import bwapi.Unit;
 import bwapi.UnitType;
 import bwapi.UpgradeType;
+import org.monster.board.StrategyBoard;
 import org.monster.build.base.BuildManager;
 import org.monster.common.MetaType;
 import org.monster.common.constant.CommonCode;
 import org.monster.common.util.UnitUtils;
-import org.monster.main.Monster;
-import org.monster.board.StrategyBoard;
+import org.monster.bootstrap.Monster;
 
 import java.util.List;
 
@@ -19,7 +19,7 @@ import java.util.List;
 public class ResearchSelector implements Selector<MetaType> {
     public int currentResearched;
     BuildCondition buildCondition;
-//    MetaType techType;
+    //    MetaType techType;
 //    MetaType upgradeType;
     //BuildCondition buildCondition;
     MetaType metaType;

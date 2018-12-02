@@ -1,16 +1,27 @@
 package org.monster.finder.position.dynamic;
 
-import bwapi.Position;
-import org.monster.finder.position.PositionFinder;
-
-import java.util.List;
+import org.monster.board.Decision;
+import org.monster.board.Location;
+import org.monster.board.StrategyBoard;
+import org.monster.finder.DefaultPositionFinder;
+import org.monster.finder.LocationFinder;
 
 //TODO prebot 읜 전진 배치 등의 사용된 로직으로 추정됨. 저그는 클래스명 부터 바꿔서 쌈싸먹는 위치 찾아야함. 참고용
-public class ReadyToAttackPosFinder implements PositionFinder {
+public class ReadyToAttackPosFinder extends DefaultPositionFinder implements LocationFinder {
+
+    public ReadyToAttackPosFinder() {
+        super(Location.NeedToAdd);
+    }
 
     @Override
-    public List<Position> getPosition() {
-        return null;
+    public boolean calculateLocation() {
+
+        return StrategyBoard.decisions.get(Decision.NeedToAdd);
+    }
+
+    @Override
+    public void decisionLogic() {
+
     }
 }
 

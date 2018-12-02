@@ -1,7 +1,7 @@
 package org.monster.common.util;
 
 import bwapi.Game;
-import org.monster.main.GameManager;
+import org.monster.bootstrap.GameManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,12 +9,11 @@ import java.util.List;
 public class InfoCollectorManager extends GameManager {
 
     private static InfoCollectorManager instance = new InfoCollectorManager();
+    List<InfoCollector> infoCollectors = new ArrayList();
 
     public static InfoCollectorManager Instance() {
         return instance;
     }
-
-    List<InfoCollector> infoCollectors = new ArrayList();
 
     public void onStart(Game Broodwar) {
 
@@ -25,23 +24,20 @@ public class InfoCollectorManager extends GameManager {
         infoCollectors.add(BaseInfoCollector.Instance());
         infoCollectors.add(ChokeInfoCollector.Instance());
         infoCollectors.add(RegionInfoCollector.Instance());
+        infoCollectors.add(UnitInRegionInfoCollector.Instance());
         infoCollectors.add(TimeInfoCollector.Instance());
-        infoCollectors.add(MapInfoCollector.Instance());
+        //infoCollectors.add(MapInfoCollector.Instance());
         infoCollectors.add(UpgradeInfoCollector.Instance());
         infoCollectors.add(ScoutInfoCollector.Instance());
 
-
-//        infoCollectors.add(MapInfoCollector.Instance());
-//        infoCollectors.add(MapInfoCollector.Instance());
-
-        for(InfoCollector infoCollector : infoCollectors){
+        for (InfoCollector infoCollector : infoCollectors) {
             infoCollector.onStart(Broodwar);
         }
     }
 
     @Override
     public void update() {
-        for(InfoCollector infoCollector : infoCollectors){
+        for (InfoCollector infoCollector : infoCollectors) {
             infoCollector.update();
         }
     }

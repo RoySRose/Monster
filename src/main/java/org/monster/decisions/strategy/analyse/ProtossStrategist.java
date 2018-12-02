@@ -3,8 +3,8 @@ package org.monster.decisions.strategy.analyse;
 import bwapi.UnitType;
 import org.monster.board.StrategyBoard;
 import org.monster.common.util.UnitUtils;
-import org.monster.decisions.constant.EnemyStrategyOptions;
 import org.monster.decisions.constant.EnemyStrategy;
+import org.monster.decisions.constant.EnemyStrategyOptions;
 
 public class ProtossStrategist extends Strategist {
 

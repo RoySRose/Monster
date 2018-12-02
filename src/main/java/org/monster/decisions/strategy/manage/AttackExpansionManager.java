@@ -7,13 +7,12 @@ import org.monster.board.StrategyBoard;
 import org.monster.common.UnitInfo;
 import org.monster.common.constant.CommonCode;
 import org.monster.common.util.BaseUtils;
-import org.monster.common.util.InfoUtils;
-
+import org.monster.common.util.InfoTypeUtils;
 import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.TimeUtils;
 import org.monster.common.util.UnitUtils;
 import org.monster.decisions.constant.EnemyStrategyOptions;
-import org.monster.main.Monster;
+import org.monster.bootstrap.Monster;
 import org.monster.micro.constant.MicroConfig;
 import org.monster.worker.WorkerManager;
 
@@ -53,7 +52,7 @@ public class AttackExpansionManager {
         int killedcombatunit = getTotKilledCombatUnits();
         int deadCombatunit = myDeadCombatUnitSupplies();
 
-        int totworkerkilled = Monster.Broodwar.self().killedUnitCount(InfoUtils.getWorkerType(PlayerUtils.enemyRace())) * 2;
+        int totworkerkilled = Monster.Broodwar.self().killedUnitCount(InfoTypeUtils.getWorkerType(PlayerUtils.enemyRace())) * 2;
         int totworkerdead = Monster.Broodwar.self().deadUnitCount(UnitType.Terran_SCV) * 2;
 
         if (TimeUtils.beforeTime(15, 0)) { // 약 시작 ~ 15분까지
@@ -524,7 +523,7 @@ public class AttackExpansionManager {
     }
 
     private boolean enemyExspansioning() {
-        List<UnitInfo> enemyResourceDepot = UnitUtils.getEnemyUnitInfoList(CommonCode.EnemyUnitVisibleStatus.ALL, InfoUtils.getBasicResourceDepotBuildingType(PlayerUtils.enemyRace()));
+        List<UnitInfo> enemyResourceDepot = UnitUtils.getEnemyUnitInfoList(CommonCode.EnemyUnitVisibleStatus.ALL, InfoTypeUtils.getBasicResourceDepotBuildingType(PlayerUtils.enemyRace()));
         for (UnitInfo enemyDepot : enemyResourceDepot) {
             if (enemyDepot.isCompleted()) {
                 return true;

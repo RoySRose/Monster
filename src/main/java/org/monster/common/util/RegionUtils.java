@@ -14,4 +14,11 @@ public class RegionUtils {
         return RegionInfoCollector.Instance().occupiedRegions.get(PlayerUtils.enemyRace());
     }
 
+    public static Region myThirdRegion() {
+        return RegionInfoCollector.Instance().thirdRegion.get(PlayerUtils.myPlayer());
+    }
+
+    public static Region enemyThirdRegion() {
+        return RegionInfoCollector.Instance().thirdRegion.get(PlayerUtils.enemyPlayer());
+    }
 }

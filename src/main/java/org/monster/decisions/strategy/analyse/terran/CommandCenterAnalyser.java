@@ -2,11 +2,11 @@ package org.monster.decisions.strategy.analyse.terran;
 
 import bwapi.UnitType;
 import bwta.BaseLocation;
-import org.monster.common.util.BaseUtils;
-import org.monster.decisions.strategy.analyse.UnitAnalyser;
-import org.monster.decisions.constant.EnemyStrategy;
 import org.monster.common.UnitInfo;
+import org.monster.common.util.BaseUtils;
+import org.monster.decisions.constant.EnemyStrategy;
 import org.monster.decisions.strategy.analyse.Clue;
+import org.monster.decisions.strategy.analyse.UnitAnalyser;
 import org.monster.decisions.strategy.manage.ClueManager;
 
 import java.util.List;

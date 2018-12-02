@@ -3,7 +3,7 @@ package org.monster.build.base;
 import org.monster.common.MetaType;
 import org.monster.common.constant.CommonCode;
 import org.monster.common.util.TimeUtils;
-import org.monster.main.Monster;
+import org.monster.bootstrap.Monster;
 
 import java.util.HashMap;
 import java.util.Map;

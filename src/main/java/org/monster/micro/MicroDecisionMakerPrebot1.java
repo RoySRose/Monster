@@ -10,11 +10,10 @@ import bwta.Region;
 import org.monster.board.StrategyBoard;
 import org.monster.common.UnitInfo;
 import org.monster.common.constant.CommonCode;
-
 import org.monster.common.util.MicroUtils;
 import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.UnitUtils;
-import org.monster.main.Monster;
+import org.monster.bootstrap.Monster;
 import org.monster.micro.constant.MicroConfig;
 import org.monster.micro.targeting.TargetPriority;
 
@@ -281,7 +280,7 @@ public class MicroDecisionMakerPrebot1 {
                 if (cloakTargetUnit.getType() == UnitType.Protoss_Dark_Templar) {
                     //TODO disable
                     //if (InformationManager.Instance().isBlockingEnterance()) {
-                    if(true){
+                    if (true) {
                         Region darkRegion = BWTA.getRegion(cloakTargetUnit.getPosition());
                         Region tankRegion = BWTA.getRegion(mechanicUnit.getPosition());
                         if (darkRegion != tankRegion) {

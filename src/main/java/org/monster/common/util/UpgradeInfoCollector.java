@@ -3,25 +3,15 @@ package org.monster.common.util;
 import bwapi.Game;
 import bwapi.TechType;
 import bwapi.UpgradeType;
-import org.monster.main.Monster;
+import org.monster.bootstrap.Monster;
 
 public class UpgradeInfoCollector implements InfoCollector {
 
     private static UpgradeInfoCollector instance = new UpgradeInfoCollector();
+    private Game Broodwar;
 
     protected static UpgradeInfoCollector Instance() {
         return instance;
-    }
-
-    private Game Broodwar;
-
-    @Override
-    public void onStart(Game Broodwar) {
-        this.Broodwar = Broodwar;
-    }
-
-    @Override
-    public void update() {
     }
 
     protected static boolean selfIsResearched(TechType techType) {
@@ -38,6 +28,15 @@ public class UpgradeInfoCollector implements InfoCollector {
 
     protected static int enemyUpgradedLevel(UpgradeType upgradeType) {
         return Monster.Broodwar.enemy().getUpgradeLevel(upgradeType);
+    }
+
+    @Override
+    public void onStart(Game Broodwar) {
+        this.Broodwar = Broodwar;
+    }
+
+    @Override
+    public void update() {
     }
 
 }

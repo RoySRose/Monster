@@ -20,7 +20,7 @@ import org.monster.common.util.ScoutUtils;
 import org.monster.common.util.TimeUtils;
 import org.monster.common.util.UnitUtils;
 import org.monster.common.util.internal.IConditions;
-import org.monster.main.Monster;
+import org.monster.bootstrap.Monster;
 import org.monster.micro.FleeOption;
 import org.monster.micro.constant.MicroConfig;
 

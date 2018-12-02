@@ -13,18 +13,15 @@ import java.util.Map;
 public class ChokeInfoCollector implements InfoCollector {
 
     private static ChokeInfoCollector instance = new ChokeInfoCollector();
+    protected Map<Player, Chokepoint> firstChokePoint = new HashMap();
+    protected Map<Player, Chokepoint> secondChokePoint = new HashMap();
+    Game Broodwar;
+    private Player selfPlayer;
+    private Player enemyPlayer;
 
     public static ChokeInfoCollector Instance() {
         return instance;
     }
-
-    Game Broodwar;
-
-    protected Map<Player, Chokepoint> firstChokePoint = new HashMap();
-    protected Map<Player, Chokepoint> secondChokePoint = new HashMap();
-
-    private Player selfPlayer;
-    private Player enemyPlayer;
 
     @Override
     public void onStart(Game Broodwar) {
@@ -41,7 +38,7 @@ public class ChokeInfoCollector implements InfoCollector {
         secondChokePoint.put(player, secondChoke);
     }
 
-    protected Chokepoint findClosestChokePoint(BaseLocation sourceBase, Chokepoint skipChokepoint){
+    protected Chokepoint findClosestChokePoint(BaseLocation sourceBase, Chokepoint skipChokepoint) {
 
         double tempDistance;
         double closestDistance = CommonCode.DOUBLE_MAX;

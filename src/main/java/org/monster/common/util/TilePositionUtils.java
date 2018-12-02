@@ -1,7 +1,7 @@
 package org.monster.common.util;
 
 import bwapi.TilePosition;
-import org.monster.main.Monster;
+import org.monster.bootstrap.Monster;
 
 public class TilePositionUtils {
 

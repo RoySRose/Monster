@@ -7,6 +7,7 @@ import bwapi.Unit;
 import bwapi.UnitType;
 import bwta.BWTA;
 import bwta.BaseLocation;
+import org.monster.bootstrap.Monster;
 import org.monster.build.constant.BuildConfig;
 import org.monster.build.initialProvider.BlockingEntrance.BlockingEntrance;
 import org.monster.build.initialProvider.BlockingEntrance.Location;
@@ -14,14 +15,13 @@ import org.monster.build.initialProvider.InitialBuildProvider;
 import org.monster.common.constant.CommonCode;
 import org.monster.common.util.BaseUtils;
 import org.monster.common.util.ChokePointUtils;
-import org.monster.common.util.InfoUtils;
+import org.monster.common.util.InfoTypeUtils;
 import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.PositionUtils;
 import org.monster.common.util.StaticMapUtils;
 import org.monster.common.util.TilePositionUtils;
 import org.monster.common.util.UnitUtils;
-import org.monster.common.util.internal.MapSpecificInformation;
-import org.monster.main.Monster;
+import org.monster.common.util.internal.GameMap;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +36,7 @@ public class ConstructionPlaceFinder {
     //	20180815. hkk. for lastBuilding Location Debug
     private ArrayList<TilePosition> lastBuilding = new ArrayList<TilePosition>();
 
-//	public int maxSupplyCntX = 3;
+    //	public int maxSupplyCntX = 3;
 //	public int maxSupplyCntY = 4;
     private ArrayList<TilePosition> lastBuildingFinal = new ArrayList<TilePosition>();
     /// 건물 건설 예정 타일을 저장해놓기 위한 2차원 배열<br>
@@ -333,7 +333,7 @@ public class ConstructionPlaceFinder {
             // desiredPosition 으로부터 시작해서 spiral 하게 탐색하는 방법
             // 처음에는 아래 방향 (0,1) -> 오른쪽으로(1,0) -> 위로(0,-1) -> 왼쪽으로(-1,0) -> 아래로(0,1) -> ..
 
-            if (StaticMapUtils.getMapSpecificInformation().getMap() == MapSpecificInformation.GameMap.CIRCUITBREAKER) {
+            if (StaticMapUtils.getMap() == GameMap.CIRCUITBREAKER) {
                 maxRange = 23;
                 for (BaseLocation base : BWTA.getStartLocations()) {
 //					if(base.isStartLocation() && TilePositionUtils.equals(base.getTilePosition(), desiredPosition)) {
@@ -343,7 +343,7 @@ public class ConstructionPlaceFinder {
                     }
                 }
 
-            } else if (StaticMapUtils.getMapSpecificInformation().getMap() == MapSpecificInformation.GameMap.FIGHTING_SPIRITS) {
+            } else if (StaticMapUtils.getMap() == GameMap.FIGHTING_SPIRITS) {
                 maxRange = 25;
                 for (BaseLocation base : BWTA.getStartLocations()) {
 //					if(base.isStartLocation() && TilePositionUtils.equals(base.getTilePosition(), desiredPosition)) {
@@ -933,8 +933,8 @@ public class ConstructionPlaceFinder {
             // dimensions of the base location
             int bx1 = base.getTilePosition().getX();
             int by1 = base.getTilePosition().getY();
-            int bx2 = bx1 + InfoUtils.getBasicResourceDepotBuildingType(PlayerUtils.myRace()).tileWidth() - 1;
-            int by2 = by1 + InfoUtils.getBasicResourceDepotBuildingType(PlayerUtils.myRace()).tileHeight() - 1;
+            int bx2 = bx1 + InfoTypeUtils.getBasicResourceDepotBuildingType(PlayerUtils.myRace()).tileWidth() - 1;
+            int by2 = by1 + InfoTypeUtils.getBasicResourceDepotBuildingType(PlayerUtils.myRace()).tileHeight() - 1;
 
             // conditions for non-overlap are easy
             boolean noOverlap = (tx2 < bx1) || (tx1 > bx2) || (ty2 < by1) || (ty1 > by2);
@@ -1236,8 +1236,7 @@ public class ConstructionPlaceFinder {
         }
 
 
-        for (int x = fromx; x >= 0 && x < fromx + 8 && x < Monster.Broodwar.mapWidth() && x < rwidth; x++)
-        {
+        for (int x = fromx; x >= 0 && x < fromx + 8 && x < Monster.Broodwar.mapWidth() && x < rwidth; x++) {
             for (int y = fromy; y >= 0 && y < fromy + 5 && y < Monster.Broodwar.mapHeight() && y < rheight; y++) {
                 if ((x == fromx + 5 || x == fromx + 6 || x == fromx + 7) && y == fromy) {
                     continue;
@@ -1329,8 +1328,7 @@ public class ConstructionPlaceFinder {
         int fromx = unit.getTilePosition().getX() - 1;
         int fromy = unit.getTilePosition().getY() - 1;
 
-        for (int x = fromx; x >= 0 && x < fromx + 5 && x < Monster.Broodwar.mapWidth(); x++)
-        {
+        for (int x = fromx; x >= 0 && x < fromx + 5 && x < Monster.Broodwar.mapWidth(); x++) {
             for (int y = fromy; y >= 0 && y < fromy + 4 && y < Monster.Broodwar.mapHeight(); y++) {
 
                 tilesToAvoidSupply[x][y] = true;
@@ -1345,7 +1343,7 @@ public class ConstructionPlaceFinder {
         boolean yinc = BlockingEntrance.Instance().yinc;
 
 
-        if (StaticMapUtils.getMapSpecificInformation().getMap() != MapSpecificInformation.GameMap.UNKNOWN) {
+        if (StaticMapUtils.getMap() != GameMap.UNKNOWN) {
 
             for (BaseLocation baseLocation : BWTA.getStartLocations()) {
                 TilePosition mainbase = baseLocation.getTilePosition();

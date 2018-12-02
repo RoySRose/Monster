@@ -108,14 +108,6 @@ public class UnitInfo {
         return unit;
     }
 
-    public boolean isFlying() {
-        return isFlying;
-    }
-
-    private void setFlying(boolean isflying) {
-        this.isFlying = isFlying;
-    }
-
     public void setUnit(Unit unit) {
         this.unit = unit;
         this.setUpdateFrame(TimeUtils.getFrame());
@@ -128,6 +120,14 @@ public class UnitInfo {
         this.setCompleted(unit.isCompleted());
         this.setRemainingBuildTime(unit.getRemainingBuildTime());
         this.setFlying(unit.isFlying());
+    }
+
+    public boolean isFlying() {
+        return isFlying;
+    }
+
+    private void setFlying(boolean isflying) {
+        this.isFlying = isFlying;
     }
 
     public int getRemainingBuildTime() {

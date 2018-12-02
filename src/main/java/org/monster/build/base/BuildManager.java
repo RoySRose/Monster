@@ -21,14 +21,14 @@ import org.monster.common.MetaType;
 import org.monster.common.constant.CommonCode;
 import org.monster.common.util.BaseUtils;
 import org.monster.common.util.ChokePointUtils;
-import org.monster.common.util.InfoUtils;
+import org.monster.common.util.InfoTypeUtils;
 import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.TilePositionUtils;
 import org.monster.common.util.TimeUtils;
 import org.monster.common.util.UnitUtils;
-import org.monster.main.Config;
-import org.monster.main.GameManager;
-import org.monster.main.Monster;
+import org.monster.bootstrap.Config;
+import org.monster.bootstrap.GameManager;
+import org.monster.bootstrap.Monster;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -148,12 +148,10 @@ public class BuildManager extends GameManager {
                                 }
                             }
                         }
-                    }
-                    else {
+                    } else {
                         producer.train(t.getUnitType());
                     }
-                }
-                else if (t.isTech()) {
+                } else if (t.isTech()) {
                     producer.research(t.getTechType());
                 } else if (t.isUpgrade()) {
                     producer.upgrade(t.getUpgradeType());
@@ -626,7 +624,7 @@ public class BuildManager extends GameManager {
                     }
 
                     // Refinery 건물의 경우, Refinery 가 건설되지 않은 Geyser가 있는 경우에만 가능
-                    if (!isDeadlockCase && unitType == InfoUtils.getRefineryBuildingType(PlayerUtils.myRace())) {
+                    if (!isDeadlockCase && unitType == InfoTypeUtils.getRefineryBuildingType(PlayerUtils.myRace())) {
 
 //						//FileUtils.appendTextToFile("log.txt", "\n checkBuildOrderQueueDeadlockAndAndFixIt :: refinery lock check");
                         boolean hasAvailableGeyser = true;
@@ -727,11 +725,10 @@ public class BuildManager extends GameManager {
 
                     // 건물이 아닌 지상/공중 유닛인데, 서플라이가 부족하면 dead lock 상황이 되긴 하지만,
                     // 이 경우는 빌드를 취소하기보다는, StrategyManager 등에서 서플라이 빌드를 추가함으로써 풀도록 한다
-					if (!isDeadlockCase && !unitType.isBuilding()
-							&& Monster.Broodwar.self().supplyUsed() + unitType.supplyRequired() > Monster.Broodwar.self().supplyTotal())
-					{
-						//isDeadlockCase = true;
-					}
+                    if (!isDeadlockCase && !unitType.isBuilding()
+                            && Monster.Broodwar.self().supplyUsed() + unitType.supplyRequired() > Monster.Broodwar.self().supplyTotal()) {
+                        //isDeadlockCase = true;
+                    }
 
 //                  //Pylon 이 해당 지역 주위에 먼저 지어져야 하는데, Pylon 이 해당 지역 주위에 없고, 예정되어있지도 않으면 dead lock
 //					if (!isDeadlockCase && unitType.isBuilding() && unitType.requiresPsi()
@@ -753,26 +750,26 @@ public class BuildManager extends GameManager {
 //					}
 
 //                  //Creep 이 해당 지역 주위에 Hatchery나 Creep Colony 등을 통해 먼저 지어져야 하는데, 해당 지역 주위에 지어지지 않고 있으면 dead lock
-					if (!isDeadlockCase && unitType.isBuilding() && unitType.requiresCreep()
-							&& currentItem.seedLocationStrategy == BuildOrderItem.SeedPositionStrategy.SeedPositionSpecified) {
-						boolean hasFoundCreepGenerator = false;
-						List<Unit> ourUnits = Monster.Broodwar
-								.getUnitsInRadius(currentItem.seedLocation.toPosition(), 4 * Config.TILE_SIZE);
+                    if (!isDeadlockCase && unitType.isBuilding() && unitType.requiresCreep()
+                            && currentItem.seedLocationStrategy == BuildOrderItem.SeedPositionStrategy.SeedPositionSpecified) {
+                        boolean hasFoundCreepGenerator = false;
+                        List<Unit> ourUnits = Monster.Broodwar
+                                .getUnitsInRadius(currentItem.seedLocation.toPosition(), 4 * Config.TILE_SIZE);
 
-						for (Unit u : ourUnits) {
-							if (u.getPlayer() == Monster.Broodwar.self() && (u.getType() == UnitType.Zerg_Hatchery
-									|| u.getType() == UnitType.Zerg_Lair || u.getType() == UnitType.Zerg_Hive
-									|| u.getType() == UnitType.Zerg_Creep_Colony
-									|| u.getType() == UnitType.Zerg_Sunken_Colony
-									|| u.getType() == UnitType.Zerg_Spore_Colony)) {
-								hasFoundCreepGenerator = true;
-							}
-						}
+                        for (Unit u : ourUnits) {
+                            if (u.getPlayer() == Monster.Broodwar.self() && (u.getType() == UnitType.Zerg_Hatchery
+                                    || u.getType() == UnitType.Zerg_Lair || u.getType() == UnitType.Zerg_Hive
+                                    || u.getType() == UnitType.Zerg_Creep_Colony
+                                    || u.getType() == UnitType.Zerg_Sunken_Colony
+                                    || u.getType() == UnitType.Zerg_Spore_Colony)) {
+                                hasFoundCreepGenerator = true;
+                            }
+                        }
 
-						if (hasFoundCreepGenerator == false) {
-							isDeadlockCase = true;
-						}
-					}
+                        if (hasFoundCreepGenerator == false) {
+                            isDeadlockCase = true;
+                        }
+                    }
 
                 }
                 // 테크의 경우, 해당 리서치를 이미 했거나, 이미 하고있거나, 리서치를 하는 건물 및 선행건물이 존재하지않고

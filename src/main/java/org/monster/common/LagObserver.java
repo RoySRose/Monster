@@ -2,7 +2,7 @@ package org.monster.common;
 
 
 import org.monster.common.util.TimeUtils;
-import org.monster.main.Monster;
+import org.monster.bootstrap.Monster;
 
 public class LagObserver {
 
@@ -13,7 +13,7 @@ public class LagObserver {
     public static final int MANAGER4 = 4; //build
     public static final int MANAGER5 = 5; //construction
 
-//	public static void main(String[] ar) {
+    //	public static void main(String[] ar) {
 //		
 //		for (int frame = 0; frame < 32; frame++) {
 //			boolean e0 = testRotation(frame, testManagerExecuteRotation(LagObserver.MANAGER0, 0), testRotationSize());
@@ -63,7 +63,7 @@ public class LagObserver {
     private static int managerLagLevel = 1;
     private static int groupMaxSize = 48; // max : 2초 딜레이
     private static int groupMinSize = 3;
-//	private static final long MILLISEC_MIN_COAST = 30;
+    //	private static final long MILLISEC_MIN_COAST = 30;
     private static long[] observedTime = new long[OBSERVER_CAPACITY];
     private long startTime;
 

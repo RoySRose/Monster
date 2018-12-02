@@ -3,12 +3,12 @@ package org.monster.decisions.strategy.manage;
 import bwapi.Position;
 import bwapi.TechType;
 import bwapi.Unit;
+import org.monster.board.StrategyBoard;
 import org.monster.common.UnitInfo;
-import org.monster.main.Monster;
 import org.monster.common.util.TimeUtils;
 import org.monster.common.util.UnitUtils;
+import org.monster.bootstrap.Monster;
 import org.monster.micro.constant.MicroConfig;
-import org.monster.board.StrategyBoard;
 
 import java.util.HashMap;
 import java.util.HashSet;

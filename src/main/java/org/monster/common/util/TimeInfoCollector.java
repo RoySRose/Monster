@@ -8,15 +8,15 @@ import bwta.BaseLocation;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TimeInfoCollector implements InfoCollector{
+public class TimeInfoCollector implements InfoCollector {
 
     private static TimeInfoCollector instance = new TimeInfoCollector();
+    private static Map<UnitType, Integer> baseToBaseUnit = new HashMap<>();
+    private Game Broodwar;
+
     protected static TimeInfoCollector Instance() {
         return instance;
     }
-    private Game Broodwar;
-
-    private static Map<UnitType, Integer> baseToBaseUnit = new HashMap<>();
 
     @Override
     public void onStart(Game Broodwar) {
@@ -60,7 +60,7 @@ public class TimeInfoCollector implements InfoCollector{
         return baseToBaseFrame;
     }
 
-    protected void clearBaseToBaseFrame(){
+    protected void clearBaseToBaseFrame() {
         baseToBaseUnit.clear();
     }
 }

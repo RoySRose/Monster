@@ -9,7 +9,7 @@ import bwta.BaseLocation;
 import bwta.Region;
 import org.monster.common.constant.CommonCode;
 import org.monster.common.util.internal.MapTools;
-import org.monster.main.Monster;
+import org.monster.bootstrap.Monster;
 
 import java.util.List;
 
@@ -95,7 +95,7 @@ public class PositionUtils {
         if (positionRegion == myExpansionRegion) {
             return CommonCode.RegionType.MY_FIRST_EXPANSION;
         }
-        Region myThirdRegion = InfoUtils.myThirdRegion();
+        Region myThirdRegion = RegionUtils.myThirdRegion();
         if (positionRegion == myThirdRegion) {
             return CommonCode.RegionType.MY_THIRD_REGION;
         }
@@ -108,7 +108,7 @@ public class PositionUtils {
             if (positionRegion == enemyExpansionRegion) {
                 return CommonCode.RegionType.ENEMY_FIRST_EXPANSION;
             }
-            Region enemyThirdRegion = InfoUtils.enemyThirdRegion();
+            Region enemyThirdRegion = RegionUtils.enemyThirdRegion();
             if (positionRegion == enemyThirdRegion) {
                 return CommonCode.RegionType.ENEMY_THIRD_REGION;
             }
@@ -125,7 +125,7 @@ public class PositionUtils {
             return BWTA.getRegion(BaseUtils.myFirstExpansion().getPosition());
         }
         if (regionType == CommonCode.RegionType.MY_THIRD_REGION) {
-            return InfoUtils.myThirdRegion();
+            return RegionUtils.myThirdRegion();
         }
 
         if (BaseUtils.enemyMainBase() != null) {
@@ -136,7 +136,7 @@ public class PositionUtils {
                 return BWTA.getRegion(BaseUtils.myFirstExpansion().getPosition());
             }
             if (regionType == CommonCode.RegionType.ENEMY_THIRD_REGION) {
-                return InfoUtils.enemyThirdRegion();
+                return RegionUtils.enemyThirdRegion();
             }
         }
         return null;
@@ -197,5 +197,15 @@ public class PositionUtils {
             return false;
         }
         return position1.getX() == position2.getX() && position1.getY() == position2.getY();
+    }
+
+    @Deprecated
+    public static Position myReadyToPosition() {
+        return PositionInfoCollector.Instance().readyToAttackPosition.get(Monster.Broodwar.self());
+    }
+
+    @Deprecated
+    public static Position enemyReadyToPosition() {
+        return PositionInfoCollector.Instance().readyToAttackPosition.get(Monster.Broodwar.enemy());
     }
 }

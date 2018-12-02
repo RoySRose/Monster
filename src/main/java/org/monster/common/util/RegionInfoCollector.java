@@ -15,21 +15,17 @@ import java.util.Set;
 public class RegionInfoCollector implements InfoCollector {
 
     private static RegionInfoCollector instance = new RegionInfoCollector();
+    protected Map<Player, Region> thirdRegion = new HashMap();
+    protected Map<Player, Set<Region>> occupiedRegions = new HashMap();
+    Game Broodwar;
+    private Player selfPlayer;
+    private Player enemyPlayer;
+    private BaseInfoCollector baseInfoCollector;
+    private ChokeInfoCollector chokeInfoCollector;
 
     public static RegionInfoCollector Instance() {
         return instance;
     }
-
-    Game Broodwar;
-
-    protected Map<Player, Region> thirdRegion = new HashMap();
-    protected Map<Player, Set<Region>> occupiedRegions = new HashMap();
-
-    private Player selfPlayer;
-    private Player enemyPlayer;
-
-    private BaseInfoCollector baseInfoCollector;
-    private ChokeInfoCollector chokeInfoCollector;
 
     @Override
     public void onStart(Game Broodwar) {
@@ -51,7 +47,6 @@ public class RegionInfoCollector implements InfoCollector {
     }
 
 
-
     @Override
     public void update() {
         initializeOccupiedRegion();
@@ -67,7 +62,7 @@ public class RegionInfoCollector implements InfoCollector {
         }
     }
 
-    private void updateRegionsOccupiedRegion(){
+    private void updateRegionsOccupiedRegion() {
         for (UnitInfo ui : UnitUtils.getEnemyUnitInfoList()) {
 
             if (ui.getType().isBuilding()) {

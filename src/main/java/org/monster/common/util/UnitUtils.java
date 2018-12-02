@@ -9,17 +9,20 @@ import bwapi.WeaponType;
 import bwta.BWTA;
 import bwta.BaseLocation;
 import bwta.Region;
+import org.monster.board.StrategyBoard;
 import org.monster.build.base.BuildManager;
 import org.monster.common.UnitInfo;
 import org.monster.common.constant.CommonCode;
 import org.monster.common.util.internal.IConditions;
 import org.monster.common.util.internal.SpecificValueCache;
 import org.monster.decisions.constant.StrategyConfig;
-import org.monster.main.Monster;
-import org.monster.worker.WorkerManager;
-import org.monster.micro.targeting.TargetFilter;
-import org.monster.board.StrategyBoard;
 import org.monster.decisions.strategy.manage.PositionFinder;
+import org.monster.bootstrap.Monster;
+import org.monster.micro.CombatManager;
+import org.monster.micro.constant.MicroConfig;
+import org.monster.micro.squad.Squad;
+import org.monster.micro.targeting.TargetFilter;
+import org.monster.worker.WorkerManager;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -58,7 +61,6 @@ public class UnitUtils {
             return null;
         }
     }
-
 
 
     /**
@@ -109,7 +111,7 @@ public class UnitUtils {
     public static List<Unit> getUnitList(UnitType... unitTypes) {
         Set<Unit> unitSet = new HashSet<>();
         for (UnitType unitType : unitTypes) {
-            unitSet.addAll( UnitCache.getCurrentCache().allUnits(unitType));
+            unitSet.addAll(UnitCache.getCurrentCache().allUnits(unitType));
         }
         return new ArrayList<>(unitSet);
     }
@@ -140,6 +142,7 @@ public class UnitUtils {
                 return UnitCache.getCurrentCache().allUnits(unitType);
         }
     }
+
     /**
      * 실제보유, 컨스트럭션큐, 빌드큐 포함 존재 여부
      */
@@ -154,7 +157,6 @@ public class UnitUtils {
 //        }
 //        return false;
 //    }
-
     public static int hasUnitOrWillBeCount(UnitType... unitTypes) {
         int unitCount = getUnitCount(CommonCode.UnitFindStatus.ALL_AND_CONSTRUCTION_QUEUE, unitTypes);
         for (UnitType unitType : unitTypes) {
@@ -208,7 +210,7 @@ public class UnitUtils {
                 return UnitCache.getCurrentCache().enemyVisibleUnits(unitType);
             case ALL:
             default:
-                return UnitUtils.getEnemyUnitInfoList(unitType);
+                return UnitCache.getCurrentCache().enemyAllUnits(unitType);
         }
     }
 
@@ -354,7 +356,6 @@ public class UnitUtils {
 //            units.add(unit);
 //        }
 //    }
-
     public static List<Unit> getUnitsInRegion(CommonCode.RegionType regionType, CommonCode.PlayerRange playerRange) {
         return getUnitsInRegion(regionType, playerRange, new IConditions.UnitCondition() {
             @Override
@@ -720,7 +721,7 @@ public class UnitUtils {
             }
 
         } else {
-            goalPosition = InfoUtils.myReadyToPosition();
+            goalPosition = PositionUtils.myReadyToPosition();
         }
 
         Unit leader = UnitUtils.getClosestUnitToPositionNotInMyBase(unitList, goalPosition, UnitType.Terran_Siege_Tank_Tank_Mode, UnitType.Terran_Siege_Tank_Siege_Mode);
@@ -941,4 +942,54 @@ public class UnitUtils {
         return numUnits;
     }
 
+    public static List<UnitInfo> euiListInMyRegion(Region myRegion) {
+
+        List<UnitInfo> euiListInMyRegion = UnitInRegionInfoCollector.Instance().getEuiListInMyRegion(myRegion);
+        if (euiListInMyRegion == null) {
+            euiListInMyRegion = new ArrayList<>();
+        }
+
+        return euiListInMyRegion;
+    }
+
+    public static Set<UnitInfo> euiListInBase() {
+        return UnitInRegionInfoCollector.Instance().getEuisInMainBaseRegion();
+    }
+
+    public static Set<UnitInfo> euiListInExpansion() {
+        return UnitInRegionInfoCollector.Instance().getEuisInExpansionRegion();
+    }
+
+    public static Set<UnitInfo> euiListInThirdRegion() {
+        return UnitInRegionInfoCollector.Instance().getEuisInThirdRegion();
+    }
+
+    public static Unit myBaseGas() {
+        if (BaseUtils.myMainBase() != null) {
+            List<Unit> geysers = BaseUtils.myMainBase().getGeysers();
+            if (geysers != null && !geysers.isEmpty()) {
+                return geysers.get(0);
+            }
+        }
+        return null;
+    }
+
+    public static Unit enemyBaseGas() {
+        if (BaseUtils.enemyMainBase() != null) {
+            List<Unit> geysers = BaseUtils.enemyMainBase().getGeysers();
+            if (geysers != null && !geysers.isEmpty()) {
+                return geysers.get(0);
+            }
+        }
+        return null;
+    }
+
+    public static int squadUnitSize(MicroConfig.SquadInfo squadInfo) {
+        Squad squad = CombatManager.Instance().squadData.getSquad(squadInfo.squadName);
+        if (squad != null && squad.unitList != null) {
+            return squad.unitList.size();
+        } else {
+            return 0;
+        }
+    }
 }

@@ -11,7 +11,6 @@ import java.util.List;
 
 /**
  * BWAPI Java 오류로 사용하지 못하는 기능 구현
- *
  */
 public class MirrorBugFixed {
 

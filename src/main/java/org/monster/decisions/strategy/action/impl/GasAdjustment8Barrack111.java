@@ -1,12 +1,12 @@
 package org.monster.decisions.strategy.action.impl;
 
 import bwapi.UnitType;
-import org.monster.main.Monster;
+import org.monster.board.StrategyBoard;
 import org.monster.common.constant.CommonCode;
 import org.monster.common.util.TimeUtils;
 import org.monster.common.util.UnitUtils;
-import org.monster.board.StrategyBoard;
 import org.monster.decisions.strategy.action.Action;
+import org.monster.bootstrap.Monster;
 
 /**
  * 111 가스조절

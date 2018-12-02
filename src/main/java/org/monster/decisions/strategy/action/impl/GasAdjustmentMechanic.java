@@ -6,8 +6,8 @@ import org.monster.common.constant.CommonCode;
 import org.monster.common.util.TimeUtils;
 import org.monster.common.util.UnitUtils;
 import org.monster.decisions.constant.EnemyStrategyOptions;
-import org.monster.main.Monster;
 import org.monster.decisions.strategy.action.Action;
+import org.monster.bootstrap.Monster;
 
 /**
  * 메카닉 테란 가스 조절

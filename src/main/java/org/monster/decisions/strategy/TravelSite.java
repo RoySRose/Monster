@@ -9,6 +9,7 @@ public class TravelSite {
     public int visitAssignedFrame;
     public int guerillaExamFrame;
     public int index;
+
     public TravelSite(BaseLocation baseLocation, int visitFrame, int visitAssignedFrame, int guerillaExamFrame, int index) {
         this.baseLocation = baseLocation;
         this.visitFrame = visitFrame;

@@ -264,9 +264,9 @@
 //
 //        double fleeRadianAdjust = fleeRadian; // 회피 각(radian)
 //        int moveCalcSize = (int) (unitType.topSpeed() * 40);
-//        if (StaticMapUtils.getMapSpecificInformation().getMap() == MapSpecificInformation.GameMap.CIRCUITBREAKER) {
+//        if (StaticMapUtils.getMapSpecificInformation().getMap() == GameMap.CIRCUITBREAKER) {
 //        moveCalcSize = (int) (unitType.topSpeed() * 40);
-//        } else if (StaticMapUtils.getMapSpecificInformation().getMap() == MapSpecificInformation.GameMap.FIGHTING_SPIRITS) {
+//        } else if (StaticMapUtils.getMapSpecificInformation().getMap() == GameMap.FIGHTING_SPIRITS) {
 //        moveCalcSize = (int) (unitType.topSpeed() * 30);
 //        }
 //        Position fleeVector = new Position((int) (moveCalcSize * Math.cos(fleeRadianAdjust)),

@@ -7,7 +7,7 @@ import bwapi.UnitType;
 import bwapi.UpgradeType;
 import org.monster.common.LagObserver;
 import org.monster.common.util.PlayerUtils;
-import org.monster.main.Monster;
+import org.monster.bootstrap.Monster;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,6 +29,7 @@ public class MicroConfig {
 
         public double maxGuerillaVultureRatio;
         public boolean isAttackMode;
+
         private MainSquadMode(double maxGuerillaVultureRatio, boolean isAttackMode) {
             this.maxGuerillaVultureRatio = maxGuerillaVultureRatio;
             this.isAttackMode = isAttackMode;

@@ -4,17 +4,25 @@ import bwapi.Position;
 import org.monster.common.MetaType;
 import org.monster.common.constant.CommonCode;
 import org.monster.common.util.TimeUtils;
+import org.monster.decisions.constant.EnemyStrategy;
 import org.monster.decisions.constant.EnemyStrategyOptions;
 import org.monster.decisions.constant.StrategyCode;
-import org.monster.decisions.constant.EnemyStrategy;
-import org.monster.micro.constant.MicroConfig;
 import org.monster.decisions.strategy.manage.PositionFinder;
 import org.monster.decisions.strategy.manage.SpiderMineManger;
+import org.monster.micro.constant.MicroConfig;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class StrategyBoard {
+
+    private static StrategyBoard instance = new StrategyBoard();
+
+    public static StrategyBoard Instance() {
+        return instance;
+    }
 
     // [적 전략 및 빌드매니저 대응 정보]
     // 빌드매니저: 초반빌드, 마린수, 팩토리유닛비율, 업그레이드순서, 애드온 타이밍 등의 정보를 사용
@@ -107,4 +115,13 @@ public class StrategyBoard {
     // [정찰SCV 할당]
     public static boolean assignScoutScv = false;
 
+    public static Map<Decision, Boolean> decisions = new HashMap<>();
+    public static Map<Location, Object> locations = new HashMap<>();
+
+    public void init() {
+        for(Decision decision : Decision.values())
+            decisions.put(decision, false);
+        for(Location location : Location.values())
+            locations.put(location, new Object());
+    }
 }

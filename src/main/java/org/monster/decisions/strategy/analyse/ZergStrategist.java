@@ -5,11 +5,11 @@ import org.monster.board.StrategyBoard;
 import org.monster.common.constant.CommonCode;
 import org.monster.common.util.TimeUtils;
 import org.monster.common.util.UnitUtils;
-import org.monster.decisions.constant.EnemyStrategyOptions;
 import org.monster.decisions.constant.EnemyStrategy;
-import org.monster.main.Monster;
+import org.monster.decisions.constant.EnemyStrategyOptions;
 import org.monster.decisions.strategy.analyse.Clue.ClueInfo;
 import org.monster.decisions.strategy.manage.EnemyBuildTimer;
+import org.monster.bootstrap.Monster;
 
 public class ZergStrategist extends Strategist {
 

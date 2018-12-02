@@ -8,7 +8,7 @@ import bwta.BaseLocation;
 import bwta.Region;
 import org.monster.common.util.BaseUtils;
 import org.monster.common.util.CommandUtils;
-import org.monster.main.Monster;
+import org.monster.bootstrap.Monster;
 import org.monster.micro.Minerals;
 
 import java.util.ArrayList;
@@ -56,6 +56,7 @@ public class WorkerData {
     private Map<Integer, WorkerMoveData> workerMoveMap = new HashMap<Integer, WorkerMoveData>();
     //미네랄 일꾼
     private Map<Integer, Unit> workerMineralMap = new HashMap<Integer, Unit>();
+
     public WorkerData() {
 
         for (Unit unit : Monster.Broodwar.getAllUnits()) {

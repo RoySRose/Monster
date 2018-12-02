@@ -1,4 +1,4 @@
-package org.monster.main;
+package org.monster.bootstrap;
 
 import bwapi.Game;
 import org.monster.debugger.StopWatch;

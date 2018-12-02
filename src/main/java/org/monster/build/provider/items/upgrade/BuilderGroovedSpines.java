@@ -5,7 +5,7 @@ import org.monster.build.base.BuildManager;
 import org.monster.build.provider.DefaultBuildableItem;
 import org.monster.build.provider.ResearchSelector;
 import org.monster.common.MetaType;
-import org.monster.main.Monster;
+import org.monster.bootstrap.Monster;
 
 public class BuilderGroovedSpines extends DefaultBuildableItem {
 

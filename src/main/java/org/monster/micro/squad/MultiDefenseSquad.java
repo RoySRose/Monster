@@ -8,21 +8,22 @@ import org.monster.common.LagObserver;
 import org.monster.common.constant.CommonCode;
 import org.monster.common.util.MicroUtils;
 import org.monster.common.util.PlayerUtils;
-import org.monster.common.util.TilePositionUtils;
 import org.monster.common.util.TimeUtils;
 import org.monster.common.util.UnitUtils;
 import org.monster.micro.constant.MicroConfig;
+import org.monster.micro.control.groundforce.TankControl;
 import org.monster.micro.targeting.TargetFilter;
 
 import java.util.List;
 
 public class MultiDefenseSquad extends Squad {
 
-    private org.monster.micro.control.factory.TankControl tankControl = new org.monster.micro.control.factory.TankControl();
+    private TankControl tankControl = new TankControl();
     private MultiDefenseSquad.DefenseType type;
     private Unit commandCenter = null;
     private Position defensePosition = null;
     private int defenseUnitAssignedFrame = CommonCode.UNKNOWN;
+
     public MultiDefenseSquad(Position basePosition) {
         super(MicroConfig.SquadInfo.MULTI_DEFENSE_, basePosition);
         setUnitType(UnitType.Terran_Siege_Tank_Tank_Mode, UnitType.Terran_Siege_Tank_Siege_Mode, UnitType.Terran_Vulture);

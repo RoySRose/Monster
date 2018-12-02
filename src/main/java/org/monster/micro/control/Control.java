@@ -11,8 +11,8 @@ import org.monster.common.UnitInfo;
 import org.monster.common.constant.CommonCode;
 import org.monster.common.util.BaseUtils;
 import org.monster.common.util.CommandUtils;
-import org.monster.common.util.InfoUtils;
 import org.monster.common.util.PositionUtils;
+import org.monster.common.util.RegionUtils;
 import org.monster.common.util.TimeUtils;
 import org.monster.decisions.strategy.manage.PositionFinder;
 
@@ -94,17 +94,17 @@ public abstract class Control {
             return outOfRegionLongTime(unit);
         }
         // 세번째 지역까지 OK
-        if (unitRegion == InfoUtils.myThirdRegion()) {
+        if (unitRegion == RegionUtils.myThirdRegion()) {
             return false;
         }
         if (campType == PositionFinder.CampType.SECOND_CHOKE) {
             return outOfRegionLongTime(unit);
         }
         // 세번째 지역 반경 OK
-        if (unit.getDistance(InfoUtils.myThirdRegion()) < 600) {
+        if (unit.getDistance(RegionUtils.myThirdRegion()) < 600) {
             return false;
         }
-        if (unit.getDistance(InfoUtils.myReadyToPosition()) < 300) {
+        if (unit.getDistance(PositionUtils.myReadyToPosition()) < 300) {
             return false;
         }
 

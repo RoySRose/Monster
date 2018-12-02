@@ -5,18 +5,18 @@ import bwta.Chokepoint;
 public class ChokePointUtils {
 
     public static Chokepoint myFirstChoke() {
-        return ChokeInfoCollector.Instance().firstChokePoint.get(PlayerUtils.myRace());
+        return ChokeInfoCollector.Instance().firstChokePoint.get(PlayerUtils.myPlayer());
     }
 
     public static Chokepoint enemyFirstChoke() {
-        return ChokeInfoCollector.Instance().firstChokePoint.get(PlayerUtils.enemyRace());
+        return ChokeInfoCollector.Instance().firstChokePoint.get(PlayerUtils.enemyPlayer());
     }
 
     public static Chokepoint mySecondChoke() {
-        return ChokeInfoCollector.Instance().secondChokePoint.get(PlayerUtils.myRace());
+        return ChokeInfoCollector.Instance().secondChokePoint.get(PlayerUtils.myPlayer());
     }
 
     public static Chokepoint enemySecondChoke() {
-        return ChokeInfoCollector.Instance().secondChokePoint.get(PlayerUtils.enemyRace());
+        return ChokeInfoCollector.Instance().secondChokePoint.get(PlayerUtils.enemyPlayer());
     }
 }

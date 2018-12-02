@@ -1,12 +1,12 @@
-package org.monster.main;
+package org.monster.bootstrap;
 
 import bwapi.Unit;
 import bwapi.UnitType;
 import org.monster.common.LagObserver;
 import org.monster.common.constant.CommonCode;
-import org.monster.debugger.BigWatch;
 import org.monster.common.util.TimeUtils;
 import org.monster.common.util.UnitUtils;
+import org.monster.debugger.BigWatch;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -6,12 +6,11 @@ import bwapi.UnitType;
 import org.monster.board.StrategyBoard;
 import org.monster.common.UnitInfo;
 import org.monster.common.constant.CommonCode;
-import org.monster.common.util.InfoUtils;
 import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.TimeUtils;
 import org.monster.common.util.UnitUtils;
-import org.monster.decisions.constant.EnemyStrategyOptions;
 import org.monster.decisions.constant.EnemyStrategy;
+import org.monster.decisions.constant.EnemyStrategyOptions;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -309,7 +308,7 @@ public class EnemyBuildTimer {
                 }
 
                 // 가스가 없으면 모든 가스가 필요한 건물의 최소 빌드타임을 대충 올려놓는다.
-                if (buildingType.gasPrice() > 0 && InfoUtils.enemyBaseGas() != null) {
+                if (buildingType.gasPrice() > 0 && UnitUtils.enemyBaseGas() != null) {
                     if (UnitUtils.getEnemyUnitCount(UnitType.Protoss_Assimilator, UnitType.Zerg_Extractor, UnitType.Terran_Refinery) == 0) {
                         updateBuildTimeMinimum(buildingType, gasLastCheckFrame + UnitType.Terran_Refinery.buildTime() + 10 * TimeUtils.SECOND);
                     }

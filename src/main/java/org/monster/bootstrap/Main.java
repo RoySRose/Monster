@@ -1,4 +1,4 @@
-package org.monster.main;
+package org.monster.bootstrap;
 
 public class Main {
     public static void main(String[] args) {

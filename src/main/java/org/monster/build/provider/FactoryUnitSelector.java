@@ -2,11 +2,11 @@ package org.monster.build.provider;
 
 
 import bwapi.UnitType;
+import org.monster.board.StrategyBoard;
 import org.monster.build.base.BuildManager;
 import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.UnitUtils;
-import org.monster.main.Monster;
-import org.monster.board.StrategyBoard;
+import org.monster.bootstrap.Monster;
 
 //EXAMPLE
 @Deprecated

@@ -2,10 +2,10 @@ package org.monster.debugger.chat.impl;
 
 import bwapi.Race;
 import org.monster.board.StrategyBoard;
-import org.monster.debugger.chat.ChatExecuter;
 import org.monster.common.util.PlayerUtils;
-import org.monster.decisions.constant.EnemyStrategyOptions;
+import org.monster.debugger.chat.ChatExecuter;
 import org.monster.decisions.constant.EnemyStrategy;
+import org.monster.decisions.constant.EnemyStrategyOptions;
 
 public class StrategyChanger extends ChatExecuter {
 

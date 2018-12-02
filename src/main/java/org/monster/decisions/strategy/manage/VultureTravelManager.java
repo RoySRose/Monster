@@ -10,11 +10,11 @@ import org.monster.common.util.BaseUtils;
 import org.monster.common.util.TimeUtils;
 import org.monster.common.util.UnitUtils;
 import org.monster.common.util.internal.IConditions;
-import org.monster.main.Monster;
-import org.monster.micro.constant.MicroConfig;
+import org.monster.decisions.strategy.TravelSite;
+import org.monster.bootstrap.Monster;
 import org.monster.micro.compute.GuerillaScore;
 import org.monster.micro.compute.VultureFightPredictor;
-import org.monster.decisions.strategy.TravelSite;
+import org.monster.micro.constant.MicroConfig;
 
 import java.util.ArrayList;
 import java.util.HashMap;

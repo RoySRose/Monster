@@ -10,21 +10,22 @@ import bwta.BaseLocation;
 import bwta.Chokepoint;
 import bwta.Region;
 import org.monster.board.StrategyBoard;
+import org.monster.bootstrap.Monster;
 import org.monster.common.LagObserver;
 import org.monster.common.constant.CommonCode;
 import org.monster.common.util.BaseLocationUtils;
 import org.monster.common.util.BaseUtils;
 import org.monster.common.util.ChokePointUtils;
-import org.monster.common.util.InfoUtils;
 import org.monster.common.util.MicroUtils;
 import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.PositionUtils;
+import org.monster.common.util.RegionUtils;
+import org.monster.common.util.StaticMapUtils;
 import org.monster.common.util.TimeUtils;
 import org.monster.common.util.UnitUtils;
+import org.monster.common.util.internal.GameMap;
 import org.monster.common.util.internal.IConditions;
-import org.monster.common.util.internal.MapSpecificInformation;
 import org.monster.decisions.constant.EnemyStrategyOptions;
-import org.monster.main.Monster;
 import org.monster.micro.PositionReserveInfo;
 import org.monster.micro.constant.MicroConfig;
 
@@ -38,7 +39,7 @@ public class SpiderMineManger {
     private static final int RESV_EXPIRE_FRAME = 24 * 3;
     private static final int MINE_REMOVE_TANK_DIST = 150;
     private static final int MAX_MINE_COUNT = 150;
-//	private static final int MINE_BETWEEN_DIST = 50;
+    //	private static final int MINE_BETWEEN_DIST = 50;
     private static final List<Position> GOOD_POSITIONS = new ArrayList<>(); // 마인 심기 좋은 지역
     private static final List<Position> GOOD_POSITIONS_LATE = new ArrayList<>(); // 마인 심기 좋은 지역
     private static SpiderMineManger instance = new SpiderMineManger();
@@ -47,6 +48,7 @@ public class SpiderMineManger {
     private boolean initialized = false;
     private boolean secondInitialized = false;
     private int mineInNextExpansionFrame = CommonCode.UNKNOWN;
+
     private SpiderMineManger() {
     }
 
@@ -61,10 +63,10 @@ public class SpiderMineManger {
         }
 
         List<BaseLocation> otherBases = BaseUtils.otherExpansions();
-        Position myReadyToAttackPos = InfoUtils.myReadyToPosition();
+        Position myReadyToAttackPos = PositionUtils.myReadyToPosition();
         Chokepoint mySecondChoke = ChokePointUtils.mySecondChoke();
 
-        Position enemyReadyToAttackPos = InfoUtils.enemyReadyToPosition();
+        Position enemyReadyToAttackPos = PositionUtils.enemyReadyToPosition();
         BaseLocation enemyFirstExpansion = BaseUtils.enemyFirstExpansion();
         Chokepoint enemySecondChoke = ChokePointUtils.enemySecondChoke();
 
@@ -239,7 +241,7 @@ public class SpiderMineManger {
             // 급해서 본진에 박은 마인 제거
             if (LagObserver.groupsize() <= 10) {
                 if (StrategyBoard.watcherMinePositionLevel == SpiderMineManger.MinePositionLevel.NOT_MY_OCCUPIED) {
-                    if (InfoUtils.euiListInBase() != null && InfoUtils.euiListInBase().isEmpty()) {
+                    if (UnitUtils.euiListInBase() != null && UnitUtils.euiListInBase().isEmpty()) {
                         List<Unit> spiderMineList = UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Vulture_Spider_Mine);
 
                         Region myBaseRegion = BWTA.getRegion(BaseUtils.myMainBase().getPosition());
@@ -301,10 +303,10 @@ public class SpiderMineManger {
 
             boolean defaultMineNumber = true;
             if (PlayerUtils.enemyRace() == Race.Terran) {
-                if (vulture.getDistance(BaseUtils.enemyFirstExpansion()) < 800 || vulture.getDistance(InfoUtils.enemyThirdRegion()) < 500) {
+                if (vulture.getDistance(BaseUtils.enemyFirstExpansion()) < 800 || vulture.getDistance(RegionUtils.enemyThirdRegion()) < 500) {
                     defaultMineNumber = false;
                     mineNumberPerPosition = Math.min(StrategyBoard.spiderMineNumberPerPosition * 3, 10);
-                } else if (vulture.getDistance(InfoUtils.myThirdRegion()) < 800) {
+                } else if (vulture.getDistance(RegionUtils.myThirdRegion()) < 800) {
                     defaultMineNumber = false;
                     mineNumberPerPosition = 0; //Math.max(StrategyBoard.spiderMineNumberPerPosition, 1);
                 }
@@ -431,7 +433,7 @@ public class SpiderMineManger {
         bases.add(expansion1);
 
         int times = 2;
-        if (InfoUtils.mapInformation().getMap().equals(MapSpecificInformation.GameMap.CIRCUITBREAKER)) {
+        if (StaticMapUtils.getMap().equals(GameMap.CIRCUITBREAKER)) {
             times = 3;
         }
         for (int i = 0; i < times; i++) {

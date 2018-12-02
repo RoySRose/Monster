@@ -7,7 +7,7 @@ import bwta.BWTA;
 import bwta.BaseLocation;
 import bwta.Region;
 import org.monster.common.util.internal.MapTools;
-import org.monster.main.Monster;
+import org.monster.bootstrap.Monster;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -15,16 +15,16 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
-public class ScoutInfoCollector implements InfoCollector{
+public class ScoutInfoCollector implements InfoCollector {
 
     private static ScoutInfoCollector instance = new ScoutInfoCollector();
+    /*Info*/
+    private static Map<Position, Vector<Position>> baseRegionVerticesMap = new HashMap<>();
+    Game Broodwar;
+
     protected static ScoutInfoCollector Instance() {
         return instance;
     }
-    Game Broodwar;
-
-    /*Info*/
-    private static Map<Position, Vector<Position>> baseRegionVerticesMap = new HashMap<>();
 
     @Override
     public void onStart(Game Broodwar) {
@@ -38,10 +38,10 @@ public class ScoutInfoCollector implements InfoCollector{
     }
 
     private void updateBaseRegionVerticesMap() {
-		for (BaseLocation base : BWTA.getStartLocations()) {
-			calculateEnemyRegionVertices(base);
-		}
-	}
+        for (BaseLocation base : BWTA.getStartLocations()) {
+            calculateEnemyRegionVertices(base);
+        }
+    }
 
     protected Vector<Position> getRegionVertices(BaseLocation base) {
         return baseRegionVerticesMap.get(base.getPosition());

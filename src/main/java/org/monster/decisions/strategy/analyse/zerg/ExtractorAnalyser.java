@@ -1,9 +1,9 @@
 package org.monster.decisions.strategy.analyse.zerg;
 
 import bwapi.UnitType;
-import org.monster.decisions.constant.EnemyStrategy;
 import org.monster.common.UnitInfo;
 import org.monster.common.constant.CommonCode;
+import org.monster.decisions.constant.EnemyStrategy;
 import org.monster.decisions.strategy.analyse.Clue;
 import org.monster.decisions.strategy.analyse.UnitAnalyser;
 import org.monster.decisions.strategy.manage.ClueManager;

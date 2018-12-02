@@ -7,7 +7,6 @@ import bwta.Region;
 import org.monster.board.StrategyBoard;
 import org.monster.common.UnitInfo;
 import org.monster.common.util.BaseUtils;
-import org.monster.common.util.InfoUtils;
 import org.monster.common.util.UnitUtils;
 import org.monster.micro.SquadData;
 import org.monster.micro.constant.MicroConfig;
@@ -191,7 +190,7 @@ public class EarlyDefenseSquad extends Squad {
     public void findEnemies() {
         euiList.clear();
 
-        List<UnitInfo> enemyUnitsInRegion = InfoUtils.euiListInMyRegion(BaseUtils.myMainBase().getRegion());
+        List<UnitInfo> enemyUnitsInRegion = UnitUtils.euiListInMyRegion(BaseUtils.myMainBase().getRegion());
         if (enemyUnitsInRegion.size() >= 1) {
             for (UnitInfo enemy : enemyUnitsInRegion) {
                 euiList.add(enemy);

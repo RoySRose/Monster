@@ -1,4 +1,4 @@
-package org.monster.micro.control.factory;
+package org.monster.micro.control.groundforce;
 
 import bwapi.Position;
 import bwapi.Race;
@@ -6,6 +6,7 @@ import bwapi.Unit;
 import bwapi.UnitType;
 import bwta.BWTA;
 import bwta.Chokepoint;
+import org.monster.board.StrategyBoard;
 import org.monster.common.UnitInfo;
 import org.monster.common.constant.CommonCode;
 import org.monster.common.util.CommandUtils;
@@ -14,7 +15,9 @@ import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.PositionUtils;
 import org.monster.common.util.TimeUtils;
 import org.monster.common.util.UnitUtils;
-import org.monster.main.Monster;
+import org.monster.decisions.strategy.manage.PositionFinder;
+import org.monster.decisions.strategy.manage.TankPositionManager;
+import org.monster.bootstrap.Monster;
 import org.monster.micro.FleeOption;
 import org.monster.micro.KitingOption;
 import org.monster.micro.MicroDecision;
@@ -22,9 +25,6 @@ import org.monster.micro.MicroDecisionMakerPrebot1;
 import org.monster.micro.constant.MicroConfig;
 import org.monster.micro.constant.MicroConfig.MainSquadMode;
 import org.monster.micro.control.Control;
-import org.monster.board.StrategyBoard;
-import org.monster.decisions.strategy.manage.PositionFinder;
-import org.monster.decisions.strategy.manage.TankPositionManager;
 
 import java.util.ArrayList;
 import java.util.Collection;

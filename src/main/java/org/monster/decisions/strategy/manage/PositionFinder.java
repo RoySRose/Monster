@@ -18,19 +18,19 @@ import org.monster.common.constant.CommonCode;
 import org.monster.common.util.BaseLocationUtils;
 import org.monster.common.util.BaseUtils;
 import org.monster.common.util.ChokePointUtils;
-import org.monster.common.util.InfoUtils;
 import org.monster.common.util.MicroUtils;
 import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.PositionUtils;
+import org.monster.common.util.StaticMapUtils;
 import org.monster.common.util.TimeUtils;
 import org.monster.common.util.UnitUtils;
 import org.monster.common.util.internal.IConditions;
 import org.monster.decisions.constant.EnemyStrategyOptions;
 import org.monster.decisions.constant.StrategyCode;
-import org.monster.main.Monster;
+import org.monster.bootstrap.Monster;
 import org.monster.micro.CombatManager;
-import org.monster.micro.constant.MicroConfig;
 import org.monster.micro.compute.VultureFightPredictor;
+import org.monster.micro.constant.MicroConfig;
 import org.monster.micro.squad.Squad;
 import org.monster.micro.targeting.TargetFilter;
 
@@ -212,7 +212,7 @@ public class PositionFinder {
         } else if (PlayerUtils.enemyRace() == Race.Terran) {
 
             // 병력이 쌓였다면 second choke에서 방어한다.
-            if (myTankSupplyCount >= 3 * 4 && InfoUtils.myReadyToPosition() != null) {
+            if (myTankSupplyCount >= 3 * 4 && PositionUtils.myReadyToPosition() != null) {
                 if (!scanAtReadyToDisabled && !scanAtReadyToPosition) {
                     scanAtReadyToPosition = true;
                     scanAtReadyToOrderFrame = TimeUtils.elapsedFrames() + 3 * TimeUtils.SECOND;
@@ -249,7 +249,7 @@ public class PositionFinder {
 //			return firstChokeDefensePosition();
 //
 //			// 마린이 일정이상 쌓였어야 한다.
-////			int marineCount = InfoUtils.myNumUnits(UnitType.Terran_Marine) / 2;
+////			int marineCount = InfoTypeUtils.myNumUnits(UnitType.Terran_Marine) / 2;
 ////			if (factorySupplyCount + marineCount > Math.max(enemyUnitCount, 3)) {
 ////				return firstChokeDefensePosition();
 ////			} else {
@@ -280,7 +280,7 @@ public class PositionFinder {
             return ChokePointUtils.mySecondChoke().getCenter();
 
         } else { // if (campType == PositionFinder.CampType.READY_TO) {
-            return InfoUtils.myReadyToPosition();
+            return PositionUtils.myReadyToPosition();
         }
     }
 
@@ -301,12 +301,12 @@ public class PositionFinder {
     private Position defensePosition(CampType campType) {
         List<Region> defenseMyRegion = new ArrayList<>();
 
-        if (!InfoUtils.euiListInBase().isEmpty()) {
+        if (!UnitUtils.euiListInBase().isEmpty()) {
             Region myBaseRegion = BWTA.getRegion(BaseUtils.myMainBase().getPosition());
             defenseMyRegion.add(myBaseRegion);
         }
         if (campType != PositionFinder.CampType.INSIDE && campType != PositionFinder.CampType.FIRST_CHOKE
-                && !InfoUtils.euiListInExpansion().isEmpty()) {
+                && !UnitUtils.euiListInExpansion().isEmpty()) {
             Region myExpansionRegion = BWTA.getRegion(BaseUtils.myFirstExpansion().getPosition());
             defenseMyRegion.add(myExpansionRegion);
         }
@@ -346,7 +346,7 @@ public class PositionFinder {
                     // 백만년 조이기를 하지 않기 위해 checker로 탐색된 곳과 적 주력병력 주둔지를 고려하여
                     // 안전한 위치까지 바로 전진하도록 한다.
                     if (PlayerUtils.enemyRace() == Race.Terran && UnitUtils.myFactoryUnitSupplyCount() < 10 * 4) {
-                        return InfoUtils.enemyReadyToPosition();
+                        return PositionUtils.enemyReadyToPosition();
                     }
                     BaseLocation enemyFirstExpansion = BaseUtils.enemyFirstExpansion();
                     if (enemyFirstExpansion != null && BaseUtils.isEnemyFirstExpansionOccupied()) {
@@ -380,8 +380,8 @@ public class PositionFinder {
 
         // readyToPosition을 지나쳤는지 여부
         Position leaderPosition = StrategyBoard.mainSquadLeaderPosition;
-        Position myReadyTo = InfoUtils.myReadyToPosition();
-        Position enemyReadyTo = InfoUtils.enemyReadyToPosition();
+        Position myReadyTo = PositionUtils.myReadyToPosition();
+        Position enemyReadyTo = PositionUtils.enemyReadyToPosition();
         if (!PositionUtils.isAllValidPosition(leaderPosition, myReadyTo, enemyReadyTo)) {
             return;
         }
@@ -406,9 +406,9 @@ public class PositionFinder {
         }
 
         Set<UnitInfo> euiListNear = new HashSet<>();
-        euiListNear.addAll(InfoUtils.euiListInBase());
-        euiListNear.addAll(InfoUtils.euiListInExpansion());
-        euiListNear.addAll(InfoUtils.euiListInThirdRegion());
+        euiListNear.addAll(UnitUtils.euiListInBase());
+        euiListNear.addAll(UnitUtils.euiListInExpansion());
+        euiListNear.addAll(UnitUtils.euiListInThirdRegion());
         euiListNear.addAll(UnitUtils.getEnemyUnitInfosInRadius(TargetFilter.GROUND_UNIT | TargetFilter.INVISIBLE | TargetFilter.UNFIGHTABLE,
                 BaseUtils.myMainBase().getPosition(), 550, true, true));
 
@@ -490,7 +490,7 @@ public class PositionFinder {
         // 적 상태
         StrategyCode.EnemyUnitStatus enemyStatus;
 
-        if (!InfoUtils.euiListInBase().isEmpty()) {
+        if (!UnitUtils.euiListInBase().isEmpty()) {
             enemyStatus = StrategyCode.EnemyUnitStatus.IN_MY_REGION;
         } else {
             if (StrategyBoard.nearGroundEnemyPosition != Position.Unknown
@@ -520,7 +520,7 @@ public class PositionFinder {
 
         // watcher 방어모드2
         if (watcherPosition == Position.Unknown) {
-            Set<UnitInfo> euiListInBase = InfoUtils.euiListInBase();
+            Set<UnitInfo> euiListInBase = UnitUtils.euiListInBase();
             for (UnitInfo eui : euiListInBase) {
                 if (!eui.getType().isFlyer()) {
                     watcherPosition = eui.getLastPosition();
@@ -568,7 +568,7 @@ public class PositionFinder {
         if (watcherPosition == Position.Unknown) {
             if (BaseUtils.enemyMainBase() != null) {
                 if (PlayerUtils.enemyRace() == Race.Terran && Monster.Broodwar.self().getUpgradeLevel(UpgradeType.Ion_Thrusters) == 0) {
-                    watcherPosition = InfoUtils.enemyReadyToPosition();
+                    watcherPosition = PositionUtils.enemyReadyToPosition();
                 } else {
                     watcherPosition = BaseUtils.enemyMainBase().getPosition();
                 }
@@ -835,7 +835,7 @@ public class PositionFinder {
 					(int) (10 * Math.sin(radian))); // 이동벡터
 			firstChokeDefensePosition = new Position(firstSupplePos.getX() + fleeVector.getX(),
 					firstSupplePos.getY() + fleeVector.getY());*/
-			//TODO disable cause of isSafePosition() deletion
+            //TODO disable cause of isSafePosition() deletion
             firstChokeDefensePosition = null;//InformationManager.Instance().isSafePosition();
 
         }
@@ -881,7 +881,7 @@ public class PositionFinder {
         }
 
         // starting location 중에서 탐험되지 않은 지역
-        List<BaseLocation> startingBases = InfoUtils.mapInformation().getStartingBaseLocation();
+        List<BaseLocation> startingBases = StaticMapUtils.getStartingBaseLocation();
         for (BaseLocation startingBase : startingBases) {
             if (!Monster.Broodwar.isExplored(startingBase.getTilePosition())) {
                 return startingBase.getPosition();

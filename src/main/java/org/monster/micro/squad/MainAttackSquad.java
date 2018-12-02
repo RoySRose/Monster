@@ -4,19 +4,19 @@ import bwapi.Race;
 import bwapi.Unit;
 import bwapi.UnitType;
 import org.monster.board.StrategyBoard;
+import org.monster.bootstrap.Monster;
 import org.monster.common.UnitInfo;
-import org.monster.common.util.InfoUtils;
-
 import org.monster.common.util.MicroUtils;
 import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.TimeUtils;
 import org.monster.common.util.UnitUtils;
-import org.monster.main.Monster;
+import org.monster.decisions.strategy.manage.PositionFinder;
 import org.monster.micro.CombatManager;
 import org.monster.micro.constant.MicroConfig;
 import org.monster.micro.control.airforce.ValkyrieControl;
+import org.monster.micro.control.groundforce.GoliathControl;
+import org.monster.micro.control.groundforce.TankControl;
 import org.monster.micro.targeting.TargetFilter;
-import org.monster.decisions.strategy.manage.PositionFinder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,8 +36,8 @@ public class MainAttackSquad extends Squad {
 //		return euisNearBaseRegion;
 //	}
 
-    private org.monster.micro.control.factory.TankControl tankControl = new org.monster.micro.control.factory.TankControl();
-    private org.monster.micro.control.factory.GoliathControl goliathControl = new org.monster.micro.control.factory.GoliathControl();
+    private TankControl tankControl = new TankControl();
+    private GoliathControl goliathControl = new GoliathControl();
     private ValkyrieControl valkyrieControl = new ValkyrieControl();
 
     public MainAttackSquad() {
@@ -156,14 +156,14 @@ public class MainAttackSquad extends Squad {
 
         if (!StrategyBoard.mainSquadMode.isAttackMode || PlayerUtils.enemyRace() == Race.Terran) {
             if (StrategyBoard.campType == PositionFinder.CampType.INSIDE) {
-                euiList.addAll(InfoUtils.euiListInBase());
+                euiList.addAll(UnitUtils.euiListInBase());
             } else if (StrategyBoard.campType == PositionFinder.CampType.FIRST_CHOKE || StrategyBoard.campType == PositionFinder.CampType.EXPANSION) {
-                euiList.addAll(InfoUtils.euiListInBase());
-                euiList.addAll(InfoUtils.euiListInExpansion());
+                euiList.addAll(UnitUtils.euiListInBase());
+                euiList.addAll(UnitUtils.euiListInExpansion());
             } else {
-                euiList.addAll(InfoUtils.euiListInBase());
-                euiList.addAll(InfoUtils.euiListInExpansion());
-                euiList.addAll(InfoUtils.euiListInThirdRegion());
+                euiList.addAll(UnitUtils.euiListInBase());
+                euiList.addAll(UnitUtils.euiListInExpansion());
+                euiList.addAll(UnitUtils.euiListInThirdRegion());
             }
         }
 

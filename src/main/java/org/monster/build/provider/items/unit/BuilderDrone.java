@@ -16,7 +16,7 @@ import org.monster.common.util.BaseUtils;
 import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.TimeUtils;
 import org.monster.common.util.UnitUtils;
-import org.monster.main.Monster;
+import org.monster.bootstrap.Monster;
 import org.monster.worker.WorkerManager;
 
 import java.util.List;

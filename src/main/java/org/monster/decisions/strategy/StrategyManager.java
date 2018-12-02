@@ -4,13 +4,12 @@ import bwapi.Unit;
 import bwapi.UnitType;
 import bwta.BaseLocation;
 import org.monster.board.StrategyBoard;
+import org.monster.bootstrap.GameManager;
 import org.monster.common.LagObserver;
 import org.monster.common.constant.CommonCode;
 import org.monster.common.util.BaseUtils;
 import org.monster.common.util.TimeUtils;
 import org.monster.common.util.UnitUtils;
-import org.monster.main.GameManager;
-import org.monster.micro.constant.MicroConfig;
 import org.monster.decisions.strategy.manage.ActionManager;
 import org.monster.decisions.strategy.manage.AirForceManager;
 import org.monster.decisions.strategy.manage.DefenseTowerTimer;
@@ -19,7 +18,7 @@ import org.monster.decisions.strategy.manage.PositionFinder;
 import org.monster.decisions.strategy.manage.SpiderMineManger;
 import org.monster.decisions.strategy.manage.StrategyAnalyseManager;
 import org.monster.decisions.strategy.manage.TankPositionManager;
-import org.monster.decisions.strategy.manage.VultureTravelManager;
+import org.monster.micro.constant.MicroConfig;
 
 import java.util.List;
 
@@ -50,7 +49,7 @@ public class StrategyManager extends GameManager {
             DefenseTowerTimer.Instance().update();
 
             SpiderMineManger.Instance().update();
-            VultureTravelManager.Instance().update();
+            //VultureTravelManager.Instance().update();
             TankPositionManager.Instance().update();
         }
 
@@ -67,7 +66,7 @@ public class StrategyManager extends GameManager {
     private void changeMainSquadMode() {
         //TODO 일단 무조건 공격
 //        if (AttackDecisionMaker.Instance().decision == Decision.NO_MERCY_ATTACK) {
-            StrategyBoard.mainSquadMode = MicroConfig.MainSquadMode.NO_MERCY;
+        StrategyBoard.mainSquadMode = MicroConfig.MainSquadMode.NO_MERCY;
 
 //        } else if (AttackDecisionMaker.Instance().decision == Decision.FULL_ATTACK) {
 //            if (StrategyBoard.buildTimeMap.featureEnabled(EnemyStrategyOptions.BuildTimeMap.Feature.QUICK_ATTACK)) {

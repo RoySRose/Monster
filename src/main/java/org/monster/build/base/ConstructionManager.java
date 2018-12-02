@@ -10,13 +10,13 @@ import bwta.BaseLocation;
 import bwta.Region;
 import org.monster.common.LagObserver;
 import org.monster.common.util.CommandUtils;
-import org.monster.common.util.InfoUtils;
+import org.monster.common.util.InfoTypeUtils;
 import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.RegionUtils;
 import org.monster.common.util.TilePositionUtils;
 import org.monster.common.util.TimeUtils;
-import org.monster.main.GameManager;
-import org.monster.main.Monster;
+import org.monster.bootstrap.GameManager;
+import org.monster.bootstrap.Monster;
 import org.monster.worker.WorkerManager;
 
 import java.util.HashSet;
@@ -201,7 +201,7 @@ public class ConstructionManager extends GameManager {
 //                } else if (b.getType().equals(UnitType.Terran_Command_Center)) {
 //                    relocationTilePosition = BuildManager.Instance().getDesiredPosition(b.getType(), TilePosition.None, BuildOrderItem.SeedPositionStrategy.NextExpansionPoint);
 //                } else {
-                    relocationTilePosition = BuildManager.Instance().getDesiredPosition(b.getType(), TilePosition.None, BuildOrderItem.SeedPositionStrategy.MainBaseLocation);
+                relocationTilePosition = BuildManager.Instance().getDesiredPosition(b.getType(), TilePosition.None, BuildOrderItem.SeedPositionStrategy.MainBaseLocation);
 //                }
                 if (relocationTilePosition == TilePosition.None) {
                     System.out.println(" relocationTilePosition recalculate desiredPosition None");
@@ -493,7 +493,7 @@ public class ConstructionManager extends GameManager {
                 }
 
                 // Refinery 건물의 경우, 건물 지을 장소를 찾을 수 없게 되었거나, 건물 지을 수 있을거라고 판단했는데 이미 Refinery 가 지어져있는 경우, dead lock
-                if (!isDeadlockCase && unitType == InfoUtils.getRefineryBuildingType(PlayerUtils.myRace())) {
+                if (!isDeadlockCase && unitType == InfoTypeUtils.getRefineryBuildingType(PlayerUtils.myRace())) {
                     boolean hasAvailableGeyser = true;
 
                     TilePosition testLocation;

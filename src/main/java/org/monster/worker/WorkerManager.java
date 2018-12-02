@@ -15,8 +15,8 @@ import org.monster.common.util.BaseUtils;
 import org.monster.common.util.CommandUtils;
 import org.monster.common.util.TimeUtils;
 import org.monster.common.util.UnitUtils;
-import org.monster.main.GameManager;
-import org.monster.main.Monster;
+import org.monster.bootstrap.GameManager;
+import org.monster.bootstrap.Monster;
 import org.monster.micro.Minerals;
 import org.monster.micro.constant.MicroConfig;
 

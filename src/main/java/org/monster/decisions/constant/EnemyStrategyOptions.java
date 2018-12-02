@@ -5,12 +5,12 @@ import bwapi.TechType;
 import bwapi.Unit;
 import bwapi.UnitType;
 import bwapi.UpgradeType;
+import org.monster.board.StrategyBoard;
 import org.monster.common.MetaType;
 import org.monster.common.constant.CommonCode;
 import org.monster.common.util.PositionUtils;
 import org.monster.common.util.TimeUtils;
 import org.monster.common.util.UnitUtils;
-import org.monster.board.StrategyBoard;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,6 +34,7 @@ public class EnemyStrategyOptions {
         public int tank;
         public int goliath;
         public int weight;
+
         private FactoryRatio(int vulture, int tank, int goliath, int weight) {
             this.vulture = vulture;
             this.tank = tank;

@@ -7,7 +7,7 @@ import org.monster.build.base.ConstructionManager;
 import org.monster.build.base.ConstructionTask;
 import org.monster.common.MapGrid;
 import org.monster.common.UnitInfo;
-import org.monster.main.Monster;
+import org.monster.bootstrap.Monster;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,11 +20,6 @@ import java.util.Vector;
 public class UnitCache implements InfoCollector {
 
     private static UnitCache unitCache = new UnitCache();
-
-    public static UnitCache getCurrentCache() {
-        return unitCache;
-    }
-
     // 아군 UnitType 발견 여부
     private Map<UnitType, Boolean> selfUnitDiscovered = new HashMap<>();
     private Map<UnitType, Boolean> selfCompleteUnitDiscovered = new HashMap<>();
@@ -37,23 +32,22 @@ public class UnitCache implements InfoCollector {
     private Map<UnitType, List<Unit>> selfCompleteUnitByTypeMap = new HashMap<>(); /// 아군 완성 유닛
     private Map<UnitType, List<Unit>> selfIncompleteUnitByTypeMap = new HashMap<>(); /// 아군 미완성 유닛
     private Map<UnitType, List<ConstructionTask>> selfConstructionTaskMap = new HashMap<>(); /// 아군 건설큐의 건물
-
     // 적군  UnitType 발견 여부
     private Map<UnitType, Boolean> enemyUnitDiscovered = new HashMap<>();
     private Map<UnitType, Boolean> enemyCompleteUnitDiscovered = new HashMap<>();
-
     //TODO completed, incompleted enemey unit list 가 필요할까?
     // 적군 맵
     private Map<Integer, UnitInfo> enemyAllUnitInfoMap = new HashMap<>(); /// 적군 모든 유닛정보
     // 적군 UnitType별 맵
     private Map<UnitType, List<UnitInfo>> enemyAllUnitInfoByTypeMap = new HashMap<>(); /// 적군 모든 유닛정보
     private Map<UnitType, List<UnitInfo>> enemyVisibleUnitInfoByTypeMap = new HashMap<>(); /// 보이는 적군 유닛정보
-
     private int supplyUsed;
-
     private Vector<Integer> badUnitstoRemove = new Vector<Integer>();
-
     private Game Broodwar;
+
+    public static UnitCache getCurrentCache() {
+        return unitCache;
+    }
     ////////////////////// 아군 유닛 리스트 관련
 
     @Override

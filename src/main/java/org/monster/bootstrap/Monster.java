@@ -1,4 +1,4 @@
-package org.monster.main;
+package org.monster.bootstrap;
 
 /*
 +----------------------------------------------------------------------+
@@ -65,7 +65,18 @@ public class Monster extends DefaultBWListener {
         BWTA.buildChokeNodes();
         System.out.println("Map analyzing finished");
 
-        gameCommander.onStart(Broodwar);
+        try {
+            gameCommander.onStart(Broodwar);
+        } catch (Exception e) {
+
+            Broodwar.sendText("[Error Stack Trace]");
+            System.out.println("[Error Stack Trace]");
+            for (StackTraceElement ste : e.getStackTrace()) {
+                Broodwar.sendText(ste.toString());
+                System.out.println(ste.toString());
+            }
+            Broodwar.sendText("not properly started");
+        }
     }
 
     @Override

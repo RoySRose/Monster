@@ -4,16 +4,14 @@ import bwapi.Race;
 import bwapi.TilePosition;
 import org.monster.board.StrategyBoard;
 import org.monster.common.constant.CommonCode;
-import org.monster.debugger.UxColor;
-import org.monster.debugger.chat.impl.StrategyChanger;
 import org.monster.common.util.BaseUtils;
-import org.monster.common.util.InfoUtils;
 import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.TimeUtils;
 import org.monster.common.util.UnitUtils;
-import org.monster.decisions.constant.EnemyStrategyOptions;
+import org.monster.debugger.UxColor;
+import org.monster.debugger.chat.impl.StrategyChanger;
 import org.monster.decisions.constant.EnemyStrategy;
-import org.monster.main.Monster;
+import org.monster.decisions.constant.EnemyStrategyOptions;
 import org.monster.decisions.strategy.analyse.ProtossStrategist;
 import org.monster.decisions.strategy.analyse.Strategist;
 import org.monster.decisions.strategy.analyse.TerranStrategist;
@@ -63,6 +61,7 @@ import org.monster.decisions.strategy.analyse.zerg.unit.HydraliskAnalyser;
 import org.monster.decisions.strategy.analyse.zerg.unit.LurkerAnalyser;
 import org.monster.decisions.strategy.analyse.zerg.unit.MutaliskAnalyser;
 import org.monster.decisions.strategy.analyse.zerg.unit.ZerglingAnalyser;
+import org.monster.bootstrap.Monster;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -213,18 +212,24 @@ public class StrategyAnalyseManager {
 
     /// 유닛 발견 맵을 업데이트한다.
     private void updateVisitFrame() {
-        if (BaseUtils.enemyMainBase() == null || InfoUtils.enemyBaseGas() == null) {
+        if (BaseUtils.enemyMainBase() == null || UnitUtils.enemyBaseGas() == null) {
             return;
         }
 
         TilePosition enemyBaseTile = BaseUtils.enemyMainBase().getTilePosition();
-        TilePosition enemyGasTile = InfoUtils.enemyBaseGas().getTilePosition();
+        TilePosition enemyGasTile = null;
+
+        if(UnitUtils.enemyBaseGas() != null) {
+            enemyGasTile = UnitUtils.enemyBaseGas().getTilePosition();
+        }
+
         TilePosition enemyFirstExpansionTile = BaseUtils.enemyFirstExpansion().getTilePosition();
 
         if (Monster.Broodwar.isVisible(enemyBaseTile)) {
 //			System.out.println("base explored");
             lastCheckFrameBase = TimeUtils.elapsedFrames();
         }
+        //TODO enemyGasTile null 일때는??
         if (Monster.Broodwar.isVisible(enemyGasTile)) {
 //			System.out.println("gas explored");
             lastCheckFrameGas = TimeUtils.elapsedFrames();

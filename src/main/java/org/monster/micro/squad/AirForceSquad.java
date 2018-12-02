@@ -2,16 +2,16 @@ package org.monster.micro.squad;
 
 import bwapi.Unit;
 import bwapi.UnitType;
+import org.monster.board.StrategyBoard;
 import org.monster.common.LagObserver;
 import org.monster.common.UnitInfo;
 import org.monster.common.util.TimeUtils;
 import org.monster.common.util.UnitUtils;
+import org.monster.decisions.strategy.manage.AirForceManager;
+import org.monster.decisions.strategy.manage.AirForceTeam;
 import org.monster.micro.constant.MicroConfig;
 import org.monster.micro.control.airforce.AirForceControl;
 import org.monster.micro.targeting.TargetFilter;
-import org.monster.board.StrategyBoard;
-import org.monster.decisions.strategy.manage.AirForceManager;
-import org.monster.decisions.strategy.manage.AirForceTeam;
 
 import java.util.ArrayList;
 import java.util.Collection;

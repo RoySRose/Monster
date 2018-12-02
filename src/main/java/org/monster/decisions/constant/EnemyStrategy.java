@@ -289,6 +289,7 @@ public enum EnemyStrategy {
     public EnemyStrategyOptions.ExpansionOption expansionOption;
     public EnemyStrategyOptions.BuildTimeMap buildTimeMap;
     public List<EnemyStrategyOptions.Mission.MissionType> missionTypeList;
+
     private EnemyStrategy(EnemyStrategy strategy) {
         this.factoryRatio = strategy.factoryRatio;
         this.upgrade = strategy.upgrade;
@@ -298,9 +299,11 @@ public enum EnemyStrategy {
         this.buildTimeMap = strategy.buildTimeMap;
         this.missionTypeList = strategy.missionTypeList;
     }
+
     private EnemyStrategy(int vulture, int tank, int goliath, int weight, List<MetaType> upgrade, int marineCount, EnemyStrategyOptions.AddOnOption addOnOption, EnemyStrategyOptions.ExpansionOption expansionOption, EnemyStrategyOptions.BuildTimeMap defaultTimeMap) {
         this(vulture, tank, goliath, weight, upgrade, marineCount, addOnOption, expansionOption, defaultTimeMap, Collections.emptyList());
     }
+
     private EnemyStrategy(int vulture, int tank, int goliath, int weight, List<MetaType> upgrade, int marineCount, EnemyStrategyOptions.AddOnOption addOnOption, EnemyStrategyOptions.ExpansionOption expansionOption, EnemyStrategyOptions.BuildTimeMap defaultTimeMap, List<EnemyStrategyOptions.Mission.MissionType> missionTypeList) {
         this.factoryRatio = EnemyStrategyOptions.FactoryRatio.ratio(vulture, tank, goliath, weight);
         this.upgrade = upgrade;
@@ -310,6 +313,7 @@ public enum EnemyStrategy {
         this.buildTimeMap = defaultTimeMap;
         this.missionTypeList = missionTypeList;
     }
+
     private EnemyStrategy(int vulture, int tank, int goliath, int weight, List<MetaType> upgrade) {
         this.factoryRatio = EnemyStrategyOptions.FactoryRatio.ratio(vulture, tank, goliath, weight);
         this.upgrade = upgrade;

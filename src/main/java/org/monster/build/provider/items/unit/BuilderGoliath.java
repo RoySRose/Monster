@@ -8,7 +8,7 @@ import org.monster.build.provider.FactoryUnitSelector;
 import org.monster.common.MetaType;
 import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.UnitUtils;
-import org.monster.main.Monster;
+import org.monster.bootstrap.Monster;
 
 //EXAMPLE
 @Deprecated

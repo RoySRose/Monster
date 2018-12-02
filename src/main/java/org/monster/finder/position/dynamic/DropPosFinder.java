@@ -1,15 +1,27 @@
 package org.monster.finder.position.dynamic;
 
-import bwapi.Position;
-import org.monster.finder.position.PositionFinder;
-
-import java.util.List;
+import org.monster.board.Decision;
+import org.monster.board.Location;
+import org.monster.board.StrategyBoard;
+import org.monster.finder.DefaultPositionFinder;
+import org.monster.finder.LocationFinder;
 
 //TODO 드롭위치 찾기
-public class DropPosFinder implements PositionFinder {
+//TODO
+public class DropPosFinder extends DefaultPositionFinder implements LocationFinder {
+
+    public DropPosFinder() {
+        super(Location.NeedToAdd);
+    }
 
     @Override
-    public List<Position> getPosition() {
-        return null;
+    public boolean calculateLocation() {
+
+        return StrategyBoard.decisions.get(Decision.NeedToAdd);
+    }
+
+    @Override
+    public void decisionLogic() {
+
     }
 }

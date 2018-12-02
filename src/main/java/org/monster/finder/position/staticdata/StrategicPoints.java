@@ -1,15 +1,26 @@
 package org.monster.finder.position.staticdata;
 
-import bwapi.Position;
-import org.monster.finder.position.PositionFinder;
-
-import java.util.List;
+import org.monster.board.Decision;
+import org.monster.board.Location;
+import org.monster.board.StrategyBoard;
+import org.monster.finder.DefaultPositionFinder;
+import org.monster.finder.LocationFinder;
 
 //TODO 지도상 주요 거점 찾기
-public class StrategicPoints implements PositionFinder {
+public class StrategicPoints extends DefaultPositionFinder implements LocationFinder {
+
+    public StrategicPoints() {
+        super(Location.NeedToAdd);
+    }
 
     @Override
-    public List<Position> getPosition() {
-        return null;
+    public boolean calculateLocation() {
+
+        return StrategyBoard.decisions.get(Decision.NeedToAdd);
+    }
+
+    @Override
+    public void decisionLogic() {
+
     }
 }

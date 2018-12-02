@@ -4,8 +4,8 @@ import bwapi.Position;
 import bwapi.TilePosition;
 import bwta.BWTA;
 import bwta.BaseLocation;
-import org.monster.common.util.internal.IConditions;
 import org.monster.common.constant.CommonCode;
+import org.monster.common.util.internal.IConditions;
 
 import java.util.HashSet;
 import java.util.List;

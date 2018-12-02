@@ -9,7 +9,7 @@ import org.monster.build.initialProvider.InitialBuildProvider;
 import org.monster.common.MetaType;
 import org.monster.common.constant.CommonCode;
 import org.monster.common.util.UnitUtils;
-import org.monster.main.Monster;
+import org.monster.bootstrap.Monster;
 
 import java.util.List;
 

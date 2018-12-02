@@ -5,9 +5,9 @@ import bwapi.Unit;
 import bwapi.UnitType;
 import org.monster.common.LagObserver;
 import org.monster.common.UnitInfo;
-import org.monster.debugger.BigWatch;
 import org.monster.common.util.TimeUtils;
 import org.monster.common.util.UnitUtils;
+import org.monster.debugger.BigWatch;
 import org.monster.micro.CombatManager;
 import org.monster.micro.constant.MicroConfig;
 
@@ -22,6 +22,7 @@ public abstract class Squad {
     protected UnitType[] unitTypes;
     private int squadExecutedFrame;
     private String squadName;
+
     public Squad(MicroConfig.SquadInfo squadInfo) {
         this.squadName = squadInfo.squadName;
     }

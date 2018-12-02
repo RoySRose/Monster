@@ -28,6 +28,6 @@ public class PlayerUtils {
     }
 
     public static boolean hasMoreResourceThan(int mineralNeed, int gasNeed) {
-        return mineralNeed <= myPlayer().minerals() &&  gasNeed <= myPlayer().gas();
+        return mineralNeed <= myPlayer().minerals() && gasNeed <= myPlayer().gas();
     }
 }

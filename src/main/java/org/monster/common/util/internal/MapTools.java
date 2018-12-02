@@ -2,8 +2,8 @@ package org.monster.common.util.internal;
 
 import bwapi.Position;
 import bwapi.TilePosition;
-import org.monster.main.Monster;
 import org.monster.common.DistanceMap;
+import org.monster.bootstrap.Monster;
 
 import java.util.HashMap;
 import java.util.Map;

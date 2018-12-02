@@ -26,8 +26,8 @@ import org.monster.common.util.ChokePointUtils;
 import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.TimeUtils;
 import org.monster.common.util.UnitUtils;
-import org.monster.main.Config;
-import org.monster.main.Monster;
+import org.monster.bootstrap.Config;
+import org.monster.bootstrap.Monster;
 import org.monster.worker.WorkerData;
 import org.monster.worker.WorkerManager;
 
@@ -192,7 +192,7 @@ public class UXManager {
     public void drawUnitExtendedInformationOnMap() {
         int verticalOffset = -10;
 
-        for(UnitInfo ui : UnitUtils.getEnemyUnitInfoList()){
+        for (UnitInfo ui : UnitUtils.getEnemyUnitInfoList()) {
 
             UnitType type = ui.getType();
             int hitPoints = ui.getLastHealth();
@@ -544,7 +544,7 @@ public class UXManager {
 //            for (BaseLocation baseLocation : InformationManager.Instance().getOccupiedBaseLocations(PlayerUtils.myPlayer())) {
 //                Monster.Broodwar.drawCircleMap(baseLocation.getPosition(), 10 * Config.TILE_SIZE, Color.Blue);
 //            }
-//            for (BaseLocation baseLocation : InfoUtils.getOccupiedBaseLocations(PlayerUtils.enemyPlayer())) {
+//            for (BaseLocation baseLocation : InfoTypeUtils.getOccupiedBaseLocations(PlayerUtils.enemyPlayer())) {
 //                Monster.Broodwar.drawCircleMap(baseLocation.getPosition(), 10 * Config.TILE_SIZE, Color.Red);
 //            }
 

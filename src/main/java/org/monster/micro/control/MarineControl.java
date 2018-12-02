@@ -16,9 +16,9 @@ import org.monster.common.util.CommandUtils;
 import org.monster.common.util.MicroUtils;
 import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.UnitUtils;
-import org.monster.micro.KitingOption;
 import org.monster.decisions.strategy.manage.PositionFinder;
 import org.monster.decisions.strategy.manage.PositionFinder.CampType;
+import org.monster.micro.KitingOption;
 
 import java.util.Collection;
 import java.util.List;
@@ -295,14 +295,14 @@ public class MarineControl extends Control {
 		
 		
 	/*	// 세번째 지역까지 OK
-		if (unitRegion == InfoUtils.myThirdRegion()) {
+		if (unitRegion == InfoTypeUtils.myThirdRegion()) {
 			return true;
 		}
 		if (campType == PositionFinder.CampType.SECOND_CHOKE) {
 			return true;
 		}
 		// 세번째 지역 반경 OK
-		if (marine.getDistance(InfoUtils.myThirdRegion()) < 500) {
+		if (marine.getDistance(InfoTypeUtils.myThirdRegion()) < 500) {
 			return true;
 		}*/
 
