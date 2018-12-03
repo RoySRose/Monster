@@ -8,6 +8,7 @@ import bwapi.Unit;
 import org.monster.board.StrategyBoard;
 import org.monster.build.base.BuildManager;
 import org.monster.build.base.ConstructionManager;
+import org.monster.build.base.ConstructionPlaceFinder;
 import org.monster.build.initialProvider.InitialBuildProvider;
 import org.monster.build.provider.BuildQueueProvider;
 import org.monster.common.MapGrid;
@@ -49,8 +50,8 @@ public class GameCommander {
             //BlockingEntrance.Instance().onStart(Broodwar);
 
             //TODO 2건 풀면 오류 발생( onStart 를 complete 하지 못함)
-    //        ConstructionPlaceFinder.Instance().setTilesToAvoidSupply();
-    //        ConstructionPlaceFinder.Instance().setTilesToAvoidBaseLocation();
+//            ConstructionPlaceFinder.Instance().setTilesToAvoidSupply();
+//            ConstructionPlaceFinder.Instance().setTilesToAvoidBaseLocation();
 
 
             InitialBuildProvider.Instance().onStart();
@@ -82,6 +83,7 @@ public class GameCommander {
             return;
         }
 
+        System.out.println(Broodwar.getFrameCount());
         try {
             BigWatch.start("... GAME COMMANDER ...");
 
