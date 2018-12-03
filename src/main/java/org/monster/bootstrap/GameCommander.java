@@ -21,8 +21,12 @@ import org.monster.decisions.strategy.StrategyManager;
 import org.monster.finder.LocationManager;
 import org.monster.micro.CombatManager;
 import org.monster.worker.WorkerManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class GameCommander {
+
+	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private static GameCommander instance = new GameCommander();
     private UnitBalancer unitBalancer = new UnitBalancer(); // for debugging
@@ -36,7 +40,7 @@ public class GameCommander {
 
         this.Broodwar = Broodwar;
 
-        System.out.println("onStart() started");
+		logger.info("onStart() started");
         TilePosition startLocation = Broodwar.self().getStartLocation();
         if (startLocation == TilePosition.None || startLocation == TilePosition.Unknown) {
             return;
@@ -65,7 +69,7 @@ public class GameCommander {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        System.out.println("onStart() finished");
+		logger.info("onStart() finished");
     }
 
     public void onEnd(boolean isWinner) {
@@ -83,7 +87,6 @@ public class GameCommander {
             return;
         }
 
-        System.out.println(Broodwar.getFrameCount());
         try {
             BigWatch.start("... GAME COMMANDER ...");
 

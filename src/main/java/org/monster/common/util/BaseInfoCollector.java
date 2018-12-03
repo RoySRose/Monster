@@ -12,6 +12,8 @@ import bwta.BaseLocation;
 import bwta.Region;
 import org.monster.common.UnitInfo;
 import org.monster.common.constant.CommonCode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,6 +21,8 @@ import java.util.List;
 import java.util.Map;
 
 public class BaseInfoCollector implements InfoCollector {
+
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private static BaseInfoCollector instance = new BaseInfoCollector();
     protected Map<Player, BaseLocation> mainBaseLocation = new HashMap();
@@ -137,7 +141,7 @@ public class BaseInfoCollector implements InfoCollector {
 
             if (mainBaseLocation.get(player) != null) {
                 BaseLocation myMainBaseLocation = mainBaseLocation.get(player);
-                System.out.println("* my MainBase changed" + myMainBaseLocation.getTilePosition());
+                logger.debug(player.getName() + "'s mains base changed" + myMainBaseLocation.getTilePosition());
 
                 //TODO 뒷마당 있는 맵에서는 vector 로 처리하거나, center air distance 추가 필요
                 BaseLocation myFirstExpansionLocation = findClosestBase(myMainBaseLocation);
@@ -323,10 +327,10 @@ public class BaseInfoCollector implements InfoCollector {
             // an unexplored base location holder
             BaseLocation unexplored = null;
 
-            Region myRegion = BWTA.getRegion(mainBaseLocation.get(selfPlayer).getPosition());
+            BaseLocation myBaseLocation = mainBaseLocation.get(selfPlayer);
             for (BaseLocation startLocation : BWTA.getStartLocations()) {
-                Region startLocationRegion = BWTA.getRegion(startLocation.getTilePosition());
-                if (myRegion != startLocationRegion && BaseInfoCollector.this.existsPlayerBuildingInRegion(startLocationRegion, enemyPlayer)) {
+
+                if (myBaseLocation.getTilePosition() != startLocation.getTilePosition() && existsPlayerBuildingInRegion(BWTA.getRegion(startLocation.getTilePosition()), enemyPlayer)) {
                     return startLocation;
                 }
 

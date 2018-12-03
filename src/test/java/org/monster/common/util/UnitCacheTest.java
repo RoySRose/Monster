@@ -4,20 +4,28 @@ import bwapi.Game;
 import bwapi.Player;
 import bwapi.Unit;
 import bwapi.UnitType;
+import bwta.BWTA;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.monster.common.UnitInfo;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(TimeUtils.class)
 public class UnitCacheTest {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -46,9 +54,10 @@ public class UnitCacheTest {
 
 
     @Before
-    public void createUnits(){
+    public void createUnits() throws Exception{
 
-
+        PowerMockito.mockStatic(TimeUtils.class);
+        when(TimeUtils.getFrame()).thenReturn(1);
 //        Constructor<Unit> constructor = Unit.class.getDeclaredConstructor();
 //        assertTrue(Modifier.isPrivate(constructor.getModifiers()));
 
@@ -86,6 +95,7 @@ public class UnitCacheTest {
         when(unitNotOnMap2.getType()).thenReturn(Zerg_Overload);
 
         unitList = new ArrayList<>();
+        unitList.clear();
         unitList.add(unit1);
         unitList.add(unit2);
         unitList.add(unit3);
@@ -95,18 +105,22 @@ public class UnitCacheTest {
         when(BroodWar.enemy()).thenReturn(enemyPlayer);
         unitCache.onStart(BroodWar);
 
+
+        Field field = unitCache.getClass().getDeclaredField("enemyAllUnitInfoMap");
+        field.setAccessible(true);
+        ((Map) field.get(unitCache)).clear();
     }
 
     @Test
     public void unitCacheTest() {
-
+        logger.debug("==========UnitCacheTest==========");
         //add unit
         unitCache.updateEnemyUnitInfo(unit1);
         List<UnitInfo> enemyUnitInfoList= unitCache.enemyAllUnits(UnitType.AllUnits);
         for(UnitInfo unitInfo : enemyUnitInfoList){
             logger.debug("before:{},{}", unitInfo.getUnitID(), unitInfo.getType());
         }
-        assertEquals(enemyUnitInfoList.size(), 1);
+        assertEquals(1, enemyUnitInfoList.size());
 
         //add unit
         unitCache.updateEnemyUnitInfo(unit2);
@@ -115,22 +129,22 @@ public class UnitCacheTest {
         for(UnitInfo unitInfo : enemyUnitInfoList){
             logger.debug("after:{},{}", unitInfo.getUnitID(), unitInfo.getType());
         }
-        assertEquals(enemyUnitInfoList.size(), 2);
+        assertEquals(2, enemyUnitInfoList.size());
 
         //add morphed unit
-        unitCache.updateEnemyUnitInfo(unit3);
+        unitCache.updateEnemyUnitInfo(dupUnit2);
         enemyUnitInfoList= unitCache.enemyAllUnits(UnitType.AllUnits);
 
         for(UnitInfo unitInfo : enemyUnitInfoList){
             logger.debug("last:{},{}", unitInfo.getUnitID(), unitInfo.getType());
         }
-        assertEquals(enemyUnitInfoList.size(), 2);
+        assertEquals(2, enemyUnitInfoList.size());
     }
 
 
     @Test
     public void unitCacheEnemyMapTest() {
-
+        logger.debug("==========unitCacheEnemyMapTest==========");
         alwaysTrue();
         //add unit
         unitCache.updateEnemyUnitInfo(unit1);
@@ -173,9 +187,6 @@ public class UnitCacheTest {
 
         assertEquals(1, unitCache.enemyAllUnits(Zerg_Hydralisk).size());
         assertEquals(3, unitCache.enemyAllUnits(UnitType.AllUnits).size());
-
-
-
         alwaysTrue();
     }
 
