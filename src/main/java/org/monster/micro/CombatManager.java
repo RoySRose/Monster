@@ -174,7 +174,6 @@ public class CombatManager extends GameManager {
     			if(myUnit.getType() != UnitType.Zerg_Zergling) {
     				continue;
     			}
-    			System.out.println("myUnit Type :: " + myUnit.getType());
     			squadTypeUnitList.add(myUnit);
     		}
             
