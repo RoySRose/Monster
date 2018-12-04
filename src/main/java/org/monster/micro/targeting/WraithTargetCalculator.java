@@ -58,7 +58,7 @@ public class WraithTargetCalculator extends TargetScoreCalculator {
             return getDistanceScore(unit, eui.getLastPosition());
         }
 
-        Unit unitInSight = UnitUtils.unitInSight(eui);
+        Unit unitInSight = UnitUtils.enemyUnitInSight(eui);
         if (unitInSight == null) {
             return CommonCode.NONE;
         }

@@ -9,10 +9,7 @@ import bwapi.WeaponType;
 import org.monster.board.StrategyBoard;
 import org.monster.common.UnitInfo;
 import org.monster.common.constant.CommonCode;
-import org.monster.common.util.CommandUtils;
-import org.monster.common.util.MicroUtils;
-import org.monster.common.util.PositionUtils;
-import org.monster.common.util.UnitUtils;
+import org.monster.common.util.*;
 import org.monster.decisions.constant.EnemyStrategy;
 import org.monster.bootstrap.Monster;
 import org.monster.micro.FleeOption;
@@ -99,7 +96,7 @@ public class VesselControl extends Control {
         dangerous_targets.addAll(UnitUtils.getUnitsInRadius(CommonCode.PlayerRange.ENEMY, position, VESSEL_SIGHT, UnitType.Terran_Goliath));
         for (Unit enemyunits : dangerous_targets) {
 
-            double inrange = Monster.Broodwar.enemy().weaponMaxRange(enemyunits.getType().airWeapon());
+            double inrange = PlayerUtils.enemyPlayer().weaponMaxRange(enemyunits.getType().airWeapon());
             double additionalrange = VESSEL_CHECK_SPEED;
             double distance = enemyunits.getDistance(position);
             if (enemyunits.getType().airWeapon() != WeaponType.None) {
@@ -216,7 +213,7 @@ public class VesselControl extends Control {
                     temp = VESSEL_CHECK_SPEED * 3;
                 }
                 if (mostDangerousTarget.isInWeaponRange(vessel)
-                        || (vessel.getDistance(mostDangerousTarget) <= Monster.Broodwar.enemy().weaponMaxRange(
+                        || (vessel.getDistance(mostDangerousTarget) <= PlayerUtils.enemyPlayer().weaponMaxRange(
                         mostDangerousTarget.getType().airWeapon()) + VESSEL_CHECK_SPEED + temp)) {
                     Position fleePosition = getFleePosition(vessel, mostDangerousTarget.getPosition(), (int) VESSEL_CHECK_SPEED, fOption);
                     vessel.move(fleePosition);

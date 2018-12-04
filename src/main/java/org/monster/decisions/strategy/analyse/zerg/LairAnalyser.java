@@ -59,7 +59,7 @@ public class LairAnalyser extends UnitAnalyser {
         List<UnitInfo> found = found();
         if (!found.isEmpty()) {
             UnitInfo lairInfo = found.get(0);
-            Unit lairInSight = UnitUtils.unitInSight(lairInfo);
+            Unit lairInSight = UnitUtils.enemyUnitInSight(lairInfo);
             if (lairInSight != null && lairInSight.isCompleted()) {
                 ClueManager.Instance().addClueInfo(Clue.ClueInfo.LAIR_COMPLETE);
             } else {

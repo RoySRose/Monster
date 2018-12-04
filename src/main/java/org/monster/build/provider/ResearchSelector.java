@@ -11,6 +11,7 @@ import org.monster.common.MetaType;
 import org.monster.common.constant.CommonCode;
 import org.monster.common.util.UnitUtils;
 import org.monster.bootstrap.Monster;
+import org.monster.common.util.UpgradeUtils;
 
 import java.util.List;
 
@@ -45,12 +46,12 @@ public class ResearchSelector implements Selector<MetaType> {
 
     public void executeResearchChk() {
 
-        boolean VS = (Monster.Broodwar.self().getUpgradeLevel(UpgradeType.Ion_Thrusters) == 1 ? true : false)
-                || (Monster.Broodwar.self().isUpgrading(UpgradeType.Ion_Thrusters) ? true : false);
-        boolean VM = (Monster.Broodwar.self().hasResearched(TechType.Spider_Mines)) || (Monster.Broodwar.self().isResearching(TechType.Spider_Mines));
-        boolean TS = (Monster.Broodwar.self().hasResearched(TechType.Tank_Siege_Mode)) || (Monster.Broodwar.self().isResearching(TechType.Tank_Siege_Mode));
-        boolean GR = (Monster.Broodwar.self().getUpgradeLevel(UpgradeType.Charon_Boosters) == 1 ? true : false)
-                || (Monster.Broodwar.self().isUpgrading(UpgradeType.Charon_Boosters) ? true : false);
+        boolean VS = (UpgradeUtils.selfUpgradedLevel(UpgradeType.Ion_Thrusters) == 1 ? true : false)
+                || (UpgradeUtils.selfIsUpgrading(UpgradeType.Ion_Thrusters) ? true : false);
+        boolean VM = (UpgradeUtils.selfISResearched(TechType.Spider_Mines)) || (UpgradeUtils.selfISResearching(TechType.Spider_Mines));
+        boolean TS = (UpgradeUtils.selfISResearched(TechType.Tank_Siege_Mode)) || (UpgradeUtils.selfISResearching(TechType.Tank_Siege_Mode));
+        boolean GR = (UpgradeUtils.selfUpgradedLevel(UpgradeType.Charon_Boosters) == 1 ? true : false)
+                || (UpgradeUtils.selfIsUpgrading(UpgradeType.Charon_Boosters) ? true : false);
 
 
         if (VS && VM && TS && GR)
@@ -111,8 +112,8 @@ public class ResearchSelector implements Selector<MetaType> {
                     continue;
                 }
                 if (e.isUpgrade()) {
-                    if (Monster.Broodwar.self().getUpgradeLevel(e.getUpgradeType()) == 1
-                            || Monster.Broodwar.self().isUpgrading(e.getUpgradeType())
+                    if (UpgradeUtils.selfUpgradedLevel(e.getUpgradeType()) == 1
+                            || UpgradeUtils.selfIsUpgrading(e.getUpgradeType())
                             || BuildManager.Instance().buildQueue.getItemCount(e.getUpgradeType()) != 0
                             ) {
                         continue;
@@ -123,8 +124,8 @@ public class ResearchSelector implements Selector<MetaType> {
                     }
                 }
                 if (e.isTech()) {
-                    if (Monster.Broodwar.self().hasResearched(e.getTechType())
-                            || Monster.Broodwar.self().isResearching(e.getTechType())
+                    if (UpgradeUtils.selfISResearched(e.getTechType())
+                            || UpgradeUtils.selfISResearching(e.getTechType())
                             || BuildManager.Instance().buildQueue.getItemCount(e.getTechType()) != 0
                             ) {
                         continue;

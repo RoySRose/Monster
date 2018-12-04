@@ -67,7 +67,7 @@ public class FileUtils {
 
     /// 파일 유틸 - 경기 결과를 텍스트 파일로부터 읽어들인다
     public void readResults() {
-        //String enemyName = Monster.Broodwar.enemy().getName();
+        //String enemyName = PlayerUtils.enemyPlayer().getName();
         String enemyName = "enemey";
         enemyName = enemyName.replace(" ", "_");
 
@@ -99,7 +99,7 @@ public class FileUtils {
 
     /// 파일 유틸 - 경기 결과를 텍스트 파일에 저장한다
     public void writeResults() {
-        //String enemyName = Monster.Broodwar.enemy().getName();
+        //String enemyName = PlayerUtils.enemyPlayer().getName();
         String enemyName = "enemey";
         enemyName = enemyName.replace(" ", "_");
 

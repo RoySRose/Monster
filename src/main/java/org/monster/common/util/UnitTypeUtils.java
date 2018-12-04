@@ -3,7 +3,7 @@ package org.monster.common.util;
 import bwapi.Race;
 import bwapi.UnitType;
 
-public class InfoTypeUtils {
+public class UnitTypeUtils {
 
     public static UnitType getBasicResourceDepotBuildingType(Race race) {
         if (race == Race.Protoss) {
@@ -74,6 +74,30 @@ public class InfoTypeUtils {
             return UnitType.Zerg_Drone;
         } else {
             return UnitType.None;
+        }
+    }
+
+    public static UnitType[] enemyAirDefenseUnitType() {
+        if (PlayerUtils.enemyRace() == Race.Protoss) {
+            return new UnitType[]{UnitType.Protoss_Photon_Cannon};
+        } else if (PlayerUtils.enemyRace() == Race.Zerg) {
+            return new UnitType[]{UnitType.Zerg_Spore_Colony};
+        } else if (PlayerUtils.enemyRace() == Race.Terran) {
+            return new UnitType[]{UnitType.Terran_Missile_Turret, UnitType.Terran_Bunker};
+        } else {
+            return new UnitType[]{};
+        }
+    }
+
+    public static UnitType[] wraithKillerUnitType() {
+        if (PlayerUtils.enemyRace() == Race.Protoss) {
+            return new UnitType[]{UnitType.Protoss_Dragoon, UnitType.Protoss_Archon};
+        } else if (PlayerUtils.enemyRace() == Race.Zerg) {
+            return new UnitType[]{UnitType.Zerg_Hydralisk, UnitType.Zerg_Scourge};
+        } else if (PlayerUtils.enemyRace() == Race.Terran) {
+            return new UnitType[]{UnitType.Terran_Goliath};
+        } else {
+            return new UnitType[]{};
         }
     }
 

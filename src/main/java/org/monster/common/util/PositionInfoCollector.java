@@ -8,10 +8,7 @@ import org.monster.common.constant.CommonCode;
 import java.util.HashMap;
 import java.util.Map;
 
-
-/**
- * positionFinder로 넘어가야 되는 내용 같음
- */
+//TODO positionFinder로 넘어가야 되는 내용 같음
 @Deprecated
 public class PositionInfoCollector implements InfoCollector {
 

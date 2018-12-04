@@ -19,13 +19,7 @@ import org.monster.build.provider.BuildQueueProvider;
 import org.monster.common.LagObserver;
 import org.monster.common.MetaType;
 import org.monster.common.constant.CommonCode;
-import org.monster.common.util.BaseUtils;
-import org.monster.common.util.ChokePointUtils;
-import org.monster.common.util.InfoTypeUtils;
-import org.monster.common.util.PlayerUtils;
-import org.monster.common.util.TilePositionUtils;
-import org.monster.common.util.TimeUtils;
-import org.monster.common.util.UnitUtils;
+import org.monster.common.util.*;
 import org.monster.bootstrap.Config;
 import org.monster.bootstrap.GameManager;
 import org.monster.bootstrap.Monster;
@@ -294,11 +288,11 @@ public class BuildManager extends GameManager {
                 // Monster.Broodwar.canMake : Checks all the requirements
                 // include resources, supply, technology tree, availability, and
                 // required units
-                canMake = Monster.Broodwar.canMake(t.getUnitType(), producer);
+                canMake = UnitUtils.canMake(t.getUnitType(), producer);
             } else if (t.isTech()) {
-                canMake = Monster.Broodwar.canResearch(t.getTechType(), producer);
+                canMake = UpgradeUtils.canResearch(t.getTechType(), producer);
             } else if (t.isUpgrade()) {
-                canMake = Monster.Broodwar.canUpgrade(t.getUpgradeType(), producer);
+                canMake = UpgradeUtils.canUpgrade(t.getUpgradeType(), producer);
             }
         }
 
@@ -391,11 +385,11 @@ public class BuildManager extends GameManager {
     }
 
     public int getAvailableMinerals() {
-        return Monster.Broodwar.self().minerals() - ConstructionManager.Instance().getReservedMinerals();
+        return PlayerUtils.mineralSelf() - ConstructionManager.Instance().getReservedMinerals();
     }
 
     public int getAvailableGas() {
-        return Monster.Broodwar.self().gas() - ConstructionManager.Instance().getReservedGas();
+        return PlayerUtils.gasSelf() - ConstructionManager.Instance().getReservedGas();
     }
 
     // return whether or not we meet resources, including building reserves
@@ -451,20 +445,20 @@ public class BuildManager extends GameManager {
                     tempTilePosition = new TilePosition(bx, by);
 
                     // 해당 지점이 같은 Region 에 속하고 Buildable 한 타일인지 확인
-                    if (!tempTilePosition.isValid() || !Monster.Broodwar.isBuildable(tempTilePosition.getX(), tempTilePosition.getY(), false) || tempBaseRegion != BWTA.getRegion(new Position(bx * BuildConfig.TILE_SIZE, by * BuildConfig.TILE_SIZE))) {
+                    if (!tempTilePosition.isValid() || !StaticMapUtils.isBuildable(tempTilePosition, false) || tempBaseRegion != BWTA.getRegion(new Position(bx * BuildConfig.TILE_SIZE, by * BuildConfig.TILE_SIZE))) {
 
                         // BaseLocation 에서 ChokePoint 방향에 대해 오른쪽으로 90도 꺾은 방향의 Back Yard : 데카르트 좌표계에서 (cos(t-90) = sin(t),   sin(t-90) = - cos(t))
                         bx = tempBaseLocation.getTilePosition().getX() + (int) (d * Math.sin(theta) / BuildConfig.TILE_SIZE);
                         by = tempBaseLocation.getTilePosition().getY() + (int) (d * Math.cos(theta) / BuildConfig.TILE_SIZE);
                         tempTilePosition = new TilePosition(bx, by);
 
-                        if (!tempTilePosition.isValid() || !Monster.Broodwar.isBuildable(tempTilePosition.getX(), tempTilePosition.getY(), false)) {
+                        if (!tempTilePosition.isValid() || !StaticMapUtils.isBuildable(tempTilePosition, false)) {
                             // BaseLocation 에서 ChokePoint 방향에 대해 왼쪽으로 90도 꺾은 방향의 Back Yard : 데카르트 좌표계에서 (cos(t+90) = -sin(t),   sin(t+90) = cos(t))
                             bx = tempBaseLocation.getTilePosition().getX() - (int) (d * Math.sin(theta) / BuildConfig.TILE_SIZE);
                             by = tempBaseLocation.getTilePosition().getY() - (int) (d * Math.cos(theta) / BuildConfig.TILE_SIZE);
                             tempTilePosition = new TilePosition(bx, by);
 
-                            if (!tempTilePosition.isValid() || !Monster.Broodwar.isBuildable(tempTilePosition.getX(), tempTilePosition.getY(), false) || tempBaseRegion != BWTA.getRegion(new Position(bx * BuildConfig.TILE_SIZE, by * BuildConfig.TILE_SIZE))) {
+                            if (!tempTilePosition.isValid() || !StaticMapUtils.isBuildable(tempTilePosition, false) || tempBaseRegion != BWTA.getRegion(new Position(bx * BuildConfig.TILE_SIZE, by * BuildConfig.TILE_SIZE))) {
 
                                 // BaseLocation 에서 ChokePoint 방향 절반 지점의 Back Yard : 데카르트 좌표계에서 (cos(t),   sin(t))
                                 bx = tempBaseLocation.getTilePosition().getX() + (int) (d * Math.cos(theta) / BuildConfig.TILE_SIZE);
@@ -475,7 +469,7 @@ public class BuildManager extends GameManager {
                         }
                     }
                     if (tempTilePosition.isValid() == false
-                            || Monster.Broodwar.isBuildable(tempTilePosition.getX(), tempTilePosition.getY(), false) == false) {
+                            || StaticMapUtils.isBuildable(tempTilePosition, false) == false) {
                         seedPosition = tempTilePosition.toPosition();
                     } else {
                         seedPosition = tempBaseLocation.getPosition();
@@ -514,8 +508,8 @@ public class BuildManager extends GameManager {
     public boolean isProducerWillExist(UnitType producerType) {
         boolean isProducerWillExist = true;
 
-        if (Monster.Broodwar.self().completedUnitCount(producerType) == 0
-                && Monster.Broodwar.self().incompleteUnitCount(producerType) == 0) {
+        if (UnitUtils.getCompletedUnitCount(producerType) == 0
+                && UnitUtils.getIncompletedUnitCount(producerType) == 0) {
             if (producerType.isBuilding()) {
                 if (ConstructionManager.Instance().getConstructionQueueItemCount(producerType, null) == 0) {
                     isProducerWillExist = false;
@@ -524,9 +518,14 @@ public class BuildManager extends GameManager {
             //TODO 이거 필요한가?
             // producer 가 건물이 아닌 경우 : producer 가 생성될 예정인지 추가 파악
             // producerType : 일꾼. Larva. Hydralisk, Mutalisk
-            else {
-                isProducerWillExist = false;
+            else if(producerType == UnitType.Zerg_Larva){
+                if(UnitUtils.getCompletedUnitCount(UnitType.Zerg_Hatchery) == 0){
+                    isProducerWillExist = false;
+                }
             }
+//            else if (ConstructionManager.Instance().getConstructionQueueItemCount(producerType, null) == 0) {
+//                isProducerWillExist = false;
+//            }
         }
 
         return isProducerWillExist;
@@ -549,8 +548,8 @@ public class BuildManager extends GameManager {
                     while (it.hasNext()) {
                         UnitType requiredUnitType = it.next(); // C++ : u.first;
                         if (requiredUnitType != UnitType.None) {
-                            if (Monster.Broodwar.self().completedUnitCount(requiredUnitType) == 0
-                                    && Monster.Broodwar.self().incompleteUnitCount(requiredUnitType) == 0) {
+                            if (UnitUtils.getCompletedUnitCount(requiredUnitType) == 0
+                                    && UnitUtils.getIncompletedUnitCount(requiredUnitType) == 0) {
                                 // 선행 건물이 건설 예정이지도 않으면 만들기
                                 if (requiredUnitType.isBuilding()) {
                                     if (BuildManager.Instance().buildQueue.getItemCount(requiredUnitType) == 0
@@ -573,7 +572,7 @@ public class BuildManager extends GameManager {
         // this can cause issues for the build order search system so don't plan
         // a search on these frames
         boolean canPlanBuildOrderNow = true;
-        for (final Unit unit : Monster.Broodwar.self().getUnits()) {
+        for (final Unit unit : UnitUtils.getUnitList()) {
             if (unit.getRemainingTrainTime() == 0) {
                 continue;
             }
@@ -624,7 +623,7 @@ public class BuildManager extends GameManager {
                     }
 
                     // Refinery 건물의 경우, Refinery 가 건설되지 않은 Geyser가 있는 경우에만 가능
-                    if (!isDeadlockCase && unitType == InfoTypeUtils.getRefineryBuildingType(PlayerUtils.myRace())) {
+                    if (!isDeadlockCase && unitType == UnitTypeUtils.getRefineryBuildingType(PlayerUtils.myRace())) {
 
 //						//FileUtils.appendTextToFile("log.txt", "\n checkBuildOrderQueueDeadlockAndAndFixIt :: refinery lock check");
                         boolean hasAvailableGeyser = true;
@@ -642,7 +641,7 @@ public class BuildManager extends GameManager {
                             hasAvailableGeyser = false;
                         } else {
                             // Refinery 를 지으려는 장소에 Refinery 가 이미 건설되어 있다면 dead lock
-                            for (Unit u : Monster.Broodwar.getUnitsOnTile(testLocation)) {
+                            for (Unit u : UnitUtils.getUnitsOnTile(testLocation)) {
                                 if (u.getType().isRefinery() && u.exists()) {
                                     hasAvailableGeyser = false;
                                     break;
@@ -657,8 +656,8 @@ public class BuildManager extends GameManager {
 
                     // 선행 기술 리서치가 되어있지 않고, 리서치 중이지도 않으면 dead lock
                     if (!isDeadlockCase && requiredTechType != TechType.None) {
-                        if (Monster.Broodwar.self().hasResearched(requiredTechType) == false) {
-                            if (Monster.Broodwar.self().isResearching(requiredTechType) == false) {
+                        if (UpgradeUtils.selfISResearched(requiredTechType) == false) {
+                            if (UpgradeUtils.selfISResearching(requiredTechType) == false) {
                                 isDeadlockCase = true;
                             }
                         }
@@ -669,7 +668,7 @@ public class BuildManager extends GameManager {
                     if (currentItem.metaType.getUnitType().isAddon()) {
                         UnitType ProducerType = currentItem.metaType.getUnitType().whatBuilds().first;
 
-                        for (Unit unit : Monster.Broodwar.self().getUnits()) {
+                        for (Unit unit : UnitUtils.getUnitList()) {
                             if (ProducerType == unit.getType() && unit.isCompleted()) {
 //								
                                 if (InitialBuildProvider.Instance().getAdaptStrategyStatus() != InitialBuildProvider.AdaptStrategyStatus.BEFORE) {
@@ -704,8 +703,8 @@ public class BuildManager extends GameManager {
                             if (requiredUnitType != UnitType.None) {
 
                                 // 선행 건물 / 유닛이 존재하지 않고, 생산 중이지도 않고
-                                if (Monster.Broodwar.self().completedUnitCount(requiredUnitType) == 0
-                                        && Monster.Broodwar.self().incompleteUnitCount(requiredUnitType) == 0) {
+                                if (UnitUtils.getCompletedUnitCount(requiredUnitType) == 0
+                                        && UnitUtils.getIncompletedUnitCount(requiredUnitType) == 0) {
                                     // 선행 건물이 건설 예정이지도 않으면 dead lock
                                     if (requiredUnitType.isBuilding()) {
                                         if (ConstructionManager.Instance().getConstructionQueueItemCount(requiredUnitType, null) == 0) {
@@ -718,15 +717,15 @@ public class BuildManager extends GameManager {
                     }
 
                     // 건물이 아닌 지상/공중 유닛인 경우, 서플라이가 400 꽉 찼으면 dead lock
-                    if (!isDeadlockCase && !unitType.isBuilding() && Monster.Broodwar.self().supplyTotal() == 400
-                            && Monster.Broodwar.self().supplyUsed() + unitType.supplyRequired() > 400) {
+                    if (!isDeadlockCase && !unitType.isBuilding() && PlayerUtils.supplyTotalSelf() == 400
+                            && PlayerUtils.supplyUsedSelf() + unitType.supplyRequired() > 400) {
                         isDeadlockCase = true;
                     }
 
                     // 건물이 아닌 지상/공중 유닛인데, 서플라이가 부족하면 dead lock 상황이 되긴 하지만,
                     // 이 경우는 빌드를 취소하기보다는, StrategyManager 등에서 서플라이 빌드를 추가함으로써 풀도록 한다
                     if (!isDeadlockCase && !unitType.isBuilding()
-                            && Monster.Broodwar.self().supplyUsed() + unitType.supplyRequired() > Monster.Broodwar.self().supplyTotal()) {
+                            && PlayerUtils.supplyUsedSelf() + unitType.supplyRequired() > PlayerUtils.supplyTotalSelf()) {
                         //isDeadlockCase = true;
                     }
 
@@ -753,11 +752,10 @@ public class BuildManager extends GameManager {
                     if (!isDeadlockCase && unitType.isBuilding() && unitType.requiresCreep()
                             && currentItem.seedLocationStrategy == BuildOrderItem.SeedPositionStrategy.SeedPositionSpecified) {
                         boolean hasFoundCreepGenerator = false;
-                        List<Unit> ourUnits = Monster.Broodwar
-                                .getUnitsInRadius(currentItem.seedLocation.toPosition(), 4 * Config.TILE_SIZE);
+                        List<Unit> ourUnits = UnitUtils.getUnitsInRadius(currentItem.seedLocation.toPosition(), 4 * Config.TILE_SIZE);
 
                         for (Unit u : ourUnits) {
-                            if (u.getPlayer() == Monster.Broodwar.self() && (u.getType() == UnitType.Zerg_Hatchery
+                            if (u.getPlayer() == PlayerUtils.myPlayer() && (u.getType() == UnitType.Zerg_Hatchery
                                     || u.getType() == UnitType.Zerg_Lair || u.getType() == UnitType.Zerg_Hive
                                     || u.getType() == UnitType.Zerg_Creep_Colony
                                     || u.getType() == UnitType.Zerg_Sunken_Colony
@@ -781,22 +779,22 @@ public class BuildManager extends GameManager {
                     /*
                      * System.out.println("To research " + techType.toString() +
                      * ", hasResearched " +
-                     * Monster.Broodwar.self().hasResearched(techType) +
+                     * UpgradeUtils.selfISResearched(techType) +
                      * ", isResearching " +
-                     * Monster.Broodwar.self().isResearching(techType) +
+                     * UpgradeUtils.selfISResearching(techType) +
                      * ", producerType " + producerType.toString() +
                      * " completedUnitCount " +
-                     * Monster.Broodwar.self().completedUnitCount(
+                     * UnitUtils.getCompletedUnitCount(
                      * producerType) + " incompleteUnitCount " +
-                     * Monster.Broodwar.self().incompleteUnitCount(
+                     * UnitUtils.getIncompletedUnitCount(
                      * producerType));
                      */
 
-                    if (Monster.Broodwar.self().hasResearched(techType)
-                            || Monster.Broodwar.self().isResearching(techType)) {
+                    if (UpgradeUtils.selfISResearched(techType)
+                            || UpgradeUtils.selfISResearching(techType)) {
                         isDeadlockCase = true;
-                    } else if (Monster.Broodwar.self().completedUnitCount(producerType) == 0
-                            && Monster.Broodwar.self().incompleteUnitCount(producerType) == 0) {
+                    } else if (UnitUtils.getCompletedUnitCount(producerType) == 0
+                            && UnitUtils.getIncompletedUnitCount(producerType) == 0) {
                         if (ConstructionManager.Instance().getConstructionQueueItemCount(producerType, null) == 0) {
 
                             if (!producerType.isAddon()) {
@@ -805,8 +803,8 @@ public class BuildManager extends GameManager {
                         }
                     } else if (requiredUnitType != UnitType.None) {
 
-                        if (Monster.Broodwar.self().completedUnitCount(requiredUnitType) == 0
-                                && Monster.Broodwar.self().incompleteUnitCount(requiredUnitType) == 0) {
+                        if (UnitUtils.getCompletedUnitCount(requiredUnitType) == 0
+                                && UnitUtils.getIncompletedUnitCount(requiredUnitType) == 0) {
                             if (ConstructionManager.Instance().getConstructionQueueItemCount(requiredUnitType,
                                     null) == 0) {
                                 isDeadlockCase = true;
@@ -818,14 +816,14 @@ public class BuildManager extends GameManager {
                 // 존재하지도 않고 건설예정이지도 않으면 dead lock
                 else if (currentItem.metaType.isUpgrade()) {
                     UpgradeType upgradeType = currentItem.metaType.getUpgradeType();
-                    int maxLevel = Monster.Broodwar.self().getMaxUpgradeLevel(upgradeType);
-                    int currentLevel = Monster.Broodwar.self().getUpgradeLevel(upgradeType);
+                    int maxLevel = UpgradeUtils.getSelfMaxUpgradeLevel(upgradeType);
+                    int currentLevel = UpgradeUtils.selfUpgradedLevel(upgradeType);
                     UnitType requiredUnitType = upgradeType.whatsRequired();
 
-                    if (currentLevel >= maxLevel || Monster.Broodwar.self().isUpgrading(upgradeType)) {
+                    if (currentLevel >= maxLevel || UpgradeUtils.selfIsUpgrading(upgradeType)) {
                         isDeadlockCase = true;
-                    } else if (Monster.Broodwar.self().completedUnitCount(producerType) == 0
-                            && Monster.Broodwar.self().incompleteUnitCount(producerType) == 0) {
+                    } else if (UnitUtils.getCompletedUnitCount(producerType) == 0
+                            && UnitUtils.getIncompletedUnitCount(producerType) == 0) {
                         if (ConstructionManager.Instance().getConstructionQueueItemCount(producerType, null) == 0) {
 
                             // 업그레이드의 producerType이 Addon 건물인 경우, Addon 건물 건설이
@@ -841,7 +839,7 @@ public class BuildManager extends GameManager {
 
                                 if (producerTypeOfProducerType != UnitType.None) {
 
-                                    for (Unit unit : Monster.Broodwar.self().getUnits()) {
+                                    for (Unit unit : UnitUtils.getUnitList()) {
                                         if (unit == null)
                                             continue;
                                         if (unit.getType() != producerTypeOfProducerType) {
@@ -865,8 +863,8 @@ public class BuildManager extends GameManager {
                             }
                         }
                     } else if (requiredUnitType != UnitType.None) {
-                        if (Monster.Broodwar.self().completedUnitCount(requiredUnitType) == 0
-                                && Monster.Broodwar.self().incompleteUnitCount(requiredUnitType) == 0) {
+                        if (UnitUtils.getCompletedUnitCount(requiredUnitType) == 0
+                                && UnitUtils.getIncompletedUnitCount(requiredUnitType) == 0) {
                             if (ConstructionManager.Instance().getConstructionQueueItemCount(requiredUnitType,
                                     null) == 0) {
                                 isDeadlockCase = true;
@@ -879,7 +877,7 @@ public class BuildManager extends GameManager {
                     // producerID 를 지정했는데, 해당 ID 를 가진 유닛이 존재하지 않으면 dead lock
                     if (currentItem.producerID != -1) {
                         boolean isProducerAlive = false;
-                        for (Unit unit : Monster.Broodwar.self().getUnits()) {
+                        for (Unit unit : UnitUtils.getUnitList()) {
                             if (unit != null && unit.getID() == currentItem.producerID && unit.exists() && unit.getHitPoints() > 0) {
                                 isProducerAlive = true;
                                 break;
@@ -909,12 +907,12 @@ public class BuildManager extends GameManager {
 
         // 맵 데이터 뿐만 아니라 빌딩 데이터를 모두 고려해서 isBuildable 체크
         //if (BWAPI::Broodwar->isBuildable(x, y) == false)
-        if (Monster.Broodwar.isBuildable(x, y, true) == false) {
+        if (StaticMapUtils.isBuildable(tp, true) == false) {
             return false;
         }
 
         // constructionWorker 이외의 다른 유닛이 있으면 false를 리턴한다
-        if (Monster.Broodwar.getUnitsOnTile(x, y).size() > 0) {
+        if (UnitUtils.getUnitsOnTile(tp).size() > 0) {
             return false;
         }
 

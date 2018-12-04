@@ -9,6 +9,7 @@ import org.monster.build.base.ConstructionManager;
 import org.monster.build.provider.DefaultBuildableItem;
 import org.monster.common.MetaType;
 import org.monster.common.constant.CommonCode;
+import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.TimeUtils;
 import org.monster.common.util.UnitUtils;
 import org.monster.bootstrap.Monster;
@@ -35,7 +36,7 @@ public class BuilderSupplyDepot extends DefaultBuildableItem {
 //    		return false;
 //    	}
 
-        if (Monster.Broodwar.self().supplyTotal() >= 400) {
+        if (PlayerUtils.supplyTotalSelf() >= 400) {
             return false;
         }
 
@@ -79,15 +80,15 @@ public class BuilderSupplyDepot extends DefaultBuildableItem {
 //        int satrportMargin = 2;
 
 
-        if (Monster.Broodwar.self().completedUnitCount(UnitType.Terran_Barracks) > 0) {
+        if (UnitUtils.getCompletedUnitCount(UnitType.Terran_Barracks) > 0) {
             barrackflag = true;
         }
 
-        if (Monster.Broodwar.self().completedUnitCount(UnitType.Terran_Factory) > 0) {
+        if (UnitUtils.getCompletedUnitCount(UnitType.Terran_Factory) > 0) {
             factoryflag = true;
         }
 
-        if (Monster.Broodwar.self().completedUnitCount(UnitType.Terran_Starport) > 0) {
+        if (UnitUtils.getCompletedUnitCount(UnitType.Terran_Starport) > 0) {
             starportflag = true;
         }
         
@@ -104,7 +105,7 @@ public class BuilderSupplyDepot extends DefaultBuildableItem {
 
         int Faccnt = 0;
         int Starportcnt = 0;
-        int CCcnt = Monster.Broodwar.self().completedUnitCount(UnitType.Terran_Command_Center);
+        int CCcnt = UnitUtils.getCompletedUnitCount(UnitType.Terran_Command_Center);
         int facFullOperating = 0;
         int starportOperating = 0;
 
@@ -151,7 +152,7 @@ public class BuilderSupplyDepot extends DefaultBuildableItem {
         }
 
         // currentSupplyShortage 를 계산한다
-        int currentSupplyShortage = Monster.Broodwar.self().supplyUsed() + supplyMargin + 1 - Monster.Broodwar.self().supplyTotal();
+        int currentSupplyShortage = PlayerUtils.supplyUsedSelf() + supplyMargin + 1 - PlayerUtils.supplyTotalSelf();
 
         if (currentSupplyShortage > 0) {
             // 생산/건설 중인 Supply를 센다

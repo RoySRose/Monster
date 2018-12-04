@@ -32,17 +32,17 @@ public class BuilderDrone extends DefaultBuildableItem {
 
         //TODO need fix scv -> drone
 
-        if (Monster.Broodwar.self().supplyTotal() - Monster.Broodwar.self().supplyUsed() < 2) {
+        if (PlayerUtils.supplyTotalSelf() - PlayerUtils.supplyUsedSelf() < 2) {
             return false;
         }
-        if (Monster.Broodwar.self().minerals() < 50) {
+        if (PlayerUtils.mineralSelf() < 50) {
             return false;
         }
 
 
         List<Unit> commandCenters = UnitUtils.getUnitList(CommonCode.UnitFindStatus.ALL, UnitType.Terran_Command_Center);
         if (!StrategyBoard.EXOK) {
-            if (Monster.Broodwar.self().completedUnitCount(UnitType.Terran_Command_Center) == 2) {
+            if (UnitUtils.getCompletedUnitCount(UnitType.Terran_Command_Center) == 2) {
                 Unit secondCommandCenter = null;
 
                 for (Unit commandCenter : commandCenters) {
@@ -94,8 +94,8 @@ public class BuilderDrone extends DefaultBuildableItem {
             }
         }
 
-        int maxworkerCount = tot_mineral_self * 2 + 8 * Monster.Broodwar.self().completedUnitCount(UnitType.Terran_Command_Center);
-        int workerCount = Monster.Broodwar.self().allUnitCount(UnitType.Terran_SCV); // workerCount = 현재 일꾼 수 + 생산중인 일꾼 수
+        int maxworkerCount = tot_mineral_self * 2 + 8 * UnitUtils.getCompletedUnitCount(UnitType.Terran_Command_Center);
+        int workerCount = UnitUtils.getUnitCount(UnitType.Terran_SCV); // workerCount = 현재 일꾼 수 + 생산중인 일꾼 수
         // List CommandCenter = UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Command_Center);
         for (Unit commandcenter : UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Command_Center)) {
             if (commandcenter.isTraining()) {
@@ -158,11 +158,11 @@ public class BuilderDrone extends DefaultBuildableItem {
                         setHighPriority(true);
                         return true;
                     } else {
-                        int checkgas = checkItem.metaType.getUnitType().gasPrice() - Monster.Broodwar.self().gas();
+                        int checkgas = checkItem.metaType.getUnitType().gasPrice() - PlayerUtils.gasSelf();
                         if (checkgas < 0) {
                             checkgas = 0;
                         }
-                        if (Monster.Broodwar.self().minerals() > checkItem.metaType.getUnitType().mineralPrice() + 50 - checkgas) {
+                        if (PlayerUtils.mineralSelf() > checkItem.metaType.getUnitType().mineralPrice() + 50 - checkgas) {
                             // BuildManager.Instance().buildQueue.queueAsHighestPriority(new MetaType(InformationManager.Instance().getWorkerType()), false);
                             setHighPriority(true);
                             return true;

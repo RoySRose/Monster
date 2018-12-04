@@ -15,6 +15,8 @@ import org.monster.common.MapGrid;
 import org.monster.common.util.InfoCollectorManager;
 import org.monster.common.util.UnitCache;
 import org.monster.debugger.BigWatch;
+import org.monster.debugger.PreBotUXManager;
+import org.monster.debugger.UXManager;
 import org.monster.debugger.chat.ChatBot;
 import org.monster.decisions.DecisionManager;
 import org.monster.decisions.strategy.StrategyManager;
@@ -66,6 +68,9 @@ public class GameCommander {
             //AttackDecisionMaker.Instance().onStart();
 
             CombatManager.Instance().onStart();
+
+            UXManager.Instance().onStart(Broodwar);
+            PreBotUXManager.Instance().onStart(Broodwar);
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -17,7 +17,6 @@ import org.monster.common.util.TimeUtils;
 import org.monster.common.util.UnitUtils;
 import org.monster.decisions.strategy.manage.PositionFinder;
 import org.monster.decisions.strategy.manage.TankPositionManager;
-import org.monster.bootstrap.Monster;
 import org.monster.micro.FleeOption;
 import org.monster.micro.KitingOption;
 import org.monster.micro.MicroDecision;
@@ -272,7 +271,7 @@ public class TankControl extends Control {
         if (eui.getType() == UnitType.Terran_Siege_Tank_Tank_Mode || eui.getType() == UnitType.Terran_Siege_Tank_Siege_Mode) {
 
             int distanceToTarget;
-            Unit enemy = UnitUtils.unitInSight(eui);
+            Unit enemy = UnitUtils.enemyUnitInSight(eui);
             if (enemy != null) {
                 distanceToTarget = tank.getDistance(enemy);
             } else {
@@ -296,7 +295,7 @@ public class TankControl extends Control {
                 return false;
             }
             if (MicroUtils.isMeleeUnit(eui.getType())) {
-                if (!hasEnoughBackUpUnitToSiege || Monster.Broodwar.self().supplyUsed() > 380) {
+                if (!hasEnoughBackUpUnitToSiege || PlayerUtils.supplyUsedSelf() > 380) {
                     return false;
                 }
             }

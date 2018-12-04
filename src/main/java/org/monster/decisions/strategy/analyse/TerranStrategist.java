@@ -2,6 +2,7 @@ package org.monster.decisions.strategy.analyse;
 
 import bwapi.UnitType;
 import org.monster.board.StrategyBoard;
+import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.UnitUtils;
 import org.monster.decisions.constant.EnemyStrategy;
 import org.monster.decisions.constant.EnemyStrategyOptions;
@@ -157,7 +158,7 @@ public class TerranStrategist extends Strategist {
         int goliathCount = UnitUtils.getEnemyUnitCount(UnitType.Terran_Goliath);
         int tankCount = UnitUtils.getEnemyUnitCount(UnitType.Terran_Siege_Tank_Tank_Mode, UnitType.Terran_Siege_Tank_Siege_Mode);
 
-        if (StrategyBoard.wraithCount == 0 && Monster.Broodwar.self().supplyUsed() > 380) {
+        if (StrategyBoard.wraithCount == 0 && PlayerUtils.supplyUsedSelf() > 380) {
             StrategyBoard.wraithCount = 5;
         }
 

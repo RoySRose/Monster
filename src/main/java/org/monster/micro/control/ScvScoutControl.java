@@ -9,16 +9,7 @@ import bwta.BaseLocation;
 import bwta.Chokepoint;
 import org.monster.common.UnitInfo;
 import org.monster.common.constant.CommonCode;
-import org.monster.common.util.BaseLocationUtils;
-import org.monster.common.util.BaseUtils;
-import org.monster.common.util.ChokePointUtils;
-import org.monster.common.util.CommandUtils;
-import org.monster.common.util.MicroUtils;
-import org.monster.common.util.PlayerUtils;
-import org.monster.common.util.PositionUtils;
-import org.monster.common.util.ScoutUtils;
-import org.monster.common.util.TimeUtils;
-import org.monster.common.util.UnitUtils;
+import org.monster.common.util.*;
 import org.monster.common.util.internal.IConditions;
 import org.monster.bootstrap.Monster;
 import org.monster.micro.FleeOption;
@@ -77,7 +68,7 @@ public class ScvScoutControl extends Control {
 
             CommandUtils.move(scoutScv, scoutBaseLocation.getPosition());
         } else {
-            if (!Monster.Broodwar.isExplored(enemyBaseLocation.getTilePosition())) {
+            if (!StaticMapUtils.isExplored(enemyBaseLocation.getTilePosition())) {
                 CommandUtils.move(scoutScv, enemyBaseLocation.getPosition());
             } else {
                 Position currentScoutTargetPosition = getScoutFleePositionFromEnemyRegionVertices(scoutScv);
@@ -87,7 +78,7 @@ public class ScvScoutControl extends Control {
                 if (scoutFirstExpansionFlag) {
                     if (canMoveFirstExpansion(scoutScv, enemyBaseLocation)) {
                         BaseLocation enemyFisrtExpansionPosition = getClosestFirstExpansionBase(enemyBaseLocation);
-                        if (!Monster.Broodwar.isVisible(enemyFisrtExpansionPosition.getTilePosition())) {
+                        if (!PlayerUtils.isVisible(enemyFisrtExpansionPosition.getTilePosition())) {
                             CommandUtils.move(scoutScv, enemyFisrtExpansionPosition.getPosition());
                         } else {
                             CommandUtils.move(scoutScv, currentScoutTargetPosition);
@@ -163,7 +154,7 @@ public class ScvScoutControl extends Control {
         BaseLocation notExploredBase = BaseLocationUtils.getGroundClosestBaseToPosition(BWTA.getStartLocations(), nearestBase, new IConditions.BaseCondition() {
             @Override
             public boolean correspond(BaseLocation base) {
-                return !Monster.Broodwar.isExplored(base.getTilePosition()) && !otherScvScoutBaseList.contains(base);
+                return !StaticMapUtils.isExplored(base.getTilePosition()) && !otherScvScoutBaseList.contains(base);
             }
         });
 
@@ -171,7 +162,7 @@ public class ScvScoutControl extends Control {
             notExploredBase = BaseLocationUtils.getGroundClosestBaseToPosition(BWTA.getStartLocations(), nearestBase, new IConditions.BaseCondition() {
                 @Override
                 public boolean correspond(BaseLocation base) {
-                    return !Monster.Broodwar.isExplored(base.getTilePosition());
+                    return !StaticMapUtils.isExplored(base.getTilePosition());
                 }
             });
         }
@@ -185,7 +176,7 @@ public class ScvScoutControl extends Control {
         BaseLocation notExploredFarthestBase = BaseLocationUtils.getGroundFarthestBaseToPosition(BWTA.getStartLocations(), BaseUtils.myMainBase(), new IConditions.BaseCondition() {
             @Override
             public boolean correspond(BaseLocation base) {
-                return !Monster.Broodwar.isExplored(base.getTilePosition());
+                return !StaticMapUtils.isExplored(base.getTilePosition());
             }
         });
         return notExploredFarthestBase;
@@ -203,7 +194,7 @@ public class ScvScoutControl extends Control {
         }
 
         if (regionVertices.isEmpty()) {
-            return Monster.Broodwar.self().getStartLocation().toPosition();
+            return BaseUtils.myMainBase().getPosition();
         }
 
         // if this is the first flee, we will not have a previous perimeter index
@@ -213,7 +204,7 @@ public class ScvScoutControl extends Control {
             vertexIndex = getClosestVertexIndex(scoutWorker.getPosition(), regionVertices);
 
             if (vertexIndex == CommonCode.INDEX_NOT_FOUND) {
-                return Monster.Broodwar.self().getStartLocation().toPosition();
+                return BaseUtils.myMainBase().getPosition();
             } else {
                 scoutVertexIndexMap.put(scoutWorker.getID(), vertexIndex);
                 return regionVertices.get(vertexIndex);
@@ -279,7 +270,7 @@ public class ScvScoutControl extends Control {
         Position enemyPosition = eui.getLastPosition();
         UnitType enemyUnitType = eui.getType();
 
-        Unit enemyUnit = UnitUtils.unitInSight(eui);
+        Unit enemyUnit = UnitUtils.enemyUnitInSight(eui);
         if (UnitUtils.isValidUnit(enemyUnit)) {
             enemyIsComplete = enemyUnit.isCompleted();
             enemyPosition = enemyUnit.getPosition();
@@ -291,9 +282,9 @@ public class ScvScoutControl extends Control {
         int enemyWeaponRange = 0;
 
         if (enemyUnitType == UnitType.Terran_Bunker) {
-            enemyWeaponRange = Monster.Broodwar.enemy().weaponMaxRange(UnitType.Terran_Marine.groundWeapon()) + 96;
+            enemyWeaponRange = PlayerUtils.enemyPlayer().weaponMaxRange(UnitType.Terran_Marine.groundWeapon()) + 96;
         } else {
-            enemyWeaponRange = Monster.Broodwar.enemy().weaponMaxRange(enemyUnitType.groundWeapon());
+            enemyWeaponRange = PlayerUtils.enemyPlayer().weaponMaxRange(enemyUnitType.groundWeapon());
         }
         return distanceToNearEnemy <= enemyWeaponRange + 64;
     }

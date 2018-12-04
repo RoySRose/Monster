@@ -87,7 +87,7 @@
 //
 //    public InformationManager() {
 //        selfPlayer = Monster.Broodwar.self();
-//        enemyPlayer = Monster.Broodwar.enemy();
+//        enemyPlayer = PlayerUtils.enemyPlayer();
 //        selfRace = selfPlayer.getRace();
 //        enemyRace = enemyPlayer.getRace();
 //

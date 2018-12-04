@@ -277,7 +277,7 @@ public class SpiderMineManger {
             PositionReserveInfo removeReserved = mineRemoveMap.get(mineId);
 
             if (vulture.getDistance(removeReserved.position) < UnitType.Terran_Vulture.groundWeapon().maxRange()) {
-                Unit spiderMine = Monster.Broodwar.getUnit(removeReserved.unitId);
+                Unit spiderMine = UnitUtils.enemyUnitInSight(removeReserved.unitId);
                 if (UnitUtils.isValidUnit(spiderMine)) {
                     return spiderMine;
                 }
@@ -350,7 +350,7 @@ public class SpiderMineManger {
 
     private Position positionToMineNearPosition(Unit vulture, Position position, int mineNumberPerPosition) {
         Position positionToMine = null;
-        List<Unit> unitsOnTile = Monster.Broodwar.getUnitsOnTile(position.toTilePosition());
+        List<Unit> unitsOnTile = UnitUtils.getUnitsOnTile(position.toTilePosition());
         if (unitsOnTile.isEmpty()) {
             positionToMine = findMinePosition(position, MicroConfig.Vulture.MINE_EXACT_RADIUS, mineNumberPerPosition);
         }

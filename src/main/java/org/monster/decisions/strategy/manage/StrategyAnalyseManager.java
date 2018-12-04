@@ -107,7 +107,7 @@ public class StrategyAnalyseManager {
 
         if (!StrategyChanger.stopStrategiestForDebugging) {
             if (strategyToApply != EnemyStrategy.UNKNOWN && StrategyBoard.currentStrategy != strategyToApply) {
-                Monster.Broodwar.printf(UxColor.CHAR_WHITE + "ENEMY STRATEY : " + strategyToApply.name());
+                PlayerUtils.printf(UxColor.CHAR_WHITE + "ENEMY STRATEY : " + strategyToApply.name());
                 StrategyBoard.strategyHistory.add(StrategyBoard.currentStrategy);
                 StrategyBoard.currentStrategy = strategyToApply;
                 this.applyDetailValue(strategyToApply);
@@ -225,16 +225,16 @@ public class StrategyAnalyseManager {
 
         TilePosition enemyFirstExpansionTile = BaseUtils.enemyFirstExpansion().getTilePosition();
 
-        if (Monster.Broodwar.isVisible(enemyBaseTile)) {
+        if (PlayerUtils.isVisible(enemyBaseTile)) {
 //			System.out.println("base explored");
             lastCheckFrameBase = TimeUtils.elapsedFrames();
         }
         //TODO enemyGasTile null 일때는??
-        if (Monster.Broodwar.isVisible(enemyGasTile)) {
+        if (PlayerUtils.isVisible(enemyGasTile)) {
 //			System.out.println("gas explored");
             lastCheckFrameGas = TimeUtils.elapsedFrames();
         }
-        if (Monster.Broodwar.isVisible(enemyFirstExpansionTile)) {
+        if (PlayerUtils.isVisible(enemyFirstExpansionTile)) {
 //			System.out.println("expansion explored");
             lastCheckFrameFirstExpansion = TimeUtils.elapsedFrames();
         }

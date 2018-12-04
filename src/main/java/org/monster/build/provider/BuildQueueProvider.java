@@ -15,6 +15,7 @@ import org.monster.common.constant.CommonCode;
 import org.monster.common.util.TimeUtils;
 import org.monster.bootstrap.GameManager;
 import org.monster.bootstrap.Monster;
+import org.monster.common.util.UpgradeUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -72,7 +73,7 @@ public class BuildQueueProvider extends GameManager {
     }
 
     public int upgradeRemainingFrame(UpgradeType upgradeType) {
-        if (!Monster.Broodwar.self().isUpgrading(upgradeType)) {
+        if (!UpgradeUtils.selfIsUpgrading(upgradeType)) {
             return CommonCode.UNKNOWN;
         }
         Integer startFrame = upgradeStartMap.get(upgradeType);
@@ -101,13 +102,13 @@ public class BuildQueueProvider extends GameManager {
 
 //    public void executeCombatUnitTrainingBlocked() {
 //
-//        if (Monster.Broodwar.self().supplyTotal() - Monster.Broodwar.self().supplyUsed() < 4) {
+//        if (PlayerUtils.supplyTotalSelf() - PlayerUtils.supplyUsedSelf() < 4) {
 //            return;
 //        }
-//        if (Monster.Broodwar.self().supplyUsed() > 392) {
+//        if (PlayerUtils.supplyUsedSelf() > 392) {
 //            return;
 //        }
-//        if (Monster.Broodwar.self().minerals() < 500) {
+//        if (PlayerUtils.mineralSelf() < 500) {
 //            return;
 //        }
 //        BuildOrderQueue tempbuildQueue = BuildManager.Instance().getBuildQueue();
@@ -173,12 +174,12 @@ public class BuildQueueProvider extends GameManager {
 //            blockingItem = tempbuildQueue.getItem();
 //        }
 //
-//        boolean isArmoryExists = Monster.Broodwar.self().completedUnitCount(UnitType.Terran_Armory) > 0;
+//        boolean isArmoryExists = UnitUtils.getCompletedUnitCount(UnitType.Terran_Armory) > 0;
 //        boolean vultureInTheQueue = tempbuildQueue.getItemCount(UnitType.Terran_Vulture) > 0;
 //
-//        int totVulture = Monster.Broodwar.self().allUnitCount(UnitType.Terran_Vulture);
-//        int totTank = Monster.Broodwar.self().allUnitCount(UnitType.Terran_Siege_Tank_Tank_Mode) + Monster.Broodwar.self().allUnitCount(UnitType.Terran_Siege_Tank_Siege_Mode);
-//        int totGoliath = Monster.Broodwar.self().allUnitCount(UnitType.Terran_Goliath);
+//        int totVulture = UnitUtils.getUnitCount(UnitType.Terran_Vulture);
+//        int totTank = UnitUtils.getUnitCount(UnitType.Terran_Siege_Tank_Tank_Mode) + UnitUtils.getUnitCount(UnitType.Terran_Siege_Tank_Siege_Mode);
+//        int totGoliath = UnitUtils.getUnitCount(UnitType.Terran_Goliath);
 //
 //        int vultureratio = StrategyBoard.factoryRatio.vulture;
 //        int tankratio = StrategyBoard.factoryRatio.tank;
@@ -231,7 +232,7 @@ public class BuildQueueProvider extends GameManager {
 //
 //            if (!vultureInTheQueue) {
 //                int mineralNeed = selected.mineralPrice();
-//                if (Monster.Broodwar.self().gas() < 250) {
+//                if (PlayerUtils.gasSelf() < 250) {
 //                    mineralNeed = 75;
 //                }
 //                mineralNeed = blockingItem.metaType.mineralPrice() + mineralNeed;

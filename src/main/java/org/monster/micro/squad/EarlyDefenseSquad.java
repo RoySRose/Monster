@@ -70,7 +70,7 @@ public class EarlyDefenseSquad extends Squad {
 
         List<Unit> enemyInSightList = new ArrayList<>();
         for (UnitInfo eui : euiList) {
-            Unit enemy = UnitUtils.unitInSight(eui);
+            Unit enemy = UnitUtils.enemyUnitInSight(eui);
             if (enemy != null) {
                 enemyInSightList.add(enemy);
             }

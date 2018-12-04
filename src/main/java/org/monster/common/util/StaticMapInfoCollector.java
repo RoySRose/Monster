@@ -1,6 +1,6 @@
 package org.monster.common.util;
 
-import bwapi.Game;
+import bwapi.*;
 import bwta.BWTA;
 import bwta.BaseLocation;
 import org.monster.common.util.internal.GameMap;
@@ -52,10 +52,45 @@ public class StaticMapInfoCollector implements InfoCollector {
                 startingBase.add(base);
             }
         }
-
         map = gameMap;
         startingBaseLocation = startingBase;
     }
 
 
+    protected List<Unit> getMinerals() {
+        return Broodwar.getMinerals();
+    }
+    public List<Unit> getStaticGeysers() {
+        return Broodwar.getStaticGeysers();
+    }
+    protected List<Unit> getGeyser() {
+        return Broodwar.getGeysers();
+    }
+    protected boolean isExplored(TilePosition tilePosition) {
+        return Broodwar.isExplored(tilePosition);
+    }
+    protected boolean isExplored(int x, int y) {
+        return Broodwar.isExplored(x,y);
+    }
+    protected boolean isBuildable(TilePosition tilePosition, boolean includeBuilding) {
+        return Broodwar.isBuildable(tilePosition, includeBuilding);
+    }
+    protected boolean isBuildable(TilePosition tilePosition) {
+        return Broodwar.isBuildable(tilePosition);
+    }
+    protected int mapHeight(){
+        return Broodwar.mapHeight();
+    }
+    protected int mapWidth(){
+        return Broodwar.mapWidth();
+    }
+    protected boolean isWalkable(int i, int j) {
+        return Broodwar.isWalkable(i, j);
+    }
+    protected boolean canBuildHere(TilePosition tilePosition, UnitType unitType) {
+        return Broodwar.canBuildHere(tilePosition, unitType);
+    }
+    protected boolean hasPath(Position from, Position to) {
+        return Broodwar.hasPath(from, to);
+    }
 }

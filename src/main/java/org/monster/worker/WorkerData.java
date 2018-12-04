@@ -8,7 +8,9 @@ import bwta.BaseLocation;
 import bwta.Region;
 import org.monster.common.util.BaseUtils;
 import org.monster.common.util.CommandUtils;
-import org.monster.bootstrap.Monster;
+import org.monster.common.util.PlayerUtils;
+import org.monster.common.util.StaticMapUtils;
+import org.monster.common.util.UnitUtils;
 import org.monster.micro.Minerals;
 
 import java.util.ArrayList;
@@ -59,7 +61,7 @@ public class WorkerData {
 
     public WorkerData() {
 
-        for (Unit unit : Monster.Broodwar.getAllUnits()) {
+        for (Unit unit : UnitUtils.getUnitList()) {
             if ((unit.getType() == UnitType.Resource_Mineral_Field)) {
                 workersOnMineralPatch.put(unit.getID(), 0);
             }
@@ -81,7 +83,7 @@ public class WorkerData {
             if (worker == null) {
                 workers.remove(worker);
             } else {
-                if (worker.getType().isWorker() == false || worker.getPlayer() != Monster.Broodwar.self()
+                if (worker.getType().isWorker() == false || worker.getPlayer() != PlayerUtils.myPlayer()
                         || worker.exists() == false || worker.getHitPoints() == 0) {
 
                     clearPreviousJob(worker);
@@ -517,7 +519,7 @@ public class WorkerData {
         int radius = 320;
         int c = 0;
         ArrayList<Minerals> mineralList = new ArrayList<Minerals>();
-        for (Unit unit : Monster.Broodwar.getMinerals()) {
+        for (Unit unit : StaticMapUtils.getMinerals()) {
             if (unit.getType() == UnitType.Resource_Mineral_Field && unit.getDistance(depot) < radius) {
                 //mineralsNearDepot.add(unit);
                 Minerals newMineral = new Minerals();
@@ -530,7 +532,7 @@ public class WorkerData {
 
         if (mineralList.size() == 0) {
             mineralList = new ArrayList<Minerals>();
-            for (Unit unit : Monster.Broodwar.getMinerals()) {
+            for (Unit unit : StaticMapUtils.getMinerals()) {
 	        	/*if(unit.getDistance(enemyBaseLocation) < radius)
 	        		continue;*/
                 if ((unit.getType() == UnitType.Resource_Mineral_Field)) {
@@ -554,7 +556,7 @@ public class WorkerData {
 
         int mineralsNearDepot = 0;
 
-        for (Unit unit : Monster.Broodwar.getAllUnits()) {
+        for (Unit unit : UnitUtils.getUnitList()) {
             if ((unit.getType() == UnitType.Resource_Mineral_Field) && unit.getDistance(depot) < 320) {
                 mineralsNearDepot++;
             }
@@ -571,7 +573,7 @@ public class WorkerData {
 
         int mineralsNearDepot = 0;
 
-        for (Unit unit : Monster.Broodwar.getMinerals()) {
+        for (Unit unit : StaticMapUtils.getMinerals()) {
             if (unit.getDistance(depot) < 320) {
                 mineralsNearDepot += unit.getResources();
             }
@@ -585,7 +587,7 @@ public class WorkerData {
             return null;
         }
 
-        for (Unit geyser : Monster.Broodwar.getGeysers()) {
+        for (Unit geyser : StaticMapUtils.getGeysers()) {
             if (geyser.getDistance(base) < 320) {
                 return geyser;
             }
@@ -703,7 +705,7 @@ public class WorkerData {
 
 		if (depot)
 		{
-			BOOST_FOREACH (BWAPI::Unit unit, Monster.Broodwar.getAllUnits())
+			BOOST_FOREACH (BWAPI::Unit unit, UnitUtils.getUnitList())
 			{
 				if (unit.getType() == BWAPI::UnitTypes::Resource_Mineral_Field && unit.getResources() > 0)
 				{

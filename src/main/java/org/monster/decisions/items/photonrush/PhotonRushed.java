@@ -36,7 +36,7 @@ public class PhotonRushed extends DefaultDecisionMaker implements DecisionMaker 
 //    // 10000프레임 이전까지만 포톤러쉬 확인.
 //        if (TimeUtils.getFrame() < 10000) {
 //            // 1. 본진에 적 포톤캐논이 있는지 본다.
-//            List<UnitInfo> enemyUnitsInRegion = InfoTypeUtils.euiListInMyRegion(BaseUtils.myMainBase().getRegion());
+//            List<UnitInfo> enemyUnitsInRegion = UnitTypeUtils.euiListInMyRegion(BaseUtils.myMainBase().getRegion());
 //            if (enemyUnitsInRegion.size() >= 1) {
 //                for (int enemy = 0; enemy < enemyUnitsInRegion.size(); enemy++) {
 //                    if (enemyUnitsInRegion.get(enemy).getType() == getAdvancedRushBuildingType(enemyRace)) {

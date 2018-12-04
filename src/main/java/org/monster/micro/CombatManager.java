@@ -148,7 +148,7 @@ public class CombatManager extends GameManager {
             squadData.exclude(invalidUnit);
         }
 
-        if (Monster.Broodwar.self().supplyUsed() < 100 || TimeUtils.executeRotation(LagObserver.managerExecuteRotation(LagObserver.MANAGER7, 0), LagObserver.managerRotationSize())) {
+        if (PlayerUtils.supplyUsedSelf() < 100 || TimeUtils.executeRotation(LagObserver.managerExecuteRotation(LagObserver.MANAGER7, 0), LagObserver.managerRotationSize())) {
             List<Unit> squadTypeUnitList = UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE, squad.getUnitTypes());
 
             List<Unit> assignableUnitList = new ArrayList<>();
@@ -435,7 +435,7 @@ public class CombatManager extends GameManager {
         }
 
         // 게릴라 지역에 적군이 없다.
-        if (Monster.Broodwar.isVisible(squad.getTargetPosition().toTilePosition())) {
+        if (PlayerUtils.isVisible(squad.getTargetPosition().toTilePosition())) {
             Set<UnitInfo> euiList = UnitUtils.getAllEnemyUnitInfosInRadiusForGround(squad.getTargetPosition(), MicroConfig.Vulture.GEURILLA_ENEMY_RADIUS);
             if (euiList.isEmpty()) {
                 return true;

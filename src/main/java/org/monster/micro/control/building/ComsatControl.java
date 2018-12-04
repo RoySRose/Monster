@@ -29,7 +29,7 @@ public class ComsatControl extends Control {
 //        Position scanPosition;
 //        boolean scanAtReadyTo;
 //        if (PlayerUtils.enemyRace() == Race.Terran && PositionFinder.Instance().scanAtReadyToPosition()) {
-//            scanPosition = InfoTypeUtils.myReadyToPosition();
+//            scanPosition = UnitTypeUtils.myReadyToPosition();
 //            scanAtReadyTo = true;
 //        } else { // 상대 클록 유닛
 //            scanPosition = scanPositionForInvisibleEnemy(euiList);
@@ -194,7 +194,7 @@ public class ComsatControl extends Control {
 //        if (BaseUtils.enemyMainBase() != null) {
 //            scanTilePositionCandidate.add(BaseUtils.enemyMainBase().getTilePosition());
 //            if (PlayerUtils.enemyRace() == Race.Protoss || PlayerUtils.enemyRace() == Race.Terran) {
-//                scanTilePositionCandidate.add(InfoTypeUtils.enemyFirstChoke().getCenter().toTilePosition());
+//                scanTilePositionCandidate.add(UnitTypeUtils.enemyFirstChoke().getCenter().toTilePosition());
 //            }
 //        }
 //        if (BaseUtils.enemyFirstExpansion() != null) {
@@ -230,7 +230,7 @@ public class ComsatControl extends Control {
 //        }
 //        int oldestLastCheckTime = CommonCode.INT_MAX;
 //        for (TilePosition scanTilePosition : scanTilePositionCandidate) {
-//            if (Monster.Broodwar.isVisible(scanTilePosition)) {
+//            if (PlayerUtils.isVisible(scanTilePosition)) {
 //                continue;
 //            }
 //            Position scanPosotion = scanTilePosition.toPosition();

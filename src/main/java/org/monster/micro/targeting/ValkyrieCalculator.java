@@ -10,7 +10,7 @@ public class ValkyrieCalculator extends TargetScoreCalculator {
 
     @Override
     public int calculate(Unit valkyrie, UnitInfo eui) {
-        Unit enemy = UnitUtils.unitInSight(eui);
+        Unit enemy = UnitUtils.enemyUnitInSight(eui);
         if (enemy == null || !enemy.isDetected()) {
             return 0;
         }

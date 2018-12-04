@@ -7,7 +7,7 @@ public class TilePositionUtils {
 
     /// 건설 가능한 tilePosition이면 true 리턴
     public static boolean isBuildable(TilePosition tilePosition, boolean includeBuilding) {
-        return tilePosition.isValid() && Monster.Broodwar.isBuildable(tilePosition, includeBuilding);
+        return tilePosition.isValid() && StaticMapUtils.isBuildable(tilePosition, includeBuilding);
     }
 
 
