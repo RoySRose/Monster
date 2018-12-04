@@ -1,13 +1,10 @@
 package org.monster.worker;
 
-import bwapi.Position;
-import bwapi.Race;
-import bwapi.TilePosition;
-import bwapi.Unit;
-import bwapi.UnitType;
-import bwta.BWTA;
-import bwta.Region;
+import java.util.List;
+
 import org.monster.board.StrategyBoard;
+import org.monster.bootstrap.GameManager;
+import org.monster.bootstrap.Monster;
 import org.monster.build.initialProvider.BlockingEntrance.BlockingEntrance;
 import org.monster.common.LagObserver;
 import org.monster.common.constant.CommonCode;
@@ -15,12 +12,16 @@ import org.monster.common.util.BaseUtils;
 import org.monster.common.util.CommandUtils;
 import org.monster.common.util.TimeUtils;
 import org.monster.common.util.UnitUtils;
-import org.monster.bootstrap.GameManager;
-import org.monster.bootstrap.Monster;
 import org.monster.micro.Minerals;
 import org.monster.micro.constant.MicroConfig;
 
-import java.util.List;
+import bwapi.Position;
+import bwapi.Race;
+import bwapi.TilePosition;
+import bwapi.Unit;
+import bwapi.UnitType;
+import bwta.BWTA;
+import bwta.Region;
 
 /// 일꾼 유닛들의 상태를 관리하고 컨트롤하는 class
 public class WorkerManager extends GameManager {
@@ -570,15 +571,15 @@ public class WorkerManager extends GameManager {
         // 중에서
         // 첫째로 미네랄 일꾼수가 꽉 차지않은 곳
         // 둘째로 가까운 곳을 찾는다
-        for (Unit unit : UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Command_Center)) {
+        for (Unit unit : UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE, UnitType.Zerg_Hatchery)) {
             if (unit == null)
                 continue;
 
             if (unit.getType().isResourceDepot() && unit.isCompleted() && unit.isLifted() == false) {
                 if (workerData.depotHasEnoughMineralWorkers(unit) == false) {
-                    if (isCheckEnemy(unit) == true) {
+                    /*if (isCheckEnemy(unit) == true) {
                         continue;
-                    }
+                    }*/
                     double distance = unit.getDistance(worker);
                     if (closestDistance > distance) {
                         closestDepot = unit;
@@ -590,13 +591,13 @@ public class WorkerManager extends GameManager {
         // 모든 ResourceDepot 이 다 일꾼수가 꽉 차있거나, 완성된 ResourceDepot 이 하나도 없고 건설중이라면,
         // ResourceDepot 주위에 미네랄이 남아있는 곳 중에서 가까운 곳이 선택되도록 한다
         if (closestDepot == null) {
-            for (Unit unit : UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Command_Center)) {
+            for (Unit unit : UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE, UnitType.Zerg_Hatchery)) {
                 if (unit == null)
                     continue;
 
-                if (isCheckEnemy(unit) == true) {
+                /*if (isCheckEnemy(unit) == true) {
                     continue;
-                }
+                }*/
 
                 if (unit.getType().isResourceDepot()) {
                     if (workerData.getMineralsNearDepot(unit) > 0) {
@@ -611,7 +612,7 @@ public class WorkerManager extends GameManager {
         }
         // 모든 ResourceDepot 주위에 미네랄이 하나도 없다면, 일꾼에게 가장 가까운 곳을 선택한다
         if (closestDepot == null) {
-            for (Unit unit : UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Command_Center)) {
+            for (Unit unit : UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE, UnitType.Zerg_Hatchery)) {
                 if (unit == null)
                     continue;
                 if (unit.getType().isResourceDepot()) {
@@ -1098,7 +1099,7 @@ public class WorkerManager extends GameManager {
      * 초기 미네랄 패스 위해 정보 (초기1회)
      */
     public void defaltMineralInfo() {
-        for (Unit depot : UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Command_Center)) {
+        for (Unit depot : UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE, UnitType.Zerg_Hatchery)) {
             mineralPath(depot);
         }
     }

@@ -1,21 +1,22 @@
 package org.monster.worker;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import org.monster.bootstrap.Monster;
+import org.monster.common.util.BaseUtils;
+import org.monster.common.util.CommandUtils;
+import org.monster.micro.Minerals;
+
 import bwapi.Position;
 import bwapi.Unit;
 import bwapi.UnitType;
 import bwta.BWTA;
 import bwta.BaseLocation;
 import bwta.Region;
-import org.monster.common.util.BaseUtils;
-import org.monster.common.util.CommandUtils;
-import org.monster.bootstrap.Monster;
-import org.monster.micro.Minerals;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 public class WorkerData {
 

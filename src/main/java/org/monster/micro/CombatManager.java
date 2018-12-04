@@ -1,12 +1,13 @@
 package org.monster.micro;
 
-import bwapi.Race;
-import bwapi.Unit;
-import bwapi.UnitType;
-import bwta.BWTA;
-import bwta.BaseLocation;
-import bwta.Region;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.monster.board.StrategyBoard;
+import org.monster.bootstrap.GameManager;
+import org.monster.bootstrap.Monster;
 import org.monster.common.LagObserver;
 import org.monster.common.UnitInfo;
 import org.monster.common.constant.CommonCode;
@@ -18,8 +19,6 @@ import org.monster.common.util.UnitUtils;
 import org.monster.common.util.internal.IConditions;
 import org.monster.debugger.BigWatch;
 import org.monster.decisions.strategy.manage.VultureTravelManager;
-import org.monster.bootstrap.GameManager;
-import org.monster.bootstrap.Monster;
 import org.monster.micro.compute.GuerillaScore;
 import org.monster.micro.compute.VultureFightPredictor;
 import org.monster.micro.constant.MicroConfig;
@@ -36,10 +35,14 @@ import org.monster.micro.squad.Squad;
 import org.monster.micro.squad.WatcherSquad;
 import org.monster.micro.targeting.TargetFilter;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import bwapi.Race;
+import bwapi.Unit;
+import bwapi.UnitType;
+import bwta.BWTA;
+import bwta.BaseLocation;
+import bwta.Region;
+
+
 
 public class CombatManager extends GameManager {
 
@@ -102,19 +105,29 @@ public class CombatManager extends GameManager {
 
     public void update() {
         logObserver.start();
-
+        MainAttackSquad mainAttackSquad = new MainAttackSquad();
+        squadData.addSquad(mainAttackSquad);
+        
+        /*for(UnitType unit : squadData.getSquad("MAIN_ATTACK").getUnitTypes()) {
+        	System.out.println("Main_attack unit :: " + unit.toString());
+        }*/
         combatUnitArrangement();
         squadExecution();
+        
+        
+        
+        //System.out.println("squadData :: " + squadData.getSquad(mainAttackSquad));
 
         logObserver.observe();
     }
 
     private void combatUnitArrangement() {
         BigWatch.start("combatUnitArrangement");
-
+        
+     // 유효한 공격유닛 필터링(일꾼 포함)
         // 팩토리
         updateSquadDefault(MicroConfig.SquadInfo.MAIN_ATTACK); // 탱크, 골리앗, 발키리
-        updateTankDefenseSquad(); // 탱크
+//        updateTankDefenseSquad(); // 탱크
 
         updateSquadDefault(MicroConfig.SquadInfo.AIR_FORCE); // 레이스
         updateSquadDefault(MicroConfig.SquadInfo.SPECIAL); // 베슬
@@ -127,7 +140,7 @@ public class CombatManager extends GameManager {
         // 벌처유형별 구분
         updateSquadDefault(MicroConfig.SquadInfo.WATCHER); // 벌처
         updateSquadDefault(MicroConfig.SquadInfo.CHECKER); // 벌처
-        updateGuerillaSquad(); // 벌처
+//        updateGuerillaSquad(); // 벌처
 
         BigWatch.record("combatUnitArrangement");
     }
@@ -140,6 +153,8 @@ public class CombatManager extends GameManager {
             squad.findEnemiesAndExecuteSquad(); // squad 유닛 명령 지시
         }
     }
+    
+    
 
     private void updateSquadDefault(MicroConfig.SquadInfo squadInfo) {
         Squad squad = squadData.getSquad(squadInfo.squadName);
@@ -149,7 +164,20 @@ public class CombatManager extends GameManager {
         }
 
         if (Monster.Broodwar.self().supplyUsed() < 100 || TimeUtils.executeRotation(LagObserver.managerExecuteRotation(LagObserver.MANAGER7, 0), LagObserver.managerRotationSize())) {
-            List<Unit> squadTypeUnitList = UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE, squad.getUnitTypes());
+//            List<Unit> squadTypeUnitList = UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE, squad.getUnitTypes());
+            
+            List<Unit> squadTypeUnitList = new ArrayList<>();
+    		for (Unit myUnit : Monster.Broodwar.self().getUnits()) {
+    			if (!UnitUtils.isValidUnit(myUnit)) {
+    				continue;
+    			}
+    			if(myUnit.getType() != UnitType.Zerg_Zergling) {
+    				continue;
+    			}
+    			System.out.println("myUnit Type :: " + myUnit.getType());
+    			squadTypeUnitList.add(myUnit);
+    		}
+            
 
             List<Unit> assignableUnitList = new ArrayList<>();
             for (Unit unit : squadTypeUnitList) {

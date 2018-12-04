@@ -1,29 +1,24 @@
 package org.monster.build.initialProvider;
 
-import bwapi.Race;
-import bwapi.TilePosition;
-import bwapi.Unit;
-import bwapi.UnitType;
-import org.monster.board.StrategyBoard;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Vector;
+
 import org.monster.build.base.BuildManager;
 import org.monster.build.base.BuildOrderItem;
 import org.monster.build.base.BuildOrderQueue;
 import org.monster.build.base.ConstructionManager;
 import org.monster.build.base.ConstructionTask;
 import org.monster.build.initialProvider.BlockingEntrance.BlockingEntrance;
-import org.monster.build.initialProvider.buildSets.AdaptNewStrategy;
-import org.monster.build.initialProvider.buildSets.VsProtoss;
-import org.monster.build.initialProvider.buildSets.VsTerran;
-import org.monster.build.initialProvider.buildSets.VsZerg;
+import org.monster.build.initialProvider.buildSets.FourDrone;
 import org.monster.common.constant.CommonCode;
-import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.UnitUtils;
 import org.monster.decisions.constant.EnemyStrategy;
 import org.monster.decisions.constant.EnemyStrategyOptions;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Vector;
+import bwapi.TilePosition;
+import bwapi.Unit;
+import bwapi.UnitType;
 
 public class InitialBuildProvider {
 
@@ -66,13 +61,14 @@ public class InitialBuildProvider {
         starport1 = BlockingEntrance.Instance().starport1;
         starport2 = BlockingEntrance.Instance().starport2;
 
-        if (PlayerUtils.enemyRace() == Race.Terran) {
+        /*if (PlayerUtils.enemyRace() == Race.Terran) {
             new VsTerran(firstSupplyPos, barrackPos, secondSupplyPos, factoryPos, starport1, starport2);
         } else if (PlayerUtils.enemyRace() == Race.Protoss) {
             new VsProtoss(firstSupplyPos, barrackPos, secondSupplyPos, factoryPos, starport1, starport2);
         } else {
             new VsZerg(firstSupplyPos, barrackPos, secondSupplyPos, factoryPos, bunkerPos1, starport1, starport2);
-        }
+        }*/
+        new FourDrone();
 
         System.out.println("InitialBuildProvider onStart end");
     }
@@ -82,7 +78,7 @@ public class InitialBuildProvider {
             return;
         }
 
-        if (adaptStrategyStatus == InitialBuildProvider.AdaptStrategyStatus.BEFORE) {
+        /*if (adaptStrategyStatus == InitialBuildProvider.AdaptStrategyStatus.BEFORE) {
             if (BuildManager.Instance().buildQueue.isEmpty()) {
                 nowStrategy = StrategyBoard.expansionOption;
                 if (nowStrategy == EnemyStrategyOptions.ExpansionOption.TWO_FACTORY || nowStrategy == EnemyStrategyOptions.ExpansionOption.TWO_STARPORT || nowStrategy == EnemyStrategyOptions.ExpansionOption.ONE_STARPORT) {
@@ -125,7 +121,7 @@ public class InitialBuildProvider {
                     }
                 }
             }
-        }
+        }*/
 
 
     }
