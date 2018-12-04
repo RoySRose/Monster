@@ -15,15 +15,7 @@ import org.monster.board.StrategyBoard;
 import org.monster.build.initialProvider.BlockingEntrance.BlockingEntrance;
 import org.monster.common.UnitInfo;
 import org.monster.common.constant.CommonCode;
-import org.monster.common.util.BaseLocationUtils;
-import org.monster.common.util.BaseUtils;
-import org.monster.common.util.ChokePointUtils;
-import org.monster.common.util.MicroUtils;
-import org.monster.common.util.PlayerUtils;
-import org.monster.common.util.PositionUtils;
-import org.monster.common.util.StaticMapUtils;
-import org.monster.common.util.TimeUtils;
-import org.monster.common.util.UnitUtils;
+import org.monster.common.util.*;
 import org.monster.common.util.internal.IConditions;
 import org.monster.decisions.constant.EnemyStrategyOptions;
 import org.monster.decisions.constant.StrategyCode;
@@ -249,7 +241,7 @@ public class PositionFinder {
 //			return firstChokeDefensePosition();
 //
 //			// 마린이 일정이상 쌓였어야 한다.
-////			int marineCount = InfoTypeUtils.myNumUnits(UnitType.Terran_Marine) / 2;
+////			int marineCount = UnitTypeUtils.myNumUnits(UnitType.Terran_Marine) / 2;
 ////			if (factorySupplyCount + marineCount > Math.max(enemyUnitCount, 3)) {
 ////				return firstChokeDefensePosition();
 ////			} else {
@@ -396,7 +388,7 @@ public class PositionFinder {
         int sumOfTotalY = 0;
         int totalCount = 0;
 
-        List<UnitInfo> euiList = UnitUtils.getEnemyUnitInfoList(CommonCode.EnemyUnitVisibleStatus.ALL);
+        List<UnitInfo> euiList = UnitUtils.getEnemyUnitInfoList();
         for (UnitInfo eui : euiList) {
             if (!TargetFilter.excludeByFilter(eui, TargetFilter.LARVA_LURKER_EGG | TargetFilter.UNFIGHTABLE | TargetFilter.SPIDER_MINE | TargetFilter.BUILDING)) {
                 sumOfTotalX += eui.getLastPosition().getX();
@@ -428,7 +420,7 @@ public class PositionFinder {
             if (!MicroUtils.combatEnemyType(eui.getType())) {
                 continue;
             }
-            if (UnitUtils.unitInSight(eui) == null) {
+            if (UnitUtils.enemyUnitInSight(eui) == null) {
                 continue;
             }
             if (eui.getType() == UnitType.Zerg_Overlord) {
@@ -567,7 +559,7 @@ public class PositionFinder {
         // watcher 기본 포지션
         if (watcherPosition == Position.Unknown) {
             if (BaseUtils.enemyMainBase() != null) {
-                if (PlayerUtils.enemyRace() == Race.Terran && Monster.Broodwar.self().getUpgradeLevel(UpgradeType.Ion_Thrusters) == 0) {
+                if (PlayerUtils.enemyRace() == Race.Terran && UpgradeUtils.selfUpgradedLevel(UpgradeType.Ion_Thrusters) == 0) {
                     watcherPosition = PositionUtils.enemyReadyToPosition();
                 } else {
                     watcherPosition = BaseUtils.enemyMainBase().getPosition();
@@ -724,7 +716,7 @@ public class PositionFinder {
         int y = 0;
         int mineralCnt = 0;
 
-        for (Unit mineral : Monster.Broodwar.neutral().getUnits()) {
+        for (Unit mineral : PlayerUtils.neutralPlayer().getUnits()) {
             if ((mineral.getType() == UnitType.Resource_Mineral_Field) && mineral.getDistance(commandCenter) < 320) {
                 x += mineral.getPosition().getX();
                 y += mineral.getPosition().getY();
@@ -847,7 +839,7 @@ public class PositionFinder {
     }
 
     public boolean enemyBaseDestroyed(BaseLocation enemyBase) {
-        if (!Monster.Broodwar.isExplored(enemyBase.getTilePosition())) {
+        if (!StaticMapUtils.isExplored(enemyBase.getTilePosition())) {
             return false;
         }
 
@@ -873,24 +865,24 @@ public class PositionFinder {
         }
 
         // 적 유닛
-        for (Unit unit : Monster.Broodwar.enemy().getUnits()) {
-            if (unit.getType() == UnitType.Zerg_Larva || unit.getType().isFlyer() || !unit.isVisible()) {
+        for (UnitInfo unitInfo : UnitUtils.getEnemyVisibleUnitInfoList()) {
+            if (unitInfo.getType() == UnitType.Zerg_Larva || unitInfo.getType().isFlyer() || !unitInfo.isVisible()) {
                 continue;
             }
-            return unit.getPosition();
+            return unitInfo.getLastPosition();
         }
 
         // starting location 중에서 탐험되지 않은 지역
         List<BaseLocation> startingBases = StaticMapUtils.getStartingBaseLocation();
         for (BaseLocation startingBase : startingBases) {
-            if (!Monster.Broodwar.isExplored(startingBase.getTilePosition())) {
+            if (!StaticMapUtils.isExplored(startingBase.getTilePosition())) {
                 return startingBase.getPosition();
             }
         }
 
         // 앞마당 지역
         BaseLocation enemyExpansion = BaseUtils.enemyFirstExpansion();
-        if (enemyExpansion != null && !Monster.Broodwar.isExplored(enemyExpansion.getTilePosition())) {
+        if (enemyExpansion != null && !StaticMapUtils.isExplored(enemyExpansion.getTilePosition())) {
             return enemyExpansion.getPosition();
         }
 
@@ -898,7 +890,7 @@ public class PositionFinder {
         List<BaseLocation> otherExpansions = BaseUtils.otherExpansions();
         if (otherExpansions != null) {
             for (BaseLocation otherExpansion : otherExpansions) {
-                if (!Monster.Broodwar.isExplored(otherExpansion.getTilePosition())) {
+                if (!StaticMapUtils.isExplored(otherExpansion.getTilePosition())) {
                     return otherExpansion.getPosition();
                 }
             }

@@ -3,6 +3,7 @@ package org.monster.decisions.strategy.action.impl;
 import bwapi.UnitType;
 import org.monster.board.StrategyBoard;
 import org.monster.common.constant.CommonCode;
+import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.TimeUtils;
 import org.monster.common.util.UnitUtils;
 import org.monster.decisions.constant.EnemyStrategyOptions;
@@ -36,13 +37,13 @@ public class GasAdjustmentMechanic extends Action {
         if (workerCount > 8) {
             adjustGasWorkerCount = 3;
             if (!UnitUtils.myUnitDiscovered(UnitType.Terran_Factory)) {
-                if (Monster.Broodwar.self().gas() >= 92) {
+                if (PlayerUtils.gasSelf() >= 92) {
                     adjustGasWorkerCount = 1;
                 }
             } else {
                 if (StrategyBoard.expansionOption == EnemyStrategyOptions.ExpansionOption.ONE_FACTORY) {
                     if (UnitUtils.getUnitCount(CommonCode.UnitFindStatus.ALL, UnitType.Terran_Command_Center) < 2) {
-                        if (Monster.Broodwar.self().gas() <= 250) {
+                        if (PlayerUtils.gasSelf() <= 250) {
                             adjustGasWorkerCount = 2;
                         } else {
                             adjustGasWorkerCount = 1;
@@ -52,7 +53,7 @@ public class GasAdjustmentMechanic extends Action {
                     }
                 } else {
                     if (UnitUtils.getUnitCount(CommonCode.UnitFindStatus.ALL, UnitType.Terran_Command_Center) < 2) {
-                        if (Monster.Broodwar.self().gas() <= 100) {
+                        if (PlayerUtils.gasSelf() <= 100) {
                             adjustGasWorkerCount = 3;
                         } else {
                             adjustGasWorkerCount = 2;

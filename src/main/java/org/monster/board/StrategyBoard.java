@@ -118,7 +118,7 @@ public class StrategyBoard {
     public static Map<Decision, Boolean> decisions = new HashMap<>();
     public static Map<Location, Object> locations = new HashMap<>();
 
-    public void init() {
+    public static void init() {
         for(Decision decision : Decision.values())
             decisions.put(decision, false);
         for(Location location : Location.values())

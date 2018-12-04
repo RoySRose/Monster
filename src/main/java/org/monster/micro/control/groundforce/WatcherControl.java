@@ -120,7 +120,7 @@ public class WatcherControl extends Control {
                 if (spiderMineOrderIssue(unit)) {
                     continue;
                 }
-                Unit enemyUnit = UnitUtils.unitInSight(decision.eui);
+                Unit enemyUnit = UnitUtils.enemyUnitInSight(decision.eui);
                 if (enemyUnit != null) {
                     if (MicroUtils.isRemovableEnemySpiderMine(unit, decision.eui)) {
                         MicroUtils.holdControlToRemoveMine(unit, decision.eui.getLastPosition(), fOption);

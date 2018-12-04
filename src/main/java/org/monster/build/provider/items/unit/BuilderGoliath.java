@@ -8,7 +8,6 @@ import org.monster.build.provider.FactoryUnitSelector;
 import org.monster.common.MetaType;
 import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.UnitUtils;
-import org.monster.bootstrap.Monster;
 
 //EXAMPLE
 @Deprecated
@@ -22,7 +21,7 @@ public class BuilderGoliath extends DefaultBuildableItem {
     }
 
     public final boolean buildCondition() {
-        if (Monster.Broodwar.self().completedUnitCount(UnitType.Terran_Armory) == 0) {
+        if (UnitUtils.getCompletedUnitCount(UnitType.Terran_Armory) == 0) {
             return false;
         }
 
@@ -31,10 +30,10 @@ public class BuilderGoliath extends DefaultBuildableItem {
         }
 
         // 최소 0기일 때 1기 뽑는 조건
-        if (BuildManager.Instance().buildQueue.getItemCount(UnitType.Terran_Goliath) == 0 && Monster.Broodwar.self().allUnitCount(UnitType.Terran_Goliath) == 0) {
+        if (BuildManager.Instance().buildQueue.getItemCount(UnitType.Terran_Goliath) == 0 && UnitUtils.getUnitCount(UnitType.Terran_Goliath) == 0) {
             // 드랍십 등이 발견 되었으면 최소 1기는 있어야 한다.
             if (UnitUtils.enemyUnitDiscovered(UnitType.Protoss_Shuttle, UnitType.Terran_Dropship, UnitType.Terran_Wraith, UnitType.Zerg_Mutalisk)) {
-                if (Monster.Broodwar.self().allUnitCount(UnitType.Terran_Siege_Tank_Tank_Mode) + Monster.Broodwar.self().allUnitCount(UnitType.Terran_Siege_Tank_Tank_Mode) >= 2) {
+                if (UnitUtils.getUnitCount(UnitType.Terran_Siege_Tank_Tank_Mode) + UnitUtils.getUnitCount(UnitType.Terran_Siege_Tank_Tank_Mode) >= 2) {
                     return true;
                 }
             }
@@ -44,7 +43,7 @@ public class BuilderGoliath extends DefaultBuildableItem {
             if (PlayerUtils.enemyRace() == Race.Zerg) {
                 goliathSupply = 350;
             }
-            if (Monster.Broodwar.self().supplyUsed() >= goliathSupply) {
+            if (PlayerUtils.supplyUsedSelf() >= goliathSupply) {
                 return true;
             }
         }

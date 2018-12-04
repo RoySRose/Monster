@@ -1,5 +1,6 @@
 package org.monster.debugger.chat;
 
+import bwapi.Game;
 import org.monster.debugger.chat.impl.GameSpeedAdjuster;
 import org.monster.debugger.chat.impl.StrategyChanger;
 import org.monster.debugger.chat.impl.StrikeLevelAdjuster;
@@ -11,7 +12,7 @@ import java.util.List;
 public class ChatBot {
 
     private static List<ChatExecuter> chatExecuters = new ArrayList<>();
-
+    private static Game Broodwar;
     /*****************************************************************************
      * 설명
      *
@@ -22,7 +23,7 @@ public class ChatBot {
      *
      *****************************************************************************/
     static {
-        chatExecuters.add(new GameSpeedAdjuster('s'));
+        chatExecuters.add(new GameSpeedAdjuster('s', Broodwar));
         chatExecuters.add(new UxOptionChanger('d'));
         chatExecuters.add(new StrategyChanger('$'));
         chatExecuters.add(new StrikeLevelAdjuster('w'));

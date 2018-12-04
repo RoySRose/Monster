@@ -10,10 +10,7 @@ import org.monster.board.StrategyBoard;
 import org.monster.build.initialProvider.BlockingEntrance.BlockingEntrance;
 import org.monster.common.LagObserver;
 import org.monster.common.UnitInfo;
-import org.monster.common.util.MicroUtils;
-import org.monster.common.util.PlayerUtils;
-import org.monster.common.util.TimeUtils;
-import org.monster.common.util.UnitUtils;
+import org.monster.common.util.*;
 import org.monster.decisions.constant.StrategyCode;
 import org.monster.decisions.strategy.manage.PositionFinder;
 import org.monster.bootstrap.Monster;
@@ -173,10 +170,10 @@ public class WatcherSquad extends Squad {
 
             int weaponRange = 0; // radius 안의 공격범위가 닿는 적까지 포함
             if (eui.getType() == UnitType.Terran_Bunker) {
-                weaponRange = Monster.Broodwar.enemy().weaponMaxRange(UnitType.Terran_Marine.groundWeapon()) + 96;
+                weaponRange = PlayerUtils.enemyPlayer().weaponMaxRange(UnitType.Terran_Marine.groundWeapon()) + 96;
             } else {
                 if (eui.getType().groundWeapon() != WeaponType.None) {
-                    weaponRange = Math.max(weaponRange, Monster.Broodwar.enemy().weaponMaxRange(eui.getType().groundWeapon()));
+                    weaponRange = Math.max(weaponRange, PlayerUtils.enemyPlayer().weaponMaxRange(eui.getType().groundWeapon()));
                 }
             }
 
@@ -194,7 +191,7 @@ public class WatcherSquad extends Squad {
 
                 if (add) {
                     euis.add(eui);
-                    Monster.Broodwar.drawCircleMap(eui.getLastPosition(), 30, Color.Red, false);
+                    DrawingUtils.drawCircleMap(eui.getLastPosition(), 30, Color.Red, false);
                 }
             }
         }

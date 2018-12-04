@@ -4,6 +4,7 @@ import bwapi.Bullet;
 import bwapi.BulletType;
 import bwapi.Color;
 import bwapi.Force;
+import bwapi.Game;
 import bwapi.Player;
 import bwapi.Position;
 import bwapi.TilePosition;
@@ -14,6 +15,7 @@ import bwta.BaseLocation;
 import bwta.Chokepoint;
 import bwta.Polygon;
 import bwta.Region;
+import org.monster.bootstrap.Config;
 import org.monster.build.base.BuildManager;
 import org.monster.build.base.BuildOrderItem;
 import org.monster.build.base.ConstructionManager;
@@ -26,8 +28,6 @@ import org.monster.common.util.ChokePointUtils;
 import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.TimeUtils;
 import org.monster.common.util.UnitUtils;
-import org.monster.bootstrap.Config;
-import org.monster.bootstrap.Monster;
 import org.monster.worker.WorkerData;
 import org.monster.worker.WorkerManager;
 
@@ -60,13 +60,16 @@ public class UXManager {
     private String bulletTypeName = "";
     private String tempUnitName = "";
 
+    private Game Broodwar;
+    
     /// static singleton 객체를 리턴합니다
     public static UXManager Instance() {
         return instance;
     }
 
     /// 경기가 시작될 때 일회적으로 추가 정보를 출력합니다
-    public void onStart() {
+    public void onStart(Game Broodwar) {
+        this.Broodwar = Broodwar;
     }
 
     /// 경기 진행 중 매 프레임마다 추가 정보를 출력하고 사용자 입력을 처리합니다
@@ -141,49 +144,49 @@ public class UXManager {
 
         // draw tile position of mouse cursor
         if (Config.DrawMouseCursorInfo) {
-            int mouseX = Monster.Broodwar.getMousePosition().getX() + Monster.Broodwar.getScreenPosition().getX();
-            int mouseY = Monster.Broodwar.getMousePosition().getY() + Monster.Broodwar.getScreenPosition().getY();
-            Monster.Broodwar.drawTextMap(mouseX + 20, mouseY, "(" + (int) (mouseX / Config.TILE_SIZE) + ", " + (int) (mouseY / Config.TILE_SIZE) + ")");
+            int mouseX = Broodwar.getMousePosition().getX() + Broodwar.getScreenPosition().getX();
+            int mouseY = Broodwar.getMousePosition().getY() + Broodwar.getScreenPosition().getY();
+            Broodwar.drawTextMap(mouseX + 20, mouseY, "(" + (int) (mouseX / Config.TILE_SIZE) + ", " + (int) (mouseY / Config.TILE_SIZE) + ")");
         }
 
     }
 
     // 게임 개요 정보를 Screen 에 표시합니다
     public void drawGameInformationOnScreen(int x, int y) {
-        Monster.Broodwar.drawTextScreen(x, y, white + "Players : ");
-        //Monster.Broodwar.drawTextScreen(x + 50, y, Monster.Broodwar.self().getTextColor() + Monster.Broodwar.self().getName() + "(" + InformationManager.Instance().selfRace + ") " + white + " vs.  " +
+        Broodwar.drawTextScreen(x, y, white + "Players : ");
+        //Broodwar.drawTextScreen(x + 50, y, Broodwar.self().getTextColor() + Broodwar.self().getName() + "(" + InformationManager.Instance().selfRace + ") " + white + " vs.  " +
         //        PlayerUtils.enemyPlayer().getTextColor() + PlayerUtils.enemyPlayer().getName() + "(" + PlayerUtils.enemyRace() + ")");
         y += 12;
 
-        Monster.Broodwar.drawTextScreen(x, y, white + "Map : ");
-        Monster.Broodwar.drawTextScreen(x + 50, y, white + Monster.Broodwar.mapFileName() + " (" + Monster.Broodwar.mapWidth() + " x " + Monster.Broodwar.mapHeight() + " size)");
-        Monster.Broodwar.setTextSize();
+        Broodwar.drawTextScreen(x, y, white + "Map : ");
+        Broodwar.drawTextScreen(x + 50, y, white + Broodwar.mapFileName() + " (" + Broodwar.mapWidth() + " x " + Broodwar.mapHeight() + " size)");
+        Broodwar.setTextSize();
         y += 12;
 
-        Monster.Broodwar.drawTextScreen(x, y, white + "Time : ");
-        Monster.Broodwar.drawTextScreen(x + 50, y, "" + white + TimeUtils.getFrame());
-        Monster.Broodwar.drawTextScreen(x + 90, y, "" + white + (int) (TimeUtils.getFrame() / (23.8 * 60)) + ":" + (int) ((int) (TimeUtils.getFrame() / 23.8) % 60));
+        Broodwar.drawTextScreen(x, y, white + "Time : ");
+        Broodwar.drawTextScreen(x + 50, y, "" + white + TimeUtils.getFrame());
+        Broodwar.drawTextScreen(x + 90, y, "" + white + (int) (TimeUtils.getFrame() / (23.8 * 60)) + ":" + (int) ((int) (TimeUtils.getFrame() / 23.8) % 60));
     }
 
     /// APM (Action Per Minute) 숫자를 Screen 에 표시합니다
     public void drawAPM(int x, int y) {
-        int bwapiAPM = Monster.Broodwar.getAPM();
-        Monster.Broodwar.drawTextScreen(x, y, "APM : " + bwapiAPM);
+        int bwapiAPM = Broodwar.getAPM();
+        Broodwar.drawTextScreen(x, y, "APM : " + bwapiAPM);
     }
 
     /// Players 정보를 Screen 에 표시합니다
     public void drawPlayers() {
-        for (Player p : Monster.Broodwar.getPlayers()) {
-            Monster.Broodwar.sendText("Player [" + p.getID() + "]: " + p.getName() + " is in force: " + p.getForce().getName());
+        for (Player p : Broodwar.getPlayers()) {
+            Broodwar.sendText("Player [" + p.getID() + "]: " + p.getName() + " is in force: " + p.getForce().getName());
         }
     }
 
     /// Player 들의 팀 (Force) 들의 정보를 Screen 에 표시합니다
     public void drawForces() {
-        for (Force f : Monster.Broodwar.getForces()) {
-            Monster.Broodwar.sendText("Force " + f.getName() + " has the following players:");
+        for (Force f : Broodwar.getForces()) {
+            Broodwar.sendText("Force " + f.getName() + " has the following players:");
             for (Player p : f.getPlayers()) {
-                Monster.Broodwar.sendText("  - Player [" + p.getID() + "]: " + p.getName());
+                Broodwar.sendText("  - Player [" + p.getID() + "]: " + p.getName());
             }
         }
     }
@@ -206,9 +209,9 @@ public class UXManager {
             int bottom = pos.getY() + type.dimensionDown();
 
             // 적 유닛이면 주위에 박스 표시
-            if (!Monster.Broodwar.isVisible(ui.getLastPosition().toTilePosition())) {
-                Monster.Broodwar.drawBoxMap(new Position(left, top), new Position(right, bottom), Color.Grey, false);
-                Monster.Broodwar.drawTextMap(new Position(left + 3, top + 4), ui.getType().toString());
+            if (!Broodwar.isVisible(ui.getLastPosition().toTilePosition())) {
+                Broodwar.drawBoxMap(new Position(left, top), new Position(right, bottom), Color.Grey, false);
+                Broodwar.drawTextMap(new Position(left + 3, top + 4), ui.getType().toString());
             }
 
             // 유닛의 HitPoint 남아있는 비율 표시
@@ -223,14 +226,14 @@ public class UXManager {
                 int hpTop = top + verticalOffset;
                 int hpBottom = top + 4 + verticalOffset;
 
-                Monster.Broodwar.drawBoxMap(new Position(left, hpTop), new Position(right, hpBottom), Color.Grey, true);
-                Monster.Broodwar.drawBoxMap(new Position(left, hpTop), new Position(ratioRight, hpBottom), hpColor, true);
-                Monster.Broodwar.drawBoxMap(new Position(left, hpTop), new Position(right, hpBottom), Color.Black, false);
+                Broodwar.drawBoxMap(new Position(left, hpTop), new Position(right, hpBottom), Color.Grey, true);
+                Broodwar.drawBoxMap(new Position(left, hpTop), new Position(ratioRight, hpBottom), hpColor, true);
+                Broodwar.drawBoxMap(new Position(left, hpTop), new Position(right, hpBottom), Color.Black, false);
 
                 int ticWidth = 3;
 
                 for (int i = left; i < right - 1; i += ticWidth) {
-                    Monster.Broodwar.drawLineMap(new Position(i, hpTop), new Position(i, hpBottom), Color.Black);
+                    Broodwar.drawLineMap(new Position(i, hpTop), new Position(i, hpBottom), Color.Black);
                 }
             }
 
@@ -242,20 +245,20 @@ public class UXManager {
                 int hpTop = top - 3 + verticalOffset;
                 int hpBottom = top + 1 + verticalOffset;
 
-                Monster.Broodwar.drawBoxMap(new Position(left, hpTop), new Position(right, hpBottom), Color.Grey, true);
-                Monster.Broodwar.drawBoxMap(new Position(left, hpTop), new Position(ratioRight, hpBottom), Color.Blue, true);
-                Monster.Broodwar.drawBoxMap(new Position(left, hpTop), new Position(right, hpBottom), Color.Black, false);
+                Broodwar.drawBoxMap(new Position(left, hpTop), new Position(right, hpBottom), Color.Grey, true);
+                Broodwar.drawBoxMap(new Position(left, hpTop), new Position(ratioRight, hpBottom), Color.Blue, true);
+                Broodwar.drawBoxMap(new Position(left, hpTop), new Position(right, hpBottom), Color.Black, false);
 
                 int ticWidth = 3;
 
                 for (int i = left; i < right - 1; i += ticWidth) {
-                    Monster.Broodwar.drawLineMap(new Position(i, hpTop), new Position(i, hpBottom), Color.Black);
+                    Broodwar.drawLineMap(new Position(i, hpTop), new Position(i, hpBottom), Color.Black);
                 }
             }
         }
 
         // draw neutral units and our units
-        for (Unit unit : Monster.Broodwar.getAllUnits()) {
+        for (Unit unit : Broodwar.getAllUnits()) {
             if (unit.getPlayer() == PlayerUtils.enemyPlayer()) {
                 continue;
             }
@@ -281,14 +284,14 @@ public class UXManager {
                 int hpTop = top + verticalOffset;
                 int hpBottom = top + 4 + verticalOffset;
 
-                Monster.Broodwar.drawBoxMap(new Position(left, hpTop), new Position(right, hpBottom), Color.Grey, true);
-                Monster.Broodwar.drawBoxMap(new Position(left, hpTop), new Position(ratioRight, hpBottom), hpColor, true);
-                Monster.Broodwar.drawBoxMap(new Position(left, hpTop), new Position(right, hpBottom), hpColor.Black, false);
+                Broodwar.drawBoxMap(new Position(left, hpTop), new Position(right, hpBottom), Color.Grey, true);
+                Broodwar.drawBoxMap(new Position(left, hpTop), new Position(ratioRight, hpBottom), hpColor, true);
+                Broodwar.drawBoxMap(new Position(left, hpTop), new Position(right, hpBottom), hpColor.Black, false);
 
                 int ticWidth = 3;
 
                 for (int i = left; i < right - 1; i += ticWidth) {
-                    Monster.Broodwar.drawLineMap(new Position(i, hpTop), new Position(i, hpBottom), Color.Black);
+                    Broodwar.drawLineMap(new Position(i, hpTop), new Position(i, hpBottom), Color.Black);
                 }
             }
 
@@ -300,14 +303,14 @@ public class UXManager {
                 int hpTop = top - 3 + verticalOffset;
                 int hpBottom = top + 1 + verticalOffset;
 
-                Monster.Broodwar.drawBoxMap(new Position(left, hpTop), new Position(right, hpBottom), Color.Grey, true);
-                Monster.Broodwar.drawBoxMap(new Position(left, hpTop), new Position(ratioRight, hpBottom), Color.Blue, true);
-                Monster.Broodwar.drawBoxMap(new Position(left, hpTop), new Position(right, hpBottom), Color.Black, false);
+                Broodwar.drawBoxMap(new Position(left, hpTop), new Position(right, hpBottom), Color.Grey, true);
+                Broodwar.drawBoxMap(new Position(left, hpTop), new Position(ratioRight, hpBottom), Color.Blue, true);
+                Broodwar.drawBoxMap(new Position(left, hpTop), new Position(right, hpBottom), Color.Black, false);
 
                 int ticWidth = 3;
 
                 for (int i = left; i < right - 1; i += ticWidth) {
-                    Monster.Broodwar.drawLineMap(new Position(i, hpTop), new Position(i, hpBottom), Color.Black);
+                    Broodwar.drawLineMap(new Position(i, hpTop), new Position(i, hpBottom), Color.Black);
                 }
             }
 
@@ -319,14 +322,14 @@ public class UXManager {
                 int hpTop = top + verticalOffset;
                 int hpBottom = top + 4 + verticalOffset;
 
-                Monster.Broodwar.drawBoxMap(new Position(left, hpTop), new Position(right, hpBottom), Color.Grey, true);
-                Monster.Broodwar.drawBoxMap(new Position(left, hpTop), new Position(ratioRight, hpBottom), Color.Cyan, true);
-                Monster.Broodwar.drawBoxMap(new Position(left, hpTop), new Position(right, hpBottom), Color.Black, false);
+                Broodwar.drawBoxMap(new Position(left, hpTop), new Position(right, hpBottom), Color.Grey, true);
+                Broodwar.drawBoxMap(new Position(left, hpTop), new Position(ratioRight, hpBottom), Color.Cyan, true);
+                Broodwar.drawBoxMap(new Position(left, hpTop), new Position(right, hpBottom), Color.Black, false);
 
                 int ticWidth = 3;
 
                 for (int i = left; i < right - 1; i += ticWidth) {
-                    Monster.Broodwar.drawLineMap(new Position(i, hpTop), new Position(i, hpBottom), Color.Black);
+                    Broodwar.drawLineMap(new Position(i, hpTop), new Position(i, hpBottom), Color.Black);
                 }
             }
         }
@@ -340,39 +343,39 @@ public class UXManager {
         currentY += 10;
 
         // 아군 모든 유닛 숫자 합계
-        //Monster.Broodwar.drawTextScreen(x, currentY,  white + " allUnitCount: " + Monster.Broodwar.self().allUnitCount(UnitType.AllUnits));
+        //Broodwar.drawTextScreen(x, currentY,  white + " allUnitCount: " + UnitUtils.getUnitCount(UnitType.AllUnits));
         //currentY += 10;
 
         // 아군 건설/훈련 완료한 유닛 숫자 합계
-        //Monster.Broodwar.drawTextScreen(x, currentY,  white + " completedUnitCount: " + Monster.Broodwar.self().completedUnitCount(UnitType.AllUnits));
+        //Broodwar.drawTextScreen(x, currentY,  white + " completedUnitCount: " + UnitUtils.getCompletedUnitCount(UnitType.AllUnits));
         //currentY += 10;
 
         // 아군 건설/훈련중인 유닛 숫자 합계
-        //Monster.Broodwar.drawTextScreen(x, currentY,  white + " incompleteUnitCount: " + Monster.Broodwar.self().incompleteUnitCount(UnitType.AllUnits));
+        //Broodwar.drawTextScreen(x, currentY,  white + " incompleteUnitCount: " + Broodwar.self().incompleteUnitCount(UnitType.AllUnits));
         //currentY += 10;
 
         // 아군 유닛 파괴/사망 숫자 누적값
-        //Monster.Broodwar.drawTextScreen(x, currentY,  white + " deadUnitCount: " + Monster.Broodwar.self().deadUnitCount(UnitType.AllUnits));
+        //Broodwar.drawTextScreen(x, currentY,  white + " deadUnitCount: " + Broodwar.self().deadUnitCount(UnitType.AllUnits));
         //currentY += 10;
 
         // 상대방 유닛을 파괴/사망 시킨 숫자 누적값
-        //Monster.Broodwar.drawTextScreen(x, currentY,  white + " killedUnitCount: " + Monster.Broodwar.self().killedUnitCount(UnitType.AllUnits));
+        //Broodwar.drawTextScreen(x, currentY,  white + " killedUnitCount: " + Broodwar.self().killedUnitCount(UnitType.AllUnits));
         //currentY += 10;
 
-        //Monster.Broodwar.drawTextScreen(x, currentY,  white + " UnitScore: " + Monster.Broodwar.self().getUnitScore());
+        //Broodwar.drawTextScreen(x, currentY,  white + " UnitScore: " + Broodwar.self().getUnitScore());
         //currentY += 10;
-        //Monster.Broodwar.drawTextScreen(x, currentY,  white + " RazingScore: " + Monster.Broodwar.self().getRazingScore());
+        //Broodwar.drawTextScreen(x, currentY,  white + " RazingScore: " + Broodwar.self().getRazingScore());
         //currentY += 10;
-        //Monster.Broodwar.drawTextScreen(x, currentY,  white + " BuildingScore: " + Monster.Broodwar.self().getBuildingScore());
+        //Broodwar.drawTextScreen(x, currentY,  white + " BuildingScore: " + Broodwar.self().getBuildingScore());
         //currentY += 10;
-        //Monster.Broodwar.drawTextScreen(x, currentY,  white + " KillScore: " + Monster.Broodwar.self().getKillScore());
+        //Broodwar.drawTextScreen(x, currentY,  white + " KillScore: " + Broodwar.self().getKillScore());
         //currentY += 10;
 
         // 적군의 UnitType 별 파악된 Unit 숫자를 표시
-        Monster.Broodwar.drawTextScreen(x, currentY + 20, white + " UNIT NAME");
-        Monster.Broodwar.drawTextScreen(x + 110, currentY + 20, white + " Created");
-        Monster.Broodwar.drawTextScreen(x + 150, currentY + 20, white + " Dead");
-        Monster.Broodwar.drawTextScreen(x + 190, currentY + 20, white + " Alive");
+        Broodwar.drawTextScreen(x, currentY + 20, white + " UNIT NAME");
+        Broodwar.drawTextScreen(x + 110, currentY + 20, white + " Created");
+        Broodwar.drawTextScreen(x + 150, currentY + 20, white + " Dead");
+        Broodwar.drawTextScreen(x + 190, currentY + 20, white + " Alive");
 
         int yspace = 0;
 
@@ -388,14 +391,14 @@ public class UXManager {
 			Position c = baseLocation.getPosition();
 
 			//draw outline of Base location 
-			Monster.Broodwar.drawBoxMap(p.getX() * 32, p.getY() * 32, p.getX() * 32 + 4 * 32, p.getY() * 32 + 3 * 32, Color.Blue);
+			Broodwar.drawBoxMap(p.getX() * 32, p.getY() * 32, p.getX() * 32 + 4 * 32, p.getY() * 32 + 3 * 32, Color.Blue);
 
 			//draw a circle at each mineral patch
 			// C++ : for (BWAPI.Unitset.iterator j = (*i).getStaticMinerals().begin(); j != (*i).getStaticMinerals().end(); j++)
 			for(Unit unit : baseLocation.getStaticMinerals())
 			{
 				Position q = unit.getInitialPosition();
-				Monster.Broodwar.drawCircleMap(q.getX(), q.getY(), 30, Color.Cyan);
+				Broodwar.drawCircleMap(q.getX(), q.getY(), 30, Color.Cyan);
 			}
 
 			//draw the outlines of vespene geysers
@@ -403,13 +406,13 @@ public class UXManager {
 			for(Unit unit :baseLocation.getGeysers() )
 			{
 				TilePosition q = unit.getInitialTilePosition();
-				Monster.Broodwar.drawBoxMap(q.getX() * 32, q.getY() * 32, q.getX() * 32 + 4 * 32, q.getY() * 32 + 2 * 32, Color.Orange);
+				Broodwar.drawBoxMap(q.getX() * 32, q.getY() * 32, q.getX() * 32 + 4 * 32, q.getY() * 32 + 2 * 32, Color.Orange);
 			}
 
 			//if this is an island expansion, draw a yellow circle around the base location
 			if (baseLocation.isIsland())
 			{
-				Monster.Broodwar.drawCircleMap(c, 80, Color.Yellow);
+				Broodwar.drawCircleMap(c, 80, Color.Yellow);
 			}
 		}
 
@@ -422,7 +425,7 @@ public class UXManager {
 			{
 				Position point1 = p.getPoints().get(j);
 				Position point2 = p.getPoints().get((j + 1) % p.getPoints().size());
-				Monster.Broodwar.drawLineMap(point1, point2, Color.Green);
+				Broodwar.drawLineMap(point1, point2, Color.Green);
 			}
 		}
 
@@ -435,7 +438,7 @@ public class UXManager {
 			{
 				Position point1 = Chokepoint.getSides().first;
 				Position point2 = Chokepoint.getSides().second;
-				Monster.Broodwar.drawLineMap(point1, point2, Color.Red);
+				Broodwar.drawLineMap(point1, point2, Color.Red);
 			}
 		}*/
         int blueCount = 0;
@@ -522,57 +525,57 @@ public class UXManager {
 
         if (hasSavedBWTAInfo) {
             for (int i1 = 0; i1 < blue.length; i1++) {
-                Monster.Broodwar.drawBoxMap(blue[i1][0], blue[i1][1], blue[i1][2], blue[i1][3], Color.Blue);
+                Broodwar.drawBoxMap(blue[i1][0], blue[i1][1], blue[i1][2], blue[i1][3], Color.Blue);
             }
             for (int i2 = 0; i2 < cyan.length; i2++) {
-                Monster.Broodwar.drawCircleMap(cyan[i2][0], cyan[i2][1], 30, Color.Cyan);
+                Broodwar.drawCircleMap(cyan[i2][0], cyan[i2][1], 30, Color.Cyan);
             }
             for (int i3 = 0; i3 < orange.length; i3++) {
-                Monster.Broodwar.drawBoxMap(orange[i3][0], orange[i3][1], orange[i3][2], orange[i3][3], Color.Orange);
+                Broodwar.drawBoxMap(orange[i3][0], orange[i3][1], orange[i3][2], orange[i3][3], Color.Orange);
             }
             for (int i4 = 0; i4 < yellow.size(); i4++) {
-                Monster.Broodwar.drawCircleMap(yellow.get(i4), 80, Color.Yellow);
+                Broodwar.drawCircleMap(yellow.get(i4), 80, Color.Yellow);
             }
             for (int i5 = 0; i5 < green1.size(); i5++) {
-                Monster.Broodwar.drawLineMap(green1.get(i5), green2.get(i5), Color.Green);
+                Broodwar.drawLineMap(green1.get(i5), green2.get(i5), Color.Green);
             }
             for (int i6 = 0; i6 < red1.size(); i6++) {
-                Monster.Broodwar.drawLineMap(red1.get(i6), red2.get(i6), Color.Red);
+                Broodwar.drawLineMap(red1.get(i6), red2.get(i6), Color.Red);
             }
 
             // OccupiedBaseLocation 을 원으로 표시
 //            for (BaseLocation baseLocation : InformationManager.Instance().getOccupiedBaseLocations(PlayerUtils.myPlayer())) {
-//                Monster.Broodwar.drawCircleMap(baseLocation.getPosition(), 10 * Config.TILE_SIZE, Color.Blue);
+//                Broodwar.drawCircleMap(baseLocation.getPosition(), 10 * Config.TILE_SIZE, Color.Blue);
 //            }
-//            for (BaseLocation baseLocation : InfoTypeUtils.getOccupiedBaseLocations(PlayerUtils.enemyPlayer())) {
-//                Monster.Broodwar.drawCircleMap(baseLocation.getPosition(), 10 * Config.TILE_SIZE, Color.Red);
+//            for (BaseLocation baseLocation : UnitTypeUtils.getOccupiedBaseLocations(PlayerUtils.enemyPlayer())) {
+//                Broodwar.drawCircleMap(baseLocation.getPosition(), 10 * Config.TILE_SIZE, Color.Red);
 //            }
 
             // ChokePoint, BaseLocation 을 텍스트로 표시
             if (ChokePointUtils.myFirstChoke() != null) {
-                Monster.Broodwar.drawTextMap(BaseUtils.myMainBase().getPosition(), "My MainBaseLocation");
+                Broodwar.drawTextMap(BaseUtils.myMainBase().getPosition(), "My MainBaseLocation");
             }
             if (ChokePointUtils.myFirstChoke() != null) {
-                Monster.Broodwar.drawTextMap(ChokePointUtils.myFirstChoke().getCenter(), "My First ChokePoint");
+                Broodwar.drawTextMap(ChokePointUtils.myFirstChoke().getCenter(), "My First ChokePoint");
             }
             if (ChokePointUtils.mySecondChoke() != null) {
-                Monster.Broodwar.drawTextMap(ChokePointUtils.mySecondChoke().getCenter(), "My Second ChokePoint");
+                Broodwar.drawTextMap(ChokePointUtils.mySecondChoke().getCenter(), "My Second ChokePoint");
             }
             if (BaseUtils.myFirstExpansion() != null) {
-                Monster.Broodwar.drawTextMap(BaseUtils.myFirstExpansion().getPosition(), "My First ExpansionLocation");
+                Broodwar.drawTextMap(BaseUtils.myFirstExpansion().getPosition(), "My First ExpansionLocation");
             }
 
 //            if (InformationManager.Instance().getFirstChokePoint(PlayerUtils.enemyPlayer()) != null) {
-//                Monster.Broodwar.drawTextMap(BaseUtils.enemyMainBase().getPosition(), "Enemy MainBaseLocation");
+//                Broodwar.drawTextMap(BaseUtils.enemyMainBase().getPosition(), "Enemy MainBaseLocation");
 //            }
 //            if (InformationManager.Instance().getFirstChokePoint(PlayerUtils.enemyPlayer()) != null) {
-//                Monster.Broodwar.drawTextMap(InformationManager.Instance().getFirstChokePoint(PlayerUtils.enemyPlayer()).getCenter(), "Enemy First ChokePoint");
+//                Broodwar.drawTextMap(InformationManager.Instance().getFirstChokePoint(PlayerUtils.enemyPlayer()).getCenter(), "Enemy First ChokePoint");
 //            }
             if (ChokePointUtils.enemySecondChoke() != null) {
-                Monster.Broodwar.drawTextMap(ChokePointUtils.enemySecondChoke().getCenter(), "Enemy Second ChokePoint");
+                Broodwar.drawTextMap(ChokePointUtils.enemySecondChoke().getCenter(), "Enemy Second ChokePoint");
             }
             if (BaseUtils.enemyFirstExpansion() != null) {
-                Monster.Broodwar.drawTextMap(BaseUtils.enemyFirstExpansion().getPosition(), "Enemy First ExpansionLocation");
+                Broodwar.drawTextMap(BaseUtils.enemyFirstExpansion().getPosition(), "Enemy First ExpansionLocation");
             }
 
         }
@@ -587,23 +590,23 @@ public class UXManager {
         int cols = MapGrid.Instance().getCols();
 
         for (int i = 0; i < cols; i++) {
-            Monster.Broodwar.drawLineMap(i * cellSize, 0, i * cellSize, mapHeight, Color.Blue);
+            Broodwar.drawLineMap(i * cellSize, 0, i * cellSize, mapHeight, Color.Blue);
         }
 
         for (int j = 0; j < rows; j++) {
-            Monster.Broodwar.drawLineMap(0, j * cellSize, mapWidth, j * cellSize, Color.Blue);
+            Broodwar.drawLineMap(0, j * cellSize, mapWidth, j * cellSize, Color.Blue);
         }
 
         for (int r = 0; r < rows; r += 2) {
             for (int c = 0; c < cols; c += 2) {
-                Monster.Broodwar.drawTextMap(c * 32, r * 32, c + "," + r);
+                Broodwar.drawTextMap(c * 32, r * 32, c + "," + r);
             }
         }
     }
 
     /// BuildOrderQueue 를 Screen 에 표시합니다
     public void drawBuildOrderQueueOnScreen(int x, int y) {
-        Monster.Broodwar.drawTextScreen(x, y, white + " <Build Order>");
+        Broodwar.drawTextScreen(x, y, white + " <Build Order>");
 
 		/*
 		std.deque< BuildOrderItem >* queue = BuildManager.Instance().buildQueue.getQueue();
@@ -628,7 +631,7 @@ public class UXManager {
 
         for (int i = 0; i < tempQueue.length; i++) {
             BuildOrderItem currentItem = (BuildOrderItem) tempQueue[i];
-            Monster.Broodwar.drawTextScreen(x, y + 10 + (itemCount * 10), white + currentItem.metaType.getName() + " " + currentItem.blocking);
+            Broodwar.drawTextScreen(x, y + 10 + (itemCount * 10), white + currentItem.metaType.getName() + " " + currentItem.blocking);
             itemCount++;
             if (itemCount >= 24) break;
         }
@@ -638,7 +641,7 @@ public class UXManager {
     public void drawBuildStatusOnScreen(int x, int y) {
         // 건설 / 훈련 중인 유닛 진행상황 표시
         Vector<Unit> unitsUnderConstruction = new Vector<Unit>();
-        for (Unit unit : Monster.Broodwar.self().getUnits()) {
+        for (Unit unit : Broodwar.self().getUnits()) {
             if (unit != null && unit.isBeingConstructed()) {
                 unitsUnderConstruction.add(unit);
             }
@@ -653,7 +656,7 @@ public class UXManager {
         }
         // C++ : std.sort(unitsUnderConstruction.begin(), unitsUnderConstruction.end(), CompareWhenStarted());
 
-        Monster.Broodwar.drawTextScreen(x, y, white + " <Build Status>");
+        Broodwar.drawTextScreen(x, y, white + " <Build Status>");
 
         int reps = unitsUnderConstruction.size() < 10 ? unitsUnderConstruction.size() : 10;
 
@@ -664,7 +667,7 @@ public class UXManager {
                 t = unit.getBuildType();
             }
 
-            Monster.Broodwar.drawTextScreen(x, y, "" + white + t + " (" + unit.getRemainingBuildTime() + ")");
+            Broodwar.drawTextScreen(x, y, "" + white + t + " (" + unit.getRemainingBuildTime() + ")");
         }
 
         // Tech Research 표시
@@ -687,7 +690,7 @@ public class UXManager {
                         int x2 = (x + 1) * 32 - 8;
                         int y2 = (y + 1) * 32 - 8;
 
-                        Monster.Broodwar.drawBoxMap(x1, y1, x2, y2, Color.Yellow, false);
+                        Broodwar.drawBoxMap(x1, y1, x2, y2, Color.Yellow, false);
                     }
                 }
             }
@@ -704,7 +707,7 @@ public class UXManager {
 //				int x2 = (t.getX() + 1) * 32 - 8;
 //				int y2 = (t.getY() + 1) * 32 - 8;
         //
-//				Monster.Broodwar.drawBoxMap(x1, y1, x2, y2, Color.Orange, false);
+//				Broodwar.drawBoxMap(x1, y1, x2, y2, Color.Orange, false);
 //			}
         int y = 0;
         int x = 0;
@@ -718,7 +721,7 @@ public class UXManager {
                     int x2 = (x + 1) * 32 - 8;
                     int y2 = (y + 1) * 32 - 8;
 
-                    Monster.Broodwar.drawBoxMap(x1, y1, x2, y2, Color.Orange, false);
+                    Broodwar.drawBoxMap(x1, y1, x2, y2, Color.Orange, false);
                 }
 //					
             }
@@ -733,7 +736,7 @@ public class UXManager {
                     int x2 = (x + 1) * 32 - 8;
                     int y2 = (y + 1) * 32 - 8;
 
-                    Monster.Broodwar.drawBoxMap(x1, y1, x2, y2, Color.Orange, false);
+                    Broodwar.drawBoxMap(x1, y1, x2, y2, Color.Orange, false);
                 }
                 if (ConstructionPlaceFinder.Instance().getTilesToAvoidAbsolute(x, y)) {
                     int x1 = x * 32 + 8;
@@ -741,7 +744,7 @@ public class UXManager {
                     int x2 = (x + 1) * 32 - 8;
                     int y2 = (y + 1) * 32 - 8;
 
-                    Monster.Broodwar.drawBoxMap(x1, y1, x2, y2, Color.Purple, false);
+                    Broodwar.drawBoxMap(x1, y1, x2, y2, Color.Purple, false);
                 }
                 if (ConstructionPlaceFinder.Instance().getTilesToAvoidSupply(x, y)) {
                     int x1 = x * 32 + 8;
@@ -749,7 +752,7 @@ public class UXManager {
                     int x2 = (x + 1) * 32 - 8;
                     int y2 = (y + 1) * 32 - 8;
 
-                    Monster.Broodwar.drawBoxMap(x1, y1, x2, y2, Color.Red, false);
+                    Broodwar.drawBoxMap(x1, y1, x2, y2, Color.Red, false);
                 }
 
                 if (ConstructionPlaceFinder.Instance().getTilesToAvoidAddonBuilding(x, y)) {
@@ -758,7 +761,7 @@ public class UXManager {
                     int x2 = (x + 1) * 32 - 8;
                     int y2 = (y + 1) * 32 - 8;
 
-                    Monster.Broodwar.drawBoxMap(x1, y1, x2, y2, Color.Black, false);
+                    Broodwar.drawBoxMap(x1, y1, x2, y2, Color.Black, false);
                 }
 //					
             }
@@ -767,7 +770,7 @@ public class UXManager {
 
     /// ConstructionQueue 를 Screen 에 표시합니다
     public void drawConstructionQueueOnScreenAndMap(int x, int y) {
-        Monster.Broodwar.drawTextScreen(x, y, white + " <Construction Status>");
+        Broodwar.drawTextScreen(x, y, white + " <Construction Status>");
 
         int yspace = 0;
 
@@ -777,12 +780,12 @@ public class UXManager {
             String constructionState = "";
 
             if (b.getStatus() == ConstructionTask.ConstructionStatus.Unassigned.ordinal()) {
-                Monster.Broodwar.drawTextScreen(x, y + 10 + ((yspace) * 10), "" + white + b.getType() + " - No Worker");
+                Broodwar.drawTextScreen(x, y + 10 + ((yspace) * 10), "" + white + b.getType() + " - No Worker");
             } else if (b.getStatus() == ConstructionTask.ConstructionStatus.Assigned.ordinal()) {
                 if (b.getConstructionWorker() == null) {
-                    Monster.Broodwar.drawTextScreen(x, y + 10 + ((yspace) * 10), b.getType() + " - Assigned Worker Null");
+                    Broodwar.drawTextScreen(x, y + 10 + ((yspace) * 10), b.getType() + " - Assigned Worker Null");
                 } else {
-                    Monster.Broodwar.drawTextScreen(x, y + 10 + ((yspace) * 10), b.getType() + " - Assigned Worker " + b.getConstructionWorker().getID() + ", Position (" + b.getFinalPosition().getX() + "," + b.getFinalPosition().getY() + ")");
+                    Broodwar.drawTextScreen(x, y + 10 + ((yspace) * 10), b.getType() + " - Assigned Worker " + b.getConstructionWorker().getID() + ", Position (" + b.getFinalPosition().getX() + "," + b.getFinalPosition().getY() + ")");
                 }
 
                 int x1 = b.getFinalPosition().getX() * 32;
@@ -790,10 +793,10 @@ public class UXManager {
                 int x2 = (b.getFinalPosition().getX() + b.getType().tileWidth()) * 32;
                 int y2 = (b.getFinalPosition().getY() + b.getType().tileHeight()) * 32;
 
-                Monster.Broodwar.drawLineMap(b.getConstructionWorker().getPosition().getX(), b.getConstructionWorker().getPosition().getY(), (x1 + x2) / 2, (y1 + y2) / 2, Color.Orange);
-                Monster.Broodwar.drawBoxMap(x1, y1, x2, y2, Color.Red, false);
+                Broodwar.drawLineMap(b.getConstructionWorker().getPosition().getX(), b.getConstructionWorker().getPosition().getY(), (x1 + x2) / 2, (y1 + y2) / 2, Color.Orange);
+                Broodwar.drawBoxMap(x1, y1, x2, y2, Color.Red, false);
             } else if (b.getStatus() == ConstructionTask.ConstructionStatus.UnderConstruction.ordinal()) {
-                Monster.Broodwar.drawTextScreen(x, y + 10 + ((yspace) * 10), "" + white + b.getType() + " - Under Construction");
+                Broodwar.drawTextScreen(x, y + 10 + ((yspace) * 10), "" + white + b.getType() + " - Under Construction");
             }
             yspace++;
         }
@@ -801,11 +804,11 @@ public class UXManager {
 
     /// Unit 의 Id 를 Map 에 표시합니다
     public void drawUnitIdOnMap() {
-        for (Unit unit : Monster.Broodwar.self().getUnits()) {
-            Monster.Broodwar.drawTextMap(unit.getPosition().getX(), unit.getPosition().getY() + 5, "" + white + unit.getID());
+        for (Unit unit : Broodwar.self().getUnits()) {
+            Broodwar.drawTextMap(unit.getPosition().getX(), unit.getPosition().getY() + 5, "" + white + unit.getID());
         }
-        for (Unit unit : Monster.Broodwar.enemy().getUnits()) {
-            Monster.Broodwar.drawTextMap(unit.getPosition().getX(), unit.getPosition().getY() + 5, "" + white + unit.getID());
+        for (Unit unit : Broodwar.enemy().getUnits()) {
+            Broodwar.drawTextMap(unit.getPosition().getX(), unit.getPosition().getY() + 5, "" + white + unit.getID());
         }
     }
 
@@ -813,7 +816,7 @@ public class UXManager {
     public void drawWorkerStateOnScreen(int x, int y) {
         WorkerData workerData = WorkerManager.Instance().getWorkerData();
 
-        Monster.Broodwar.drawTextScreen(x, y, white + "<Workers : " + workerData.getNumMineralWorkers() + ">");
+        Broodwar.drawTextScreen(x, y, white + "<Workers : " + workerData.getNumMineralWorkers() + ">");
 
         int yspace = 0;
 
@@ -825,12 +828,12 @@ public class UXManager {
                 continue;
             }
 
-            Monster.Broodwar.drawTextScreen(x, y + 10 + ((yspace) * 10), white + " " + unit.getID());
+            Broodwar.drawTextScreen(x, y + 10 + ((yspace) * 10), white + " " + unit.getID());
 
             if (workerData.getJobCode(unit) == 'B') {
-                Monster.Broodwar.drawTextScreen(x + 30, y + 10 + ((yspace++) * 10), white + " " + workerData.getJobCode(unit) + " " + unit.getBuildType() + " " + (unit.isConstructing() ? 'Y' : 'N') + " (" + unit.getTilePosition().getX() + ", " + unit.getTilePosition().getY() + ")");
+                Broodwar.drawTextScreen(x + 30, y + 10 + ((yspace++) * 10), white + " " + workerData.getJobCode(unit) + " " + unit.getBuildType() + " " + (unit.isConstructing() ? 'Y' : 'N') + " (" + unit.getTilePosition().getX() + ", " + unit.getTilePosition().getY() + ")");
             } else {
-                Monster.Broodwar.drawTextScreen(x + 30, y + 10 + ((yspace++) * 10), white + " " + workerData.getJobCode(unit));
+                Broodwar.drawTextScreen(x + 30, y + 10 + ((yspace++) * 10), white + " " + workerData.getJobCode(unit));
             }
         }
     }
@@ -843,8 +846,8 @@ public class UXManager {
             int x = depot.getPosition().getX() - 64;
             int y = depot.getPosition().getY() - 32;
 
-            Monster.Broodwar.drawBoxMap(x - 2, y - 1, x + 75, y + 14, Color.Black, true);
-            Monster.Broodwar.drawTextMap(x, y, white + " Workers: " + WorkerManager.Instance().getWorkerData().getNumAssignedWorkers(depot));
+            Broodwar.drawBoxMap(x - 2, y - 1, x + 75, y + 14, Color.Black, true);
+            Broodwar.drawTextMap(x, y, white + " Workers: " + WorkerManager.Instance().getWorkerData().getNumAssignedWorkers(depot));
         }
     }
 
@@ -857,9 +860,9 @@ public class UXManager {
 
             Position pos = worker.getTargetPosition();
 
-            Monster.Broodwar.drawTextMap(worker.getPosition().getX(), worker.getPosition().getY() - 5, "" + white + workerData.getJobCode(worker));
+            Broodwar.drawTextMap(worker.getPosition().getX(), worker.getPosition().getY() - 5, "" + white + workerData.getJobCode(worker));
 
-            Monster.Broodwar.drawLineMap(worker.getPosition().getX(), worker.getPosition().getY(), pos.getX(), pos.getY(), Color.Cyan);
+            Broodwar.drawLineMap(worker.getPosition().getX(), worker.getPosition().getY(), pos.getX(), pos.getY(), Color.Cyan);
 
 			/*
 			// ResourceDepot ~ Worker 사이에 직선 표시
@@ -873,17 +876,17 @@ public class UXManager {
 
     /// Unit 의 Target 으로 잇는 선을 Map 에 표시합니다
     public void drawUnitTargetOnMap() {
-        for (Unit unit : Monster.Broodwar.self().getUnits()) {
+        for (Unit unit : Broodwar.self().getUnits()) {
             if (unit != null && unit.isCompleted() && !unit.getType().isBuilding() && !unit.getType().isWorker()) {
                 Unit targetUnit = unit.getTarget();
-                if (targetUnit != null && targetUnit.getPlayer() != Monster.Broodwar.self()) {
-                    Monster.Broodwar.drawCircleMap(unit.getPosition(), dotRadius, Color.Red, true);
-                    Monster.Broodwar.drawCircleMap(targetUnit.getTargetPosition(), dotRadius, Color.Red, true);
-                    Monster.Broodwar.drawLineMap(unit.getPosition(), targetUnit.getTargetPosition(), Color.Red);
+                if (targetUnit != null && targetUnit.getPlayer() != Broodwar.self()) {
+                    Broodwar.drawCircleMap(unit.getPosition(), dotRadius, Color.Red, true);
+                    Broodwar.drawCircleMap(targetUnit.getTargetPosition(), dotRadius, Color.Red, true);
+                    Broodwar.drawLineMap(unit.getPosition(), targetUnit.getTargetPosition(), Color.Red);
                 } else if (unit.isMoving()) {
-                    Monster.Broodwar.drawCircleMap(unit.getPosition(), dotRadius, Color.Orange, true);
-                    Monster.Broodwar.drawCircleMap(unit.getTargetPosition(), dotRadius, Color.Orange, true);
-                    Monster.Broodwar.drawLineMap(unit.getPosition(), unit.getTargetPosition(), Color.Orange);
+                    Broodwar.drawCircleMap(unit.getPosition(), dotRadius, Color.Orange, true);
+                    Broodwar.drawCircleMap(unit.getTargetPosition(), dotRadius, Color.Orange, true);
+                    Broodwar.drawLineMap(unit.getPosition(), unit.getTargetPosition(), Color.Orange);
                 }
 
             }
@@ -893,7 +896,7 @@ public class UXManager {
     /// Bullet 을 Map 에 표시합니다 <br>
     /// Cloaking Unit 의 Bullet 표시에 쓰입니다
     public void drawBulletsOnMap() {
-        for (Bullet b : Monster.Broodwar.getBullets()) {
+        for (Bullet b : Broodwar.getBullets()) {
             Position p = b.getPosition();
             double velocityX = b.getVelocityX();
             double velocityY = b.getVelocityY();
@@ -937,9 +940,9 @@ public class UXManager {
             else if (b.getType() == BulletType.Yamato_Gun) bulletTypeName = "Yamato_Gun";
 
             // 아군 것이면 녹색, 적군 것이면 빨간색
-            Monster.Broodwar.drawLineMap(p, new Position(p.getX() + (int) velocityX, p.getY() + (int) velocityY), b.getPlayer() == Monster.Broodwar.self() ? Color.Green : Color.Red);
+            Broodwar.drawLineMap(p, new Position(p.getX() + (int) velocityX, p.getY() + (int) velocityY), b.getPlayer() == Broodwar.self() ? Color.Green : Color.Red);
             if (b.getType() != null) {
-                Monster.Broodwar.drawTextMap(p, (b.getPlayer() == Monster.Broodwar.self() ? "" + teal : "" + red) + bulletTypeName);
+                Broodwar.drawTextMap(p, (b.getPlayer() == Broodwar.self() ? "" + teal : "" + red) + bulletTypeName);
             }
         }
     }

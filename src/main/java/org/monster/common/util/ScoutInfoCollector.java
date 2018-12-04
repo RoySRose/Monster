@@ -60,7 +60,7 @@ public class ScoutInfoCollector implements InfoCollector {
 
         Vector<Position> regionVertices = new Vector<>();
 
-        final Position basePosition = Monster.Broodwar.self().getStartLocation().toPosition();
+        final Position basePosition = BaseUtils.myMainBase().getPosition();
         final Vector<TilePosition> closestTobase = MapTools.Instance().getClosestTilesTo(basePosition);
         Set<Position> unsortedVertices = new HashSet<Position>();
 
@@ -75,19 +75,19 @@ public class ScoutInfoCollector implements InfoCollector {
             // 2) in all 4 directions there's a buildable tile
             boolean surrounded = true;
             if (BWTA.getRegion(new TilePosition(tp.getX() + 1, tp.getY())) != enemyRegion
-                    || !Monster.Broodwar.isBuildable(new TilePosition(tp.getX() + 1, tp.getY()))
+                    || !StaticMapUtils.isBuildable(new TilePosition(tp.getX() + 1, tp.getY()))
                     || BWTA.getRegion(new TilePosition(tp.getX(), tp.getY() + 1)) != enemyRegion
-                    || !Monster.Broodwar.isBuildable(new TilePosition(tp.getX(), tp.getY() + 1))
+                    || !StaticMapUtils.isBuildable(new TilePosition(tp.getX(), tp.getY() + 1))
                     || BWTA.getRegion(new TilePosition(tp.getX() - 1, tp.getY())) != enemyRegion
-                    || !Monster.Broodwar.isBuildable(new TilePosition(tp.getX() - 1, tp.getY()))
+                    || !StaticMapUtils.isBuildable(new TilePosition(tp.getX() - 1, tp.getY()))
                     || BWTA.getRegion(new TilePosition(tp.getX(), tp.getY() - 1)) != enemyRegion
-                    || !Monster.Broodwar.isBuildable(new TilePosition(tp.getX(), tp.getY() - 1))) {
+                    || !StaticMapUtils.isBuildable(new TilePosition(tp.getX(), tp.getY() - 1))) {
                 surrounded = false;
             }
 
             // push the tiles that aren't surrounded
             // Region의 가장자리 타일들만 추가한다
-            if (!surrounded && Monster.Broodwar.isBuildable(tp)) {
+            if (!surrounded && StaticMapUtils.isBuildable(tp)) {
                 unsortedVertices.add(new Position(tp.toPosition().getX() + 16, tp.toPosition().getY() + 16));
             }
         }

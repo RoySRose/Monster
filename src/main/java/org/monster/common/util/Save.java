@@ -195,7 +195,7 @@
 //            return;
 //        }
 //        // 저그는 입막 안하므로 체크 안함
-//        if (Monster.Broodwar.self().getRace() == Race.Zerg) {
+//        if (PlayerUtils.myRace() == Race.Zerg) {
 //            blockingEnterance = false;
 //            return;
 //        }

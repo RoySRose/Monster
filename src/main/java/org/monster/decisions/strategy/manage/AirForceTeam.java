@@ -5,9 +5,11 @@ import bwapi.TechType;
 import bwapi.Unit;
 import org.monster.board.StrategyBoard;
 import org.monster.common.UnitInfo;
+import org.monster.common.util.UnitTypeUtils;
 import org.monster.common.util.TimeUtils;
 import org.monster.common.util.UnitUtils;
 import org.monster.bootstrap.Monster;
+import org.monster.common.util.UpgradeUtils;
 import org.monster.micro.constant.MicroConfig;
 
 import java.util.HashMap;
@@ -169,7 +171,7 @@ public class AirForceTeam {
             }
 
             Position nextPosition = AirForceManager.Instance().getTargetPositions().get(currentTargetIndex);
-            Set<UnitInfo> enemyDefTowerList = UnitUtils.getCompleteEnemyInfosInRadiusForAir(nextPosition, 20, UnitUtils.enemyAirDefenseUnitType());
+            Set<UnitInfo> enemyDefTowerList = UnitUtils.getCompleteEnemyInfosInRadiusForAir(nextPosition, 20, UnitTypeUtils.enemyAirDefenseUnitType());
             foundCount = !enemyDefTowerList.isEmpty() ? foundCount - 1 : 0;
         }
     }
@@ -183,7 +185,7 @@ public class AirForceTeam {
     }
 
     public boolean cloakable() {
-        if (!Monster.Broodwar.self().hasResearched(TechType.Cloaking_Field)) {
+        if (!UpgradeUtils.selfISResearched(TechType.Cloaking_Field)) {
             return false;
         }
         if (cloakingMode) {

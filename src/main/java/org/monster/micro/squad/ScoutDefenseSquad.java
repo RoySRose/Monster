@@ -45,7 +45,7 @@ public class ScoutDefenseSquad extends Squad {
 
         List<Unit> enemyUnitList = new ArrayList<>(); // 메인베이스 지역 내의 시야에 있는 적 리스트
         for (UnitInfo eui : euiList) {
-            Unit enemyUnit = UnitUtils.unitInSight(eui);
+            Unit enemyUnit = UnitUtils.enemyUnitInSight(eui);
             if (enemyUnit != null) {
                 enemyUnitList.add(enemyUnit);
             }

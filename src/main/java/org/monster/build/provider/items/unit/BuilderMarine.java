@@ -36,7 +36,7 @@ public class BuilderMarine extends DefaultBuildableItem {
             return false;
         }
 
-        int nowMarine = Monster.Broodwar.self().completedUnitCount(UnitType.Terran_Marine);
+        int nowMarine = UnitUtils.getCompletedUnitCount(UnitType.Terran_Marine);
 
 //    	마린이 2마리가 생산된 상태에서 팩토리가 없다면 팩토리 먼저
         if (nowMarine == 2 && UnitUtils.getUnitCount(CommonCode.UnitFindStatus.ALL_AND_CONSTRUCTION_QUEUE, UnitType.Terran_Factory) == 0) {

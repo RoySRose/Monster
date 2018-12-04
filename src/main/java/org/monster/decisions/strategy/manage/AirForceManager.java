@@ -9,12 +9,7 @@ import bwta.BaseLocation;
 import org.monster.board.StrategyBoard;
 import org.monster.common.UnitInfo;
 import org.monster.common.constant.CommonCode;
-import org.monster.common.util.BaseUtils;
-import org.monster.common.util.MicroUtils;
-import org.monster.common.util.PlayerUtils;
-import org.monster.common.util.PositionUtils;
-import org.monster.common.util.TimeUtils;
-import org.monster.common.util.UnitUtils;
+import org.monster.common.util.*;
 import org.monster.bootstrap.Monster;
 import org.monster.micro.compute.WraithFightPredictor;
 import org.monster.micro.constant.MicroConfig;
@@ -417,8 +412,8 @@ public class AirForceManager {
     }
 
     private void setRetreatPositionForUseMapSetting() {
-        int width = Monster.Broodwar.mapWidth() * 32 - 1;
-        int height = Monster.Broodwar.mapHeight() * 32 - 1;
+        int width = StaticMapUtils.mapWidth() * 32 - 1;
+        int height = StaticMapUtils.mapHeight() * 32 - 1;
 
         List<Position> positions = new ArrayList<>();
         positions.add(new Position(0, 0));
@@ -451,7 +446,7 @@ public class AirForceManager {
                 continue;
             }
 
-            Set<UnitInfo> enemyDefTowerList = UnitUtils.getCompleteEnemyInfosInRadiusForAir(targetPosition, 20, UnitUtils.enemyAirDefenseUnitType());
+            Set<UnitInfo> enemyDefTowerList = UnitUtils.getCompleteEnemyInfosInRadiusForAir(targetPosition, 20, UnitTypeUtils.enemyAirDefenseUnitType());
             if (enemyDefTowerList.isEmpty()) {
                 continue;
             }
@@ -613,7 +608,7 @@ public class AirForceManager {
         List<Integer> invalidUnitIds = new ArrayList<>();
 
         for (Integer airunitId : airForceTeamMap.keySet()) {
-            Unit airunit = Monster.Broodwar.getUnit(airunitId);
+            Unit airunit = UnitUtils.enemyUnitInSight(airunitId);
             if (!UnitUtils.isCompleteValidUnit(airunit)) {
                 invalidUnitIds.add(airunitId);
             } else if (airForceTeamMap.get(airunitId).leaderUnit == null) {
@@ -686,7 +681,7 @@ public class AirForceManager {
         List<Integer> uncloakedAirunitList = new ArrayList<>(); // 언클락 유닛
 
         for (Integer airunitId : airForceTeamMap.keySet()) {
-            Unit airunit = Monster.Broodwar.getUnit(airunitId);
+            Unit airunit = UnitUtils.enemyUnitInSight(airunitId);
             if (airunit.getHitPoints() <= 50) { // repair hit points
                 AirForceTeam repairTeam = airForceTeamMap.get(airunitId);
                 if (repairTeam == null || repairTeam.repairCenter == null) {
@@ -710,7 +705,7 @@ public class AirForceManager {
 
         // create separated team for no energy airunit
         for (Integer airunitId : uncloakedAirunitList) {
-            Unit airunit = Monster.Broodwar.getUnit(airunitId);
+            Unit airunit = UnitUtils.enemyUnitInSight(airunitId);
             AirForceTeam uncloackedForceTeam = new AirForceTeam(airunit);
             uncloackedForceTeam.memberList.add(airunit);
 
@@ -719,7 +714,7 @@ public class AirForceManager {
 
         // create repair airforce team
         for (Integer airunitId : needRepairAirunitList) {
-            Unit airunit = Monster.Broodwar.getUnit(airunitId);
+            Unit airunit = UnitUtils.enemyUnitInSight(airunitId);
             AirForceTeam needRepairTeam = new AirForceTeam(airunit);
             needRepairTeam.memberList.add(airunit);
             needRepairTeam.repairCenter = airunitRepairCenterMap.get(airunit.getID());

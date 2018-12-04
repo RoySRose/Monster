@@ -5,10 +5,7 @@ import bwapi.Unit;
 import bwta.BaseLocation;
 import org.monster.common.UnitInfo;
 import org.monster.common.constant.CommonCode;
-import org.monster.common.util.BaseLocationUtils;
-import org.monster.common.util.BaseUtils;
-import org.monster.common.util.TimeUtils;
-import org.monster.common.util.UnitUtils;
+import org.monster.common.util.*;
 import org.monster.common.util.internal.IConditions;
 import org.monster.decisions.strategy.TravelSite;
 import org.monster.bootstrap.Monster;
@@ -123,7 +120,7 @@ public class VultureTravelManager {
     private void updateVisitFrame() {
         // 시야가 밝혀졌다면 visitFrame을 계속 업데이트 한다.
         for (TravelSite travelSite : travelSites) {
-            if (Monster.Broodwar.isVisible(travelSite.baseLocation.getTilePosition())) {
+            if (PlayerUtils.isVisible(travelSite.baseLocation.getTilePosition())) {
                 travelSite.visitFrame = TimeUtils.getFrame();
             }
         }
@@ -138,7 +135,7 @@ public class VultureTravelManager {
 
         for (Integer vultureId : checkerSiteMap2.keySet()) {
             // 유효하지 않은 벌처
-            Unit checker = Monster.Broodwar.getUnit(vultureId);
+            Unit checker = UnitUtils.enemyUnitInSight(vultureId);
             if (!UnitUtils.isCompleteValidUnit(checker)) {
                 invalidList.add(checker.getID());
                 continue;
@@ -195,7 +192,7 @@ public class VultureTravelManager {
     private void refreshRetiredCheckers() {
         List<Integer> removeList = new ArrayList<>();
         for (Integer checkerId : checkerRetiredTimeMap.keySet()) {
-            Unit checker = Monster.Broodwar.getUnit(checkerId);
+            Unit checker = UnitUtils.enemyUnitInSight(checkerId);
             if (!UnitUtils.isCompleteValidUnit(checker)) {
                 removeList.add(checkerId);
             } else {

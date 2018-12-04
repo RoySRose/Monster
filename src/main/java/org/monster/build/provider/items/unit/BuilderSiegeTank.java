@@ -22,11 +22,11 @@ public class BuilderSiegeTank extends DefaultBuildableItem {
 
     public final boolean buildCondition() {
 
-        if (Monster.Broodwar.self().completedUnitCount(UnitType.Terran_Factory) == 0) {
+        if (UnitUtils.getCompletedUnitCount(UnitType.Terran_Factory) == 0) {
             return false;
         }
 
-        if (Monster.Broodwar.self().completedUnitCount(UnitType.Terran_Machine_Shop) == 0) {
+        if (UnitUtils.getCompletedUnitCount(UnitType.Terran_Machine_Shop) == 0) {
             return false;
         }
 

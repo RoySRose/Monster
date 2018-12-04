@@ -22,10 +22,11 @@ import bwapi.Unit;
 import bwta.BWTA;
 import org.monster.debugger.BigWatch;
 import org.monster.debugger.PreBotUXManager;
+import org.slf4j.MDC;
 
 public class Monster extends DefaultBWListener {
 
-    public static Game Broodwar;
+    private static Game Broodwar;
     private Mirror mirror = new Mirror();
     private GameCommander gameCommander;
 
@@ -95,13 +96,12 @@ public class Monster extends DefaultBWListener {
 
     @Override
     public void onFrame() {
+        MDC.put("FRAME", Integer.toString(Broodwar.getFrameCount()));
+
         if (Broodwar.isReplay()) {
             return;
         }
-
-
         if (!Broodwar.isPaused()) {
-
             try {
                 gameCommander.onFrame();
             } catch (Exception e) {

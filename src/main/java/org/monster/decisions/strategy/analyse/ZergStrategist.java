@@ -210,7 +210,7 @@ public class ZergStrategist extends Strategist {
         if (StrategyBoard.wraithCount > 0 || StrategyBoard.valkyrieCount > 0) {
             return false;
         }
-        if (Monster.Broodwar.self().completedUnitCount(UnitType.Terran_Starport) > 0) {
+        if (UnitUtils.getCompletedUnitCount(UnitType.Terran_Starport) > 0) {
             return true;
         }
         warithActivatedFrame = TimeUtils.elapsedFrames();

@@ -24,11 +24,11 @@ public class BuilderWraith extends DefaultBuildableItem {
 
         int maxWraithCnt = StrategyBoard.wraithCount;
 
-        if (Monster.Broodwar.self().completedUnitCount(UnitType.Terran_Starport) == 0) {
+        if (UnitUtils.getCompletedUnitCount(UnitType.Terran_Starport) == 0) {
             return false;
         }
 
-        if (Monster.Broodwar.self().completedUnitCount(UnitType.Terran_Wraith) < maxWraithCnt) {
+        if (UnitUtils.getCompletedUnitCount(UnitType.Terran_Wraith) < maxWraithCnt) {
             // if(Prebot.Broodwar.self().deadUnitCount(UnitType.Terran_Wraith) < 5)
             if (BuildManager.Instance().buildQueue.getItemCount(UnitType.Terran_Wraith, null) == 0) {
                 if (!UnitUtils.myCompleteUnitDiscovered(UnitType.Terran_Wraith)) {

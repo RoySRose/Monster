@@ -19,6 +19,7 @@ public class UnitInfo {
     private boolean completed;
     private int updateFrame;
     private int remainingBuildTime;
+    private boolean visible;
 
     public UnitInfo() {
         unitID = 0;
@@ -29,6 +30,7 @@ public class UnitInfo {
         lastPosition = Position.None;
         completed = false;
         updateFrame = 0;
+        visible = false;
     }
 
     public UnitInfo(Unit unit) {
@@ -42,6 +44,8 @@ public class UnitInfo {
         this.setUnitType(unit.getType());
         this.setCompleted(unit.isCompleted());
         this.setRemainingBuildTime(unit.getRemainingBuildTime());
+        this.setVisible(unit.isVisible());
+        this.setFlying(unit.isFlying());
     }
 
     public UnitType getType() {
@@ -108,6 +112,12 @@ public class UnitInfo {
         return unit;
     }
 
+    public boolean isVisible(){return visible;}
+
+    private void setVisible(boolean visible) {
+        this.visible = visible;
+    }
+
     public void setUnit(Unit unit) {
         this.unit = unit;
         this.setUpdateFrame(TimeUtils.getFrame());
@@ -119,6 +129,7 @@ public class UnitInfo {
         this.setUnitType(unit.getType());
         this.setCompleted(unit.isCompleted());
         this.setRemainingBuildTime(unit.getRemainingBuildTime());
+        this.setVisible(unit.isVisible());
         this.setFlying(unit.isFlying());
     }
 
@@ -126,7 +137,7 @@ public class UnitInfo {
         return isFlying;
     }
 
-    private void setFlying(boolean isflying) {
+    private void setFlying(boolean isFlying) {
         this.isFlying = isFlying;
     }
 

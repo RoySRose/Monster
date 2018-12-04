@@ -143,7 +143,7 @@ public class TankPositionManager {
     private int getPositionReserveCountInRadius(Position position, int radius) {
         int count = 0;
         for (PositionReserveInfo positionReserveInfo : siegeModeReservedMap.values()) {
-            Unit tank = Monster.Broodwar.getUnit(positionReserveInfo.unitId);
+            Unit tank = UnitUtils.enemyUnitInSight(positionReserveInfo.unitId);
             if (tank.isSieged()) {
                 continue;
             }
@@ -178,7 +178,7 @@ public class TankPositionManager {
         }
 
 
-        List<Unit> unitList = Monster.Broodwar.getUnitsOnTile(position.getX(), position.getY());
+        List<Unit> unitList = UnitUtils.getUnitsOnTile(position.toTilePosition());
         for (Unit unit : unitList) {
             if (unit.getType().isBuilding()) {
                 return false;

@@ -44,7 +44,7 @@ public class PositionUtils {
         if (!isValidPosition(position)) {
             return false;
         }
-        return BWTA.getRegion(position) != null && Monster.Broodwar.isWalkable(position.getX() / 8, position.getY() / 8);
+        return BWTA.getRegion(position) != null && StaticMapUtils.isWalkable(position.getX() / 8, position.getY() / 8);
     }
 
     /// unit이 이동하기에 유효한 position이면 true
@@ -55,7 +55,7 @@ public class PositionUtils {
 
     /// 두 position 사이를 지상으로 이동할 수 있으면 true
     public static boolean isValidGroundPath(Position from, Position to) {
-        return Monster.Broodwar.hasPath(from, to) && isConnected(from, to);
+        return StaticMapUtils.hasPath(from, to) && isConnected(from, to);
     }
 
     /// 두 position이 같은 region이거나, 가까운 choke에서 서로 연결된 region이면 true
@@ -201,11 +201,11 @@ public class PositionUtils {
 
     @Deprecated
     public static Position myReadyToPosition() {
-        return PositionInfoCollector.Instance().readyToAttackPosition.get(Monster.Broodwar.self());
+        return PositionInfoCollector.Instance().readyToAttackPosition.get(PlayerUtils.myPlayer());
     }
 
     @Deprecated
     public static Position enemyReadyToPosition() {
-        return PositionInfoCollector.Instance().readyToAttackPosition.get(Monster.Broodwar.enemy());
+        return PositionInfoCollector.Instance().readyToAttackPosition.get(PlayerUtils.enemyPlayer());
     }
 }

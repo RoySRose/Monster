@@ -29,6 +29,7 @@ public class InfoCollectorManager extends GameManager {
         //infoCollectors.add(MapInfoCollector.Instance());
         infoCollectors.add(UpgradeInfoCollector.Instance());
         infoCollectors.add(ScoutInfoCollector.Instance());
+        infoCollectors.add(DrawDebugger.Instance());
 
         for (InfoCollector infoCollector : infoCollectors) {
             infoCollector.onStart(Broodwar);

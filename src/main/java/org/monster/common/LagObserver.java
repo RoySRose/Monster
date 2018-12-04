@@ -1,6 +1,7 @@
 package org.monster.common;
 
 
+import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.TimeUtils;
 import org.monster.bootstrap.Monster;
 
@@ -120,7 +121,7 @@ public class LagObserver {
             }
             managerLagLevel = groupsize / MANAGER_ROTATION_SIZE + 1; // manager size = 9
 
-            if (Monster.Broodwar.self().supplyUsed() > 300) {
+            if (PlayerUtils.supplyUsedSelf() > 300) {
                 groupMinSize = MANAGER_ROTATION_SIZE;
                 if (groupsize < groupMinSize) {
                     groupsize = MANAGER_ROTATION_SIZE;

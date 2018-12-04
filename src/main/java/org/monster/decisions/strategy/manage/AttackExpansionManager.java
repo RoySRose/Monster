@@ -7,7 +7,7 @@ import org.monster.board.StrategyBoard;
 import org.monster.common.UnitInfo;
 import org.monster.common.constant.CommonCode;
 import org.monster.common.util.BaseUtils;
-import org.monster.common.util.InfoTypeUtils;
+import org.monster.common.util.UnitTypeUtils;
 import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.TimeUtils;
 import org.monster.common.util.UnitUtils;
@@ -18,6 +18,7 @@ import org.monster.worker.WorkerManager;
 
 import java.util.List;
 
+@Deprecated
 public class AttackExpansionManager {
 
     private static AttackExpansionManager instance = new AttackExpansionManager();
@@ -52,8 +53,8 @@ public class AttackExpansionManager {
         int killedcombatunit = getTotKilledCombatUnits();
         int deadCombatunit = myDeadCombatUnitSupplies();
 
-        int totworkerkilled = Monster.Broodwar.self().killedUnitCount(InfoTypeUtils.getWorkerType(PlayerUtils.enemyRace())) * 2;
-        int totworkerdead = Monster.Broodwar.self().deadUnitCount(UnitType.Terran_SCV) * 2;
+        int totworkerkilled = PlayerUtils.myPlayer().killedUnitCount(UnitTypeUtils.getWorkerType(PlayerUtils.enemyRace())) * 2;
+        int totworkerdead = PlayerUtils.myPlayer().deadUnitCount(UnitType.Terran_SCV) * 2;
 
         if (TimeUtils.beforeTime(15, 0)) { // 약 시작 ~ 15분까지
             unitPoint += (totworkerkilled - totworkerdead) * (-TimeUtils.getFrame() / 40000.0 * 3.0 + 3.0);
@@ -149,17 +150,17 @@ public class AttackExpansionManager {
                 plus = 2;
             }
 
-            if (unitPoint > 10 && Monster.Broodwar.self().completedUnitCount(UnitType.Terran_Siege_Tank_Tank_Mode)
-                    + Monster.Broodwar.self().completedUnitCount(UnitType.Terran_Siege_Tank_Siege_Mode) >= 4 + plus) {
+            if (unitPoint > 10 && UnitUtils.getCompletedUnitCount(UnitType.Terran_Siege_Tank_Tank_Mode)
+                    + UnitUtils.getCompletedUnitCount(UnitType.Terran_Siege_Tank_Siege_Mode) >= 4 + plus) {
                 isAttackMode = true;
-            } else if (unitPoint > 0 && Monster.Broodwar.self().completedUnitCount(UnitType.Terran_Siege_Tank_Tank_Mode)
-                    + Monster.Broodwar.self().completedUnitCount(UnitType.Terran_Siege_Tank_Siege_Mode) >= 5 + plus) {
+            } else if (unitPoint > 0 && UnitUtils.getCompletedUnitCount(UnitType.Terran_Siege_Tank_Tank_Mode)
+                    + UnitUtils.getCompletedUnitCount(UnitType.Terran_Siege_Tank_Siege_Mode) >= 5 + plus) {
                 isAttackMode = true;
-            } else if (Monster.Broodwar.self().completedUnitCount(UnitType.Terran_Siege_Tank_Tank_Mode)
-                    + Monster.Broodwar.self().completedUnitCount(UnitType.Terran_Siege_Tank_Siege_Mode) >= 6 + plus) {
+            } else if (UnitUtils.getCompletedUnitCount(UnitType.Terran_Siege_Tank_Tank_Mode)
+                    + UnitUtils.getCompletedUnitCount(UnitType.Terran_Siege_Tank_Siege_Mode) >= 6 + plus) {
                 isAttackMode = true;
             }
-            int completeCommandCenterCount = Monster.Broodwar.self().completedUnitCount(UnitType.Terran_Command_Center);
+            int completeCommandCenterCount = UnitUtils.getCompletedUnitCount(UnitType.Terran_Command_Center);
             if (isAttackMode && unitPoint < 0) {
                 if (completeCommandCenterCount == 1 && myFactoryUnitPoint + unitPoint < 0) {
                     isAttackMode = false;
@@ -174,7 +175,7 @@ public class AttackExpansionManager {
             }
 
             pushSiegeLine = false;
-            if ((myFactoryUnitPoint > 250 - completeCommandCenterCount * 10 || Monster.Broodwar.self().supplyUsed() > 392)) {
+            if ((myFactoryUnitPoint > 250 - completeCommandCenterCount * 10 || PlayerUtils.supplyUsedSelf() > 392)) {
                 pushSiegeLine = true;
                 combatStartCase = 1;
             }
@@ -193,7 +194,7 @@ public class AttackExpansionManager {
 
         } else {
             // 공통 예외 상황
-            if ((myFactoryUnitPoint > 170 || Monster.Broodwar.self().supplyUsed() > 392) && !isAttackMode) {// 팩토리 유닛 130 이상 또는 서플 196 이상
+            if ((myFactoryUnitPoint > 170 || PlayerUtils.supplyUsedSelf() > 392) && !isAttackMode) {// 팩토리 유닛 130 이상 또는 서플 196 이상
                 isAttackMode = true;
                 combatStartCase = 1;
             }
@@ -202,7 +203,7 @@ public class AttackExpansionManager {
 
                 if (PlayerUtils.enemyRace() == Race.Zerg
                         && UnitUtils.getEnemyUnitCount(UnitType.Zerg_Mutalisk) > 6) {
-                    if (UnitUtils.getEnemyUnitCount(UnitType.Zerg_Mutalisk) < Monster.Broodwar.self()
+                    if (UnitUtils.getEnemyUnitCount(UnitType.Zerg_Mutalisk) < PlayerUtils.myPlayer()
                             .completedUnitCount(UnitType.Terran_Goliath)) {
                         isAttackMode = true;
                     }
@@ -214,7 +215,7 @@ public class AttackExpansionManager {
             }
 
             if (!isAttackMode && StrategyBoard.currentStrategy.buildTimeMap.featureEnabled(EnemyStrategyOptions.BuildTimeMap.Feature.QUICK_ATTACK)
-                    && Monster.Broodwar.self().completedUnitCount(UnitType.Terran_Siege_Tank_Tank_Mode) + Monster.Broodwar.self().completedUnitCount(UnitType.Terran_Siege_Tank_Siege_Mode) >= 1) {
+                    && UnitUtils.getCompletedUnitCount(UnitType.Terran_Siege_Tank_Tank_Mode) + UnitUtils.getCompletedUnitCount(UnitType.Terran_Siege_Tank_Siege_Mode) >= 1) {
                 isAttackMode = true;
                 fastAttack = true;
                 combatStartCase = 5;
@@ -232,7 +233,7 @@ public class AttackExpansionManager {
 
                     if (PlayerUtils.enemyRace() == Race.Zerg
                             && UnitUtils.getEnemyUnitCount(UnitType.Zerg_Mutalisk) > 6) {
-                        if (UnitUtils.getEnemyUnitCount(UnitType.Zerg_Mutalisk) > Monster.Broodwar.self()
+                        if (UnitUtils.getEnemyUnitCount(UnitType.Zerg_Mutalisk) > PlayerUtils.myPlayer()
                                 .completedUnitCount(UnitType.Terran_Goliath)) {
                             isAttackMode = false;
                         }
@@ -258,9 +259,9 @@ public class AttackExpansionManager {
                 if (PlayerUtils.enemyRace() == Race.Protoss) {
 
                     if (UnitUtils.enemyUnitDiscovered(UnitType.Protoss_Dark_Templar)) {
-                        if (Monster.Broodwar.self().completedUnitCount(UnitType.Terran_Science_Vessel) == 0
+                        if (UnitUtils.getCompletedUnitCount(UnitType.Terran_Science_Vessel) == 0
                                 && UnitUtils.availableScanningCount() == 0) {
-                            Monster.Broodwar.printf("dark and no comsat or vessel");
+                            PlayerUtils.printf("dark and no comsat or vessel");
                             isAttackMode = false;
                         }
                     }
@@ -452,12 +453,12 @@ public class AttackExpansionManager {
 
     private int myDeadCombatUnitSupplies() {
 
-        int totmarine = Monster.Broodwar.self().deadUnitCount(UnitType.Terran_Marine);
-        int tottank = Monster.Broodwar.self().deadUnitCount(UnitType.Terran_Siege_Tank_Siege_Mode) + Monster.Broodwar.self().deadUnitCount(UnitType.Terran_Siege_Tank_Siege_Mode);
-        int totgoliath = Monster.Broodwar.self().deadUnitCount(UnitType.Terran_Goliath);
-        int totvulture = Monster.Broodwar.self().deadUnitCount(UnitType.Terran_Vulture);
-        int totwraith = Monster.Broodwar.self().deadUnitCount(UnitType.Terran_Wraith);
-        int totvessel = Monster.Broodwar.self().deadUnitCount(UnitType.Terran_Science_Vessel);
+        int totmarine = PlayerUtils.myPlayer().deadUnitCount(UnitType.Terran_Marine);
+        int tottank = PlayerUtils.myPlayer().deadUnitCount(UnitType.Terran_Siege_Tank_Siege_Mode) + PlayerUtils.myPlayer().deadUnitCount(UnitType.Terran_Siege_Tank_Siege_Mode);
+        int totgoliath = PlayerUtils.myPlayer().deadUnitCount(UnitType.Terran_Goliath);
+        int totvulture = PlayerUtils.myPlayer().deadUnitCount(UnitType.Terran_Vulture);
+        int totwraith = PlayerUtils.myPlayer().deadUnitCount(UnitType.Terran_Wraith);
+        int totvessel = PlayerUtils.myPlayer().deadUnitCount(UnitType.Terran_Science_Vessel);
 
         int result = (tottank + totgoliath + totvulture + totwraith + totvessel) * 2 + totmarine;
         return result * 2;// 스타에서는 두배
@@ -468,13 +469,13 @@ public class AttackExpansionManager {
         if (PlayerUtils.enemyRace() == Race.Terran) {
             int totbio = 0;
 
-            int tottank = Monster.Broodwar.self().deadUnitCount(UnitType.Terran_Siege_Tank_Siege_Mode) + Monster.Broodwar.self().deadUnitCount(UnitType.Terran_Siege_Tank_Siege_Mode);
-            int totgoliath = Monster.Broodwar.self().deadUnitCount(UnitType.Terran_Goliath);
-            int totvulture = Monster.Broodwar.self().deadUnitCount(UnitType.Terran_Vulture);
-            int totwraith = Monster.Broodwar.self().deadUnitCount(UnitType.Terran_Wraith);
-            int totvessel = Monster.Broodwar.self().deadUnitCount(UnitType.Terran_Science_Vessel);
-            totbio = Monster.Broodwar.self().killedUnitCount(UnitType.Terran_Marine) + Monster.Broodwar.self().killedUnitCount(UnitType.Terran_Firebat)
-                    + Monster.Broodwar.self().killedUnitCount(UnitType.Terran_Medic);
+            int tottank = PlayerUtils.myPlayer().deadUnitCount(UnitType.Terran_Siege_Tank_Siege_Mode) + PlayerUtils.myPlayer().deadUnitCount(UnitType.Terran_Siege_Tank_Siege_Mode);
+            int totgoliath = PlayerUtils.myPlayer().deadUnitCount(UnitType.Terran_Goliath);
+            int totvulture = PlayerUtils.myPlayer().deadUnitCount(UnitType.Terran_Vulture);
+            int totwraith = PlayerUtils.myPlayer().deadUnitCount(UnitType.Terran_Wraith);
+            int totvessel = PlayerUtils.myPlayer().deadUnitCount(UnitType.Terran_Science_Vessel);
+            totbio = PlayerUtils.myPlayer().killedUnitCount(UnitType.Terran_Marine) + PlayerUtils.myPlayer().killedUnitCount(UnitType.Terran_Firebat)
+                    + PlayerUtils.myPlayer().killedUnitCount(UnitType.Terran_Medic);
 
             int res = tottank + totgoliath + totvulture + totwraith + totvessel;
             res = res * 2 + totbio;
@@ -489,30 +490,30 @@ public class AttackExpansionManager {
             int totoverload = 0;
             int totlurker = 0;
 
-            // tot = Monster.Broodwar.self().killedUnitCount(UnitType.AllUnits);
-            totzerling = Monster.Broodwar.self().killedUnitCount(UnitType.Zerg_Zergling);
-            tothydra = Monster.Broodwar.self().killedUnitCount(UnitType.Zerg_Hydralisk);
-            totlurker = Monster.Broodwar.self().killedUnitCount(UnitType.Zerg_Lurker) + Monster.Broodwar.self().killedUnitCount(UnitType.Zerg_Lurker_Egg);
-            totmutal = Monster.Broodwar.self().killedUnitCount(UnitType.Zerg_Mutalisk);
-            totoverload = Monster.Broodwar.self().killedUnitCount(UnitType.Zerg_Overlord);
-            int totguardian = Monster.Broodwar.self().killedUnitCount(UnitType.Zerg_Guardian);
-            int totultra = Monster.Broodwar.self().killedUnitCount(UnitType.Zerg_Ultralisk);
-            int totsunken = Monster.Broodwar.self().killedUnitCount(UnitType.Zerg_Sunken_Colony);
+            // tot = PlayerUtils.myPlayer().killedUnitCount(UnitType.AllUnits);
+            totzerling = PlayerUtils.myPlayer().killedUnitCount(UnitType.Zerg_Zergling);
+            tothydra = PlayerUtils.myPlayer().killedUnitCount(UnitType.Zerg_Hydralisk);
+            totlurker = PlayerUtils.myPlayer().killedUnitCount(UnitType.Zerg_Lurker) + PlayerUtils.myPlayer().killedUnitCount(UnitType.Zerg_Lurker_Egg);
+            totmutal = PlayerUtils.myPlayer().killedUnitCount(UnitType.Zerg_Mutalisk);
+            totoverload = PlayerUtils.myPlayer().killedUnitCount(UnitType.Zerg_Overlord);
+            int totguardian = PlayerUtils.myPlayer().killedUnitCount(UnitType.Zerg_Guardian);
+            int totultra = PlayerUtils.myPlayer().killedUnitCount(UnitType.Zerg_Ultralisk);
+            int totsunken = PlayerUtils.myPlayer().killedUnitCount(UnitType.Zerg_Sunken_Colony);
 
             int res = totzerling + (totsunken * 2) + (tothydra * 2) + (totmutal * 4) + (totoverload * 3) + (totlurker * 5) + (totguardian * 8) + (totultra * 10);
             return res; // 저그는 저글링 때문에 이미 2배 함
 
         } else if (PlayerUtils.enemyRace() == Race.Protoss) {
 
-            // tot = Monster.Broodwar.self().killedUnitCount();
+            // tot = PlayerUtils.myPlayer().killedUnitCount();
 
-            int totzealot = Monster.Broodwar.self().killedUnitCount(UnitType.Protoss_Zealot);
-            int totdragoon = Monster.Broodwar.self().killedUnitCount(UnitType.Protoss_Dragoon);
-            int totarchon = Monster.Broodwar.self().killedUnitCount(UnitType.Protoss_Archon);
-            int totphoto = Monster.Broodwar.self().killedUnitCount(UnitType.Protoss_Photon_Cannon);
-            int tothigh = Monster.Broodwar.self().killedUnitCount(UnitType.Protoss_High_Templar);
-            int totdark = Monster.Broodwar.self().killedUnitCount(UnitType.Protoss_Dark_Templar);
-            int totcarrier = Monster.Broodwar.self().killedUnitCount(UnitType.Protoss_Carrier);
+            int totzealot = PlayerUtils.myPlayer().killedUnitCount(UnitType.Protoss_Zealot);
+            int totdragoon = PlayerUtils.myPlayer().killedUnitCount(UnitType.Protoss_Dragoon);
+            int totarchon = PlayerUtils.myPlayer().killedUnitCount(UnitType.Protoss_Archon);
+            int totphoto = PlayerUtils.myPlayer().killedUnitCount(UnitType.Protoss_Photon_Cannon);
+            int tothigh = PlayerUtils.myPlayer().killedUnitCount(UnitType.Protoss_High_Templar);
+            int totdark = PlayerUtils.myPlayer().killedUnitCount(UnitType.Protoss_Dark_Templar);
+            int totcarrier = PlayerUtils.myPlayer().killedUnitCount(UnitType.Protoss_Carrier);
 
             int res = (totzealot + totdragoon + totphoto + tothigh + totdark) * 2 + totarchon * 4 + totcarrier * 8;
             return res * 2;
@@ -523,7 +524,7 @@ public class AttackExpansionManager {
     }
 
     private boolean enemyExspansioning() {
-        List<UnitInfo> enemyResourceDepot = UnitUtils.getEnemyUnitInfoList(CommonCode.EnemyUnitVisibleStatus.ALL, InfoTypeUtils.getBasicResourceDepotBuildingType(PlayerUtils.enemyRace()));
+        List<UnitInfo> enemyResourceDepot = UnitUtils.getEnemyUnitInfoList(CommonCode.EnemyUnitVisibleStatus.ALL, UnitTypeUtils.getBasicResourceDepotBuildingType(PlayerUtils.enemyRace()));
         for (UnitInfo enemyDepot : enemyResourceDepot) {
             if (enemyDepot.isCompleted()) {
                 return true;
@@ -552,7 +553,7 @@ public class AttackExpansionManager {
 
         int mineralsNearDepot = 0;
 
-        for (Unit unit : Monster.Broodwar.getAllUnits()) {
+        for (Unit unit : UnitUtils.getUnitList()) {
             if ((unit.getType() == UnitType.Resource_Mineral_Field) && unit.getDistance(depot) < 450 && unit.getResources() > 200) {
                 mineralsNearDepot++;
             }

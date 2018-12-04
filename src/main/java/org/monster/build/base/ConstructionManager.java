@@ -8,15 +8,10 @@ import bwapi.UnitType;
 import bwta.BWTA;
 import bwta.BaseLocation;
 import bwta.Region;
-import org.monster.common.LagObserver;
-import org.monster.common.util.CommandUtils;
-import org.monster.common.util.InfoTypeUtils;
-import org.monster.common.util.PlayerUtils;
-import org.monster.common.util.RegionUtils;
-import org.monster.common.util.TilePositionUtils;
-import org.monster.common.util.TimeUtils;
 import org.monster.bootstrap.GameManager;
 import org.monster.bootstrap.Monster;
+import org.monster.common.LagObserver;
+import org.monster.common.util.*;
 import org.monster.worker.WorkerManager;
 
 import java.util.HashSet;
@@ -348,7 +343,7 @@ public class ConstructionManager extends GameManager {
     /// 저그 및 프로토스 종족의 경우 건설 일꾼을 해제합니다
     public void checkForStartedConstruction() {
         // for each building unit which is being constructed
-        for (Unit buildingThatStartedConstruction : Monster.Broodwar.self().getUnits()) {
+        for (Unit buildingThatStartedConstruction : UnitUtils.getUnitList()) {
             // filter out units which aren't buildings under construction
             if (!buildingThatStartedConstruction.getType().isBuilding() || !buildingThatStartedConstruction.isBeingConstructed()) {
                 continue;
@@ -375,11 +370,11 @@ public class ConstructionManager extends GameManager {
 
                     // if we are zerg, make the buildingUnit null since it's morphed or destroyed
                     // Extractor 의 경우 destroyed 되고, 그외 건물의 경우 morphed 된다
-                    if (Monster.Broodwar.self().getRace() == Race.Zerg) {
+                    if (PlayerUtils.myRace() == Race.Zerg) {
                         b.setConstructionWorker(null);
                     }
                     // if we are protoss, give the worker back to worker manager
-                    else if (Monster.Broodwar.self().getRace() == Race.Protoss) {
+                    else if (PlayerUtils.myRace() == Race.Protoss) {
                         WorkerManager.Instance().setIdleWorker(b.getConstructionWorker());
                         b.setConstructionWorker(null);
                     }
@@ -404,11 +399,11 @@ public class ConstructionManager extends GameManager {
     /// 테란은 건설을 시작한 후, 건설 도중에 일꾼이 죽을 수 있습니다. 이 경우, 건물에 대해 다시 다른 SCV를 할당합니다<br>
     /// 참고로, 프로토스 / 저그는 건설을 시작하면 일꾼 포인터를 null 로 만들기 때문에 (constructionWorker = null) 건설 도중에 죽은 일꾼을 신경쓸 필요 없습니다
     public void checkForDeadTerranBuilders() {
-        if (Monster.Broodwar.self().getRace() != Race.Terran) {
+        if (PlayerUtils.myRace() != Race.Terran) {
             return;
         }
 
-        if (Monster.Broodwar.self().completedUnitCount(UnitType.Terran_SCV) <= 0) {
+        if (UnitUtils.getCompletedUnitCount(UnitType.Terran_SCV) <= 0) {
             return;
         }
 
@@ -459,7 +454,7 @@ public class ConstructionManager extends GameManager {
                 //System.out.println("Construction " + b.getType() + " completed at " + b.getFinalPosition().getX() + "," + b.getFinalPosition().getY());
 
                 // if we are terran, give the worker back to worker manager
-                if (Monster.Broodwar.self().getRace() == Race.Terran) {
+                if (PlayerUtils.myRace() == Race.Terran) {
                     WorkerManager.Instance().setIdleWorker(b.getConstructionWorker());
                 }
 
@@ -493,7 +488,7 @@ public class ConstructionManager extends GameManager {
                 }
 
                 // Refinery 건물의 경우, 건물 지을 장소를 찾을 수 없게 되었거나, 건물 지을 수 있을거라고 판단했는데 이미 Refinery 가 지어져있는 경우, dead lock
-                if (!isDeadlockCase && unitType == InfoTypeUtils.getRefineryBuildingType(PlayerUtils.myRace())) {
+                if (!isDeadlockCase && unitType == UnitTypeUtils.getRefineryBuildingType(PlayerUtils.myRace())) {
                     boolean hasAvailableGeyser = true;
 
                     TilePosition testLocation;
@@ -509,7 +504,7 @@ public class ConstructionManager extends GameManager {
                         hasAvailableGeyser = false;
                     } else {
                         // Refinery 를 지으려는 장소에 Refinery 가 이미 건설되어 있다면 dead lock
-                        for (Unit u : Monster.Broodwar.getUnitsOnTile(testLocation)) {
+                        for (Unit u : UnitUtils.getUnitsOnTile(testLocation)) {
                             if (u.getType().isRefinery() && u.exists()) {
                                 hasAvailableGeyser = false;
                                 break;
@@ -542,8 +537,8 @@ public class ConstructionManager extends GameManager {
                         if (requiredUnitType != UnitType.None) {
 
                             // 선행 건물 / 유닛이 존재하지 않고, 생산 중이지도 않고
-                            if (Monster.Broodwar.self().completedUnitCount(requiredUnitType) == 0
-                                    && Monster.Broodwar.self().incompleteUnitCount(requiredUnitType) == 0) {
+                            if (UnitUtils.getCompletedUnitCount(requiredUnitType) == 0
+                                    && UnitUtils.getIncompletedUnitCount(requiredUnitType) == 0) {
                                 // 선행 건물이 건설 예정이지도 않으면 dead lock
                                 if (requiredUnitType.isBuilding()) {
                                     if (ConstructionManager.Instance().getConstructionQueueItemCount(requiredUnitType, null) == 0) {
@@ -571,11 +566,11 @@ public class ConstructionManager extends GameManager {
     }
 
     public void checkConstructionBuildings() {
-        if (Monster.Broodwar.self().getRace() != Race.Terran) {
+        if (PlayerUtils.myRace() != Race.Terran) {
             return;
         }
 
-        for (Unit unit : Monster.Broodwar.self().getUnits()) {
+        for (Unit unit : UnitUtils.getUnitList()) {
             // 건설중인 건물의 경우 공격 받고 있고 에너지가 100밑이면 건설 취소
             if (!unit.getType().isBuilding()) {
                 continue;
@@ -616,7 +611,7 @@ public class ConstructionManager extends GameManager {
         // for each tile where the building will be built
         for (int x = 0; x < b.getType().tileWidth(); ++x) {
             for (int y = 0; y < b.getType().tileHeight(); ++y) {
-                if (!Monster.Broodwar.isExplored(tile.getX() + x, tile.getY() + y)) {
+                if (!StaticMapUtils.isExplored(tile.getX() + x, tile.getY() + y)) {
                     return false;
                 }
             }

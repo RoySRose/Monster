@@ -78,7 +78,7 @@ public class WraithFightPredictor {
         if (enemyPower == null) {
             return 0;
         }
-        Unit unitInSight = UnitUtils.unitInSight(eui);
+        Unit unitInSight = UnitUtils.enemyUnitInSight(eui);
         if (unitInSight != null) {
             double hitPointRate;
             if (unitInSight.isCloaked()) {

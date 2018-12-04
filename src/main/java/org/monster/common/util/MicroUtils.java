@@ -87,12 +87,12 @@ public class MicroUtils {
             if (!PositionUtils.isValidPosition(candiPosition)) {
                 continue;
             }
-            Set<UnitInfo> enemyDefTowerList = UnitUtils.getCompleteEnemyInfosInRadiusForAir(candiPosition, AirForceManager.AIR_FORCE_SAFE_DISTANCE, UnitUtils.enemyAirDefenseUnitType());
+            Set<UnitInfo> enemyDefTowerList = UnitUtils.getCompleteEnemyInfosInRadiusForAir(candiPosition, AirForceManager.AIR_FORCE_SAFE_DISTANCE, UnitTypeUtils.enemyAirDefenseUnitType());
             if (!enemyDefTowerList.isEmpty()) {
                 continue;
             }
             if (avoidEnemyUnit) {
-                Set<UnitInfo> enemyAirWeaponList = UnitUtils.getCompleteEnemyInfosInRadiusForAir(candiPosition, AirForceManager.AIR_FORCE_SAFE_DISTANCE2, UnitUtils.wraithKillerUnitType());
+                Set<UnitInfo> enemyAirWeaponList = UnitUtils.getCompleteEnemyInfosInRadiusForAir(candiPosition, AirForceManager.AIR_FORCE_SAFE_DISTANCE2, UnitTypeUtils.wraithKillerUnitType());
                 if (!enemyAirWeaponList.isEmpty()) {
                     continue;
                 }
@@ -119,13 +119,13 @@ public class MicroUtils {
             if (!PositionUtils.isValidPosition(candiPosition)) {
                 continue;
             }
-            Set<UnitInfo> enemyDefTowerList = UnitUtils.getCompleteEnemyInfosInRadiusForAir(candiPosition, AirForceManager.AIR_FORCE_SAFE_DISTANCE, UnitUtils.enemyAirDefenseUnitType());
+            Set<UnitInfo> enemyDefTowerList = UnitUtils.getCompleteEnemyInfosInRadiusForAir(candiPosition, AirForceManager.AIR_FORCE_SAFE_DISTANCE, UnitTypeUtils.enemyAirDefenseUnitType());
             if (enemyDefTowerList.isEmpty()) {
                 realMoveRadian = adjustedRadian;
                 break;
             }
             if (avoidEnemyUnit) {
-                Set<UnitInfo> enemyAirWeaponList = UnitUtils.getCompleteEnemyInfosInRadiusForAir(candiPosition, AirForceManager.AIR_FORCE_SAFE_DISTANCE2, UnitUtils.wraithKillerUnitType());
+                Set<UnitInfo> enemyAirWeaponList = UnitUtils.getCompleteEnemyInfosInRadiusForAir(candiPosition, AirForceManager.AIR_FORCE_SAFE_DISTANCE2, UnitTypeUtils.wraithKillerUnitType());
                 if (!enemyAirWeaponList.isEmpty()) {
                     continue;
                 }
@@ -166,8 +166,8 @@ public class MicroUtils {
         int risk = 0;
         List<Unit> unitsInRadius = UnitUtils.getUnitsInRadius(CommonCode.PlayerRange.ALL, movePosition, radius);
         for (Unit unit : unitsInRadius) {
-            if (unit.getPlayer() == Monster.Broodwar.enemy()) { // 적군인 경우
-                int damage = Monster.Broodwar.getDamageFrom(unit.getType(), myUnitType);
+            if (unit.getPlayer() == PlayerUtils.enemyPlayer()) { // 적군인 경우
+                int damage = PlayerUtils.getDamageFrom(unit.getType(), myUnitType);
                 if (damage > 0) {
                     if (unit.getType().isBuilding()) {
                         risk += 30;
@@ -176,7 +176,7 @@ public class MicroUtils {
                     }
                 }
 
-            } else if (unit.getPlayer() == Monster.Broodwar.self()) { // 아군인 경우, united값에 따라 좋은지 싫은지 판단을 다르게 한다.
+            } else if (unit.getPlayer() == PlayerUtils.myPlayer()) { // 아군인 경우, united값에 따라 좋은지 싫은지 판단을 다르게 한다.
                 if (unit.getType() == UnitType.Terran_Missile_Turret) {
                     risk += 20;
                 } else {
@@ -204,7 +204,7 @@ public class MicroUtils {
             if (!PositionUtils.isValidPosition(candiPosition)) {
                 continue;
             }
-            Set<UnitInfo> enemyDefTowerList = UnitUtils.getCompleteEnemyInfosInRadiusForAir(candiPosition, 0, UnitUtils.enemyAirDefenseUnitType());
+            Set<UnitInfo> enemyDefTowerList = UnitUtils.getCompleteEnemyInfosInRadiusForAir(candiPosition, 0, UnitTypeUtils.enemyAirDefenseUnitType());
             if (!enemyDefTowerList.isEmpty()) {
                 continue;
             }
@@ -230,7 +230,7 @@ public class MicroUtils {
             return;
         }
 
-        if (UnitUtils.unitInSight(targetInfo) == null) {
+        if (UnitUtils.enemyUnitInSight(targetInfo) == null) {
             kitingInvisible(rangedUnit, targetInfo, kOption);
         } else {
             kiting(rangedUnit, targetInfo.getUnit(), kOption);
@@ -286,7 +286,7 @@ public class MicroUtils {
 
 
     public static void BlockingKiting(Unit rangedUnit, UnitInfo targetInfo, KitingOption kOption, Position safePosition) {
-        if (UnitUtils.unitInSight(targetInfo) == null) {
+        if (UnitUtils.enemyUnitInSight(targetInfo) == null) {
             BlockingKitingInvisible(rangedUnit, targetInfo, kOption, safePosition);
         } else {
             Blockingkiting(rangedUnit, targetInfo.getUnit(), kOption, safePosition);
@@ -338,13 +338,13 @@ public class MicroUtils {
             }
         }
         // 벌처가 아닌경우, 자신보다 보다 긴 사정거리를 가진 적에게 카이팅은 무의미하다.
-        else if (Monster.Broodwar.self().weaponMaxRange(attackUnitWeapon) <= Monster.Broodwar.enemy().weaponMaxRange(targetWeapon)) {
+        else if (PlayerUtils.myPlayer().weaponMaxRange(attackUnitWeapon) <= PlayerUtils.enemyPlayer().weaponMaxRange(targetWeapon)) {
             return true;
         }
 
         int cooltime = rangedUnit.isStartingAttack() ? attackUnitWeapon.damageCooldown() // // 쿨타임시간(frame)
                 : (targetUnit.isFlying() ? rangedUnit.getAirWeaponCooldown() : rangedUnit.getGroundWeaponCooldown());
-        double distanceToAttack = rangedUnit.getDistance(targetUnit) - Monster.Broodwar.self().weaponMaxRange(attackUnitWeapon); // 공격하기 위해 이동해야 하는 거리(pixel)
+        double distanceToAttack = rangedUnit.getDistance(targetUnit) - PlayerUtils.myPlayer().weaponMaxRange(attackUnitWeapon); // 공격하기 위해 이동해야 하는 거리(pixel)
         int catchTime = (int) (distanceToAttack / rangedUnit.getType().topSpeed()); // 상대를 잡기위해 걸리는 시간 (frame) = 거리(pixel) / 속도(pixel per frame)
         if (!targetUnit.isDetected() && UnitUtils.availableScanningCount() == 0) {
             catchTime -= TimeUtils.SECOND;
@@ -355,7 +355,7 @@ public class MicroUtils {
         }
 
         // 상대가 때리기 위해 거리를 좁히거나 벌려야 하는 경우(coolTime <= catchTime)
-        if (cooltime <= catchTime + Monster.Broodwar.getLatency() * 2) { // 명령에 대한 지연시간(latency)을 더한다. ex) LAN(UDP) : 5
+        if (cooltime <= catchTime + PlayerUtils.getLatency() * 2) { // 명령에 대한 지연시간(latency)을 더한다. ex) LAN(UDP) : 5
 //			System.out.println("#################################");
 //			System.out.println("vulture id " + rangedUnit.getID() + ": " + cooltime + " <= " + catchTime + " + " + Prebot.Broodwar.getLatency() * 2);
 //			System.out.println("distanceToAttack = " + distanceToAttack);
@@ -510,8 +510,8 @@ public class MicroUtils {
         int risk = 0;
         List<Unit> unitsInRadius = UnitUtils.getUnitsInRadius(CommonCode.PlayerRange.ALL, movePosition, radius);
         for (Unit unit : unitsInRadius) {
-            if (unit.getPlayer() == Monster.Broodwar.enemy()) { // 적군인 경우
-                if (Monster.Broodwar.getDamageFrom(unit.getType(), myUnitType) > 0) { // 적군이 공격할 수 있으면 위험하겠지
+            if (unit.getPlayer() == PlayerUtils.enemyPlayer()) { // 적군인 경우
+                if (PlayerUtils.getDamageFrom(unit.getType(), myUnitType) > 0) { // 적군이 공격할 수 있으면 위험하겠지
                     if (unit.getType().isBuilding()) { // 건물이 공격할 수 있으면 진짜 위험한거겠지
                         risk += 20;
                     } else if (!unit.getType().isFlyer()) { // 날아다니지 않으면 길막까지 하니까
@@ -531,7 +531,7 @@ public class MicroUtils {
                     }
                 }
 
-            } else if (unit.getPlayer() == Monster.Broodwar.self()) { // 아군인 경우, united값에 따라 좋은지 싫은지 판단을 다르게 한다.
+            } else if (unit.getPlayer() == PlayerUtils.myPlayer()) { // 아군인 경우, united값에 따라 좋은지 싫은지 판단을 다르게 한다.
                 if (!unit.getType().isFlyer()) {
                     risk += united ? -2 : 2;
                 } else {
@@ -565,7 +565,9 @@ public class MicroUtils {
         if (attackerType == UnitType.Protoss_Zealot || attackerType == UnitType.Terran_Goliath && targetType.isFlyer()) {
             numberOfAttack *= 2;
         }
-        int damageExpected = Monster.Broodwar.getDamageFrom(attackerType, targetType, attackUnit.getPlayer(), targetUnit.getPlayer()) * numberOfAttack;
+
+        //TODO 기존 getDamageFrom(4개 파라미터로 되어 있었음
+        int damageExpected = PlayerUtils.getDamageFrom(attackerType, targetType) * numberOfAttack;
 
         int targetHitPoints = targetUnit.getHitPoints();
         if (targetType.regeneratesHP()) {
@@ -611,7 +613,7 @@ public class MicroUtils {
     }
 
     public static boolean isRemovableEnemySpiderMine(Unit unit, UnitInfo eui) {
-        Unit target = UnitUtils.unitInSight(eui);
+        Unit target = UnitUtils.enemyUnitInSight(eui);
         if (target == null) {
             return false;
         }
@@ -630,8 +632,8 @@ public class MicroUtils {
 
             double distanceToNearEnemy = position.getDistance(ui.getLastPosition());
             WeaponType nearEnemyWeapon = ui.getType().groundWeapon();
-            int enemyWeaponMaxRange = Monster.Broodwar.enemy().weaponMaxRange(nearEnemyWeapon);
-            double enemyTopSpeed = Monster.Broodwar.enemy().topSpeed(ui.getType());
+            int enemyWeaponMaxRange = PlayerUtils.enemyPlayer().weaponMaxRange(nearEnemyWeapon);
+            double enemyTopSpeed = PlayerUtils.enemyPlayer().topSpeed(ui.getType());
             double backOffDist = ui.getType().isBuilding() ? MicroConfig.Common.BACKOFF_DIST_DEF_TOWER : 0.0;
 
             if (distanceToNearEnemy <= enemyWeaponMaxRange + enemyTopSpeed * 24 + backOffDist) {
@@ -680,7 +682,7 @@ public class MicroUtils {
 
     public static boolean canAttack(Unit myUnit, UnitInfo eui) {
         WeaponType weaponType = WeaponType.None;
-        Unit enemy = UnitUtils.unitInSight(eui);
+        Unit enemy = UnitUtils.enemyUnitInSight(eui);
         if (enemy != null) {
             weaponType = getWeapon(myUnit, enemy);
         } else {
@@ -698,12 +700,12 @@ public class MicroUtils {
     }
 
     public static boolean isInWeaponRange(Unit myUnit, UnitInfo eui) {
-        Unit enemy = UnitUtils.unitInSight(eui);
+        Unit enemy = UnitUtils.enemyUnitInSight(eui);
         if (enemy != null) {
             return myUnit.isInWeaponRange(enemy);
         } else {
             int enemyUnitDistance = myUnit.getDistance(eui.getLastPosition());
-            int weaponMaxRange = Monster.Broodwar.enemy().weaponMaxRange(eui.getType().airWeapon());
+            int weaponMaxRange = PlayerUtils.enemyPlayer().weaponMaxRange(eui.getType().airWeapon());
             return enemyUnitDistance <= weaponMaxRange;
         }
     }
@@ -731,7 +733,7 @@ public class MicroUtils {
     public static Set<UnitInfo> filterFlyingTargetInfos(Collection<UnitInfo> targetInfos) {
         Set<UnitInfo> newTargetInfos = new HashSet<>();
         for (UnitInfo targetInfo : targetInfos) {
-            Unit target = UnitUtils.unitInSight(targetInfo);
+            Unit target = UnitUtils.enemyUnitInSight(targetInfo);
 
             if (target != null) {
                 if (!UnitUtils.isCompleteValidUnit(target)) {

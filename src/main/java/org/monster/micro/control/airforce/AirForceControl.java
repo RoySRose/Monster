@@ -5,17 +5,18 @@ import bwapi.Unit;
 import bwapi.UnitType;
 import bwapi.WeaponType;
 import org.monster.board.StrategyBoard;
+import org.monster.bootstrap.Monster;
 import org.monster.common.UnitInfo;
-import org.monster.common.constant.CommonCode;
 import org.monster.common.util.CommandUtils;
 import org.monster.common.util.MicroUtils;
+import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.PositionUtils;
 import org.monster.common.util.TimeUtils;
+import org.monster.common.util.UnitTypeUtils;
 import org.monster.common.util.UnitUtils;
 import org.monster.decisions.strategy.manage.AirForceManager;
 import org.monster.decisions.strategy.manage.AirForceTeam;
 import org.monster.decisions.strategy.manage.PositionFinder;
-import org.monster.bootstrap.Monster;
 import org.monster.micro.MicroDecision;
 import org.monster.micro.MicroDecisionMaker;
 import org.monster.micro.constant.MicroConfig;
@@ -51,12 +52,12 @@ public class AirForceControl extends Control {
 
 //		if (true) {
 
-        int enemySize = UnitUtils.getEnemyUnitInfoList(CommonCode.EnemyUnitVisibleStatus.ALL).size();
+        int enemySize = UnitUtils.getEnemyVisibleUnitCount();
         if (TimeUtils.afterTime(10, 0) && enemySize <= 3) {
             findRat(airunits);
             return;
         }
-        if (Monster.Broodwar.self().supplyUsed() > 300 && UnitUtils.getEnemyUnitInfoList(CommonCode.EnemyUnitVisibleStatus.ALL).size() <= 3 && UnitUtils.enemyAirUnitPower() == 0) {
+        if (PlayerUtils.supplyUsedSelf() > 300 && UnitUtils.getEnemyVisibleUnitCount() <= 3 && UnitUtils.enemyAirUnitPower() == 0) {
             for (Unit airunit : airunits) {
                 CommandUtils.attackMove(airunit, StrategyBoard.mainPosition);
             }
@@ -78,7 +79,7 @@ public class AirForceControl extends Control {
                     if (StrategyBoard.mainSquadMode.isAttackMode) {
                         applyDefenseModeFlee = StrategyBoard.mainSquadCenter.getDistance(airForceTeam.leaderUnit) > StrategyBoard.mainSquadCoverRadius + 250;
                         if (!applyDefenseModeFlee) {
-                            Set<UnitInfo> killerInRadius = UnitUtils.getCompleteEnemyInfosInRadiusForAir(airForceTeam.leaderUnit.getPosition(), 200, UnitUtils.wraithKillerUnitType());
+                            Set<UnitInfo> killerInRadius = UnitUtils.getCompleteEnemyInfosInRadiusForAir(airForceTeam.leaderUnit.getPosition(), 200, UnitTypeUtils.wraithKillerUnitType());
                             applyDefenseModeFlee = !killerInRadius.isEmpty();
                         }
 
@@ -211,7 +212,7 @@ public class AirForceControl extends Control {
                     if (decision.type == MicroDecision.MicroDecisionType.ATTACK_UNIT) { // 제자리 공격
                         airDrivingPosition = airForceTeam.leaderUnit.getPosition();
                     } else if (decision.type == MicroDecision.MicroDecisionType.KITING_UNIT) { // 따라가서 공격
-                        Unit enemyInSight = UnitUtils.unitInSight(decision.eui);
+                        Unit enemyInSight = UnitUtils.enemyUnitInSight(decision.eui);
                         if (enemyInSight == null) {
                             airDrivingPosition = decision.eui.getLastPosition();
                         } else {
@@ -287,7 +288,7 @@ public class AirForceControl extends Control {
 
     private Position airFeePosition(AirForceTeam airForceTeam, UnitInfo eui) {
         Position enemyPosition;
-        Unit enemyUnit = Monster.Broodwar.getUnit(eui.getUnitID());
+        Unit enemyUnit = UnitUtils.getUnit(eui.getUnitID());
         if (enemyUnit != null) {
             enemyPosition = enemyUnit.getPosition();
         } else {

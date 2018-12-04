@@ -8,8 +8,8 @@ import org.monster.build.base.BuildOrderItem;
 import org.monster.build.initialProvider.InitialBuildProvider;
 import org.monster.common.MetaType;
 import org.monster.common.constant.CommonCode;
+import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.UnitUtils;
-import org.monster.bootstrap.Monster;
 
 import java.util.List;
 
@@ -65,7 +65,7 @@ public abstract class DefaultBuildableItem implements BuildableItem {
         }
         //when blocking is false check resource
         if (!buildCondition.blocking) {
-            if (metaType.mineralPrice() <= Monster.Broodwar.self().minerals() && metaType.gasPrice() <= Monster.Broodwar.self().gas()) {
+            if (metaType.mineralPrice() <= PlayerUtils.mineralSelf() && metaType.gasPrice() <= PlayerUtils.gasSelf()) {
                 setBuildQueue();
             }
         } else {
@@ -121,7 +121,7 @@ public abstract class DefaultBuildableItem implements BuildableItem {
 
     protected int getCurrentItemCount() {
         int currentItemCount = BuildManager.Instance().buildQueue.getItemCount(metaType.getUnitType()) +
-                Monster.Broodwar.self().allUnitCount(metaType.getUnitType());
+                UnitUtils.getUnitCount(metaType.getUnitType());
         return currentItemCount;
     }
 
@@ -155,7 +155,7 @@ public abstract class DefaultBuildableItem implements BuildableItem {
     }
 
     private final boolean supplySpaceAvailable() {
-        int supplyMargin = Monster.Broodwar.self().supplyTotal() - Monster.Broodwar.self().supplyUsed();
+        int supplyMargin = PlayerUtils.supplyTotalSelf() - PlayerUtils.supplyUsedSelf();
         int metaTypeSupplyCount = metaType.supplyRequired();
         return metaTypeSupplyCount <= supplyMargin;
     }
@@ -179,7 +179,7 @@ public abstract class DefaultBuildableItem implements BuildableItem {
         }
 
         int mineralsNearDepot = 0;
-        for (Unit mineral : Monster.Broodwar.neutral().getUnits()) {
+        for (Unit mineral : PlayerUtils.neutralPlayer().getUnits()) {
             if (mineral.getType() != UnitType.Resource_Mineral_Field) {
                 continue;
             }

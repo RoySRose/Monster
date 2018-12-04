@@ -15,7 +15,7 @@ import org.monster.build.initialProvider.InitialBuildProvider;
 import org.monster.common.constant.CommonCode;
 import org.monster.common.util.BaseUtils;
 import org.monster.common.util.ChokePointUtils;
-import org.monster.common.util.InfoTypeUtils;
+import org.monster.common.util.UnitTypeUtils;
 import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.PositionUtils;
 import org.monster.common.util.StaticMapUtils;
@@ -374,12 +374,12 @@ public class ConstructionPlaceFinder {
             int spiralDirectionX = 0;
             int spiralDirectionY = 1;
             while (spiralMaxLength < maxRange) {
-                if (currentX >= 0 && currentX < Monster.Broodwar.mapWidth() && currentY >= 0 && currentY < Monster.Broodwar.mapHeight()) {
+                if (currentX >= 0 && currentX < StaticMapUtils.mapWidth() && currentY >= 0 && currentY < StaticMapUtils.mapHeight()) {
 //					//FileUtils.appendTextToFile(b.getType(),"log.txt", "\n canBuildHereWithSpace before PlaceFinder seedPosition true :: " + buildingType + " :: " + desiredPosition + " :: " + new TilePosition(currentX, currentY) + " :: " + buildingGapSpace);
                     boolean isPossiblePlace = canBuildHereWithSpace(new TilePosition(currentX, currentY), b, buildingGapSpace);
 //					//FileUtils.appendTextToFile(b.getType(),"log.txt", "\n canBuildHereWithSpace after PlaceFinder seedPosition true  :: " + buildingType + " :: " + desiredPosition + " :: " + new TilePosition(currentX, currentY) + " :: " + buildingGapSpace + " :: " + isPossiblePlace);
                     if (isPossiblePlace) {
-                        if (b.getType() == UnitType.Terran_Factory && Monster.Broodwar.self().completedUnitCount(UnitType.Terran_Factory) >= 2) {
+                        if (b.getType() == UnitType.Terran_Factory && UnitUtils.getCompletedUnitCount(UnitType.Terran_Factory) >= 2) {
 
 //                        	System.out.println("finding place for fac: " + BlockingEntrance.Instance().loc);
                             int currentXPlus = currentX;
@@ -396,7 +396,7 @@ public class ConstructionPlaceFinder {
 //                                    System.out.println("finding place for fac plus");
                                 }
 //                                System.out.println(" final location of factory :: " + currentXPlus + " / " + currentY);
-                                if (currentXPlus < 0 || currentXPlus + 3 > Monster.Broodwar.mapWidth()) {
+                                if (currentXPlus < 0 || currentXPlus + 3 > StaticMapUtils.mapWidth()) {
                                     break;
                                 }
 
@@ -458,7 +458,7 @@ public class ConstructionPlaceFinder {
 //					1시
                     for (int y_position = 0; y_position < BlockingEntrance.Instance().maxSupplyCntY; y_position++) {
                         for (int x_position = 0; x_position < BlockingEntrance.Instance().maxSupplyCntX; x_position++) {
-                            if (currentX >= 0 && currentX < Monster.Broodwar.mapWidth() && currentY >= 0 && currentY < Monster.Broodwar.mapHeight()) {
+                            if (currentX >= 0 && currentX < StaticMapUtils.mapWidth() && currentY >= 0 && currentY < StaticMapUtils.mapHeight()) {
 
                                 isPossiblePlace = canBuildHereWithSpace(new TilePosition(currentX, currentY), b, 0);
 
@@ -490,7 +490,7 @@ public class ConstructionPlaceFinder {
 //					5시
                     for (int y_position = BlockingEntrance.Instance().maxSupplyCntY; y_position > 0; y_position--) {
                         for (int x_position = 0; x_position < BlockingEntrance.Instance().maxSupplyCntX; x_position++) {
-                            if (currentX >= 0 && currentX < Monster.Broodwar.mapWidth() && currentY >= 0 && currentY < Monster.Broodwar.mapHeight()) {
+                            if (currentX >= 0 && currentX < StaticMapUtils.mapWidth() && currentY >= 0 && currentY < StaticMapUtils.mapHeight()) {
 
                                 isPossiblePlace = canBuildHereWithSpace(new TilePosition(currentX, currentY), b, 0);
 
@@ -527,7 +527,7 @@ public class ConstructionPlaceFinder {
 //					11시
                     for (int y_position = 0; y_position < BlockingEntrance.Instance().maxSupplyCntY; y_position++) {
                         for (int x_position = BlockingEntrance.Instance().maxSupplyCntX; x_position > 0; x_position--) {
-                            if (currentX >= 0 && currentX < Monster.Broodwar.mapWidth() && currentY >= 0 && currentY < Monster.Broodwar.mapHeight()) {
+                            if (currentX >= 0 && currentX < StaticMapUtils.mapWidth() && currentY >= 0 && currentY < StaticMapUtils.mapHeight()) {
 
                                 isPossiblePlace = canBuildHereWithSpace(new TilePosition(currentX, currentY), b, 0);
 
@@ -558,7 +558,7 @@ public class ConstructionPlaceFinder {
 //					7시
                     for (int y_position = BlockingEntrance.Instance().maxSupplyCntY; y_position > 0; y_position--) {
                         for (int x_position = BlockingEntrance.Instance().maxSupplyCntX; x_position > 0; x_position--) {
-                            if (currentX >= 0 && currentX < Monster.Broodwar.mapWidth() && currentY >= 0 && currentY < Monster.Broodwar.mapHeight()) {
+                            if (currentX >= 0 && currentX < StaticMapUtils.mapWidth() && currentY >= 0 && currentY < StaticMapUtils.mapHeight()) {
 
                                 isPossiblePlace = canBuildHereWithSpace(new TilePosition(currentX, currentY), b, 0);
 
@@ -769,7 +769,7 @@ public class ConstructionPlaceFinder {
         }
 
         // if this rectangle doesn't fit on the map we can't build here
-        if (b.getType() != UnitType.Terran_Factory && b.getType() != UnitType.Terran_Starport && (startx < 0 || starty < 0 || endx > Monster.Broodwar.mapWidth() || endx < position.getX() + width || endy > Monster.Broodwar.mapHeight())) {
+        if (b.getType() != UnitType.Terran_Factory && b.getType() != UnitType.Terran_Starport && (startx < 0 || starty < 0 || endx > StaticMapUtils.mapWidth() || endx < position.getX() + width || endy > StaticMapUtils.mapHeight())) {
 //			//FileUtils.appendTextToFile("log.txt", "\n canBuildHereWithSpace return false :: "+ b.getType() + " // buildingGapSpace :: " + buildingGapSpace);
             return false;
         } else {
@@ -782,7 +782,7 @@ public class ConstructionPlaceFinder {
     /// 해당 위치에 건물 건설이 가능한지 여부를 리턴합니다 <br>
     /// Broodwar 의 canBuildHere 및 _reserveMap 와 isOverlapsWithBaseLocation 을 체크
     public final boolean canBuildHere(TilePosition position, final ConstructionTask b) {
-        if (!Monster.Broodwar.canBuildHere(position, b.getType())) {
+        if (!StaticMapUtils.canBuildHere(position, b.getType())) {
 //			//FileUtils.appendTextToFile("log.txt", "\n canBuildHere ==> !Prebot.Broodwar.canBuildHere :: " + position);
             return false;
         }
@@ -836,7 +836,7 @@ public class ConstructionPlaceFinder {
         double minGeyserDistanceFromSeedPosition = 100000000;
 
         // 전체 geyser 중에서 seedPosition 으로부터 16 TILE_SIZE 거리 이내에 있는 것을 찾는다
-        for (Unit geyser : Monster.Broodwar.getStaticGeysers()) {
+        for (Unit geyser : StaticMapUtils.getStaticGeysers()) {
             // geyser->getPosition() 을 하면, Unknown 으로 나올 수 있다.
             // 반드시 geyser->getInitialPosition() 을 사용해야 한다
 //			//FileUtils.appendTextToFile("log.txt", "\n getRefineryPositionNear getStaticGeysers :: " + geyser.getTilePosition());
@@ -858,7 +858,7 @@ public class ConstructionPlaceFinder {
 
             // 이미 지어져 있는가
             boolean refineryAlreadyBuilt = false;
-            List<Unit> alreadyBuiltUnits = Monster.Broodwar.getUnitsInRadius(geyserPos, 4 * BuildConfig.TILE_SIZE);
+            List<Unit> alreadyBuiltUnits = UnitUtils.getUnitsInRadius(CommonCode.PlayerRange.ALL, geyserPos, 4 * BuildConfig.TILE_SIZE);
             for (Unit u : alreadyBuiltUnits) {
                 if (u.getType().isRefinery() && u.exists()) {
 //					//FileUtils.appendTextToFile("log.txt", "\n getRefineryPositionNear is alreadyBuiltUnits");
@@ -888,7 +888,7 @@ public class ConstructionPlaceFinder {
         double minGeyserDistanceFromSeedPosition = 100000000;
 
         // 전체 geyser 중에서 seedPosition 으로부터 16 TILE_SIZE 거리 이내에 있는 것을 찾는다
-        for (Unit geyser : Monster.Broodwar.getStaticGeysers()) {
+        for (Unit geyser : StaticMapUtils.getStaticGeysers()) {
             // geyser->getPosition() 을 하면, Unknown 으로 나올 수 있다.
             // 반드시 geyser->getInitialPosition() 을 사용해야 한다
 
@@ -933,8 +933,8 @@ public class ConstructionPlaceFinder {
             // dimensions of the base location
             int bx1 = base.getTilePosition().getX();
             int by1 = base.getTilePosition().getY();
-            int bx2 = bx1 + InfoTypeUtils.getBasicResourceDepotBuildingType(PlayerUtils.myRace()).tileWidth() - 1;
-            int by2 = by1 + InfoTypeUtils.getBasicResourceDepotBuildingType(PlayerUtils.myRace()).tileHeight() - 1;
+            int bx2 = bx1 + UnitTypeUtils.getBasicResourceDepotBuildingType(PlayerUtils.myRace()).tileWidth() - 1;
+            int by2 = by1 + UnitTypeUtils.getBasicResourceDepotBuildingType(PlayerUtils.myRace()).tileHeight() - 1;
 
             // conditions for non-overlap are easy
             boolean noOverlap = (tx2 < bx1) || (tx1 > bx2) || (ty2 < by1) || (ty1 > by2);
@@ -958,12 +958,12 @@ public class ConstructionPlaceFinder {
 
         // 맵 데이터 뿐만 아니라 빌딩 데이터를 모두 고려해서 isBuildable 체크
         //if (BWAPI::Broodwar->isBuildable(x, y) == false)
-        if (Monster.Broodwar.isBuildable(x, y, true) == false) {
+        if (StaticMapUtils.isBuildable(tp, true) == false) {
             return false;
         }
 
         // constructionWorker 이외의 다른 유닛이 있으면 false를 리턴한다
-        for (Unit unit : Monster.Broodwar.getUnitsOnTile(x, y)) {
+        for (Unit unit : UnitUtils.getUnitsOnTile(tp)) {
             if ((b.getConstructionWorker() != null) && (unit != b.getConstructionWorker())) {
                 if (unit.getType().isBuilding() && unit.isLifted()) {
                     continue;
@@ -987,7 +987,7 @@ public class ConstructionPlaceFinder {
         // 맵 데이터 뿐만 아니라 빌딩 데이터를 모두 고려해서 isBuildable
 
         // constructionWorker 이외의 다른 유닛이 있으면 false를 리턴한다
-        for (Unit unit : Monster.Broodwar.getUnitsOnTile(x, y)) {
+        for (Unit unit : UnitUtils.getUnitsOnTile(tp)) {
             if (unit.getType().isBuilding() && !unit.isLifted()) {
                 System.out.println(" there is something for const :: " + b.getType() + " :: " + unit.getType() + "(" + x + " , " + y + ")");
                 return false;
@@ -1177,8 +1177,8 @@ public class ConstructionPlaceFinder {
                     int fromx = mineral.getTilePosition().getX() - 2;
                     int fromy = mineral.getTilePosition().getY() - 2;
 
-                    for (int x = fromx; x >= 0 && x < fromx + 6 && x < Monster.Broodwar.mapWidth(); x++) {
-                        for (int y = fromy; y >= 0 && y < fromy + 6 && y < Monster.Broodwar.mapHeight(); y++) {
+                    for (int x = fromx; x >= 0 && x < fromx + 6 && x < StaticMapUtils.mapWidth(); x++) {
+                        for (int y = fromy; y >= 0 && y < fromy + 6 && y < StaticMapUtils.mapHeight(); y++) {
                             tilesToAvoid[x][y] = true;
                         }
                     }
@@ -1194,8 +1194,8 @@ public class ConstructionPlaceFinder {
 //        int fromx = firstgas.getTilePosition().getX() - 1;
 //        int fromy = firstgas.getTilePosition().getY() - 1;
 //
-//        for (int x = fromx; x >= 0 && x < fromx + 8 && x < Monster.Broodwar.mapWidth(); x++) {
-//            for (int y = fromy; y >= 0 && y < fromy + 6 && y < Monster.Broodwar.mapHeight(); y++) {
+//        for (int x = fromx; x >= 0 && x < fromx + 8 && x < StaticMapUtils.mapWidth(); x++) {
+//            for (int y = fromy; y >= 0 && y < fromy + 6 && y < StaticMapUtils.mapHeight(); y++) {
 //                if (fromx < x && x < fromx + 5 && fromy < y && y < fromy + 3) {
 //                    continue;
 //                }
@@ -1236,8 +1236,8 @@ public class ConstructionPlaceFinder {
         }
 
 
-        for (int x = fromx; x >= 0 && x < fromx + 8 && x < Monster.Broodwar.mapWidth() && x < rwidth; x++) {
-            for (int y = fromy; y >= 0 && y < fromy + 5 && y < Monster.Broodwar.mapHeight() && y < rheight; y++) {
+        for (int x = fromx; x >= 0 && x < fromx + 8 && x < StaticMapUtils.mapWidth() && x < rwidth; x++) {
+            for (int y = fromy; y >= 0 && y < fromy + 5 && y < StaticMapUtils.mapHeight() && y < rheight; y++) {
                 if ((x == fromx + 5 || x == fromx + 6 || x == fromx + 7) && y == fromy) {
                     continue;
                 }
@@ -1285,8 +1285,8 @@ public class ConstructionPlaceFinder {
         }
 
         if (allFree) {
-            for (int x = fromx; x >= 0 && x < fromx + 8 && x < Monster.Broodwar.mapWidth() && x < rwidth; x++) {
-                for (int y = fromy; y >= 0 && y < fromy + 5 && y < Monster.Broodwar.mapHeight() && y < rheight; y++) {
+            for (int x = fromx; x >= 0 && x < fromx + 8 && x < StaticMapUtils.mapWidth() && x < rwidth; x++) {
+                for (int y = fromy; y >= 0 && y < fromy + 5 && y < StaticMapUtils.mapHeight() && y < rheight; y++) {
 
                     if ((x == fromx + 5 || x == fromx + 6 || x == fromx + 7) && y == fromy) {
                         continue;
@@ -1328,8 +1328,8 @@ public class ConstructionPlaceFinder {
         int fromx = unit.getTilePosition().getX() - 1;
         int fromy = unit.getTilePosition().getY() - 1;
 
-        for (int x = fromx; x >= 0 && x < fromx + 5 && x < Monster.Broodwar.mapWidth(); x++) {
-            for (int y = fromy; y >= 0 && y < fromy + 4 && y < Monster.Broodwar.mapHeight(); y++) {
+        for (int x = fromx; x >= 0 && x < fromx + 5 && x < StaticMapUtils.mapWidth(); x++) {
+            for (int y = fromy; y >= 0 && y < fromy + 4 && y < StaticMapUtils.mapHeight(); y++) {
 
                 tilesToAvoidSupply[x][y] = true;
 
@@ -1400,11 +1400,11 @@ public class ConstructionPlaceFinder {
         }
     }
 
-    public boolean hasWhatBuilds(TilePosition position, UnitType unitType) {
+    public boolean hasWhatBuilds(TilePosition tilePosition, UnitType unitType) {
 
         for (int i = 0; i <= unitType.tileWidth(); ++i) {
             for (int j = 0; j <= unitType.tileHeight(); ++j) {
-                for (Unit unit : Monster.Broodwar.getUnitsOnTile(position.getX() + i, position.getY() + j)) {
+                for (Unit unit : UnitUtils.getUnitsOnTile(new TilePosition(tilePosition.getX() + i, tilePosition.getY() + j))) {
                     if ((unit.getType() != unitType) && (!unit.isLifted())) {
                         return false;
                     }

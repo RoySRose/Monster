@@ -31,7 +31,7 @@ public class GasRushed extends DefaultDecisionMaker implements DecisionMaker {
 //
 //    if (checkGasRush == true) {
 //
-//        for (Unit unit : Monster.Broodwar.self().getUnits()) {
+//        for (Unit unit : UnitUtils.getUnitList()) {
 //            if (unit.getType() == UnitType.Terran_Refinery && unit.isCompleted() && myfirstGas != null) {
 //                if (myfirstGas.getPosition().equals(unit.getPosition())) {
 ////						//FileUtils.appendTextToFile("log.txt", "\n Information checkGasRush :: we have Refinery :: not danger gas rush");
@@ -39,8 +39,8 @@ public class GasRushed extends DefaultDecisionMaker implements DecisionMaker {
 //                }
 //            }
 //        }
-//        for (Unit unit : Monster.Broodwar.enemy().getUnits()) {
-//            if (unit.getType() == InfoTypeUtils.getRefineryBuildingType(enemyRace) && myfirstGas != null) {
+//        for (Unit unit : UnitUtils.getEnemyVisibleUnitInfoList()) {
+//            if (unit.getType() == UnitTypeUtils.getRefineryBuildingType(enemyRace) && myfirstGas != null) {
 //                if (myfirstGas.getPosition().equals(unit.getPosition())) {
 ////						//FileUtils.appendTextToFile("log.txt", "\n  checkGasRush :: gasRsuhed is true :: "+ Prebot.Broodwar.getFrameCount() + " :: " + unit.getType());
 //                    gasRushed = true;// 가스 러쉬 당함

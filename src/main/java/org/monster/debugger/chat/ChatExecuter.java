@@ -1,5 +1,7 @@
 package org.monster.debugger.chat;
 
+import bwapi.Game;
+
 public abstract class ChatExecuter {
     private char type;
 

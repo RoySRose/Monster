@@ -131,7 +131,7 @@ public class MainAttackSquad extends Squad {
             saveUnitLevel = 0;
         } else { // combat manager 자체 판단
             if (PlayerUtils.enemyRace() != Race.Terran) {
-                if (Monster.Broodwar.self().supplyUsed() >= 380) { // || pushLine) {
+                if (PlayerUtils.supplyUsedSelf() >= 380) { // || pushLine) {
                     saveUnitLevel = 0;
                 }
             }

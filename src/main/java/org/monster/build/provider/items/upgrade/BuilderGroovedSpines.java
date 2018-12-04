@@ -1,11 +1,13 @@
 package org.monster.build.provider.items.upgrade;
 
 import bwapi.UnitType;
+import org.monster.bootstrap.Monster;
 import org.monster.build.base.BuildManager;
 import org.monster.build.provider.DefaultBuildableItem;
 import org.monster.build.provider.ResearchSelector;
 import org.monster.common.MetaType;
-import org.monster.bootstrap.Monster;
+import org.monster.common.util.UnitUtils;
+import org.monster.common.util.UpgradeUtils;
 
 public class BuilderGroovedSpines extends DefaultBuildableItem {
 
@@ -20,7 +22,7 @@ public class BuilderGroovedSpines extends DefaultBuildableItem {
     public final boolean buildCondition() {
 
         //if(researchSelector.getSelected().getUpgradeType().equals(metaType.getUpgradeType())) {
-        if (Monster.Broodwar.self().completedUnitCount(UnitType.Terran_Armory) == 0) {
+        if (UnitUtils.getCompletedUnitCount(UnitType.Terran_Armory) == 0) {
             return false;
         }
 
@@ -36,7 +38,7 @@ public class BuilderGroovedSpines extends DefaultBuildableItem {
         if (researchSelector.getSelected().getUpgradeType() != metaType.getUpgradeType()) {
             return false;
         }
-        if (Monster.Broodwar.self().isUpgrading(researchSelector.getSelected().getUpgradeType())) {
+        if (UpgradeUtils.selfIsUpgrading(researchSelector.getSelected().getUpgradeType())) {
             return false;
         }
 

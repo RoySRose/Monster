@@ -8,6 +8,7 @@ import bwapi.UpgradeType;
 import org.monster.common.LagObserver;
 import org.monster.common.util.PlayerUtils;
 import org.monster.bootstrap.Monster;
+import org.monster.common.util.UpgradeUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -184,7 +185,7 @@ public class MicroConfig {
     }
 
     public static class Network {
-        public static final int LATENCY = Monster.Broodwar.getLatency(); // LAN (UDP) : 5
+        public static final int LATENCY = PlayerUtils.getLatency(); // LAN (UDP) : 5
     }
 
     public static class Upgrade {
@@ -198,7 +199,7 @@ public class MicroConfig {
             if (upgrade == UpgradeType.Ion_Thrusters) {
                 if (vultureSpeedUpgrade) {
                     return 3.0 * 24.0; // 벌처 업그레이드 된 스피드 안나온다. 걍 frame당 3pixel 더 간다고 치자.
-                } else if (!vultureSpeedUpgrade && Monster.Broodwar.self().getUpgradeLevel(UpgradeType.Ion_Thrusters) > 0) {
+                } else if (!vultureSpeedUpgrade && UpgradeUtils.selfUpgradedLevel(UpgradeType.Ion_Thrusters) > 0) {
                     vultureSpeedUpgrade = true;
 //					Monster.Broodwar.sendText("Ion Thrusters Upgraded!");
                     return 3.0 * 24.0;
@@ -206,7 +207,7 @@ public class MicroConfig {
             } else if (upgrade == UpgradeType.Charon_Boosters) {
                 if (goliathAttkRangeUpgrade) {
                     return 3.0 * 24.0; // 골리앗 대공 사정거리 업그레이드 : 5(→8)
-                } else if (!goliathAttkRangeUpgrade && Monster.Broodwar.self().getUpgradeLevel(UpgradeType.Charon_Boosters) > 0) {
+                } else if (!goliathAttkRangeUpgrade && UpgradeUtils.selfUpgradedLevel(UpgradeType.Charon_Boosters) > 0) {
                     goliathAttkRangeUpgrade = true;
 //					Monster.Broodwar.sendText("Charon Boosters Upgraded!");
                     return 3.0 * 24.0;

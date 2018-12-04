@@ -129,7 +129,7 @@ public class VultureFightPredictor {
             UnitType unitType = UnitType.Unknown;
             int hitPointsAndShields = 0;
 
-            Unit enemyUnit = UnitUtils.unitInSight(eui);
+            Unit enemyUnit = UnitUtils.enemyUnitInSight(eui);
             if (enemyUnit != null) {
                 if (!enemyUnit.isCompleted()) {
                     continue;

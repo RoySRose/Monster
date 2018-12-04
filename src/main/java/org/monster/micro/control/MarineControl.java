@@ -157,7 +157,7 @@ public class MarineControl extends Control {
 //
 //                MicroDecision decision = decisionMaker.makeDecision(marine, euiList);
 //                if (decision.type == MicroDecision.MicroDecisionType.KITING_UNIT) {
-//                    Unit enemyInSight = UnitUtils.unitInSight(decision.eui);
+//                    Unit enemyInSight = UnitUtils.enemyUnitInSight(decision.eui);
 //
 //                    if (marineDangerousOutOfMyRegion(marine, decision.eui)) {
 //                        intoTheBunker(bunker, marine);
@@ -295,14 +295,14 @@ public class MarineControl extends Control {
 		
 		
 	/*	// 세번째 지역까지 OK
-		if (unitRegion == InfoTypeUtils.myThirdRegion()) {
+		if (unitRegion == UnitTypeUtils.myThirdRegion()) {
 			return true;
 		}
 		if (campType == PositionFinder.CampType.SECOND_CHOKE) {
 			return true;
 		}
 		// 세번째 지역 반경 OK
-		if (marine.getDistance(InfoTypeUtils.myThirdRegion()) < 500) {
+		if (marine.getDistance(UnitTypeUtils.myThirdRegion()) < 500) {
 			return true;
 		}*/
 

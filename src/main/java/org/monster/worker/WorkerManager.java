@@ -10,11 +10,9 @@ import bwta.Region;
 import org.monster.board.StrategyBoard;
 import org.monster.build.initialProvider.BlockingEntrance.BlockingEntrance;
 import org.monster.common.LagObserver;
+import org.monster.common.UnitInfo;
 import org.monster.common.constant.CommonCode;
-import org.monster.common.util.BaseUtils;
-import org.monster.common.util.CommandUtils;
-import org.monster.common.util.TimeUtils;
-import org.monster.common.util.UnitUtils;
+import org.monster.common.util.*;
 import org.monster.bootstrap.GameManager;
 import org.monster.bootstrap.Monster;
 import org.monster.micro.Minerals;
@@ -176,7 +174,7 @@ public class WorkerManager extends GameManager {
         } else {
             int workerCount = UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_SCV).size();
             if (workerCount >= 30) {
-                int gasunbalance = Monster.Broodwar.self().gas() - Monster.Broodwar.self().minerals();
+                int gasunbalance = PlayerUtils.gasSelf() - PlayerUtils.mineralSelf();
                 if (gasunbalance > 2000) {
                     return 0;
                 } else if (gasunbalance > 1000) {
@@ -194,10 +192,10 @@ public class WorkerManager extends GameManager {
                 int workersPerRefinery = (int) (workerCount - 7) / (refineryCount * 3);
 
                 if (workersPerRefinery > MicroConfig.WORKERS_PER_REFINERY) {
-                    if (Monster.Broodwar.self().minerals() <= 200) {
-                        if (Monster.Broodwar.self().gas() >= 350) {
+                    if (PlayerUtils.mineralSelf() <= 200) {
+                        if (PlayerUtils.gasSelf() >= 350) {
                             return 2;
-                        } else if (Monster.Broodwar.self().gas() >= 500) {
+                        } else if (PlayerUtils.gasSelf() >= 500) {
                             return 1;
                         }
                     }
@@ -367,12 +365,12 @@ public class WorkerManager extends GameManager {
     }
 
     public void handleRepairWorkers() {
-        if (Monster.Broodwar.self().getRace() != Race.Terran) {
+        if (PlayerUtils.myRace() != Race.Terran) {
             return;
         }
 
         // 미네랄이 없어도 계속 고치려 하므로 mineral < 5 이하일땐 리턴.
-        if (Monster.Broodwar.self().minerals() < 5) {
+        if (PlayerUtils.mineralSelf() < 5) {
             return;
         }
 
@@ -387,7 +385,7 @@ public class WorkerManager extends GameManager {
 			return;
 		}*/
 
-        for (Unit unit : Monster.Broodwar.self().getUnits()) {
+        for (Unit unit : UnitUtils.getUnitList()) {
             if (!unit.isCompleted()) {
                 continue;
             }
@@ -540,7 +538,7 @@ public class WorkerManager extends GameManager {
         Unit closestUnit = null;
         double closestDist = 100000000;
 
-        for (Unit unit : Monster.Broodwar.self().getUnits()) {
+        for (Unit unit : UnitUtils.getUnitList()) {
             if (unit.isCompleted() && unit.getHitPoints() > 0 && unit.exists() && unit.getType().isWorker()
                     && WorkerManager.Instance().isMineralWorker(unit)) {
                 double dist = unit.getDistance(target);
@@ -640,7 +638,7 @@ public class WorkerManager extends GameManager {
     // if (myBaseLocation == null ||
     // depot.getDistance(myBaseLocation.getPosition()) < 5 * Config.TILE_SIZE)
     // return false;
-    // for (Unit unit : Monster.Broodwar.enemy().getUnits())
+    // for (Unit unit : UnitUtils.getEnemyVisibleUnitInfoList())
     // {
     // if(unit.isVisible() && unit.getDistance(depot) < 300 &&
     // unit.getType().canAttack()){
@@ -882,30 +880,8 @@ public class WorkerManager extends GameManager {
         if (closestWorker != null) {
             workerData.setWorkerJob(closestWorker, WorkerData.WorkerJob.Move, new WorkerMoveData(mineralsNeeded, gasNeeded, p));
         } else {
-            // Monster.Broodwar.printf("Error, no worker found");
+            // PlayerUtils.printf("Error, no worker found");
         }
-    }
-
-    /// 해당 일꾼 유닛으로부터 가장 가까운 적군 유닛을 리턴합니다
-    public Unit getClosestEnemyUnitFromWorker(Unit worker) {
-        if (worker == null)
-            return null;
-
-        Unit closestUnit = null;
-        double closestDist = 10000;
-
-        for (Unit unit : Monster.Broodwar.enemy().getUnits()) {
-            double dist = unit.getDistance(worker);
-
-            // if ((dist < 400) && (closestUnit == null || (dist <
-            // closestDist)))
-            if ((dist < 1000) && (closestUnit == null || (dist < closestDist))) {
-                closestUnit = unit;
-                closestDist = dist;
-            }
-        }
-
-        return closestUnit;
     }
 
     /// 해당 일꾼 유닛에게 Combat 임무를 부여합니다
@@ -941,7 +917,7 @@ public class WorkerManager extends GameManager {
         if (unit == null)
             return;
 
-        if (unit.getType().isBuilding() && unit.getPlayer() == Monster.Broodwar.self()
+        if (unit.getType().isBuilding() && unit.getPlayer() == PlayerUtils.myPlayer()
                 && unit.getPlayer().getRace() == Race.Zerg) {
             // 해당 worker 를 workerData 에서 삭제한다
             workerData.workerDestroyed(unit);
@@ -955,16 +931,16 @@ public class WorkerManager extends GameManager {
             return;
 
         // add the depot if it exists
-        if (unit.getType().isResourceDepot() && unit.getPlayer() == Monster.Broodwar.self()) {
+        if (unit.getType().isResourceDepot() && unit.getPlayer() == PlayerUtils.myPlayer()) {
             workerData.addDepot(unit);
         }
 
         // add the worker
-        if (unit.getType().isWorker() && unit.getPlayer() == Monster.Broodwar.self() && unit.getHitPoints() >= 0) {
+        if (unit.getType().isWorker() && unit.getPlayer() == PlayerUtils.myPlayer() && unit.getHitPoints() >= 0) {
             workerData.addWorker(unit);
         }
 
-        if (unit.getType().isResourceDepot() && unit.getPlayer() == Monster.Broodwar.self()) {
+        if (unit.getType().isResourceDepot() && unit.getPlayer() == PlayerUtils.myPlayer()) {
             rebalanceWorkers();
         }
     }
@@ -981,14 +957,14 @@ public class WorkerManager extends GameManager {
         if (unit == null)
             return;
         // ResourceDepot 건물이 신규 생성되면, 자료구조 추가 처리를 한 후, rebalanceWorkers 를 한다
-        if (unit.getType().isResourceDepot() && unit.getPlayer() == Monster.Broodwar.self()) {
+        if (unit.getType().isResourceDepot() && unit.getPlayer() == PlayerUtils.myPlayer()) {
             workerData.addDepot(unit);
             // mineralPath(unit); //cc 완성되면 미네랄path 적용위해 호출 (본진에서 cc짓고 멀티 이동시 검토
             // 필요)
             rebalanceWorkers();
         }
         // 일꾼이 신규 생성되면, 자료구조 추가 처리를 한다.
-        if (unit.getType().isWorker() && unit.getPlayer() == Monster.Broodwar.self() && unit.getHitPoints() >= 0) {
+        if (unit.getType().isWorker() && unit.getPlayer() == PlayerUtils.myPlayer() && unit.getHitPoints() >= 0) {
             workerData.addWorker(unit);
             rebalanceWorkers();
         }
@@ -1020,11 +996,11 @@ public class WorkerManager extends GameManager {
             return;
         // ResourceDepot 건물이 파괴되면, 자료구조 삭제 처리를 한 후, 일꾼들을 Idle 상태로 만들어
         // rebalanceWorkers 한 효과가 나게 한다
-        if (unit.getType().isResourceDepot() && unit.getPlayer() == Monster.Broodwar.self()) {
+        if (unit.getType().isResourceDepot() && unit.getPlayer() == PlayerUtils.myPlayer()) {
             workerData.removeDepot(unit);
         }
         // 일꾼이 죽으면, 자료구조 삭제 처리를 한 후, rebalanceWorkers 를 한다
-        if (unit.getType().isWorker() && unit.getPlayer() == Monster.Broodwar.self()) {
+        if (unit.getType().isWorker() && unit.getPlayer() == PlayerUtils.myPlayer()) {
             workerData.workerDestroyed(unit);
             rebalanceWorkers();
         }
