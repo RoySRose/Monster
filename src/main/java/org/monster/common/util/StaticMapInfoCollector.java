@@ -60,6 +60,9 @@ public class StaticMapInfoCollector implements InfoCollector {
     protected List<Unit> getMinerals() {
         return Broodwar.getMinerals();
     }
+    protected List<Unit> getStaticMinerals() {
+        return Broodwar.getStaticMinerals();
+    }
     public List<Unit> getStaticGeysers() {
         return Broodwar.getStaticGeysers();
     }

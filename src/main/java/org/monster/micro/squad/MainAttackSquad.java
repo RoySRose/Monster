@@ -4,7 +4,6 @@ import bwapi.Race;
 import bwapi.Unit;
 import bwapi.UnitType;
 import org.monster.board.StrategyBoard;
-import org.monster.bootstrap.Monster;
 import org.monster.common.UnitInfo;
 import org.monster.common.util.MicroUtils;
 import org.monster.common.util.PlayerUtils;
@@ -42,7 +41,8 @@ public class MainAttackSquad extends Squad {
 
     public MainAttackSquad() {
         super(MicroConfig.SquadInfo.MAIN_ATTACK);
-        setUnitType(UnitType.Terran_Siege_Tank_Tank_Mode, UnitType.Terran_Siege_Tank_Siege_Mode, UnitType.Terran_Goliath, UnitType.Terran_Valkyrie);
+        setUnitType(UnitType.Zerg_Zergling);
+//        setUnitType(UnitType.Terran_Siege_Tank_Tank_Mode, UnitType.Terran_Siege_Tank_Siege_Mode, UnitType.Terran_Goliath, UnitType.Terran_Valkyrie);
     }
 
     @Override

@@ -47,13 +47,13 @@ public class PlayerInfoCollector implements InfoCollector {
         return Broodwar.enemy().supplyTotal();
     }
     protected int mineralSelf(){
-        return Broodwar.enemy().minerals();
+        return Broodwar.self().minerals();
     }
     protected int mineralEnemy(){
         return Broodwar.enemy().minerals();
     }
     protected int gasSelf(){
-        return Broodwar.enemy().gas();
+        return Broodwar.self().gas();
     }
     protected int gasEnemy(){
         return Broodwar.enemy().gas();

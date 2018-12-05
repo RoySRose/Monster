@@ -32,11 +32,6 @@ public class TimeUtils {
         return TimeInfoCollector.Instance().getframe() > frame;
     }
 
-    /// 경과시간을 frame으로 리턴
-    public static int elapsedFrames() {
-        return TimeInfoCollector.Instance().getframe();
-    }
-
     /// 경과시간을 second로 리턴
     public static int elapsedSeconds() {
         return TimeInfoCollector.Instance().getframe() / SECOND;
@@ -48,7 +43,7 @@ public class TimeUtils {
     }
 
     /// 경과시간을 frame으로 리턴
-    public static int elapsedFrames(int startFrame) {
+    public static int getFrame(int startFrame) {
         return TimeInfoCollector.Instance().getframe() - startFrame;
     }
 
@@ -98,7 +93,7 @@ public class TimeUtils {
         }
 
         double completeRate = (double) building.getHitPoints() / building.getType().maxHitPoints();
-        return elapsedFrames() - (int) (building.getType().buildTime() * completeRate);
+        return getFrame() - (int) (building.getType().buildTime() * completeRate);
     }
 
     public static int timeToFrames(int minutes, int seconds) {

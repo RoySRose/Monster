@@ -5,7 +5,6 @@ import bwapi.Unit;
 import bwapi.UnitType;
 import bwapi.WeaponType;
 import org.monster.board.StrategyBoard;
-import org.monster.bootstrap.Monster;
 import org.monster.common.UnitInfo;
 import org.monster.common.util.CommandUtils;
 import org.monster.common.util.MicroUtils;
@@ -149,7 +148,7 @@ public class AirForceControl extends Control {
                     for (Unit airunit : airunits) {
                         if (!MicroUtils.isBeingHealed(airunit)) {
                             if (airunit.getDistance(insidePosition) < 100) {
-                                if (MicroUtils.timeToRandomMove(airunit) && TimeUtils.elapsedFrames(airunit.getLastCommandFrame()) > 8 * TimeUtils.SECOND) {
+                                if (MicroUtils.timeToRandomMove(airunit) && TimeUtils.getFrame(airunit.getLastCommandFrame()) > 8 * TimeUtils.SECOND) {
                                     Position randomPosition = PositionUtils.randomPosition(insidePosition, 100);
                                     CommandUtils.attackMove(airunit, randomPosition);
                                 }
@@ -261,9 +260,9 @@ public class AirForceControl extends Control {
 //	private Unit closestAssistant(Unit wraith, UnitInfo eui) {
 //		List<Unit> assistUnitList = null;
 //		if (eui.getType().isFlyer()) {
-//			assistUnitList = UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Missile_Turret, UnitType.Terran_Goliath);
+//			assistUnitList = UnitUtils.getCompletedUnitList(UnitType.Terran_Missile_Turret, UnitType.Terran_Goliath);
 //		} else {
-//			assistUnitList = UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Vulture, UnitType.Terran_Siege_Tank_Tank_Mode, UnitType.Terran_Siege_Tank_Tank_Mode, UnitType.Terran_Goliath);
+//			assistUnitList = UnitUtils.getCompletedUnitList(UnitType.Terran_Vulture, UnitType.Terran_Siege_Tank_Tank_Mode, UnitType.Terran_Siege_Tank_Tank_Mode, UnitType.Terran_Goliath);
 //		}
 //		Unit closeAssistant = UnitUtils.getClosestUnitToPosition(assistUnitList, wraith.getPosition());
 //		if (closeAssistant == null || MicroUtils.isInWeaponRange(closeAssistant, eui)) { // 도와줄 아군이 없거나 이미 근처에 있는 경우

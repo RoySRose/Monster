@@ -8,11 +8,9 @@ import org.monster.build.base.BuildOrderQueue;
 import org.monster.build.base.ConstructionManager;
 import org.monster.build.provider.DefaultBuildableItem;
 import org.monster.common.MetaType;
-import org.monster.common.constant.CommonCode;
 import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.TimeUtils;
 import org.monster.common.util.UnitUtils;
-import org.monster.bootstrap.Monster;
 
 import java.util.List;
 
@@ -112,7 +110,7 @@ public class BuilderSupplyDepot extends DefaultBuildableItem {
 //        Factory 와 Starport 에서 유닛이 생산되는중인지 체크.
 //        기본적으로 유닛생산 건물수 만큼의 여유분이 있어야 하고, 현재 생산되고 있는 유닛만큼 여유분이 더 있어야 한다.
 
-        List<Unit> factory = UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Factory);
+        List<Unit> factory = UnitUtils.getCompletedUnitList(UnitType.Terran_Factory);
         for (Unit unit : factory) {
 
             Faccnt++;
@@ -122,7 +120,7 @@ public class BuilderSupplyDepot extends DefaultBuildableItem {
 
         }
 
-        List<Unit> starport = UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Starport);
+        List<Unit> starport = UnitUtils.getCompletedUnitList(UnitType.Terran_Starport);
         for (Unit unit : starport) {
 
             Starportcnt++;
@@ -175,7 +173,7 @@ public class BuilderSupplyDepot extends DefaultBuildableItem {
     }
 
     @Override
-    public boolean checkInitialBuild() {
+    public boolean isInitialBuildFinshed() {
         return TimeUtils.afterTime(3, 0);
     }
 }

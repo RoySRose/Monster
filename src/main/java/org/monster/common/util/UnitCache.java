@@ -206,7 +206,7 @@ public class UnitCache implements InfoCollector {
                     enemyVisibleUnitInfoByTypeMap.put(unit.getType(), unitInfoList);
                 }
             }
-            return new ArrayList<>(enemyVisibleUnitInfoByTypeMap.get(unitType));
+            return new ArrayList<>(enemyVisibleUnitInfoByTypeMap.getOrDefault(unitType, new ArrayList<>()));
         }
     }
 

@@ -11,7 +11,6 @@ import org.monster.common.LagObserver;
 import org.monster.common.UnitInfo;
 import org.monster.common.constant.CommonCode;
 import org.monster.decisions.strategy.manage.AirForceManager;
-import org.monster.bootstrap.Monster;
 import org.monster.micro.FleeOption;
 import org.monster.micro.KitingOption;
 import org.monster.micro.MirrorBugFixed;
@@ -672,7 +671,7 @@ public class MicroUtils {
 
     public static boolean isBeingHealed(Unit unit) {
         if (unit.isBeingHealed()) {
-            UNIT_HEALED_FRAME.put(unit.getID(), TimeUtils.elapsedFrames());
+            UNIT_HEALED_FRAME.put(unit.getID(), TimeUtils.getFrame());
             return true;
         }
 
@@ -712,7 +711,7 @@ public class MicroUtils {
 
     public static int totalComsatCount() {
         int count = 0;
-        List<Unit> comsatList = UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Comsat_Station);
+        List<Unit> comsatList = UnitUtils.getCompletedUnitList(UnitType.Terran_Comsat_Station);
         for (Unit comsat : comsatList) {
             if (comsat.getEnergy() >= 50) {
                 count++;

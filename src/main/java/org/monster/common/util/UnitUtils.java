@@ -1,6 +1,12 @@
 package org.monster.common.util;
 
-import bwapi.*;
+import bwapi.Player;
+import bwapi.Position;
+import bwapi.Race;
+import bwapi.TilePosition;
+import bwapi.Unit;
+import bwapi.UnitType;
+import bwapi.WeaponType;
 import bwta.BWTA;
 import bwta.BaseLocation;
 import bwta.Region;
@@ -12,7 +18,6 @@ import org.monster.common.util.internal.IConditions;
 import org.monster.common.util.internal.SpecificValueCache;
 import org.monster.decisions.constant.StrategyConfig;
 import org.monster.decisions.strategy.manage.PositionFinder;
-import org.monster.bootstrap.Monster;
 import org.monster.micro.CombatManager;
 import org.monster.micro.constant.MicroConfig;
 import org.monster.micro.squad.Squad;
@@ -56,6 +61,9 @@ public class UnitUtils {
             unitCount += getUnitCount(CommonCode.UnitFindStatus.INCOMPLETE, unitType);
         }
         return unitCount;
+    }
+    public static int getUnitCount(CommonCode.UnitFindStatus unitFindStatus) {
+        return getUnitCount(unitFindStatus, UnitType.AllUnits);
     }
     public static int getUnitCount(CommonCode.UnitFindStatus unitFindStatus, UnitType... unitTypes) {
         int unitCount = 0;
@@ -102,19 +110,29 @@ public class UnitUtils {
     public static List<Unit> getIncompletedUnitList(UnitType unitTypes) {
         return getUnitList(CommonCode.UnitFindStatus.INCOMPLETE, unitTypes);
     }
-    public static List<Unit> getUnitList(UnitType... unitTypes) {
-        Set<Unit> unitSet = new HashSet<>();
+    public static List<Unit> getCompletedUnitList(UnitType... unitTypes) {
+        List<Unit> unitList = new ArrayList<>();
         for (UnitType unitType : unitTypes) {
-            unitSet.addAll(getUnitList(CommonCode.UnitFindStatus.ALL, unitType));
+            unitList.addAll(getUnitList(CommonCode.UnitFindStatus.COMPLETE, unitType));
         }
-        return new ArrayList<>(unitSet);
+        return new ArrayList<>(unitList);
+    }
+    public static List<Unit> getUnitList(UnitType... unitTypes) {
+        List<Unit> unitList = new ArrayList<>();
+        for (UnitType unitType : unitTypes) {
+            unitList.addAll(getUnitList(CommonCode.UnitFindStatus.ALL, unitType));
+        }
+        return new ArrayList<>(unitList);
+    }
+    public static List<Unit> getUnitList(CommonCode.UnitFindStatus unitFindStatus) {
+        return getUnitList(unitFindStatus, UnitType.AllUnits);
     }
     public static List<Unit> getUnitList(CommonCode.UnitFindStatus unitFindStatus, UnitType... unitTypes) {
-        Set<Unit> unitSet = new HashSet<>();
+        List<Unit> unitList = new ArrayList<>();
         for (UnitType unitType : unitTypes) {
-            unitSet.addAll(getUnitList(unitFindStatus, unitType));
+            unitList.addAll(getUnitList(unitFindStatus, unitType));
         }
-        return new ArrayList<>(unitSet);
+        return new ArrayList<>(unitList);
     }
     public static List<Unit> getUnitList(CommonCode.UnitFindStatus unitFindStatus, UnitType unitType) {
         switch (unitFindStatus) {
@@ -669,7 +687,7 @@ public class UnitUtils {
     }
 
     public static Unit getClosestActivatedCommandCenter(Position position) {
-        List<Unit> commandCenters = UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Command_Center);
+        List<Unit> commandCenters = UnitUtils.getCompletedUnitList(UnitType.Terran_Command_Center);
         return getClosestUnitToPosition(commandCenters, position, new IConditions.UnitCondition() {
             @Override
             public boolean correspond(Unit commandCenter) {
@@ -877,7 +895,7 @@ public class UnitUtils {
             return activatedCommandCount;
         }
         activatedCommandCount = 0;
-        List<Unit> commandCenters = UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Command_Center);
+        List<Unit> commandCenters = UnitUtils.getCompletedUnitList(UnitType.Terran_Command_Center);
         for (Unit commandCenter : commandCenters) {
             if (WorkerManager.Instance().getWorkerData().getNumAssignedWorkers(commandCenter) > 6) {
                 activatedCommandCount++;
@@ -894,7 +912,7 @@ public class UnitUtils {
             return availableScanningCount;
         }
         availableScanningCount = 0;
-        List<Unit> comsatStations = UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Comsat_Station);
+        List<Unit> comsatStations = UnitUtils.getCompletedUnitList(UnitType.Terran_Comsat_Station);
         for (Unit comsatStation : comsatStations) {
             availableScanningCount += comsatStation.getEnergy() / 48; // 다크에게 컴셋 전 앞서 전진하게 위해 에너지를 2초 짧게 잡는다.
         }

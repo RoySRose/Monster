@@ -39,7 +39,7 @@ public abstract class Squad {
     }
 
     public boolean squadExecuted() {
-        return squadExecutedFrame == TimeUtils.elapsedFrames();
+        return squadExecutedFrame == TimeUtils.getFrame();
     }
 
     public void setUnitType(UnitType... unitTypes) {
@@ -68,7 +68,7 @@ public abstract class Squad {
 
     /// squad 실행
     public void findEnemiesAndExecuteSquad() {
-        if (squadExecutedFrame == TimeUtils.elapsedFrames()) {
+        if (squadExecutedFrame == TimeUtils.getFrame()) {
 //			System.out.println("ALREADY EXECUTED SQUAD - " + squadName);
             return;
         }
@@ -84,7 +84,7 @@ public abstract class Squad {
             BigWatch.record("squadExecution - " + squadName);
         }
 
-        squadExecutedFrame = TimeUtils.elapsedFrames();
+        squadExecutedFrame = TimeUtils.getFrame();
     }
 
     public abstract void execute();

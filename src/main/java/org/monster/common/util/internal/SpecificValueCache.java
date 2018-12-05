@@ -16,7 +16,7 @@ public class SpecificValueCache {
     public static <T> T get(ValueType valueType, Class<T> type) {
         Object value = data.get(valueType);
         Integer frame = dataSavedFrame.get(valueType);
-        if (frame == null || frame < TimeUtils.elapsedFrames()) {
+        if (frame == null || frame < TimeUtils.getFrame()) {
             return null;
         }
         return type.cast(value);
@@ -24,7 +24,7 @@ public class SpecificValueCache {
 
     public static void put(ValueType valueType, Object value) {
         data.put(valueType, value);
-        dataSavedFrame.put(valueType, TimeUtils.elapsedFrames());
+        dataSavedFrame.put(valueType, TimeUtils.getFrame());
     }
 
     public enum ValueType {

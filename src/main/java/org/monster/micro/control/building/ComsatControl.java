@@ -19,7 +19,7 @@ public class ComsatControl extends Control {
 //
 //    @Override
 //    public void control(Collection<Unit> unitList, Collection<UnitInfo> euiList) {
-//        if (TimeUtils.elapsedFrames(scanUsedFrame) < 4 * TimeUtils.SECOND) {
+//        if (TimeUtils.getFrame(scanUsedFrame) < 4 * TimeUtils.SECOND) {
 //            return;
 //        }
 //        if (!TimeUtils.executeRotation(0, 23)) {
@@ -49,7 +49,7 @@ public class ComsatControl extends Control {
 //                if (comsatMaxEnergy != null) {
 //                    MapGrid.Instance().scanAtPosition(scanPosition);
 //                    comsatMaxEnergy.useTech(TechType.Scanner_Sweep, scanPosition);
-//                    scanUsedFrame = TimeUtils.elapsedFrames();
+//                    scanUsedFrame = TimeUtils.getFrame();
 //
 //                    if (scanAtReadyTo) {
 //                        System.out.println("scan for ready to position. position=" + scanPosition + ", time=" + TimeUtils.framesToTimeString(scanUsedFrame));
@@ -92,7 +92,7 @@ public class ComsatControl extends Control {
 //        }
 //
 //        for (Unit comsatStation : unitList) {
-//            if (TimeUtils.elapsedFrames(comsatStation.getLastCommandFrame()) < 5 * TimeUtils.SECOND) {
+//            if (TimeUtils.getFrame(comsatStation.getLastCommandFrame()) < 5 * TimeUtils.SECOND) {
 //                continue;
 //            }
 //
@@ -108,7 +108,7 @@ public class ComsatControl extends Control {
 //            if (PositionUtils.isValidPosition(scanPositionForObservation)) {
 //                MapGrid.Instance().scanAtPosition(scanPositionForObservation);
 //                comsatToUse.useTech(TechType.Scanner_Sweep, scanPositionForObservation);
-//                scanUsedFrame = TimeUtils.elapsedFrames();
+//                scanUsedFrame = TimeUtils.getFrame();
 //            }
 //        }
 //
@@ -139,7 +139,7 @@ public class ComsatControl extends Control {
 //                }
 //            }
 //
-//            List<Unit> myAttackUnits = UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Vulture,
+//            List<Unit> myAttackUnits = UnitUtils.getCompletedUnitList(UnitType.Terran_Vulture,
 //                    UnitType.Terran_Siege_Tank_Tank_Mode, UnitType.Terran_Siege_Tank_Siege_Mode, UnitType.Terran_Goliath);
 //
 //            Race enemyRace = PlayerUtils.enemyRace();
@@ -213,7 +213,7 @@ public class ComsatControl extends Control {
 //                    if (cell == null) {
 //                        continue;
 //                    }
-//                    if (TimeUtils.elapsedFrames(cell.getTimeLastScan()) > 12000) {
+//                    if (TimeUtils.getFrame(cell.getTimeLastScan()) > 12000) {
 //                        scanTilePositionCandidate.add(islands.getTilePosition());
 //                    }
 //                }
@@ -237,8 +237,8 @@ public class ComsatControl extends Control {
 //            MapGrid.GridCell cell = MapGrid.Instance().getCell(scanPosotion);
 //
 //
-//            int lastScanTime = TimeUtils.elapsedFrames(cell.getTimeLastScan());
-//            int lastVisitTime = TimeUtils.elapsedFrames(cell.getTimeLastVisited());
+//            int lastScanTime = TimeUtils.getFrame(cell.getTimeLastScan());
+//            int lastVisitTime = TimeUtils.getFrame(cell.getTimeLastVisited());
 //            int lastCheckTime = Math.min(lastScanTime, lastVisitTime);
 //
 //            if (lastCheckTime < oldestLastCheckTime) {
@@ -255,7 +255,7 @@ public class ComsatControl extends Control {
 //            Position squadFrontPosition = MicroUtils.getMovePosition(StrategyBoard.mainSquadLeaderPosition, radian, 700).makeValid();
 //
 ////			if (!Prebot.Broodwar.isVisibleenemyCommandInfo(squadFrontPosition.toTilePosition())) {}
-//            scanEnemySquadFrame = TimeUtils.elapsedFrames();
+//            scanEnemySquadFrame = TimeUtils.getFrame();
 //            return squadFrontPosition;
 //        }
 //
@@ -283,7 +283,7 @@ public class ComsatControl extends Control {
 //            }
 //
 //            int lastFullCheckFrame = enemyResourceDepot.getValue().getLastFullCheckFrame();
-//            if (TimeUtils.elapsedFrames(lastFullCheckFrame) > 2500) {
+//            if (TimeUtils.getFrame(lastFullCheckFrame) > 2500) {
 //                if (lastFullCheckFrame < earlist) {
 //                    scanPosition = enemyResourceDepot.getKey().getLastPosition();
 //                    earlist = lastFullCheckFrame;

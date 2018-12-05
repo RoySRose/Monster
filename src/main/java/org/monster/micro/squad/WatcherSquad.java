@@ -13,7 +13,6 @@ import org.monster.common.UnitInfo;
 import org.monster.common.util.*;
 import org.monster.decisions.constant.StrategyCode;
 import org.monster.decisions.strategy.manage.PositionFinder;
-import org.monster.bootstrap.Monster;
 import org.monster.micro.CombatManager;
 import org.monster.micro.compute.VultureFightPredictor;
 import org.monster.micro.constant.MicroConfig;
@@ -81,13 +80,13 @@ public class WatcherSquad extends Squad {
 
             } else if (PositionFinder.Instance().otherPositionTimeUp(regroupLeader)) {
                 smallFightPredict = StrategyCode.SmallFightPredict.BACK;
-                watcherFleeStartFrame = TimeUtils.elapsedFrames();
+                watcherFleeStartFrame = TimeUtils.getFrame();
 //				System.out.println("watcher flee - other position time up");
 
             } else {
                 smallFightPredict = VultureFightPredictor.watcherPredictByUnitInfo(unitList, euiList);
                 if (smallFightPredict == StrategyCode.SmallFightPredict.BACK) {
-                    watcherFleeStartFrame = TimeUtils.elapsedFrames();
+                    watcherFleeStartFrame = TimeUtils.getFrame();
 //					System.out.println("watcher flee - enemy");
                 }
             }

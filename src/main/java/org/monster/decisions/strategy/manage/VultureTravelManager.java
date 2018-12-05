@@ -8,7 +8,6 @@ import org.monster.common.constant.CommonCode;
 import org.monster.common.util.*;
 import org.monster.common.util.internal.IConditions;
 import org.monster.decisions.strategy.TravelSite;
-import org.monster.bootstrap.Monster;
 import org.monster.micro.compute.GuerillaScore;
 import org.monster.micro.compute.VultureFightPredictor;
 import org.monster.micro.constant.MicroConfig;
@@ -179,7 +178,7 @@ public class VultureTravelManager {
         String ignoreExpiredSquadName = null;
         for (String squadName : guerillaIgnoreMap.keySet()) {
             Integer startTime = guerillaIgnoreMap.get(squadName);
-            if (startTime != null && TimeUtils.elapsedFrames(startTime) > MicroConfig.Vulture.GEURILLA_IGNORE_FRAME) {
+            if (startTime != null && TimeUtils.getFrame(startTime) > MicroConfig.Vulture.GEURILLA_IGNORE_FRAME) {
                 ignoreExpiredSquadName = squadName;
                 break;
             }
@@ -197,7 +196,7 @@ public class VultureTravelManager {
                 removeList.add(checkerId);
             } else {
                 int retiredTime = checkerRetiredTimeMap.get(checkerId);
-                if (TimeUtils.elapsedFrames(retiredTime) > MicroConfig.Vulture.CHECKER_RETIRE_FRAME) {
+                if (TimeUtils.getFrame(retiredTime) > MicroConfig.Vulture.CHECKER_RETIRE_FRAME) {
                     removeList.add(checkerId);
                 }
             }
@@ -240,7 +239,7 @@ public class VultureTravelManager {
         TravelSite bestTravelSite = null;
 
         for (TravelSite travelSite : travelSites) {
-            if (assignableVultures.size() < MicroConfig.Vulture.GEURILLA_FREE_VULTURE_COUNT && TimeUtils.elapsedFrames(travelSite.guerillaExamFrame) < MicroConfig.Vulture.GEURILLA_INTERVAL_FRAME) {
+            if (assignableVultures.size() < MicroConfig.Vulture.GEURILLA_FREE_VULTURE_COUNT && TimeUtils.getFrame(travelSite.guerillaExamFrame) < MicroConfig.Vulture.GEURILLA_INTERVAL_FRAME) {
                 continue;
             }
 

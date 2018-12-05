@@ -17,7 +17,7 @@ public class BuilderHydralisk extends DefaultBuildableItem {
     }
 
     @Override
-    public boolean checkInitialBuild() {
+    public boolean isInitialBuildFinshed() {
         return true;
     }
 }

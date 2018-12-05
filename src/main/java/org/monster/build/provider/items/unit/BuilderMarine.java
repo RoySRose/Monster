@@ -25,7 +25,7 @@ public class BuilderMarine extends DefaultBuildableItem {
 
     public final boolean buildCondition() {
 
-        List<Unit> barracks = UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Barracks);
+        List<Unit> barracks = UnitUtils.getCompletedUnitList(UnitType.Terran_Barracks);
         for (Unit unit : barracks) {
             if (!unit.isLifted()) {
                 liftChecker = true;
@@ -58,7 +58,7 @@ public class BuilderMarine extends DefaultBuildableItem {
     }
 
     @Override
-    public boolean checkInitialBuild() {
+    public boolean isInitialBuildFinshed() {
         return true;
     }
 }

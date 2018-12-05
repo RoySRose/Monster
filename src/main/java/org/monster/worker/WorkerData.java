@@ -60,8 +60,7 @@ public class WorkerData {
     private Map<Integer, Unit> workerMineralMap = new HashMap<Integer, Unit>();
 
     public WorkerData() {
-
-        for (Unit unit : UnitUtils.getUnitList()) {
+        for (Unit unit : StaticMapUtils.getStaticMinerals()) {
             if ((unit.getType() == UnitType.Resource_Mineral_Field)) {
                 workersOnMineralPatch.put(unit.getID(), 0);
             }
@@ -73,8 +72,6 @@ public class WorkerData {
     }
 
     public void workerDestroyed(Unit unit) {
-
-        // BasicBot 1.1 Patch Start ////////////////////////////////////////////////
 
         // workers, depotWorkerCount, refineryWorkerCount 등 자료구조에서 사망한 일꾼 정보를 제거합니다
         for (Iterator<Unit> it = workers.iterator(); it.hasNext(); ) {
@@ -144,7 +141,6 @@ public class WorkerData {
                 }
             }
         }
-        // BasicBot 1.1 Patch End //////////////////////////////////////////////////
 
         if (unit == null) {
             return;
@@ -556,7 +552,7 @@ public class WorkerData {
 
         int mineralsNearDepot = 0;
 
-        for (Unit unit : UnitUtils.getUnitList()) {
+        for (Unit unit : StaticMapUtils.getStaticMinerals()) {
             if ((unit.getType() == UnitType.Resource_Mineral_Field) && unit.getDistance(depot) < 320) {
                 mineralsNearDepot++;
             }
@@ -620,14 +616,11 @@ public class WorkerData {
         if (depot == null) {
             return null;
         }
+
         Minerals bestMineral = null;
         double bestDist = 100000000;
         double bestNumAssigned = 10000000;
         int workerCnt = depotWorkerCount.get(depot.getID());
-        //아직 cc와 미네랄간의 배정이 안끝났을경우 ex) 본진에서 cc짓고 멀티 보낸다던지 null값 나오므로
-        if (depotMineral.get(depot) == null) {
-            return null;
-        }
 
         int minCnt = depotMineral.get(depot).size();
         if (workerCnt > minCnt) {
@@ -636,7 +629,9 @@ public class WorkerData {
 
         for (Minerals minr : depotMineral.get(depot)) {
             double dist = minr.mineralUnit.getDistance(depot);
-            double numAssigned = workersOnMineralPatch.get(minr.unitId);
+            workersOnMineralPatch.get(minr.unitId);
+
+            int numAssigned = workersOnMineralPatch.getOrDefault(minr.unitId, 0);
 
             if (workerCnt <= minCnt) {
                 if (numAssigned < bestNumAssigned) {

@@ -4,7 +4,6 @@ import org.monster.common.MetaType;
 import org.monster.common.constant.CommonCode;
 import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.TimeUtils;
-import org.monster.bootstrap.Monster;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,7 +20,7 @@ public class BuildManagerFailureProtector {
             return false;
         }
 
-        if (TimeUtils.elapsedFrames(failInfo.suspendStartFrame) > failInfo.suspendDurationFrame) {
+        if (TimeUtils.getFrame(failInfo.suspendStartFrame) > failInfo.suspendDurationFrame) {
             failInfo.suspendStartFrame = CommonCode.NONE; // 정지 시작시간을 초기화 한다.
             failInfo.suspendDurationFrame *= 2; // 정지 시간을 2배로 증가시킨다.
 
@@ -44,7 +43,7 @@ public class BuildManagerFailureProtector {
 
         if (failInfo.failCount > 10) { // retry count = 10
             failInfo.failCount = 0;
-            failInfo.suspendStartFrame = TimeUtils.elapsedFrames();
+            failInfo.suspendStartFrame = TimeUtils.getFrame();
 
             String message = "*** " + metaType.getName() + " locked - " + TimeUtils.framesToTimeString(failInfo.suspendDurationFrame) + " ***";
             PlayerUtils.printf(message);

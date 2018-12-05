@@ -10,7 +10,6 @@ import bwta.BaseLocation;
 import bwta.Chokepoint;
 import bwta.Region;
 import org.monster.board.StrategyBoard;
-import org.monster.bootstrap.Monster;
 import org.monster.common.LagObserver;
 import org.monster.common.constant.CommonCode;
 import org.monster.common.util.BaseLocationUtils;
@@ -154,7 +153,7 @@ public class SpiderMineManger {
         List<Integer> expiredList = new ArrayList<>();
         for (Integer vultureId : mineReservedMap.keySet()) {
             PositionReserveInfo mineReserved = mineReservedMap.get(vultureId);
-            if (TimeUtils.elapsedFrames(mineReserved.reservedFrame) > RESV_EXPIRE_FRAME) {
+            if (TimeUtils.getFrame(mineReserved.reservedFrame) > RESV_EXPIRE_FRAME) {
                 expiredList.add(vultureId);
             }
         }
@@ -168,7 +167,7 @@ public class SpiderMineManger {
         List<Integer> expiredRemoveList = new ArrayList<>();
         for (Integer spiderMineId : mineRemoveMap.keySet()) {
             PositionReserveInfo removeReserved = mineRemoveMap.get(spiderMineId);
-            if (TimeUtils.elapsedFrames(removeReserved.reservedFrame) > RESV_EXPIRE_FRAME) {
+            if (TimeUtils.getFrame(removeReserved.reservedFrame) > RESV_EXPIRE_FRAME) {
                 expiredRemoveList.add(spiderMineId);
             }
         }
@@ -178,7 +177,7 @@ public class SpiderMineManger {
 
         // 탱크 주변 마인 (테란 상대로는 제거 안함)
         if (PlayerUtils.enemyRace() != Race.Terran) {
-            List<Unit> siegeList = UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Siege_Tank_Siege_Mode);
+            List<Unit> siegeList = UnitUtils.getCompletedUnitList(UnitType.Terran_Siege_Tank_Siege_Mode);
             for (Unit siegeTank : siegeList) {
                 List<Unit> nearMineList = UnitUtils.getUnitsInRadius(CommonCode.PlayerRange.SELF, siegeTank.getPosition(), MINE_REMOVE_TANK_DIST, UnitType.Terran_Vulture_Spider_Mine);
                 for (Unit mine : nearMineList) {
@@ -203,7 +202,7 @@ public class SpiderMineManger {
 
         if (TimeUtils.afterTime(9, 0)) {
             // 다음 확장지역의 스파이더 마인
-            if (TimeUtils.elapsedFrames(mineInNextExpansionFrame) > 20 * TimeUtils.SECOND) {
+            if (TimeUtils.getFrame(mineInNextExpansionFrame) > 20 * TimeUtils.SECOND) {
 
                 //TODO expansion logic 변경으로인해 주석. 어차피 불필요한 클래스
 //                BaseLocation nextExpansion = InformationManager.Instance().getNextExpansionLocation();
@@ -235,14 +234,14 @@ public class SpiderMineManger {
                     }
                 }
 
-                mineInNextExpansionFrame = TimeUtils.elapsedFrames();
+                mineInNextExpansionFrame = TimeUtils.getFrame();
             }
 
             // 급해서 본진에 박은 마인 제거
             if (LagObserver.groupsize() <= 10) {
                 if (StrategyBoard.watcherMinePositionLevel == SpiderMineManger.MinePositionLevel.NOT_MY_OCCUPIED) {
                     if (UnitUtils.euiListInBase() != null && UnitUtils.euiListInBase().isEmpty()) {
-                        List<Unit> spiderMineList = UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Vulture_Spider_Mine);
+                        List<Unit> spiderMineList = UnitUtils.getCompletedUnitList(UnitType.Terran_Vulture_Spider_Mine);
 
                         Region myBaseRegion = BWTA.getRegion(BaseUtils.myMainBase().getPosition());
                         for (Unit spiderMine : spiderMineList) {

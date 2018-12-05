@@ -7,6 +7,7 @@ import bwta.BWTA;
 import bwta.BaseLocation;
 import bwta.Region;
 import org.monster.board.StrategyBoard;
+import org.monster.bootstrap.GameManager;
 import org.monster.common.LagObserver;
 import org.monster.common.UnitInfo;
 import org.monster.common.constant.CommonCode;
@@ -18,22 +19,14 @@ import org.monster.common.util.UnitUtils;
 import org.monster.common.util.internal.IConditions;
 import org.monster.debugger.BigWatch;
 import org.monster.decisions.strategy.manage.VultureTravelManager;
-import org.monster.bootstrap.GameManager;
-import org.monster.bootstrap.Monster;
 import org.monster.micro.compute.GuerillaScore;
 import org.monster.micro.compute.VultureFightPredictor;
 import org.monster.micro.constant.MicroConfig;
-import org.monster.micro.squad.AirForceSquad;
-import org.monster.micro.squad.BuildingSquad;
-import org.monster.micro.squad.CheckerSquad;
-import org.monster.micro.squad.EarlyDefenseSquad;
 import org.monster.micro.squad.GuerillaSquad;
 import org.monster.micro.squad.MainAttackSquad;
 import org.monster.micro.squad.MultiDefenseSquad;
 import org.monster.micro.squad.ScvScoutSquad;
-import org.monster.micro.squad.SpecialSquad;
 import org.monster.micro.squad.Squad;
-import org.monster.micro.squad.WatcherSquad;
 import org.monster.micro.targeting.TargetFilter;
 
 import java.util.ArrayList;
@@ -62,8 +55,8 @@ public class CombatManager extends GameManager {
         // SCV + 마린
         // * 포지션: campPosition
         // * 초반 수비(정찰일꾼 견제, 일꾼러시, 가스러시, 파일런러시, 포톤러시, 초반 저글링/마린/질럿 등)
-        EarlyDefenseSquad earlyDefenseSquad = new EarlyDefenseSquad();
-        squadData.addSquad(earlyDefenseSquad);
+//        EarlyDefenseSquad earlyDefenseSquad = new EarlyDefenseSquad();
+//        squadData.addSquad(earlyDefenseSquad);
 
         // (마린) + 탱크 + 골리앗
         // * 본진 수비 및 적 공격
@@ -73,13 +66,13 @@ public class CombatManager extends GameManager {
 
         // 감시 벌처
         // * 적 감시 및 견제, 적 공격, 마인매설(NOT_MY_OCCUPIED OR ANYWHERE)
-        WatcherSquad watcherSquad = new WatcherSquad();
-        squadData.addSquad(watcherSquad);
+//        WatcherSquad watcherSquad = new WatcherSquad();
+//        squadData.addSquad(watcherSquad);
 
         // 정찰 벌처
         // * 적 진영 정찰, 마인매설(ONLY_GOOD_POSITION)
-        CheckerSquad checkerSquad = new CheckerSquad();
-        squadData.addSquad(checkerSquad);
+//        CheckerSquad checkerSquad = new CheckerSquad();
+//        squadData.addSquad(checkerSquad);
 
         // 초반 정찰용 SCV
         // * 적 base 탐색, 일꾼견제
@@ -88,16 +81,16 @@ public class CombatManager extends GameManager {
         squadData.addSquad(scvScoutSquad);
 
         // 레이쓰 특공대
-        AirForceSquad airForceSquad = new AirForceSquad();
-        squadData.addSquad(airForceSquad);
+//        AirForceSquad airForceSquad = new AirForceSquad();
+//        squadData.addSquad(airForceSquad);
 
         // 개별 유닛 - 베슬, 드랍십
-        SpecialSquad specialSquad = new SpecialSquad();
-        squadData.addSquad(specialSquad);
+//        SpecialSquad specialSquad = new SpecialSquad();
+//        squadData.addSquad(specialSquad);
 
         // 배럭, 컴셋 등 빌딩
-        BuildingSquad buildingSquad = new BuildingSquad();
-        squadData.addSquad(buildingSquad);
+//        BuildingSquad buildingSquad = new BuildingSquad();
+//        squadData.addSquad(buildingSquad);
     }
 
     public void update() {
@@ -114,20 +107,20 @@ public class CombatManager extends GameManager {
 
         // 팩토리
         updateSquadDefault(MicroConfig.SquadInfo.MAIN_ATTACK); // 탱크, 골리앗, 발키리
-        updateTankDefenseSquad(); // 탱크
+//        updateTankDefenseSquad(); // 탱크
 
-        updateSquadDefault(MicroConfig.SquadInfo.AIR_FORCE); // 레이스
-        updateSquadDefault(MicroConfig.SquadInfo.SPECIAL); // 베슬
-        updateSquadDefault(MicroConfig.SquadInfo.BUILDING); // 빌딩, 컴셋
+//        updateSquadDefault(MicroConfig.SquadInfo.AIR_FORCE); // 레이스
+//        updateSquadDefault(MicroConfig.SquadInfo.SPECIAL); // 베슬
+//        updateSquadDefault(MicroConfig.SquadInfo.BUILDING); // 빌딩, 컴셋
 
         // SCV유형별 구분
-        updateSquadDefault(MicroConfig.SquadInfo.EARLY_DEFENSE); // SCV
+//        updateSquadDefault(MicroConfig.SquadInfo.EARLY_DEFENSE); // SCV
         updateSquadDefault(MicroConfig.SquadInfo.SCV_SCOUT); // SCV
 
         // 벌처유형별 구분
-        updateSquadDefault(MicroConfig.SquadInfo.WATCHER); // 벌처
-        updateSquadDefault(MicroConfig.SquadInfo.CHECKER); // 벌처
-        updateGuerillaSquad(); // 벌처
+//        updateSquadDefault(MicroConfig.SquadInfo.WATCHER); // 벌처
+//        updateSquadDefault(MicroConfig.SquadInfo.CHECKER); // 벌처
+//        updateGuerillaSquad(); // 벌처
 
         BigWatch.record("combatUnitArrangement");
     }
@@ -149,7 +142,7 @@ public class CombatManager extends GameManager {
         }
 
         if (PlayerUtils.supplyUsedSelf() < 100 || TimeUtils.executeRotation(LagObserver.managerExecuteRotation(LagObserver.MANAGER7, 0), LagObserver.managerRotationSize())) {
-            List<Unit> squadTypeUnitList = UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE, squad.getUnitTypes());
+            List<Unit> squadTypeUnitList = UnitUtils.getCompletedUnitList(squad.getUnitTypes());
 
             List<Unit> assignableUnitList = new ArrayList<>();
             for (Unit unit : squadTypeUnitList) {
@@ -312,7 +305,7 @@ public class CombatManager extends GameManager {
     }
 
     private boolean assign(List<Squad> updatedSquadList, Set<Integer> defenseTankIdSet) {
-        List<Unit> tankList = UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Siege_Tank_Tank_Mode, UnitType.Terran_Siege_Tank_Siege_Mode);
+        List<Unit> tankList = UnitUtils.getCompletedUnitList(UnitType.Terran_Siege_Tank_Tank_Mode, UnitType.Terran_Siege_Tank_Siege_Mode);
 
         for (Squad defenseSquad : updatedSquadList) {
             MultiDefenseSquad squad = (MultiDefenseSquad) defenseSquad;
@@ -338,7 +331,7 @@ public class CombatManager extends GameManager {
                 }
             });
             squadData.assign(closestTank, squad);
-            squad.setDefenseUnitAssignedFrame(TimeUtils.elapsedFrames());
+            squad.setDefenseUnitAssignedFrame(TimeUtils.getFrame());
             return true;
         }
         return false;
@@ -357,7 +350,7 @@ public class CombatManager extends GameManager {
             }
 
             int gurillaFailFrame = VultureTravelManager.Instance().getGurillaFailFrame();
-            if (TimeUtils.elapsedFrames(gurillaFailFrame) < 10 * TimeUtils.SECOND) {
+            if (TimeUtils.getFrame(gurillaFailFrame) < 10 * TimeUtils.SECOND) {
                 maxRatio = 0.0d;
             }
 
@@ -365,7 +358,7 @@ public class CombatManager extends GameManager {
             int maxCount = (int) (vultureCount * maxRatio);
 
             List<Unit> assignableVultures = new ArrayList<>();
-            List<Unit> squadTypeUnitList = UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Vulture);
+            List<Unit> squadTypeUnitList = UnitUtils.getCompletedUnitList(UnitType.Terran_Vulture);
             for (Unit unit : squadTypeUnitList) {
                 Squad unitSqaud = squadData.getSquad(unit);
                 if (unitSqaud instanceof GuerillaSquad) {
@@ -430,7 +423,7 @@ public class CombatManager extends GameManager {
 
     private boolean removeGuerilla(GuerillaSquad squad) {
         if (squad.unitList.isEmpty()) {
-            VultureTravelManager.Instance().setGurillaFailFrame(TimeUtils.elapsedFrames());
+            VultureTravelManager.Instance().setGurillaFailFrame(TimeUtils.getFrame());
             return true;
         }
 

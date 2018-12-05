@@ -343,7 +343,7 @@ public class EnemyBuildTimer {
             return;
         }
 
-        int expectBuildTime = TimeUtils.elapsedFrames() - flagUnitType.buildTime() - buildingType.buildTime();
+        int expectBuildTime = TimeUtils.getFrame() - flagUnitType.buildTime() - buildingType.buildTime();
 
         if (buildingType == UnitType.Protoss_Citadel_of_Adun) {
             if (flagUnitType == UnitType.Protoss_Dark_Templar || flagUnitType == UnitType.Protoss_High_Templar) {
