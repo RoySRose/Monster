@@ -8,7 +8,6 @@ import bwapi.Unit;
 import org.monster.board.StrategyBoard;
 import org.monster.build.base.BuildManager;
 import org.monster.build.base.ConstructionManager;
-import org.monster.build.base.ConstructionPlaceFinder;
 import org.monster.build.initialProvider.InitialBuildProvider;
 import org.monster.build.provider.BuildQueueProvider;
 import org.monster.common.MapGrid;
@@ -112,7 +111,7 @@ public class GameCommander {
              * Hands
              */
 
-            InitialBuildProvider.Instance().updateInitialBuild();
+            InitialBuildProvider.Instance().updateTimeCheck();
             BuildQueueProvider.Instance().updateTimeCheck();
             BuildManager.Instance().updateTimeCheck();
             ConstructionManager.Instance().updateTimeCheck();

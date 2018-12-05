@@ -216,8 +216,7 @@ public class BaseInfoCollector implements InfoCollector {
 
                     TilePosition buildingPosition = ui.getTilePosition();
 
-                    if (BWTA.getRegion(buildingPosition) != BWTA.getRegion(baseLocation.getTilePosition())) { // basicbot
-                        // 1.2
+                    if (BWTA.getRegion(buildingPosition) != BWTA.getRegion(baseLocation.getTilePosition())) {
                         continue;
                     }
 
@@ -238,8 +237,7 @@ public class BaseInfoCollector implements InfoCollector {
 
                     TilePosition buildingPosition = ui.getLastPosition().toTilePosition();
 
-                    if (BWTA.getRegion(buildingPosition) != BWTA.getRegion(baseLocation.getTilePosition())) { // basicbot
-                        // 1.2
+                    if (BWTA.getRegion(buildingPosition) != BWTA.getRegion(baseLocation.getTilePosition())) {
                         continue;
                     }
 

@@ -6,13 +6,8 @@ import bwapi.UnitType;
 import org.monster.board.StrategyBoard;
 import org.monster.common.UnitInfo;
 import org.monster.common.constant.CommonCode;
-import org.monster.common.util.BaseUtils;
-import org.monster.common.util.UnitTypeUtils;
-import org.monster.common.util.PlayerUtils;
-import org.monster.common.util.TimeUtils;
-import org.monster.common.util.UnitUtils;
+import org.monster.common.util.*;
 import org.monster.decisions.constant.EnemyStrategyOptions;
-import org.monster.bootstrap.Monster;
 import org.monster.micro.constant.MicroConfig;
 import org.monster.worker.WorkerManager;
 
@@ -289,7 +284,7 @@ public class AttackExpansionManager {
 
         if (isAttackMode) {
             if (!StrategyBoard.mainSquadMode.isAttackMode) {
-                StrategyBoard.attackStartedFrame = TimeUtils.elapsedFrames();
+                StrategyBoard.attackStartedFrame = TimeUtils.getFrame();
             }
 
             if (noMercyAttack) {
@@ -302,7 +297,7 @@ public class AttackExpansionManager {
 
         } else {
             if (StrategyBoard.mainSquadMode.isAttackMode) {
-                StrategyBoard.retreatFrame = TimeUtils.elapsedFrames();
+                StrategyBoard.retreatFrame = TimeUtils.getFrame();
             }
 
             StrategyBoard.mainSquadMode = MicroConfig.MainSquadMode.NORMAL;
@@ -538,7 +533,7 @@ public class AttackExpansionManager {
         List<Unit> incompleteCenters = UnitUtils.getUnitList(CommonCode.UnitFindStatus.INCOMPLETE, UnitType.Terran_Command_Center);
         count += incompleteCenters.size();
 
-        for (Unit commandcenter : UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Command_Center)) {
+        for (Unit commandcenter : UnitUtils.getCompletedUnitList(UnitType.Terran_Command_Center)) {
             if (WorkerManager.Instance().getWorkerData().getNumAssignedWorkers(commandcenter) < 7) {
                 count++;
             }
@@ -553,7 +548,7 @@ public class AttackExpansionManager {
 
         int mineralsNearDepot = 0;
 
-        for (Unit unit : UnitUtils.getUnitList()) {
+        for (Unit unit : StaticMapUtils.getStaticMinerals()) {
             if ((unit.getType() == UnitType.Resource_Mineral_Field) && unit.getDistance(depot) < 450 && unit.getResources() > 200) {
                 mineralsNearDepot++;
             }

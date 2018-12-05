@@ -61,7 +61,6 @@ import org.monster.decisions.strategy.analyse.zerg.unit.HydraliskAnalyser;
 import org.monster.decisions.strategy.analyse.zerg.unit.LurkerAnalyser;
 import org.monster.decisions.strategy.analyse.zerg.unit.MutaliskAnalyser;
 import org.monster.decisions.strategy.analyse.zerg.unit.ZerglingAnalyser;
-import org.monster.bootstrap.Monster;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -227,16 +226,16 @@ public class StrategyAnalyseManager {
 
         if (PlayerUtils.isVisible(enemyBaseTile)) {
 //			System.out.println("base explored");
-            lastCheckFrameBase = TimeUtils.elapsedFrames();
+            lastCheckFrameBase = TimeUtils.getFrame();
         }
         //TODO enemyGasTile null 일때는??
         if (PlayerUtils.isVisible(enemyGasTile)) {
 //			System.out.println("gas explored");
-            lastCheckFrameGas = TimeUtils.elapsedFrames();
+            lastCheckFrameGas = TimeUtils.getFrame();
         }
         if (PlayerUtils.isVisible(enemyFirstExpansionTile)) {
 //			System.out.println("expansion explored");
-            lastCheckFrameFirstExpansion = TimeUtils.elapsedFrames();
+            lastCheckFrameFirstExpansion = TimeUtils.getFrame();
         }
     }
 

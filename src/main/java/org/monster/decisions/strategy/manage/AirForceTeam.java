@@ -8,7 +8,6 @@ import org.monster.common.UnitInfo;
 import org.monster.common.util.UnitTypeUtils;
 import org.monster.common.util.TimeUtils;
 import org.monster.common.util.UnitUtils;
-import org.monster.bootstrap.Monster;
 import org.monster.common.util.UpgradeUtils;
 import org.monster.micro.constant.MicroConfig;
 
@@ -78,7 +77,7 @@ public class AirForceTeam {
             }
         }
 
-        int index = TimeUtils.elapsedFrames() % WRAITH_EFFECTIVE_FRAME_SIZE;
+        int index = TimeUtils.getFrame() % WRAITH_EFFECTIVE_FRAME_SIZE;
         damagedEffectiveFrame = damagedEffectiveFrame + reducedHitPoints - damagedMemory[index];
         killedEffectiveFrame = killedEffectiveFrame + killCounts - killedMemory[index];
 
@@ -127,7 +126,7 @@ public class AirForceTeam {
             return false;
         }
         int retreatTime = repairCenter != null ? RETREAT_TIME_REPAIR : RETREAT_TIME;
-        return TimeUtils.elapsedFrames(retreatFrame) < retreatTime;
+        return TimeUtils.getFrame(retreatFrame) < retreatTime;
     }
 
     public void retreat(UnitInfo eui) {
@@ -135,7 +134,7 @@ public class AirForceTeam {
             return;
         }
         this.fleeEui = eui;
-        this.retreatFrame = TimeUtils.elapsedFrames();
+        this.retreatFrame = TimeUtils.getFrame();
         this.targetTryCount++;
         if (this.targetTryCount == MAX_TARGET_TRY_COUNT) {
             changeTargetIndex();

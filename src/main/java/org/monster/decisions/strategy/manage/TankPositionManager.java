@@ -12,7 +12,6 @@ import org.monster.common.util.MicroUtils;
 import org.monster.common.util.PositionUtils;
 import org.monster.common.util.TimeUtils;
 import org.monster.common.util.UnitUtils;
-import org.monster.bootstrap.Monster;
 import org.monster.micro.PositionReserveInfo;
 import org.monster.micro.PositionSiegeInfo;
 import org.monster.micro.constant.MicroConfig;
@@ -53,7 +52,7 @@ public class TankPositionManager {
         List<Integer> expiredList = new ArrayList<>();
         for (Integer tankId : siegeModeReservedMap.keySet()) {
             PositionReserveInfo mineReserved = siegeModeReservedMap.get(tankId);
-            if (TimeUtils.elapsedFrames(mineReserved.reservedFrame) > POSITION_EXPIRE_FRAME) {
+            if (TimeUtils.getFrame(mineReserved.reservedFrame) > POSITION_EXPIRE_FRAME) {
                 expiredList.add(tankId);
             }
         }
@@ -107,7 +106,7 @@ public class TankPositionManager {
                         int reservedCount = getPositionReserveCountInRadius(movePosition, SIEGE_ARRANGE_RADIUS);
 
                         if (siegeModeTanks.size() + reservedCount < seigeNumLimit) {
-                            PositionReserveInfo reserveInfo = new PositionReserveInfo(tank.getID(), movePosition, TimeUtils.elapsedFrames());
+                            PositionReserveInfo reserveInfo = new PositionReserveInfo(tank.getID(), movePosition, TimeUtils.getFrame());
                             if (siegeModeReservedMap.containsValue(reserveInfo)) {
                                 continue;
                             }

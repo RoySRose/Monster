@@ -113,11 +113,11 @@ public abstract class Control {
 
     private boolean outOfRegionLongTime(Unit unit) {
         Integer outFrame = unitOutOfRegionMap.get(unit.getID());
-        if (outFrame == null || TimeUtils.elapsedFrames(outFrame) > 10 * TimeUtils.SECOND) { // 이력이없거나 오래된 정보는 새로만든다.
-            unitOutOfRegionMap.put(unit.getID(), TimeUtils.elapsedFrames());
+        if (outFrame == null || TimeUtils.getFrame(outFrame) > 10 * TimeUtils.SECOND) { // 이력이없거나 오래된 정보는 새로만든다.
+            unitOutOfRegionMap.put(unit.getID(), TimeUtils.getFrame());
             return false;
         } else {
-            return TimeUtils.elapsedFrames(outFrame) > 2 * TimeUtils.SECOND;
+            return TimeUtils.getFrame(outFrame) > 2 * TimeUtils.SECOND;
         }
     }
 }

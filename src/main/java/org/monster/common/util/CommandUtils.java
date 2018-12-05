@@ -122,8 +122,8 @@ public class CommandUtils {
     public static void siege(Unit tank) {
         if (tank.canSiege() && validCommand(tank, UnitCommandType.Siege)) {
 //			Integer changeTime = siegeModeChangeMap.get(tank.getID());
-//			if (changeTime == null || TimeUtils.elapsedFrames(changeTime) > 4 * TimeUtils.SECOND) {
-//				siegeModeChangeMap.put(tank.getID(), TimeUtils.elapsedFrames());
+//			if (changeTime == null || TimeUtils.getFrame(changeTime) > 4 * TimeUtils.SECOND) {
+//				siegeModeChangeMap.put(tank.getID(), TimeUtils.getFrame());
             tank.siege();
 //			}
         }
@@ -132,8 +132,8 @@ public class CommandUtils {
     public static void unsiege(Unit tank) {
         if (tank.canUnsiege() && validCommand(tank, UnitCommandType.Unsiege)) {
 //			Integer changeTime = siegeModeChangeMap.get(tank.getID());
-//			if (changeTime == null || TimeUtils.elapsedFrames(changeTime) > 4 * TimeUtils.SECOND) {
-//				siegeModeChangeMap.put(tank.getID(), TimeUtils.elapsedFrames());
+//			if (changeTime == null || TimeUtils.getFrame(changeTime) > 4 * TimeUtils.SECOND) {
+//				siegeModeChangeMap.put(tank.getID(), TimeUtils.getFrame());
             tank.unsiege();
 //			}
         }

@@ -16,7 +16,6 @@ import org.monster.common.util.BaseUtils;
 import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.TimeUtils;
 import org.monster.common.util.UnitUtils;
-import org.monster.bootstrap.Monster;
 import org.monster.worker.WorkerManager;
 
 import java.util.List;
@@ -96,8 +95,8 @@ public class BuilderDrone extends DefaultBuildableItem {
 
         int maxworkerCount = tot_mineral_self * 2 + 8 * UnitUtils.getCompletedUnitCount(UnitType.Terran_Command_Center);
         int workerCount = UnitUtils.getUnitCount(UnitType.Terran_SCV); // workerCount = 현재 일꾼 수 + 생산중인 일꾼 수
-        // List CommandCenter = UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Command_Center);
-        for (Unit commandcenter : UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Command_Center)) {
+        // List CommandCenter = UnitUtils.getCompletedUnitList(UnitType.Terran_Command_Center);
+        for (Unit commandcenter : UnitUtils.getCompletedUnitList(UnitType.Terran_Command_Center)) {
             if (commandcenter.isTraining()) {
                 workerCount += commandcenter.getTrainingQueue().size();
             }
@@ -112,7 +111,7 @@ public class BuilderDrone extends DefaultBuildableItem {
             return false;
         }
 
-        for (Unit commandcenter : UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Command_Center)) {
+        for (Unit commandcenter : UnitUtils.getCompletedUnitList(UnitType.Terran_Command_Center)) {
             if (commandcenter.isTraining()) {
 //				return false;
                 continue;
@@ -176,7 +175,7 @@ public class BuilderDrone extends DefaultBuildableItem {
     }
 
     @Override
-    public boolean checkInitialBuild() {
+    public boolean isInitialBuildFinshed() {
         return TimeUtils.afterTime(1, 40);
     }
 

@@ -73,7 +73,7 @@ public class ResearchSelector implements Selector<MetaType> {
 
 //		EnemyStrategyOptions.UpgradeOrder order = StrategyBoard.currentStrategy.upgrade;
 
-        List<Unit> canMachineShop = UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Machine_Shop);
+        List<Unit> canMachineShop = UnitUtils.getCompletedUnitList(UnitType.Terran_Machine_Shop);
 
         boolean canResearch = false;
 

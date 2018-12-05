@@ -207,7 +207,7 @@ public class MarineControl extends Control {
     }
 
     public Unit getCompleteBunker(Region campRegion) {
-        Collection<Unit> bunkers = UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Bunker);
+        Collection<Unit> bunkers = UnitUtils.getCompletedUnitList(UnitType.Terran_Bunker);
         return UnitUtils.getClosestUnitToPosition(bunkers, ChokePointUtils.mySecondChoke().getCenter());
     }
 

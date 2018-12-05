@@ -9,7 +9,6 @@ import org.monster.decisions.constant.EnemyStrategy;
 import org.monster.decisions.constant.EnemyStrategyOptions;
 import org.monster.decisions.strategy.analyse.Clue.ClueInfo;
 import org.monster.decisions.strategy.manage.EnemyBuildTimer;
-import org.monster.bootstrap.Monster;
 
 public class ZergStrategist extends Strategist {
 
@@ -204,7 +203,7 @@ public class ZergStrategist extends Strategist {
     }
 
     private boolean minimumFastWraithIfStarportExist() {
-        if (TimeUtils.elapsedFrames(warithActivatedFrame) < 4 * TimeUtils.SECOND) {
+        if (TimeUtils.getFrame(warithActivatedFrame) < 4 * TimeUtils.SECOND) {
             return false;
         }
         if (StrategyBoard.wraithCount > 0 || StrategyBoard.valkyrieCount > 0) {
@@ -213,13 +212,13 @@ public class ZergStrategist extends Strategist {
         if (UnitUtils.getCompletedUnitCount(UnitType.Terran_Starport) > 0) {
             return true;
         }
-        warithActivatedFrame = TimeUtils.elapsedFrames();
+        warithActivatedFrame = TimeUtils.getFrame();
         System.out.println("fast wraith activated");
         return true;
     }
 
     private boolean lateWraith() {
-        if (TimeUtils.elapsedFrames(warithActivatedFrame) < 4 * TimeUtils.SECOND) {
+        if (TimeUtils.getFrame(warithActivatedFrame) < 4 * TimeUtils.SECOND) {
             return false;
         }
         if (TimeUtils.beforeTime(10, 0)) {
@@ -234,7 +233,7 @@ public class ZergStrategist extends Strategist {
         if (UnitUtils.getUnitCount(CommonCode.UnitFindStatus.ALL, UnitType.Terran_Siege_Tank_Tank_Mode, UnitType.Terran_Siege_Tank_Siege_Mode) <= 5) {
             return false;
         }
-        warithActivatedFrame = TimeUtils.elapsedFrames();
+        warithActivatedFrame = TimeUtils.getFrame();
         System.out.println("late wraith activated");
         return true;
     }

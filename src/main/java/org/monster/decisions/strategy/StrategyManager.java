@@ -19,6 +19,8 @@ import org.monster.decisions.strategy.manage.SpiderMineManger;
 import org.monster.decisions.strategy.manage.StrategyAnalyseManager;
 import org.monster.decisions.strategy.manage.TankPositionManager;
 import org.monster.micro.constant.MicroConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -27,6 +29,8 @@ import java.util.List;
 /// BuildManager 의 buildQueue에 빌드 (건물 건설 / 유닛 훈련 / 테크 리서치 / 업그레이드) 명령을 입력합니다.<br>
 /// 정찰, 빌드, 공격, 방어 등을 수행하는 코드가 들어가는 class
 public class StrategyManager extends GameManager {
+
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private static StrategyManager instance = new StrategyManager();
 
@@ -66,7 +70,7 @@ public class StrategyManager extends GameManager {
     private void changeMainSquadMode() {
         //TODO 일단 무조건 공격
 //        if (AttackDecisionMaker.Instance().decision == Decision.NO_MERCY_ATTACK) {
-        StrategyBoard.mainSquadMode = MicroConfig.MainSquadMode.NO_MERCY;
+        StrategyBoard.mainSquadMode = MicroConfig.MainSquadMode.ATTCK;
 
 //        } else if (AttackDecisionMaker.Instance().decision == Decision.FULL_ATTACK) {
 //            if (StrategyBoard.buildTimeMap.featureEnabled(EnemyStrategyOptions.BuildTimeMap.Feature.QUICK_ATTACK)) {
@@ -83,7 +87,7 @@ public class StrategyManager extends GameManager {
     private void expansionOkay() {
         boolean expansionOkay = false;
         BaseLocation myFirstExpansion = BaseUtils.myFirstExpansion();
-        List<Unit> commandCenterList = UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Command_Center);
+        List<Unit> commandCenterList = UnitUtils.getCompletedUnitList(UnitType.Terran_Command_Center);
         for (Unit commandCenter : commandCenterList) {
             if (commandCenter.isLifted()) {
                 continue;

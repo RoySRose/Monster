@@ -7,11 +7,11 @@ import java.util.Set;
 public class RegionUtils {
 
     public static Set<Region> myOccupiedRegions() {
-        return RegionInfoCollector.Instance().occupiedRegions.get(PlayerUtils.myRace());
+        return RegionInfoCollector.Instance().occupiedRegions.get(PlayerUtils.myPlayer());
     }
 
     public static Set<Region> enemyOccupiedRegions() {
-        return RegionInfoCollector.Instance().occupiedRegions.get(PlayerUtils.enemyRace());
+        return RegionInfoCollector.Instance().occupiedRegions.get(PlayerUtils.enemyPlayer());
     }
 
     public static Region myThirdRegion() {

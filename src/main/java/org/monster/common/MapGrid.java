@@ -6,7 +6,6 @@ import bwapi.Unit;
 import bwapi.UnitType;
 import bwta.BWTA;
 import org.monster.bootstrap.GameManager;
-import org.monster.bootstrap.Monster;
 import org.monster.build.constant.BuildConfig;
 import org.monster.common.constant.CommonCode;
 import org.monster.common.util.*;
@@ -55,7 +54,7 @@ public class MapGrid extends GameManager {
         }
 
         int timeLastScan = lastScanGridCell.timeLastScan;
-        return TimeUtils.elapsedFrames(timeLastScan) < LagObserver.managerRotationSize() + 10;
+        return TimeUtils.getFrame(timeLastScan) < LagObserver.managerRotationSize() + 10;
     }
 
     public Position getLeastExplored() {

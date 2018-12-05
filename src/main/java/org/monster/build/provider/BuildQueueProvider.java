@@ -14,7 +14,6 @@ import org.monster.common.MetaType;
 import org.monster.common.constant.CommonCode;
 import org.monster.common.util.TimeUtils;
 import org.monster.bootstrap.GameManager;
-import org.monster.bootstrap.Monster;
 import org.monster.common.util.UpgradeUtils;
 
 import java.util.ArrayList;
@@ -69,7 +68,7 @@ public class BuildQueueProvider extends GameManager {
     }
 
     public void startUpgrade(UpgradeType upgradeType) {
-        upgradeStartMap.put(upgradeType, TimeUtils.elapsedFrames());
+        upgradeStartMap.put(upgradeType, TimeUtils.getFrame());
     }
 
     public int upgradeRemainingFrame(UpgradeType upgradeType) {
@@ -80,7 +79,7 @@ public class BuildQueueProvider extends GameManager {
         if (startFrame == null) {
             return CommonCode.UNKNOWN;
         }
-        return upgradeType.upgradeTime() - TimeUtils.elapsedFrames(startFrame);
+        return upgradeType.upgradeTime() - TimeUtils.getFrame(startFrame);
     }
 
 
@@ -115,7 +114,7 @@ public class BuildQueueProvider extends GameManager {
 //        if (tempbuildQueue.isEmpty()) {
 //            return;
 //        }
-//        List<Unit> factories = UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Factory);
+//        List<Unit> factories = UnitUtils.getCompletedUnitList(UnitType.Terran_Factory);
 //        if (factories.isEmpty()) {
 //            return;
 //        }
@@ -132,7 +131,7 @@ public class BuildQueueProvider extends GameManager {
 //
 //            Integer notOperatingFrame = notOperatingFactoryTime.get(factory.getID());
 //            if (notOperatingFrame == null) {
-//                notOperatingFactoryTime.put(factory.getID(), TimeUtils.elapsedFrames());
+//                notOperatingFactoryTime.put(factory.getID(), TimeUtils.getFrame());
 //            } else {
 //                if (TimeUtils.elapsedSeconds(notOperatingFrame) >= 3) {
 //                    notOperatingFactories.add(factory);

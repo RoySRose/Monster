@@ -10,7 +10,6 @@ import org.monster.board.StrategyBoard;
 import org.monster.common.UnitInfo;
 import org.monster.common.constant.CommonCode;
 import org.monster.common.util.*;
-import org.monster.bootstrap.Monster;
 import org.monster.micro.compute.WraithFightPredictor;
 import org.monster.micro.constant.MicroConfig;
 import org.monster.worker.WorkerManager;
@@ -128,7 +127,7 @@ public class AirForceManager {
     }
 
     private void defenseModeChange() {
-        List<Unit> wraithList = UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Wraith);
+        List<Unit> wraithList = UnitUtils.getCompletedUnitList(UnitType.Terran_Wraith);
         List<UnitInfo> airEuiList = new ArrayList<>();
         if (PlayerUtils.enemyRace() == Race.Zerg) {
             airEuiList = UnitUtils.getEnemyUnitInfoList(CommonCode.EnemyUnitVisibleStatus.ALL, UnitType.Zerg_Mutalisk, UnitType.Zerg_Scourge, UnitType.Zerg_Devourer);
@@ -151,10 +150,10 @@ public class AirForceManager {
                 int myWraithCount = UnitUtils.getUnitCount(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Wraith);
 
                 if (myTankCount < 8) { // 탱크가 줄어들었다면 즉시 출발
-                    waitingEndFrame = TimeUtils.elapsedFrames();
+                    waitingEndFrame = TimeUtils.getFrame();
                     airForceDefenseMode = false;
                 } else if (myWraithCount >= 8) { // 레이쓰가 충분히 모였다면 즉시 출발
-                    waitingEndFrame = TimeUtils.elapsedFrames();
+                    waitingEndFrame = TimeUtils.getFrame();
                     airForceDefenseMode = false;
                 } else {
                     airForceDefenseMode = true;
@@ -174,7 +173,7 @@ public class AirForceManager {
         }
 
         StrategyBoard.wraithCount = 8;
-        waitingEndFrame = TimeUtils.elapsedFrames() + UnitType.Terran_Wraith.buildTime() * 5; // 투스타 기준 8마리 채우는데에 1마리 여유시간
+        waitingEndFrame = TimeUtils.getFrame() + UnitType.Terran_Wraith.buildTime() * 5; // 투스타 기준 8마리 채우는데에 1마리 여유시간
     }
 
     private void setTargetPosition() {
@@ -202,11 +201,11 @@ public class AirForceManager {
         boolean enemyBaseFirstCase = BaseUtils.enemyMainBase().equals(firstBase) && BaseUtils.enemyFirstExpansion().equals(secondBase);
         boolean enemyExpansionFirstCase = BaseUtils.enemyFirstExpansion().equals(firstBase) && BaseUtils.enemyMainBase().equals(secondBase);
         if ((!enemyBaseFirstCase && !enemyExpansionFirstCase)
-                || TimeUtils.elapsedFrames(offensePositionResetFrame) > 30 * TimeUtils.SECOND) {
+                || TimeUtils.getFrame(offensePositionResetFrame) > 30 * TimeUtils.SECOND) {
             setOffensePositions();
 //			this.setRetreatPosition();
 
-            offensePositionResetFrame = TimeUtils.elapsedFrames();
+            offensePositionResetFrame = TimeUtils.getFrame();
         }
     }
 
@@ -469,19 +468,19 @@ public class AirForceManager {
         boolean levelUp = false;
         if (strikeLevelStartFrame == CommonCode.NONE
                 || AirForceManager.StrikeLevel.SORE_SPOT >= strikeLevel && achievementEffectiveFrame > 0) {
-            strikeLevelStartFrame = TimeUtils.elapsedFrames();
+            strikeLevelStartFrame = TimeUtils.getFrame();
         }
 
         int airunitCount = UnitUtils.getUnitCount(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Wraith);
         if (strikeLevel == AirForceManager.StrikeLevel.CRITICAL_SPOT) {
             if (PlayerUtils.enemyRace() == Race.Terran) {
-                if (TimeUtils.elapsedFrames(strikeLevelStartFrame) > 50 * TimeUtils.SECOND) { // 레이쓰가 활동한지 일정시간 지남
+                if (TimeUtils.getFrame(strikeLevelStartFrame) > 50 * TimeUtils.SECOND) { // 레이쓰가 활동한지 일정시간 지남
                     levelDown = true;
                 } else if (UnitUtils.enemyCompleteUnitDiscovered(UnitType.Terran_Wraith, UnitType.Terran_Goliath, UnitType.Terran_Armory, UnitType.Terran_Medic)) { // 골리앗 발견, 완성된 아모리 발견
                     levelDown = true;
                 }
             } else if (PlayerUtils.enemyRace() == Race.Zerg) {
-                if (TimeUtils.elapsedFrames(strikeLevelStartFrame) > 100 * TimeUtils.SECOND) { // 레이쓰가 활동한지 일정시간 지남
+                if (TimeUtils.getFrame(strikeLevelStartFrame) > 100 * TimeUtils.SECOND) { // 레이쓰가 활동한지 일정시간 지남
                     levelDown = true;
                 } else if (UnitUtils.enemyCompleteUnitDiscovered(UnitType.Zerg_Hydralisk)) { // 히드라 발견
                     levelDown = true;
@@ -493,7 +492,7 @@ public class AirForceManager {
         } else if (strikeLevel == AirForceManager.StrikeLevel.SORE_SPOT) {
             // TODO 레이쓰가 일정 수 파괴되었을 때로 할지 고민
             int levelDownSeconds = Math.max(10 - airunitCount, 1);
-            if (TimeUtils.elapsedFrames(strikeLevelStartFrame) > levelDownSeconds * TimeUtils.SECOND) {
+            if (TimeUtils.getFrame(strikeLevelStartFrame) > levelDownSeconds * TimeUtils.SECOND) {
                 levelDown = true;
             } else if (achievementEffectiveFrame <= -50) {
                 levelDown = true;
@@ -511,12 +510,12 @@ public class AirForceManager {
 
         if (levelDown) {
             strikeLevel--;
-            strikeLevelStartFrame = TimeUtils.elapsedFrames();
+            strikeLevelStartFrame = TimeUtils.getFrame();
             setOffensePositions();
 
         } else if (levelUp) {
             strikeLevel++;
-            strikeLevelStartFrame = TimeUtils.elapsedFrames();
+            strikeLevelStartFrame = TimeUtils.getFrame();
             setOffensePositions();
         }
     }

@@ -5,9 +5,7 @@ import bwapi.Unit;
 import bwapi.UnitType;
 import org.monster.build.base.BuildManager;
 import org.monster.build.base.BuildOrderItem;
-import org.monster.build.initialProvider.InitialBuildProvider;
 import org.monster.common.MetaType;
-import org.monster.common.constant.CommonCode;
 import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.UnitUtils;
 
@@ -135,7 +133,7 @@ public abstract class DefaultBuildableItem implements BuildableItem {
 
     private final boolean satisfyBasicConditions() {
         //이니셜빌드는 끝났어야 한다.
-        if (!checkInitialBuild()) {
+        if (!isInitialBuildFinshed()) {
             return false;
         }
         //For units check supply
@@ -150,8 +148,9 @@ public abstract class DefaultBuildableItem implements BuildableItem {
         return true;
     }
 
-    public boolean checkInitialBuild() {
-        return InitialBuildProvider.Instance().getAdaptStrategyStatus() != InitialBuildProvider.AdaptStrategyStatus.BEFORE;
+    //TODO
+    public boolean isInitialBuildFinshed() {
+        return false;
     }
 
     private final boolean supplySpaceAvailable() {
@@ -164,7 +163,7 @@ public abstract class DefaultBuildableItem implements BuildableItem {
         if (!metaType.isUnit() || metaType.getUnitType().isBuilding()) {
             return true;
         }
-        List<Unit> producerList = UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE, producerOfUnit);
+        List<Unit> producerList = UnitUtils.getCompletedUnitList(producerOfUnit);
         for (Unit producer : producerList) {
             if (!producer.isTraining() && !producer.isConstructing() && !producer.isResearching() && !producer.isUpgrading()) {
                 return true;

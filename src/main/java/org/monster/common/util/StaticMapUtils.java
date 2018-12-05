@@ -29,6 +29,9 @@ public class StaticMapUtils {
     public static List<Unit> getMinerals(){
         return StaticMapInfoCollector.Instance().getMinerals();
     }
+    public static List<Unit> getStaticMinerals(){
+        return StaticMapInfoCollector.Instance().getStaticMinerals();
+    }
 
     public static boolean isExplored(TilePosition tilePosition){
         return StaticMapInfoCollector.Instance().isExplored(tilePosition);

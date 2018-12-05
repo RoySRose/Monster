@@ -41,7 +41,7 @@ public class UpgradeSelector implements Selector<MetaType> {
     private void executeUpgrade() {
 
         Unit armory = null;
-        for (Unit unit : UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Armory)) {
+        for (Unit unit : UnitUtils.getCompletedUnitList(UnitType.Terran_Armory)) {
             if (unit.getType() == UnitType.Terran_Armory) {
                 armory = unit;
             }

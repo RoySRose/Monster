@@ -58,9 +58,9 @@ public class MultiDefenseSquad extends Squad {
 
     public boolean alreadyDefenseUnitAssigned() {
         if (type == MultiDefenseSquad.DefenseType.CENTER_DEFENSE) {
-            return TimeUtils.elapsedFrames(defenseUnitAssignedFrame) < 2 * TimeUtils.MINUTE;
+            return TimeUtils.getFrame(defenseUnitAssignedFrame) < 2 * TimeUtils.MINUTE;
         } else {
-            return TimeUtils.elapsedFrames(defenseUnitAssignedFrame) < 30 * TimeUtils.SECOND;
+            return TimeUtils.getFrame(defenseUnitAssignedFrame) < 30 * TimeUtils.SECOND;
         }
     }
 

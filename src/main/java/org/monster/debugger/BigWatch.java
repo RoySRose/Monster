@@ -50,13 +50,13 @@ public class BigWatch {
             Long time = resultTimeMap.get(tag);
             if (recordTime == null || time > recordTime) {
                 recordMap.put(tag, time);
-                recordFrameMap.put(tag, TimeUtils.elapsedFrames());
+                recordFrameMap.put(tag, TimeUtils.getFrame());
             }
         }
 
         for (String tag : recordFrameMap.keySet()) {
             Integer recordFrame = recordFrameMap.get(tag);
-            if (TimeUtils.elapsedFrames(recordFrame) > TIME_TO_LIVE_SECONDS * TimeUtils.SECOND) {
+            if (TimeUtils.getFrame(recordFrame) > TIME_TO_LIVE_SECONDS * TimeUtils.SECOND) {
                 recordMap.remove(tag);
             }
         }

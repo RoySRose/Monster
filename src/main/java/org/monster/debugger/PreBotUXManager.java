@@ -23,7 +23,6 @@ import org.monster.build.base.BuildOrderItem;
 import org.monster.build.base.ConstructionManager;
 import org.monster.build.base.ConstructionPlaceFinder;
 import org.monster.build.base.ConstructionTask;
-import org.monster.build.initialProvider.InitialBuildProvider;
 import org.monster.build.provider.BuildQueueProvider;
 import org.monster.common.LagObserver;
 import org.monster.common.MapGrid;
@@ -289,7 +288,7 @@ public class PreBotUXManager {
         if (StrategyBoard.initiated) {
             battleColor = UxColor.CHAR_RED;
         }
-        Broodwar.drawTextScreen(170, 353, battleColor + StrategyBoard.mainSquadMode.toString() + ": " + TimeUtils.framesToTimeString(TimeUtils.elapsedFrames()) + "(" + TimeUtils.elapsedFrames() + ")");
+        Broodwar.drawTextScreen(170, 353, battleColor + StrategyBoard.mainSquadMode.toString() + ": " + TimeUtils.framesToTimeString(TimeUtils.getFrame()) + "(" + TimeUtils.getFrame() + ")");
 
         char apmColor = UxColor.CHAR_WHITE;
         int apm = Broodwar.getAPM();
@@ -868,35 +867,9 @@ public class PreBotUXManager {
     /// BuildOrderQueue 를 Screen 에 표시합니다
     public void drawBuildOrderQueueOnScreen(int x, int y) {
         char initialFinishedColor;
-        InitialBuildProvider.AdaptStrategyStatus adaptStrategyStatus = InitialBuildProvider.Instance().getAdaptStrategyStatus();
-        if (adaptStrategyStatus == InitialBuildProvider.AdaptStrategyStatus.COMPLETE) {
-            initialFinishedColor = UxColor.CHAR_WHITE;
-        } else if (adaptStrategyStatus == InitialBuildProvider.AdaptStrategyStatus.PROGRESSING) {
-            initialFinishedColor = UxColor.CHAR_YELLOW;
-        } else {
-            initialFinishedColor = UxColor.CHAR_GREEN;
-        }
-
-        Broodwar.drawTextScreen(x, y, initialFinishedColor + " <Build Order>");
-
-		/*
-		std.deque< BuildOrderItem >* queue = BuildManager.Instance().buildQueue.getQueue();
-		size_t reps = queue.size() < 24 ? queue.size() : 24;
-		for (size_t i(0); i<reps; i++) {
-			const MetaType & type = (*queue)[queue.size() - 1 - i].metaType;
-			Monster.game.drawTextScreen(x, y + 10 + (i * 10), " %s", type.getName().c_str());
-		}
-		*/
 
         Deque<BuildOrderItem> buildQueue = BuildManager.Instance().buildQueue.getQueue();
         int itemCount = 0;
-
-        // C++ : for (std.deque<BuildOrderItem>.reverse_iterator itr = buildQueue.rbegin(); itr != buildQueue.rend(); itr++) {
-        // C++ : 			BuildOrderItem & currentItem = *itr;
-        // C++ : 			Monster.game.drawTextScreen(x, y + 10 + (itemCount * 10), " %s", currentItem.metaType.getName().c_str());
-        // C++ : 			itemCount++;
-        // C++ : 			if (itemCount >= 24) break;
-        // C++ : 		}
 
         Object[] tempQueue = buildQueue.toArray();
 
@@ -970,34 +943,8 @@ public class PreBotUXManager {
 
     /// Construction 을 하지 못하는 Tile 들을 Map 에 표시합니다
     public void drawTilesToAvoidOnMap() {
-//		Set<TilePosition> tilesToAvoid = ConstructionPlaceFinder.Instance().getTilesToAvoid();
-//		for (TilePosition t : tilesToAvoid)
-//		{
-//			int x1 = t.getX() * 32 + 8;
-//			int y1 = t.getY() * 32 + 8;
-//			int x2 = (t.getX() + 1) * 32 - 8;
-//			int y2 = (t.getY() + 1) * 32 - 8;
-//
-//			Broodwar.drawBoxMap(x1, y1, x2, y2, Color.Orange, false);
-//		}
         int y = 0;
         int x = 0;
-
-
-//		for(y = 0; y < 128 ; y++) {
-//			for(x = 0; x < 128 ; x++) {
-//				if(ConstructionPlaceFinder.Instance().getTilesToAvoid(x, y)) {
-//					int x1 = x * 32 + 8;
-//					int y1 = y * 32 + 8;
-//					int x2 = (x + 1) * 32 - 8;
-//					int y2 = (y + 1) * 32 - 8;
-//	
-//					Broodwar.drawBoxMap(x1, y1, x2, y2, Color.Orange, false);
-//				}
-////				
-//			}
-//		}
-
 
         for (y = 0; y < 128; y++) {
             for (x = 0; x < 128; x++) {
@@ -1025,16 +972,6 @@ public class PreBotUXManager {
 
                     Broodwar.drawBoxMap(x1, y1, x2, y2, Color.Red, false);
                 }
-//				if(ConstructionPlaceFinder.Instance().getTilesToAvoidAddonBuilding(x, y)) {
-////					System.out.println("getTilesToAvoidAddonBuilding is ture :: (" + x + " , " + y + ")");
-//					int x1 = x * 32 + 8;
-//					int y1 = y * 32 + 8;
-//					int x2 = (x + 1) * 32 - 8;
-//					int y2 = (y + 1) * 32 - 8;
-//	
-//					Broodwar.drawBoxMap(x1, y1, x2, y2, Color.Black, false);
-//				}
-//				
             }
         }
     }
@@ -1706,7 +1643,7 @@ public class PreBotUXManager {
     private void drawCCtoScvCount() {
 
         int y = 100;
-        for (Unit depot : UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Command_Center)) {
+        for (Unit depot : UnitUtils.getCompletedUnitList(UnitType.Terran_Command_Center)) {
             // update workerData with the new job
             Broodwar.drawTextScreen(500, y, "depot.getID() : " + depot.getID() + " cnt : " + WorkerData.depotWorkerCount.get(depot.getID()));
             y += 10;

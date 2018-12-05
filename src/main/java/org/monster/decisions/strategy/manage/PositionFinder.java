@@ -19,7 +19,6 @@ import org.monster.common.util.*;
 import org.monster.common.util.internal.IConditions;
 import org.monster.decisions.constant.EnemyStrategyOptions;
 import org.monster.decisions.constant.StrategyCode;
-import org.monster.bootstrap.Monster;
 import org.monster.micro.CombatManager;
 import org.monster.micro.compute.VultureFightPredictor;
 import org.monster.micro.constant.MicroConfig;
@@ -130,7 +129,7 @@ public class PositionFinder {
             boolean firstExpansionDetectingOk = true;
             if (UnitUtils.enemyUnitDiscovered(UnitType.Protoss_Dark_Templar, UnitType.Protoss_Templar_Archives, UnitType.Zerg_Lurker, UnitType.Zerg_Lurker_Egg)) {
                 firstExpansionDetectingOk = false;
-                List<Unit> turretList = UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Missile_Turret);
+                List<Unit> turretList = UnitUtils.getCompletedUnitList(UnitType.Terran_Missile_Turret);
                 for (Unit turret : turretList) {
                     CommonCode.RegionType regionType = PositionUtils.positionToRegionType(turret.getPosition());
                     if (regionType == CommonCode.RegionType.MY_FIRST_EXPANSION || regionType == CommonCode.RegionType.MY_THIRD_REGION) {
@@ -139,7 +138,7 @@ public class PositionFinder {
                     }
                 }
                 if (!firstExpansionDetectingOk) {
-                    List<Unit> scannerList = UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Comsat_Station);
+                    List<Unit> scannerList = UnitUtils.getCompletedUnitList(UnitType.Terran_Comsat_Station);
                     for (Unit scanner : scannerList) {
                         if (scanner.getEnergy() >= 50) {
                             firstExpansionDetectingOk = true;
@@ -207,7 +206,7 @@ public class PositionFinder {
             if (myTankSupplyCount >= 3 * 4 && PositionUtils.myReadyToPosition() != null) {
                 if (!scanAtReadyToDisabled && !scanAtReadyToPosition) {
                     scanAtReadyToPosition = true;
-                    scanAtReadyToOrderFrame = TimeUtils.elapsedFrames() + 3 * TimeUtils.SECOND;
+                    scanAtReadyToOrderFrame = TimeUtils.getFrame() + 3 * TimeUtils.SECOND;
                 }
                 return PositionFinder.CampType.READY_TO;
             }
@@ -429,11 +428,11 @@ public class PositionFinder {
 
             if (eui.getType() == UnitType.Terran_Dropship || eui.getType() == UnitType.Protoss_Shuttle) {
                 if (dropUnitDiscoveredMap.get(eui.getUnitID()) == null) {
-                    dropUnitDiscoveredMap.put(eui.getUnitID(), TimeUtils.elapsedFrames());
+                    dropUnitDiscoveredMap.put(eui.getUnitID(), TimeUtils.getFrame());
                 }
 
                 Integer discoveredFrame = dropUnitDiscoveredMap.get(eui.getUnitID());
-                if (TimeUtils.elapsedFrames(discoveredFrame) < 15 * TimeUtils.SECOND) {
+                if (TimeUtils.getFrame(discoveredFrame) < 15 * TimeUtils.SECOND) {
                     System.out.println("drop!!");
                     sumOfDropX += eui.getLastPosition().getX();
                     sumOfDropY += eui.getLastPosition().getY();
@@ -471,8 +470,8 @@ public class PositionFinder {
             dropEnemyPosition = new Position(sumOfDropX / dropCount, sumOfDropY / dropCount).makeValid();
         }
 
-        enemyGroundEffectivePostions[TimeUtils.elapsedFrames() % POSITION_EFFECTIVE_FRAME_SIZE] = nearGroundEnemyPosition;
-        enemyAirEffectivePostions[TimeUtils.elapsedFrames() % POSITION_EFFECTIVE_FRAME_SIZE] = nearAirEnemyPosition;
+        enemyGroundEffectivePostions[TimeUtils.getFrame() % POSITION_EFFECTIVE_FRAME_SIZE] = nearGroundEnemyPosition;
+        enemyAirEffectivePostions[TimeUtils.getFrame() % POSITION_EFFECTIVE_FRAME_SIZE] = nearAirEnemyPosition;
 
         StrategyBoard.totalEnemyCneterPosition = totalEnemyCneterPosition;
         StrategyBoard.nearGroundEnemyPosition = nearGroundEnemyPosition;
@@ -603,7 +602,7 @@ public class PositionFinder {
             }
 
             if (myOccupiedNeedDefense != null) {
-                watcherOtherPositionFrame = TimeUtils.elapsedFrames();
+                watcherOtherPositionFrame = TimeUtils.getFrame();
                 watcherOtherPosition = myOccupiedNeedDefense.getPosition();
                 return watcherOtherPosition;
             }
@@ -645,7 +644,7 @@ public class PositionFinder {
                     }
                 });
                 if (enemyOccupied != null) {
-                    watcherOtherPositionFrame = TimeUtils.elapsedFrames();
+                    watcherOtherPositionFrame = TimeUtils.getFrame();
                     watcherOtherPosition = enemyOccupied.getPosition();
                     return watcherOtherPosition;
                 }
@@ -695,7 +694,7 @@ public class PositionFinder {
     /// 커맨드센터와 미네랄 사이의 방어지역
     public Position commandCenterInsidePosition() {
         TilePosition baseTile = BaseUtils.myMainBase().getTilePosition();
-        List<Unit> commandCenterList = UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Command_Center);
+        List<Unit> commandCenterList = UnitUtils.getCompletedUnitList(UnitType.Terran_Command_Center);
 
         for (Unit commandCenter : commandCenterList) {
             if (commandCenter.getTilePosition().equals(baseTile)) {
@@ -895,7 +894,7 @@ public class PositionFinder {
                 }
             }
         }
-        StrategyBoard.findRatFinishFrame = TimeUtils.elapsedFrames() + 10 * TimeUtils.SECOND;
+        StrategyBoard.findRatFinishFrame = TimeUtils.getFrame() + 10 * TimeUtils.SECOND;
         return new Position(2222, 2222);
     }
 

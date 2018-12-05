@@ -7,19 +7,17 @@ import bwapi.Unit;
 import bwapi.UnitType;
 import bwta.BWTA;
 import bwta.BaseLocation;
-import org.monster.bootstrap.Monster;
 import org.monster.build.constant.BuildConfig;
 import org.monster.build.initialProvider.BlockingEntrance.BlockingEntrance;
 import org.monster.build.initialProvider.BlockingEntrance.Location;
-import org.monster.build.initialProvider.InitialBuildProvider;
 import org.monster.common.constant.CommonCode;
 import org.monster.common.util.BaseUtils;
 import org.monster.common.util.ChokePointUtils;
-import org.monster.common.util.UnitTypeUtils;
 import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.PositionUtils;
 import org.monster.common.util.StaticMapUtils;
 import org.monster.common.util.TilePositionUtils;
+import org.monster.common.util.UnitTypeUtils;
 import org.monster.common.util.UnitUtils;
 import org.monster.common.util.internal.GameMap;
 
@@ -677,7 +675,6 @@ public class ConstructionPlaceFinder {
                             || TilePositionUtils.equals(position, BlockingEntrance.Instance().starport2)
                             || TilePositionUtils.equals(position, BlockingEntrance.Instance().factory)
                             || TilePositionUtils.equals(position, BlockingEntrance.Instance().barrack))
-                            && InitialBuildProvider.Instance().getAdaptStrategyStatus() != InitialBuildProvider.AdaptStrategyStatus.COMPLETE
                             ) {
                         continue;
                     }
