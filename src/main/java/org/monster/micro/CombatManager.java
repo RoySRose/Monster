@@ -127,11 +127,16 @@ public class CombatManager extends GameManager {
 
     private void squadExecution() {
         Squad mainSquad = squadData.getSquadMap().get(MicroConfig.SquadInfo.MAIN_ATTACK.squadName);
+        
         mainSquad.findEnemiesAndExecuteSquad();
 
         for (Squad squad : squadData.getSquadMap().values()) {
+        	
             squad.findEnemiesAndExecuteSquad(); // squad 유닛 명령 지시
+//            squad.execute();
         }
+        
+//        squad.execute();
     }
 
     private void updateSquadDefault(MicroConfig.SquadInfo squadInfo) {
@@ -144,6 +149,13 @@ public class CombatManager extends GameManager {
         if (PlayerUtils.supplyUsedSelf() < 100 || TimeUtils.executeRotation(LagObserver.managerExecuteRotation(LagObserver.MANAGER7, 0), LagObserver.managerRotationSize())) {
             List<Unit> squadTypeUnitList = UnitUtils.getCompletedUnitList(squad.getUnitTypes());
 
+//            for (Unit unit : combatUnitList) {
+//    			if (squad.want(unit) && squadData.canAssignUnitToSquad(unit, squad)) {
+//    				assignableUnitList.add(unit);
+//    			}
+//    		}
+            
+            
             List<Unit> assignableUnitList = new ArrayList<>();
             for (Unit unit : squadTypeUnitList) {
                 if (squad.want(unit)) {
