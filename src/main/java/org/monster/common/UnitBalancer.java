@@ -1,9 +1,7 @@
-package org.monster.bootstrap;
+package org.monster.common;
 
 import bwapi.Unit;
 import bwapi.UnitType;
-import org.monster.common.LagObserver;
-import org.monster.common.constant.CommonCode;
 import org.monster.common.util.TimeUtils;
 import org.monster.common.util.UnitUtils;
 import org.monster.debugger.BigWatch;

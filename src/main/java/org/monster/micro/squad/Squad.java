@@ -105,7 +105,7 @@ public abstract class Squad {
         euiList.clear();
         if (LagObserver.groupsize() > 10) {
             for (Unit unit : unitList) {
-                if (!TimeUtils.executeUnitRotation(unit, LagObserver.groupsize())) {
+                if (!TimeUtils.isExecuteFrame(unit, LagObserver.groupsize())) {
                     continue;
                 }
                 UnitUtils.addEnemyUnitInfosInRadiusForGround(euiList, unit.getPosition(), unit.getType().sightRange());

@@ -138,7 +138,7 @@ public class WatcherSquad extends Squad {
                 if (unit.getID() == closestUnit.getID() || unit.getDistance(closestUnit) < 500) {
                     continue;
                 }
-                if (!TimeUtils.executeUnitRotation(unit, LagObserver.groupsize())) {
+                if (!TimeUtils.isExecuteFrame(unit, LagObserver.groupsize())) {
                     continue;
                 }
                 addEnemyUnitInfosInRadius(euiList, unit.getPosition(), goalPosition, UnitType.Terran_Vulture.sightRange());

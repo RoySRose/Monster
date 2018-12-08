@@ -56,7 +56,7 @@ public class AirForceSquad extends Squad {
 
         // 리더유닛이 먼저 실행되면 member 유닛들은 그 후 같은 명령을 실행한다.
         for (Unit leaderAirunit : leaderAirunits) {
-            if (!TimeUtils.executeUnitRotation(leaderAirunit, airForceGroupSize)) {
+            if (!TimeUtils.isExecuteFrame(leaderAirunit, airForceGroupSize)) {
                 continue;
             }
 

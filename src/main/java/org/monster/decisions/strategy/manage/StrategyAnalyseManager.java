@@ -5,6 +5,7 @@ import bwapi.TilePosition;
 import org.monster.board.StrategyBoard;
 import org.monster.common.constant.CommonCode;
 import org.monster.common.util.BaseUtils;
+import org.monster.common.util.MapUtils;
 import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.TimeUtils;
 import org.monster.common.util.UnitUtils;
@@ -224,16 +225,16 @@ public class StrategyAnalyseManager {
 
         TilePosition enemyFirstExpansionTile = BaseUtils.enemyFirstExpansion().getTilePosition();
 
-        if (PlayerUtils.isVisible(enemyBaseTile)) {
+        if (MapUtils.isVisible(enemyBaseTile)) {
 //			System.out.println("base explored");
             lastCheckFrameBase = TimeUtils.getFrame();
         }
         //TODO enemyGasTile null 일때는??
-        if (PlayerUtils.isVisible(enemyGasTile)) {
+        if (MapUtils.isVisible(enemyGasTile)) {
 //			System.out.println("gas explored");
             lastCheckFrameGas = TimeUtils.getFrame();
         }
-        if (PlayerUtils.isVisible(enemyFirstExpansionTile)) {
+        if (MapUtils.isVisible(enemyFirstExpansionTile)) {
 //			System.out.println("expansion explored");
             lastCheckFrameFirstExpansion = TimeUtils.getFrame();
         }

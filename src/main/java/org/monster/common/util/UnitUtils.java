@@ -14,6 +14,10 @@ import org.monster.board.StrategyBoard;
 import org.monster.build.base.BuildManager;
 import org.monster.common.UnitInfo;
 import org.monster.common.constant.CommonCode;
+import org.monster.common.constant.EnemyUnitVisibleStatus;
+import org.monster.common.constant.PlayerRange;
+import org.monster.common.constant.RegionType;
+import org.monster.common.constant.UnitFindStatus;
 import org.monster.common.util.internal.IConditions;
 import org.monster.common.util.internal.SpecificValueCache;
 import org.monster.decisions.constant.StrategyConfig;
@@ -34,45 +38,43 @@ import java.util.Set;
 
 public class UnitUtils {
 
-    /**
-     * 유닛 수 (constructionQueue가 포함된 검색인 경우, getUnitList.size()와 수가 다를 수 있다.)
-     */
-
     public static int getUnitCount() {
-        return getUnitCount(CommonCode.UnitFindStatus.ALL, UnitType.AllUnits);
+        return getUnitCount(UnitFindStatus.ALL, UnitType.AllUnits);
     }
+
     public static int getUnitCount(UnitType... unitTypes) {
         int unitCount = 0;
         for (UnitType unitType : unitTypes) {
-            unitCount += getUnitCount(CommonCode.UnitFindStatus.ALL, unitType);
+            unitCount += getUnitCount(UnitFindStatus.ALL, unitType);
         }
         return unitCount;
     }
+
     public static int getCompletedUnitCount(UnitType... unitTypes) {
         int unitCount = 0;
         for (UnitType unitType : unitTypes) {
-            unitCount += getUnitCount(CommonCode.UnitFindStatus.COMPLETE, unitType);
+            unitCount += getUnitCount(UnitFindStatus.COMPLETE, unitType);
         }
         return unitCount;
     }
+
     public static int getIncompletedUnitCount(UnitType... unitTypes) {
         int unitCount = 0;
         for (UnitType unitType : unitTypes) {
-            unitCount += getUnitCount(CommonCode.UnitFindStatus.INCOMPLETE, unitType);
+            unitCount += getUnitCount(UnitFindStatus.INCOMPLETE, unitType);
         }
         return unitCount;
     }
-    public static int getUnitCount(CommonCode.UnitFindStatus unitFindStatus) {
-        return getUnitCount(unitFindStatus, UnitType.AllUnits);
-    }
-    public static int getUnitCount(CommonCode.UnitFindStatus unitFindStatus, UnitType... unitTypes) {
+
+    public static int getUnitCount(UnitFindStatus unitFindStatus, UnitType... unitTypes) {
         int unitCount = 0;
         for (UnitType unitType : unitTypes) {
             unitCount += getUnitCount(unitFindStatus, unitType);
         }
         return unitCount;
     }
-    public static int getUnitCount(CommonCode.UnitFindStatus unitFindStatus, UnitType unitType) {
+
+    public static int getUnitCount(UnitFindStatus unitFindStatus, UnitType unitType) {
         switch (unitFindStatus) {
             case COMPLETE:
                 return UnitCache.getCurrentCache().completeCount(unitType);
@@ -93,48 +95,54 @@ public class UnitUtils {
     }
 
     public static List<Unit> getUnitList() {
-        return getUnitList(CommonCode.UnitFindStatus.ALL, UnitType.AllUnits);
+        return getUnitList(UnitFindStatus.ALL, UnitType.AllUnits);
     }
+
     public static List<Unit> getCompletedUnitList() {
-        return getUnitList(CommonCode.UnitFindStatus.COMPLETE, UnitType.AllUnits);
+        return getUnitList(UnitFindStatus.COMPLETE, UnitType.AllUnits);
     }
+
     public static List<Unit> getIncompletedUnitList() {
-        return getUnitList(CommonCode.UnitFindStatus.INCOMPLETE, UnitType.AllUnits);
+        return getUnitList(UnitFindStatus.INCOMPLETE, UnitType.AllUnits);
     }
+
     public static List<Unit> getUnitList(UnitType unitTypes) {
-        return getUnitList(CommonCode.UnitFindStatus.ALL, unitTypes);
+        return getUnitList(UnitFindStatus.ALL, unitTypes);
     }
+
     public static List<Unit> getCompletedUnitList(UnitType unitTypes) {
-        return getUnitList(CommonCode.UnitFindStatus.COMPLETE, unitTypes);
+        return getUnitList(UnitFindStatus.COMPLETE, unitTypes);
     }
+
     public static List<Unit> getIncompletedUnitList(UnitType unitTypes) {
-        return getUnitList(CommonCode.UnitFindStatus.INCOMPLETE, unitTypes);
+        return getUnitList(UnitFindStatus.INCOMPLETE, unitTypes);
     }
+
     public static List<Unit> getCompletedUnitList(UnitType... unitTypes) {
         List<Unit> unitList = new ArrayList<>();
         for (UnitType unitType : unitTypes) {
-            unitList.addAll(getUnitList(CommonCode.UnitFindStatus.COMPLETE, unitType));
+            unitList.addAll(getUnitList(UnitFindStatus.COMPLETE, unitType));
         }
         return new ArrayList<>(unitList);
     }
+
     public static List<Unit> getUnitList(UnitType... unitTypes) {
-        List<Unit> unitList = new ArrayList<>();
+        Set<Unit> unitSet = new HashSet<>();
         for (UnitType unitType : unitTypes) {
-            unitList.addAll(getUnitList(CommonCode.UnitFindStatus.ALL, unitType));
+            unitSet.addAll(getUnitList(UnitFindStatus.ALL, unitType));
         }
-        return new ArrayList<>(unitList);
+        return new ArrayList<>(unitSet);
     }
-    public static List<Unit> getUnitList(CommonCode.UnitFindStatus unitFindStatus) {
-        return getUnitList(unitFindStatus, UnitType.AllUnits);
-    }
-    public static List<Unit> getUnitList(CommonCode.UnitFindStatus unitFindStatus, UnitType... unitTypes) {
-        List<Unit> unitList = new ArrayList<>();
+
+    public static List<Unit> getUnitList(UnitFindStatus unitFindStatus, UnitType... unitTypes) {
+        Set<Unit> unitSet = new HashSet<>();
         for (UnitType unitType : unitTypes) {
-            unitList.addAll(getUnitList(unitFindStatus, unitType));
+            unitSet.addAll(getUnitList(unitFindStatus, unitType));
         }
-        return new ArrayList<>(unitList);
+        return new ArrayList<>(unitSet);
     }
-    public static List<Unit> getUnitList(CommonCode.UnitFindStatus unitFindStatus, UnitType unitType) {
+
+    public static List<Unit> getUnitList(UnitFindStatus unitFindStatus, UnitType unitType) {
         switch (unitFindStatus) {
             case COMPLETE:
                 return UnitCache.getCurrentCache().completeUnits(unitType);
@@ -153,26 +161,30 @@ public class UnitUtils {
      * 적 유닛 리스트
      */
     public static int getEnemyUnitCount() {
-        return getEnemyUnitCount(CommonCode.EnemyUnitVisibleStatus.ALL, UnitType.AllUnits);
+        return getEnemyUnitCount(EnemyUnitVisibleStatus.ALL, UnitType.AllUnits);
     }
+
     public static int getEnemyUnitCount(UnitType... unitTypes) {
         int unitCount = 0;
         for (UnitType unitType : unitTypes) {
-            unitCount += getEnemyUnitCount(CommonCode.EnemyUnitVisibleStatus.ALL, unitType);
+            unitCount += getEnemyUnitCount(EnemyUnitVisibleStatus.ALL, unitType);
         }
         return unitCount;
     }
+
     public static int getEnemyVisibleUnitCount() {
-        return getEnemyUnitCount(CommonCode.EnemyUnitVisibleStatus.VISIBLE, UnitType.AllUnits);
+        return getEnemyUnitCount(EnemyUnitVisibleStatus.VISIBLE, UnitType.AllUnits);
     }
+
     public static int getEnemyVisibleUnitCount(UnitType... unitTypes) {
         int unitCount = 0;
         for (UnitType unitType : unitTypes) {
-            unitCount += getEnemyUnitCount(CommonCode.EnemyUnitVisibleStatus.VISIBLE, unitType);
+            unitCount += getEnemyUnitCount(EnemyUnitVisibleStatus.VISIBLE, unitType);
         }
         return unitCount;
     }
-    public static int getEnemyUnitCount(CommonCode.EnemyUnitVisibleStatus enemyUnitVisibleStatus, UnitType unitType) {
+
+    public static int getEnemyUnitCount(EnemyUnitVisibleStatus enemyUnitVisibleStatus, UnitType unitType) {
         switch (enemyUnitVisibleStatus) {
             case VISIBLE:
                 return UnitCache.getCurrentCache().enemyVisibleCount(unitType);
@@ -186,28 +198,32 @@ public class UnitUtils {
     public static List<Unit> getEnemyUnitList() {
         return UnitCache.getCurrentCache().getEnemyUnitList();
     }
+
     public static List<UnitInfo> getEnemyUnitInfoList() {
-        return getEnemyUnitInfoList(CommonCode.EnemyUnitVisibleStatus.ALL, UnitType.AllUnits);
+        return getEnemyUnitInfoList(EnemyUnitVisibleStatus.ALL, UnitType.AllUnits);
     }
+
     public static List<UnitInfo> getEnemyUnitInfoList(UnitType unitType) {
-        return getEnemyUnitInfoList(CommonCode.EnemyUnitVisibleStatus.ALL, unitType);
+        return getEnemyUnitInfoList(EnemyUnitVisibleStatus.ALL, unitType);
     }
+
     public static List<UnitInfo> getEnemyVisibleUnitInfoList() {
-        return getEnemyUnitInfoList(CommonCode.EnemyUnitVisibleStatus.VISIBLE, UnitType.AllUnits);
+        return getEnemyUnitInfoList(EnemyUnitVisibleStatus.VISIBLE, UnitType.AllUnits);
     }
+
     public static List<UnitInfo> getEnemyVisibleUnitInfoList(UnitType unitType) {
-        return getEnemyUnitInfoList(CommonCode.EnemyUnitVisibleStatus.VISIBLE, unitType);
+        return getEnemyUnitInfoList(EnemyUnitVisibleStatus.VISIBLE, unitType);
     }
 
     public static List<UnitInfo> getEnemyUnitInfoList(UnitType... unitTypes) {
         Set<UnitInfo> unitSet = new HashSet<>();
         for (UnitType unitType : unitTypes) {
-            unitSet.addAll(getEnemyUnitInfoList(CommonCode.EnemyUnitVisibleStatus.ALL, unitType));
+            unitSet.addAll(getEnemyUnitInfoList(EnemyUnitVisibleStatus.ALL, unitType));
         }
         return new ArrayList<>(unitSet);
     }
 
-    public static List<UnitInfo> getEnemyUnitInfoList(CommonCode.EnemyUnitVisibleStatus enemyUnitVisibleStatus, UnitType... unitTypes) {
+    public static List<UnitInfo> getEnemyUnitInfoList(EnemyUnitVisibleStatus enemyUnitVisibleStatus, UnitType... unitTypes) {
         Set<UnitInfo> unitSet = new HashSet<>();
         for (UnitType unitType : unitTypes) {
             unitSet.addAll(getEnemyUnitInfoList(enemyUnitVisibleStatus, unitType));
@@ -215,7 +231,7 @@ public class UnitUtils {
         return new ArrayList<>(unitSet);
     }
 
-    public static List<UnitInfo> getEnemyUnitInfoList(CommonCode.EnemyUnitVisibleStatus enemyUnitVisibleStatus, UnitType unitType) {
+    public static List<UnitInfo> getEnemyUnitInfoList(EnemyUnitVisibleStatus enemyUnitVisibleStatus, UnitType unitType) {
         switch (enemyUnitVisibleStatus) {
             case VISIBLE:
                 return UnitCache.getCurrentCache().enemyVisibleUnits(unitType);
@@ -273,6 +289,7 @@ public class UnitUtils {
     public static Unit enemyUnitInSight(int euiID) {
         return UnitCache.getCurrentCache().enemyUnitInSight(euiID);
     }
+
     /**
      * 실제보유, 컨스트럭션큐, 빌드큐 포함 존재 여부
      */
@@ -288,7 +305,7 @@ public class UnitUtils {
 //        return false;
 //    }
     public static int hasUnitOrWillBeCount(UnitType... unitTypes) {
-        int unitCount = getUnitCount(CommonCode.UnitFindStatus.ALL_AND_CONSTRUCTION_QUEUE, unitTypes);
+        int unitCount = getUnitCount(UnitFindStatus.ALL_AND_CONSTRUCTION_QUEUE, unitTypes);
         for (UnitType unitType : unitTypes) {
             unitCount += BuildManager.Instance().buildQueue.getItemCount(unitType);
         }
@@ -343,7 +360,7 @@ public class UnitUtils {
         if (unitTypes.length == 0) {
             values = UnitUtils.getEnemyUnitInfoList();
         } else {
-            values = getEnemyUnitInfoList(CommonCode.EnemyUnitVisibleStatus.ALL, unitTypes);
+            values = getEnemyUnitInfoList(EnemyUnitVisibleStatus.ALL, unitTypes);
         }
 
         for (UnitInfo eui : values) {
@@ -388,32 +405,32 @@ public class UnitUtils {
 
 
     public static List<Unit> getUnitsInRadius(Position position, int radius) {
-        return getUnitsInRadius(CommonCode.PlayerRange.ALL, position, radius, UnitType.AllUnits);
+        return getUnitsInRadius(PlayerRange.ALL, position, radius, UnitType.AllUnits);
     }
 
 
     /**
      * position 근처의 유닛리스트를 리턴
      */
-    public static List<Unit> getUnitsInRadius(CommonCode.PlayerRange playerRange, Position position, int radius) {
+    public static List<Unit> getUnitsInRadius(PlayerRange playerRange, Position position, int radius) {
         return getUnitsInRadius(playerRange, position, radius, UnitType.AllUnits);
     }
 
     /**
      * position 근처의 유닛리스트를 리턴
      */
-    public static List<Unit> getUnitsInRadius(CommonCode.PlayerRange playerRange, Position position, int radius, UnitType... unitTypes) {
+    public static List<Unit> getUnitsInRadius(PlayerRange playerRange, Position position, int radius, UnitType... unitTypes) {
         Player player = null;
-        if (playerRange == CommonCode.PlayerRange.SELF) {
+        if (playerRange == PlayerRange.SELF) {
             player = PlayerUtils.myPlayer();
-        } else if (playerRange == CommonCode.PlayerRange.ENEMY) {
+        } else if (playerRange == PlayerRange.ENEMY) {
             player = PlayerUtils.enemyPlayer();
-        } else if (playerRange == CommonCode.PlayerRange.NEUTRAL) {
+        } else if (playerRange == PlayerRange.NEUTRAL) {
             player = PlayerUtils.neutralPlayer();
         }
 
         List<Unit> unitsInRadius = new ArrayList<>();
-        for (Unit unit : UnitUtils.getUnitsInRadius(CommonCode.PlayerRange.ALL, position, radius)) {
+        for (Unit unit : UnitUtils.getUnitsInRadius(PlayerRange.ALL, position, radius)) {
             if (player != null && player != unit.getPlayer()) {
                 continue;
             }
@@ -434,16 +451,16 @@ public class UnitUtils {
     /**
      * position 근처의 유닛리스트를 리턴
      */
-//    public static void addUnitsInRadius(Collection<Unit> units, CommonCode.PlayerRange playerRange, Position position, int radius) {
+//    public static void addUnitsInRadius(Collection<Unit> units, PlayerRange playerRange, Position position, int radius) {
 //        Player player = PlayerUtils.getPlayerByRange(playerRange);
-//        for (Unit unit : UnitUtils.getUnitsInRadius(CommonCode.PlayerRange.ALL, position, radius)) {
+//        for (Unit unit : UnitUtils.getUnitsInRadius(PlayerRange.ALL, position, radius)) {
 //            if (player != null && player != unit.getPlayer()) {
 //                continue;
 //            }
 //            units.add(unit);
 //        }
 //    }
-    public static List<Unit> getUnitsInRegion(CommonCode.RegionType regionType, CommonCode.PlayerRange playerRange) {
+    public static List<Unit> getUnitsInRegion(RegionType regionType, PlayerRange playerRange) {
         return getUnitsInRegion(regionType, playerRange, new IConditions.UnitCondition() {
             @Override
             public boolean correspond(Unit unit) {
@@ -453,14 +470,14 @@ public class UnitUtils {
     }
 
     public static List<Unit> myBuildingsInMainSquadRegion() {
-        List<Unit> totalBuildings = UnitUtils.getUnitList(CommonCode.UnitFindStatus.ALL
+        List<Unit> totalBuildings = UnitUtils.getUnitList(UnitFindStatus.ALL
                 , UnitType.Terran_Command_Center, UnitType.Terran_Supply_Depot, UnitType.Terran_Barracks, UnitType.Terran_Factory, UnitType.Terran_Starport
                 , UnitType.Terran_Armory, UnitType.Terran_Academy, UnitType.Terran_Bunker, UnitType.Terran_Missile_Turret);
 
         List<Unit> buildingsInRegion = new ArrayList<>();
-        Region baseRegion = PositionUtils.regionTypeToRegion(CommonCode.RegionType.MY_BASE);
-        Region expansionRegion = PositionUtils.regionTypeToRegion(CommonCode.RegionType.MY_FIRST_EXPANSION);
-        Region thirdRegion = PositionUtils.regionTypeToRegion(CommonCode.RegionType.MY_THIRD_REGION);
+        Region baseRegion = PositionUtils.regionTypeToRegion(RegionType.MY_BASE);
+        Region expansionRegion = PositionUtils.regionTypeToRegion(RegionType.MY_FIRST_EXPANSION);
+        Region thirdRegion = PositionUtils.regionTypeToRegion(RegionType.MY_THIRD_REGION);
 
         for (Unit unit : totalBuildings) {
             if (UnitUtils.isValidUnit(unit)) {
@@ -475,13 +492,13 @@ public class UnitUtils {
         return buildingsInRegion;
     }
 
-    public static List<Unit> getUnitsInRegion(CommonCode.RegionType regionType, CommonCode.PlayerRange playerRange, IConditions.UnitCondition unitCondition) {
+    public static List<Unit> getUnitsInRegion(RegionType regionType, PlayerRange playerRange, IConditions.UnitCondition unitCondition) {
         List<Unit> totalUnits = null;
-        if (playerRange == CommonCode.PlayerRange.SELF) {
+        if (playerRange == PlayerRange.SELF) {
             totalUnits = UnitUtils.getUnitList();
-        } else if (playerRange == CommonCode.PlayerRange.ENEMY) {
+        } else if (playerRange == PlayerRange.ENEMY) {
             totalUnits = UnitUtils.getEnemyUnitList();
-        } else if (playerRange == CommonCode.PlayerRange.NEUTRAL) {
+        } else if (playerRange == PlayerRange.NEUTRAL) {
             totalUnits = PlayerUtils.neutralPlayer().getUnits();
         } else {
             totalUnits = UnitUtils.getUnitList();
@@ -870,7 +887,7 @@ public class UnitUtils {
     }
 
     public static int myWraithUnitSupplyCount() {
-        int totalSupplyCount = UnitUtils.getUnitCount(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Wraith);
+        int totalSupplyCount = UnitUtils.getUnitCount(UnitFindStatus.COMPLETE, UnitType.Terran_Wraith);
         return totalSupplyCount * 4; // 인구수 기준이므로
     }
 
@@ -879,7 +896,7 @@ public class UnitUtils {
         if (factorySupplyCount != null) {
             return factorySupplyCount;
         }
-        int factoryUnitCount = UnitUtils.getUnitCount(CommonCode.UnitFindStatus.COMPLETE
+        int factoryUnitCount = UnitUtils.getUnitCount(UnitFindStatus.COMPLETE
                 , UnitType.Terran_Vulture, UnitType.Terran_Siege_Tank_Tank_Mode, UnitType.Terran_Siege_Tank_Siege_Mode, UnitType.Terran_Goliath);
 
 
@@ -1034,16 +1051,18 @@ public class UnitUtils {
         }
     }
 
-    public static List<Unit> getUnitsOnTile(TilePosition tilePosition){
+    public static List<Unit> getUnitsOnTile(TilePosition tilePosition) {
         return UnitCache.getCurrentCache().getUnitsOnTile(tilePosition);
     }
 
     public static boolean canMake(UnitType unitType, Unit unit) {
         return UnitCache.getCurrentCache().canMake(unitType, unit);
     }
+
     public static boolean canMake(UnitType unitType) {
         return UnitCache.getCurrentCache().canMake(unitType);
     }
+
     public static Unit getUnit(int unitId) {
         return UnitCache.getCurrentCache().getUnit(unitId);
     }

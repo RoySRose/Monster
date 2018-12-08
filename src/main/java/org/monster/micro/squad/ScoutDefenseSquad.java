@@ -7,7 +7,7 @@ import bwta.BaseLocation;
 import bwta.Region;
 import org.monster.board.StrategyBoard;
 import org.monster.common.UnitInfo;
-import org.monster.common.constant.CommonCode;
+import org.monster.common.constant.PlayerRange;
 import org.monster.common.util.BaseUtils;
 import org.monster.common.util.CommandUtils;
 import org.monster.common.util.MicroUtils;
@@ -56,7 +56,7 @@ public class ScoutDefenseSquad extends Squad {
 
         // 메인베이스와 가장 가까운 적 유닛이, 아군유닛의 REACT_RADIUS 내로 들어왔으면 유닛 할당
         Unit closeEnemyUnit = UnitUtils.getClosestUnitToPosition(enemyUnitList, myBase.getPosition());
-        List<Unit> myUnitList = UnitUtils.getUnitsInRadius(CommonCode.PlayerRange.SELF, closeEnemyUnit.getPosition(), REACT_RADIUS);
+        List<Unit> myUnitList = UnitUtils.getUnitsInRadius(PlayerRange.SELF, closeEnemyUnit.getPosition(), REACT_RADIUS);
         if (myUnitList.isEmpty()) {
             return Collections.emptyList();
         }

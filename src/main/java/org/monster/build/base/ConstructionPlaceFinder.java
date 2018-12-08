@@ -10,12 +10,13 @@ import bwta.BaseLocation;
 import org.monster.build.constant.BuildConfig;
 import org.monster.build.initialProvider.BlockingEntrance.BlockingEntrance;
 import org.monster.build.initialProvider.BlockingEntrance.Location;
-import org.monster.common.constant.CommonCode;
+import org.monster.common.constant.PlayerRange;
+import org.monster.common.constant.UnitFindStatus;
 import org.monster.common.util.BaseUtils;
-import org.monster.common.util.ChokePointUtils;
+import org.monster.common.util.ChokeUtils;
+import org.monster.common.util.MapUtils;
 import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.PositionUtils;
-import org.monster.common.util.StaticMapUtils;
 import org.monster.common.util.TilePositionUtils;
 import org.monster.common.util.UnitTypeUtils;
 import org.monster.common.util.UnitUtils;
@@ -105,9 +106,9 @@ public class ConstructionPlaceFinder {
                 break;
 
             case FirstChokePoint:
-                if (ChokePointUtils.myFirstChoke() != null) {
+                if (ChokeUtils.myFirstChoke() != null) {
 //                	//FileUtils.appendTextToFile("log.txt", "\n getBuildLocationWithSeedPositionAndStrategy placeFinder before :: " + System.currentTimeMillis()+ " :: " + buildingType + " :: " + seedPositionStrategy);
-                    desiredPosition = getBuildLocationNear(buildingType, ChokePointUtils.myFirstChoke().getCenter().toTilePosition());
+                    desiredPosition = getBuildLocationNear(buildingType, ChokeUtils.myFirstChoke().getCenter().toTilePosition());
 //                    //FileUtils.appendTextToFile("log.txt", "\n getBuildLocationWithSeedPositionAndStrategy placeFinder after :: " + System.currentTimeMillis()+ " :: " + buildingType + " :: " + seedPositionStrategy);
                     if (desiredPosition == null) {
                         BuildManager.Instance().firstChokePointFull = true;
@@ -116,9 +117,9 @@ public class ConstructionPlaceFinder {
                 break;
 
             case SecondChokePoint:
-                if (ChokePointUtils.mySecondChoke() != null) {
+                if (ChokeUtils.mySecondChoke() != null) {
 //                	//FileUtils.appendTextToFile("log.txt", "\n getBuildLocationWithSeedPositionAndStrategy placeFinder before :: " + System.currentTimeMillis()+ " :: " + buildingType + " :: " + seedPositionStrategy);
-                    desiredPosition = getBuildLocationNear(buildingType, ChokePointUtils.mySecondChoke().getCenter().toTilePosition());
+                    desiredPosition = getBuildLocationNear(buildingType, ChokeUtils.mySecondChoke().getCenter().toTilePosition());
 //                    //FileUtils.appendTextToFile("log.txt", "\n getBuildLocationWithSeedPositionAndStrategy placeFinder after :: " + System.currentTimeMillis()+ " :: " + buildingType + " :: " + seedPositionStrategy);
                     if (desiredPosition == null) {
                         BuildManager.Instance().secondChokePointFull = true;
@@ -331,7 +332,7 @@ public class ConstructionPlaceFinder {
             // desiredPosition 으로부터 시작해서 spiral 하게 탐색하는 방법
             // 처음에는 아래 방향 (0,1) -> 오른쪽으로(1,0) -> 위로(0,-1) -> 왼쪽으로(-1,0) -> 아래로(0,1) -> ..
 
-            if (StaticMapUtils.getMap() == GameMap.CIRCUITBREAKER) {
+            if (MapUtils.getMap() == GameMap.CIRCUITBREAKER) {
                 maxRange = 23;
                 for (BaseLocation base : BWTA.getStartLocations()) {
 //					if(base.isStartLocation() && TilePositionUtils.equals(base.getTilePosition(), desiredPosition)) {
@@ -341,7 +342,7 @@ public class ConstructionPlaceFinder {
                     }
                 }
 
-            } else if (StaticMapUtils.getMap() == GameMap.FIGHTING_SPIRITS) {
+            } else if (MapUtils.getMap() == GameMap.FIGHTING_SPIRITS) {
                 maxRange = 25;
                 for (BaseLocation base : BWTA.getStartLocations()) {
 //					if(base.isStartLocation() && TilePositionUtils.equals(base.getTilePosition(), desiredPosition)) {
@@ -372,7 +373,7 @@ public class ConstructionPlaceFinder {
             int spiralDirectionX = 0;
             int spiralDirectionY = 1;
             while (spiralMaxLength < maxRange) {
-                if (currentX >= 0 && currentX < StaticMapUtils.mapWidth() && currentY >= 0 && currentY < StaticMapUtils.mapHeight()) {
+                if (currentX >= 0 && currentX < MapUtils.mapWidth() && currentY >= 0 && currentY < MapUtils.mapHeight()) {
 //					//FileUtils.appendTextToFile(b.getType(),"log.txt", "\n canBuildHereWithSpace before PlaceFinder seedPosition true :: " + buildingType + " :: " + desiredPosition + " :: " + new TilePosition(currentX, currentY) + " :: " + buildingGapSpace);
                     boolean isPossiblePlace = canBuildHereWithSpace(new TilePosition(currentX, currentY), b, buildingGapSpace);
 //					//FileUtils.appendTextToFile(b.getType(),"log.txt", "\n canBuildHereWithSpace after PlaceFinder seedPosition true  :: " + buildingType + " :: " + desiredPosition + " :: " + new TilePosition(currentX, currentY) + " :: " + buildingGapSpace + " :: " + isPossiblePlace);
@@ -394,7 +395,7 @@ public class ConstructionPlaceFinder {
 //                                    System.out.println("finding place for fac plus");
                                 }
 //                                System.out.println(" final location of factory :: " + currentXPlus + " / " + currentY);
-                                if (currentXPlus < 0 || currentXPlus + 3 > StaticMapUtils.mapWidth()) {
+                                if (currentXPlus < 0 || currentXPlus + 3 > MapUtils.mapWidth()) {
                                     break;
                                 }
 
@@ -456,7 +457,7 @@ public class ConstructionPlaceFinder {
 //					1시
                     for (int y_position = 0; y_position < BlockingEntrance.Instance().maxSupplyCntY; y_position++) {
                         for (int x_position = 0; x_position < BlockingEntrance.Instance().maxSupplyCntX; x_position++) {
-                            if (currentX >= 0 && currentX < StaticMapUtils.mapWidth() && currentY >= 0 && currentY < StaticMapUtils.mapHeight()) {
+                            if (currentX >= 0 && currentX < MapUtils.mapWidth() && currentY >= 0 && currentY < MapUtils.mapHeight()) {
 
                                 isPossiblePlace = canBuildHereWithSpace(new TilePosition(currentX, currentY), b, 0);
 
@@ -488,7 +489,7 @@ public class ConstructionPlaceFinder {
 //					5시
                     for (int y_position = BlockingEntrance.Instance().maxSupplyCntY; y_position > 0; y_position--) {
                         for (int x_position = 0; x_position < BlockingEntrance.Instance().maxSupplyCntX; x_position++) {
-                            if (currentX >= 0 && currentX < StaticMapUtils.mapWidth() && currentY >= 0 && currentY < StaticMapUtils.mapHeight()) {
+                            if (currentX >= 0 && currentX < MapUtils.mapWidth() && currentY >= 0 && currentY < MapUtils.mapHeight()) {
 
                                 isPossiblePlace = canBuildHereWithSpace(new TilePosition(currentX, currentY), b, 0);
 
@@ -525,7 +526,7 @@ public class ConstructionPlaceFinder {
 //					11시
                     for (int y_position = 0; y_position < BlockingEntrance.Instance().maxSupplyCntY; y_position++) {
                         for (int x_position = BlockingEntrance.Instance().maxSupplyCntX; x_position > 0; x_position--) {
-                            if (currentX >= 0 && currentX < StaticMapUtils.mapWidth() && currentY >= 0 && currentY < StaticMapUtils.mapHeight()) {
+                            if (currentX >= 0 && currentX < MapUtils.mapWidth() && currentY >= 0 && currentY < MapUtils.mapHeight()) {
 
                                 isPossiblePlace = canBuildHereWithSpace(new TilePosition(currentX, currentY), b, 0);
 
@@ -556,7 +557,7 @@ public class ConstructionPlaceFinder {
 //					7시
                     for (int y_position = BlockingEntrance.Instance().maxSupplyCntY; y_position > 0; y_position--) {
                         for (int x_position = BlockingEntrance.Instance().maxSupplyCntX; x_position > 0; x_position--) {
-                            if (currentX >= 0 && currentX < StaticMapUtils.mapWidth() && currentY >= 0 && currentY < StaticMapUtils.mapHeight()) {
+                            if (currentX >= 0 && currentX < MapUtils.mapWidth() && currentY >= 0 && currentY < MapUtils.mapHeight()) {
 
                                 isPossiblePlace = canBuildHereWithSpace(new TilePosition(currentX, currentY), b, 0);
 
@@ -766,7 +767,7 @@ public class ConstructionPlaceFinder {
         }
 
         // if this rectangle doesn't fit on the map we can't build here
-        if (b.getType() != UnitType.Terran_Factory && b.getType() != UnitType.Terran_Starport && (startx < 0 || starty < 0 || endx > StaticMapUtils.mapWidth() || endx < position.getX() + width || endy > StaticMapUtils.mapHeight())) {
+        if (b.getType() != UnitType.Terran_Factory && b.getType() != UnitType.Terran_Starport && (startx < 0 || starty < 0 || endx > MapUtils.mapWidth() || endx < position.getX() + width || endy > MapUtils.mapHeight())) {
 //			//FileUtils.appendTextToFile("log.txt", "\n canBuildHereWithSpace return false :: "+ b.getType() + " // buildingGapSpace :: " + buildingGapSpace);
             return false;
         } else {
@@ -779,7 +780,7 @@ public class ConstructionPlaceFinder {
     /// 해당 위치에 건물 건설이 가능한지 여부를 리턴합니다 <br>
     /// Broodwar 의 canBuildHere 및 _reserveMap 와 isOverlapsWithBaseLocation 을 체크
     public final boolean canBuildHere(TilePosition position, final ConstructionTask b) {
-        if (!StaticMapUtils.canBuildHere(position, b.getType())) {
+        if (!MapUtils.canBuildHere(position, b.getType())) {
 //			//FileUtils.appendTextToFile("log.txt", "\n canBuildHere ==> !Prebot.Broodwar.canBuildHere :: " + position);
             return false;
         }
@@ -833,7 +834,7 @@ public class ConstructionPlaceFinder {
         double minGeyserDistanceFromSeedPosition = 100000000;
 
         // 전체 geyser 중에서 seedPosition 으로부터 16 TILE_SIZE 거리 이내에 있는 것을 찾는다
-        for (Unit geyser : StaticMapUtils.getStaticGeysers()) {
+        for (Unit geyser : MapUtils.getStaticGeysers()) {
             // geyser->getPosition() 을 하면, Unknown 으로 나올 수 있다.
             // 반드시 geyser->getInitialPosition() 을 사용해야 한다
 //			//FileUtils.appendTextToFile("log.txt", "\n getRefineryPositionNear getStaticGeysers :: " + geyser.getTilePosition());
@@ -855,7 +856,7 @@ public class ConstructionPlaceFinder {
 
             // 이미 지어져 있는가
             boolean refineryAlreadyBuilt = false;
-            List<Unit> alreadyBuiltUnits = UnitUtils.getUnitsInRadius(CommonCode.PlayerRange.ALL, geyserPos, 4 * BuildConfig.TILE_SIZE);
+            List<Unit> alreadyBuiltUnits = UnitUtils.getUnitsInRadius(PlayerRange.ALL, geyserPos, 4 * BuildConfig.TILE_SIZE);
             for (Unit u : alreadyBuiltUnits) {
                 if (u.getType().isRefinery() && u.exists()) {
 //					//FileUtils.appendTextToFile("log.txt", "\n getRefineryPositionNear is alreadyBuiltUnits");
@@ -885,7 +886,7 @@ public class ConstructionPlaceFinder {
         double minGeyserDistanceFromSeedPosition = 100000000;
 
         // 전체 geyser 중에서 seedPosition 으로부터 16 TILE_SIZE 거리 이내에 있는 것을 찾는다
-        for (Unit geyser : StaticMapUtils.getStaticGeysers()) {
+        for (Unit geyser : MapUtils.getStaticGeysers()) {
             // geyser->getPosition() 을 하면, Unknown 으로 나올 수 있다.
             // 반드시 geyser->getInitialPosition() 을 사용해야 한다
 
@@ -955,7 +956,7 @@ public class ConstructionPlaceFinder {
 
         // 맵 데이터 뿐만 아니라 빌딩 데이터를 모두 고려해서 isBuildable 체크
         //if (BWAPI::Broodwar->isBuildable(x, y) == false)
-        if (StaticMapUtils.isBuildable(tp, true) == false) {
+        if (MapUtils.isBuildable(tp, true) == false) {
             return false;
         }
 
@@ -1174,8 +1175,8 @@ public class ConstructionPlaceFinder {
                     int fromx = mineral.getTilePosition().getX() - 2;
                     int fromy = mineral.getTilePosition().getY() - 2;
 
-                    for (int x = fromx; x >= 0 && x < fromx + 6 && x < StaticMapUtils.mapWidth(); x++) {
-                        for (int y = fromy; y >= 0 && y < fromy + 6 && y < StaticMapUtils.mapHeight(); y++) {
+                    for (int x = fromx; x >= 0 && x < fromx + 6 && x < MapUtils.mapWidth(); x++) {
+                        for (int y = fromy; y >= 0 && y < fromy + 6 && y < MapUtils.mapHeight(); y++) {
                             tilesToAvoid[x][y] = true;
                         }
                     }
@@ -1191,8 +1192,8 @@ public class ConstructionPlaceFinder {
 //        int fromx = firstgas.getTilePosition().getX() - 1;
 //        int fromy = firstgas.getTilePosition().getY() - 1;
 //
-//        for (int x = fromx; x >= 0 && x < fromx + 8 && x < StaticMapUtils.mapWidth(); x++) {
-//            for (int y = fromy; y >= 0 && y < fromy + 6 && y < StaticMapUtils.mapHeight(); y++) {
+//        for (int x = fromx; x >= 0 && x < fromx + 8 && x < MapUtils.mapWidth(); x++) {
+//            for (int y = fromy; y >= 0 && y < fromy + 6 && y < MapUtils.mapHeight(); y++) {
 //                if (fromx < x && x < fromx + 5 && fromy < y && y < fromy + 3) {
 //                    continue;
 //                }
@@ -1233,8 +1234,8 @@ public class ConstructionPlaceFinder {
         }
 
 
-        for (int x = fromx; x >= 0 && x < fromx + 8 && x < StaticMapUtils.mapWidth() && x < rwidth; x++) {
-            for (int y = fromy; y >= 0 && y < fromy + 5 && y < StaticMapUtils.mapHeight() && y < rheight; y++) {
+        for (int x = fromx; x >= 0 && x < fromx + 8 && x < MapUtils.mapWidth() && x < rwidth; x++) {
+            for (int y = fromy; y >= 0 && y < fromy + 5 && y < MapUtils.mapHeight() && y < rheight; y++) {
                 if ((x == fromx + 5 || x == fromx + 6 || x == fromx + 7) && y == fromy) {
                     continue;
                 }
@@ -1282,8 +1283,8 @@ public class ConstructionPlaceFinder {
         }
 
         if (allFree) {
-            for (int x = fromx; x >= 0 && x < fromx + 8 && x < StaticMapUtils.mapWidth() && x < rwidth; x++) {
-                for (int y = fromy; y >= 0 && y < fromy + 5 && y < StaticMapUtils.mapHeight() && y < rheight; y++) {
+            for (int x = fromx; x >= 0 && x < fromx + 8 && x < MapUtils.mapWidth() && x < rwidth; x++) {
+                for (int y = fromy; y >= 0 && y < fromy + 5 && y < MapUtils.mapHeight() && y < rheight; y++) {
 
                     if ((x == fromx + 5 || x == fromx + 6 || x == fromx + 7) && y == fromy) {
                         continue;
@@ -1296,7 +1297,7 @@ public class ConstructionPlaceFinder {
                 }
             }
 
-            for (Unit resetAvoid : UnitUtils.getUnitList(CommonCode.UnitFindStatus.ALL, UnitType.Terran_Factory, UnitType.Terran_Starport)) {
+            for (Unit resetAvoid : UnitUtils.getUnitList(UnitFindStatus.ALL, UnitType.Terran_Factory, UnitType.Terran_Starport)) {
                 if (resetAvoid.isCompleted() || resetAvoid.isConstructing()) {
                     ConstructionPlaceFinder.Instance().setTilesToAvoidAddonBuilding(resetAvoid);
                 }
@@ -1325,8 +1326,8 @@ public class ConstructionPlaceFinder {
         int fromx = unit.getTilePosition().getX() - 1;
         int fromy = unit.getTilePosition().getY() - 1;
 
-        for (int x = fromx; x >= 0 && x < fromx + 5 && x < StaticMapUtils.mapWidth(); x++) {
-            for (int y = fromy; y >= 0 && y < fromy + 4 && y < StaticMapUtils.mapHeight(); y++) {
+        for (int x = fromx; x >= 0 && x < fromx + 5 && x < MapUtils.mapWidth(); x++) {
+            for (int y = fromy; y >= 0 && y < fromy + 4 && y < MapUtils.mapHeight(); y++) {
 
                 tilesToAvoidSupply[x][y] = true;
 
@@ -1340,7 +1341,7 @@ public class ConstructionPlaceFinder {
         boolean yinc = BlockingEntrance.Instance().yinc;
 
 
-        if (StaticMapUtils.getMap() != GameMap.UNKNOWN) {
+        if (MapUtils.getMap() != GameMap.UNKNOWN) {
 
             for (BaseLocation baseLocation : BWTA.getStartLocations()) {
                 TilePosition mainbase = baseLocation.getTilePosition();

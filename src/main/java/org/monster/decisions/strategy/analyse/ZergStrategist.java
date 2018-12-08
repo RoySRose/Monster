@@ -3,6 +3,7 @@ package org.monster.decisions.strategy.analyse;
 import bwapi.UnitType;
 import org.monster.board.StrategyBoard;
 import org.monster.common.constant.CommonCode;
+import org.monster.common.constant.UnitFindStatus;
 import org.monster.common.util.TimeUtils;
 import org.monster.common.util.UnitUtils;
 import org.monster.decisions.constant.EnemyStrategy;
@@ -169,7 +170,7 @@ public class ZergStrategist extends Strategist {
 //		int zerglingCount = UnitUtils.getEnemyUnitCount(UnitType.Zerg_Zergling);
         int enemyGroundUnitPower = UnitUtils.enemyGroundUnitPower();
         int enemyAirUnitPower = UnitUtils.enemyAirUnitPower();
-        int goliathCount = UnitUtils.getUnitCount(CommonCode.UnitFindStatus.ALL, UnitType.Terran_Goliath);
+        int goliathCount = UnitUtils.getUnitCount(UnitFindStatus.ALL, UnitType.Terran_Goliath);
 
         boolean hydraDiscovered = UnitUtils.enemyUnitDiscovered(UnitType.Zerg_Hydralisk, UnitType.Zerg_Lurker, UnitType.Zerg_Hydralisk_Den);
         boolean spireExist = UnitUtils.getEnemyUnitCount(UnitType.Zerg_Spire, UnitType.Zerg_Greater_Spire) > 0;
@@ -230,7 +231,7 @@ public class ZergStrategist extends Strategist {
         if (UnitUtils.activatedCommandCenterCount() < 2) {
             return false;
         }
-        if (UnitUtils.getUnitCount(CommonCode.UnitFindStatus.ALL, UnitType.Terran_Siege_Tank_Tank_Mode, UnitType.Terran_Siege_Tank_Siege_Mode) <= 5) {
+        if (UnitUtils.getUnitCount(UnitFindStatus.ALL, UnitType.Terran_Siege_Tank_Tank_Mode, UnitType.Terran_Siege_Tank_Siege_Mode) <= 5) {
             return false;
         }
         warithActivatedFrame = TimeUtils.getFrame();

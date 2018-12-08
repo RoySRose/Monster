@@ -4,7 +4,7 @@ import bwapi.Position;
 import bwapi.Unit;
 import bwapi.UnitType;
 import org.monster.common.UnitInfo;
-import org.monster.common.constant.CommonCode;
+import org.monster.common.constant.PlayerRange;
 import org.monster.common.util.UnitUtils;
 import org.monster.micro.constant.MicroConfig;
 
@@ -61,7 +61,7 @@ public class DefaultTargetCalculator extends TargetScoreCalculator {
     private int getSpecialScore(Unit enemyUnit) {
         int specialScore = 0;
         if (enemyUnit.getType().groundWeapon().maxRange() <= MicroConfig.Tank.SIEGE_MODE_MIN_RANGE) {
-            List<Unit> nearSiegeMode = UnitUtils.getUnitsInRadius(CommonCode.PlayerRange.SELF, enemyUnit.getPosition(), MicroConfig.Tank.SIEGE_MODE_MIN_RANGE, UnitType.Terran_Siege_Tank_Siege_Mode);
+            List<Unit> nearSiegeMode = UnitUtils.getUnitsInRadius(PlayerRange.SELF, enemyUnit.getPosition(), MicroConfig.Tank.SIEGE_MODE_MIN_RANGE, UnitType.Terran_Siege_Tank_Siege_Mode);
             if (!nearSiegeMode.isEmpty()) {
                 return 100;
             }

@@ -21,4 +21,12 @@ public class RegionUtils {
     public static Region enemyThirdRegion() {
         return RegionInfoCollector.Instance().thirdRegion.get(PlayerUtils.enemyPlayer());
     }
+
+    public static boolean equals(Region region1, Region region2) {
+        if (region1 == null || region2 == null) {
+            return false;
+        }
+        return region1.getCenter().equals(region2.getCenter());
+    }
+
 }

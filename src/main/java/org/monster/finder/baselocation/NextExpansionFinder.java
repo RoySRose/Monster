@@ -42,7 +42,7 @@ public class NextExpansionFinder extends DefaultBaseLocationFinder implements Lo
 //                    continue;
 //
 ////            	20180815. hkk. 해당지역에 적 메인 건물이 있거나, 건물이 5개 초과이면 적 지역이라고 인식한다.
-//                List<Unit> enemyBuilding = UnitUtils.getUnitsInRadius(CommonCode.PlayerRange.ENEMY, baseLocation.getPosition(), 350);
+//                List<Unit> enemyBuilding = UnitUtils.getUnitsInRadius(PlayerRange.ENEMY, baseLocation.getPosition(), 350);
 //                for (Unit unit : enemyBuilding) {
 //                    if (unit.getType().isResourceDepot()) {
 ////            			//FileUtils.appendTextToFile("log.txt", "\n updateMySecondBaseLocation :: there is enemyRegion :: " + unit.getType());

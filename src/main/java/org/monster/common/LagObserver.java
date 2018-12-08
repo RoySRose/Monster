@@ -3,7 +3,6 @@ package org.monster.common;
 
 import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.TimeUtils;
-import org.monster.bootstrap.Monster;
 
 public class LagObserver {
 

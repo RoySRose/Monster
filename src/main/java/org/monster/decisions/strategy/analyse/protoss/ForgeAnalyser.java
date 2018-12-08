@@ -2,7 +2,7 @@ package org.monster.decisions.strategy.analyse.protoss;
 
 import bwapi.UnitType;
 import org.monster.common.UnitInfo;
-import org.monster.common.constant.CommonCode;
+import org.monster.common.constant.RegionType;
 import org.monster.decisions.constant.EnemyStrategy;
 import org.monster.decisions.strategy.analyse.Clue;
 import org.monster.decisions.strategy.analyse.UnitAnalyser;
@@ -22,7 +22,7 @@ public class ForgeAnalyser extends UnitAnalyser {
     }
 
     private void fastForge() {
-        List<UnitInfo> found = found(CommonCode.RegionType.ENEMY_FIRST_EXPANSION);
+        List<UnitInfo> found = found(RegionType.ENEMY_FIRST_EXPANSION);
         if (!found.isEmpty()) {
             int buildFrame = buildStartFrameDefaultJustBefore(found.get(0));
             int forgeDoubleForgeFrame = EnemyStrategy.PROTOSS_FORGE_DOUBLE.buildTimeMap.frame(UnitType.Protoss_Forge, 15);

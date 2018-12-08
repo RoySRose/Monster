@@ -1,16 +1,17 @@
 package org.monster.common.util.internal;
 
-
 import org.monster.common.util.TimeUtils;
 
 import java.util.HashMap;
 import java.util.Map;
 
+
+//TODO To be taken care of at each info collectors
+@Deprecated
 public class SpecificValueCache {
 
     private static Map<ValueType, Object> data = new HashMap<>();
 
-    ;
     private static Map<ValueType, Integer> dataSavedFrame = new HashMap<>();
 
     public static <T> T get(ValueType valueType, Class<T> type) {

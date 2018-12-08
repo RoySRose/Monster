@@ -2,7 +2,7 @@ package org.monster.common.util;
 
 import bwta.Chokepoint;
 
-public class ChokePointUtils {
+public class ChokeUtils {
 
     public static Chokepoint myFirstChoke() {
         return ChokeInfoCollector.Instance().firstChokePoint.get(PlayerUtils.myPlayer());
@@ -19,4 +19,6 @@ public class ChokePointUtils {
     public static Chokepoint enemySecondChoke() {
         return ChokeInfoCollector.Instance().secondChokePoint.get(PlayerUtils.enemyPlayer());
     }
+
+
 }

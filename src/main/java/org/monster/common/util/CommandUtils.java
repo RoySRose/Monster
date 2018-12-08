@@ -218,7 +218,7 @@ public class CommandUtils {
         if (!UnitUtils.isValidUnit(unit)) {
             return false;
         }
-        if (!PositionUtils.isValidTilePosition(tilePosition)) {
+        if (!TilePositionUtils.isValidTilePosition(tilePosition)) {
             return false;
         }
         if (unit.getLastCommandFrame() >= TimeUtils.getFrame()) {

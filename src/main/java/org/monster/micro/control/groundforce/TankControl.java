@@ -8,7 +8,7 @@ import bwta.BWTA;
 import bwta.Chokepoint;
 import org.monster.board.StrategyBoard;
 import org.monster.common.UnitInfo;
-import org.monster.common.constant.CommonCode;
+import org.monster.common.constant.PlayerRange;
 import org.monster.common.util.CommandUtils;
 import org.monster.common.util.MicroUtils;
 import org.monster.common.util.PlayerUtils;
@@ -312,7 +312,7 @@ public class TankControl extends Control {
                 return true;
             } else {
                 if (!eui.getType().isBuilding()) {
-                    List<Unit> siegeModeTanks = UnitUtils.getUnitsInRadius(CommonCode.PlayerRange.SELF, tank.getPosition(), MicroConfig.Tank.SIEGE_LINK_DISTANCE, UnitType.Terran_Siege_Tank_Siege_Mode);
+                    List<Unit> siegeModeTanks = UnitUtils.getUnitsInRadius(PlayerRange.SELF, tank.getPosition(), MicroConfig.Tank.SIEGE_LINK_DISTANCE, UnitType.Terran_Siege_Tank_Siege_Mode);
                     for (Unit siegeModeTank : siegeModeTanks) {
                         if (tank.getID() == siegeModeTank.getID()) {
                             continue;

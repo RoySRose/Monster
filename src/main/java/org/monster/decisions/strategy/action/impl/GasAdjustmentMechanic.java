@@ -2,13 +2,12 @@ package org.monster.decisions.strategy.action.impl;
 
 import bwapi.UnitType;
 import org.monster.board.StrategyBoard;
-import org.monster.common.constant.CommonCode;
+import org.monster.common.constant.UnitFindStatus;
 import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.TimeUtils;
 import org.monster.common.util.UnitUtils;
 import org.monster.decisions.constant.EnemyStrategyOptions;
 import org.monster.decisions.strategy.action.Action;
-import org.monster.bootstrap.Monster;
 
 /**
  * 메카닉 테란 가스 조절
@@ -33,7 +32,7 @@ public class GasAdjustmentMechanic extends Action {
         StrategyBoard.gasAdjustment = true;
 
         int adjustGasWorkerCount = 0;
-        int workerCount = UnitUtils.getUnitCount(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_SCV);
+        int workerCount = UnitUtils.getUnitCount(UnitFindStatus.COMPLETE, UnitType.Terran_SCV);
         if (workerCount > 8) {
             adjustGasWorkerCount = 3;
             if (!UnitUtils.myUnitDiscovered(UnitType.Terran_Factory)) {
@@ -42,7 +41,7 @@ public class GasAdjustmentMechanic extends Action {
                 }
             } else {
                 if (StrategyBoard.expansionOption == EnemyStrategyOptions.ExpansionOption.ONE_FACTORY) {
-                    if (UnitUtils.getUnitCount(CommonCode.UnitFindStatus.ALL, UnitType.Terran_Command_Center) < 2) {
+                    if (UnitUtils.getUnitCount(UnitFindStatus.ALL, UnitType.Terran_Command_Center) < 2) {
                         if (PlayerUtils.gasSelf() <= 250) {
                             adjustGasWorkerCount = 2;
                         } else {
@@ -52,7 +51,7 @@ public class GasAdjustmentMechanic extends Action {
                         gasAjustmentFinshed = true;
                     }
                 } else {
-                    if (UnitUtils.getUnitCount(CommonCode.UnitFindStatus.ALL, UnitType.Terran_Command_Center) < 2) {
+                    if (UnitUtils.getUnitCount(UnitFindStatus.ALL, UnitType.Terran_Command_Center) < 2) {
                         if (PlayerUtils.gasSelf() <= 100) {
                             adjustGasWorkerCount = 3;
                         } else {

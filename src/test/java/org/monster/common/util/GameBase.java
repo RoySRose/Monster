@@ -8,12 +8,11 @@ import bwta.BWTA;
 import bwta.BaseLocation;
 import bwta.Region;
 import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,12 +24,9 @@ import static org.mockito.Mockito.when;
 @PrepareForTest(BWTA.class)
 public class GameBase {
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
-
     public Game Broodwar = mock(Game.class);
     public Player enemyPlayer = mock(Player.class);
     public Player selfPlayer = mock(Player.class);
-//    public static BWTA bwta = mock(BWTA.class);
 
     public Race selfRace = mock(Race.class);
     public Race enemyRace = mock(Race.class);
@@ -62,6 +58,11 @@ public class GameBase {
         when(BWTA.getStartLocations()).thenReturn(baseLocationList);
         when(BWTA.getStartLocation(selfPlayer)).thenReturn(base0);
         when(BWTA.getRegion(new Position(1,1))).thenReturn(myRegion);
+    }
+
+    @Test
+    public void dummy(){
+
     }
 
 }

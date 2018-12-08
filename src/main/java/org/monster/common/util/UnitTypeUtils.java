@@ -102,76 +102,14 @@ public class UnitTypeUtils {
     }
 
     public UnitType getObserverUnitType(Race race) {
-		if (race == Race.Protoss) {
-			return UnitType.Protoss_Observer;
-		} else if (race == Race.Terran) {
-        return UnitType.Terran_Science_Vessel;
-		} else if (race == Race.Zerg) {
-			return UnitType.Zerg_Overlord;
-		} else {
-			return UnitType.None;
-		}
+        if (race == Race.Protoss) {
+            return UnitType.Protoss_Observer;
+        } else if (race == Race.Terran) {
+            return UnitType.Terran_Science_Vessel;
+        } else if (race == Race.Zerg) {
+            return UnitType.Zerg_Overlord;
+        } else {
+            return UnitType.None;
+        }
     }
-
-    //TODO 나의 첫 가스위치 찾는 로직. 일단 모아둠
-//    public Unit myfirstGeyser;
-//    myfirstGas = null;
-//    public void updateFirstGasInformation() {
-//        if (selfPlayer != null && getMainBaseLocation(selfPlayer) != null
-//                && getMainBaseLocation(selfPlayer).getGeysers().size() > 0) {
-//            myfirstGas = getMainBaseLocation(selfPlayer).getGeysers().get(0);
-//        }
-//    }
-
-
-//    //TODO map tile 여유분 찾기 로직 참고용
-//    private void checkTileForSupply() {
-//
-//        int MainBaseSpaceForSup =0;
-//        Polygon temp= getMainBaseLocation(selfPlayer).getRegion().getPolygon();
-//        for(int y=0; y<128 ; y++){
-//            for(int x=0; x<128 ; x++){
-//                Position test2 = new Position(x*32+16,y*32+16);
-//                if(temp.isInside(test2)){
-//                    MainBaseSpaceForSup++;
-//                }
-//            }
-//        }
-//        MainBaseSuppleLimit =  (int)((MainBaseSpaceForSup - 106)/30)+5;
-//    }
-
-
-//TODO 모든 멀티 확인여부 참고용
-//	public void setEveryMultiInfo() {
-//
-//		if (mainBaseLocation.get(selfPlayer) != null && mainBaseLocation.get(enemyPlayer) != null) {
-//			BaseLocation sourceBaseLocation = mainBaseLocation.get(selfPlayer);
-//			for (BaseLocation targetBaseLocation : BWTA.getBaseLocations())
-//			{
-//				if (!BWTA.isConnected(targetBaseLocation.getTilePosition(), sourceBaseLocation.getTilePosition())) continue;
-//				if (targetBaseLocation.getTilePosition().equals(mainBaseLocation.get(enemyPlayer).getTilePosition())) continue;
-//				if (targetBaseLocation.getTilePosition().equals(mainBaseLocation.get(selfPlayer).getTilePosition())) continue;
-//				//적군 베이스도 아닐때
-//				if (hasBuildingAroundBaseLocation(targetBaseLocation,enemyPlayer,10) == true) continue;
-//
-////				occupiedBaseLocations.
-//
-////				System.out.print("targetBaseLocationX : " + targetBaseLocation.getTilePosition().getX());
-////				System.out.println(", targetBaseLocationY : " + targetBaseLocation.getTilePosition().getY());
-////
-////				System.out.println("getduration: "+ MapGrid.Instance().getCellLastVisitDuration(targetBaseLocation.getPosition()));
-//				if (MapGrid.Instance().getCellLastVisitDuration(targetBaseLocation.getPosition()) > 8000)
-//				{
-//					ReceivingEveryMultiInfo = false;
-////					System.out.println("ReceivingEveryMultiInfo1: " + ReceivingEveryMultiInfo);
-//					return;
-//				}
-//			}
-//			ReceivingEveryMultiInfo = true;
-////			System.out.println("ReceivingEveryMultiInfo2: " + ReceivingEveryMultiInfo);
-//		}else{
-//			ReceivingEveryMultiInfo = false;
-////			System.out.println("ReceivingEveryMultiInfo3: " + ReceivingEveryMultiInfo);
-//		}
-//	}
 }

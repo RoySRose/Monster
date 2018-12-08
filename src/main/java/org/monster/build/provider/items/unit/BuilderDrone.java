@@ -11,7 +11,7 @@ import org.monster.build.base.BuildOrderQueue;
 import org.monster.build.initialProvider.BlockingEntrance.BlockingEntrance;
 import org.monster.build.provider.DefaultBuildableItem;
 import org.monster.common.MetaType;
-import org.monster.common.constant.CommonCode;
+import org.monster.common.constant.UnitFindStatus;
 import org.monster.common.util.BaseUtils;
 import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.TimeUtils;
@@ -39,7 +39,7 @@ public class BuilderDrone extends DefaultBuildableItem {
         }
 
 
-        List<Unit> commandCenters = UnitUtils.getUnitList(CommonCode.UnitFindStatus.ALL, UnitType.Terran_Command_Center);
+        List<Unit> commandCenters = UnitUtils.getUnitList(UnitFindStatus.ALL, UnitType.Terran_Command_Center);
         if (!StrategyBoard.EXOK) {
             if (UnitUtils.getCompletedUnitCount(UnitType.Terran_Command_Center) == 2) {
                 Unit secondCommandCenter = null;

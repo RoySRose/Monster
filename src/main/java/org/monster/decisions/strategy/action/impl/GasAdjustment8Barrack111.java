@@ -2,12 +2,11 @@ package org.monster.decisions.strategy.action.impl;
 
 import bwapi.UnitType;
 import org.monster.board.StrategyBoard;
-import org.monster.common.constant.CommonCode;
+import org.monster.common.constant.UnitFindStatus;
 import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.TimeUtils;
 import org.monster.common.util.UnitUtils;
 import org.monster.decisions.strategy.action.Action;
-import org.monster.bootstrap.Monster;
 
 /**
  * 111 가스조절
@@ -32,11 +31,11 @@ public class GasAdjustment8Barrack111 extends Action {
             StrategyBoard.gasAdjustmentWorkerCount = 2;
         } else {
             StrategyBoard.gasAdjustment = true;
-            int workerCount = UnitUtils.getUnitCount(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_SCV);
+            int workerCount = UnitUtils.getUnitCount(UnitFindStatus.COMPLETE, UnitType.Terran_SCV);
             if (workerCount < 8) {
                 StrategyBoard.gasAdjustmentWorkerCount = 0;
             } else {
-                if (UnitUtils.getUnitCount(CommonCode.UnitFindStatus.ALL_AND_CONSTRUCTION_QUEUE, UnitType.Terran_Factory) > 0 || PlayerUtils.gasSelf() >= 100) {
+                if (UnitUtils.getUnitCount(UnitFindStatus.ALL_AND_CONSTRUCTION_QUEUE, UnitType.Terran_Factory) > 0 || PlayerUtils.gasSelf() >= 100) {
                     StrategyBoard.gasAdjustmentWorkerCount = 1;
                 } else {
                     StrategyBoard.gasAdjustmentWorkerCount = 2;

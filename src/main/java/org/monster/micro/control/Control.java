@@ -40,7 +40,7 @@ public abstract class Control {
     public abstract void control(Collection<Unit> unitList, Collection<UnitInfo> euiList);
 
     protected boolean skipControl(Unit unit) {
-        return !TimeUtils.executeUnitRotation(unit, LagObserver.groupsize());
+        return !TimeUtils.isExecuteFrame(unit, LagObserver.groupsize());
 //        return UnitBalancer.skipControl(unit);
     }
 

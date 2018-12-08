@@ -1,6 +1,10 @@
 package org.monster.common.util;
 
-import bwapi.*;
+import bwapi.Game;
+import bwapi.Position;
+import bwapi.TilePosition;
+import bwapi.Unit;
+import bwapi.UnitType;
 import bwta.BWTA;
 import bwta.BaseLocation;
 import org.monster.common.util.internal.GameMap;
@@ -8,18 +12,16 @@ import org.monster.common.util.internal.GameMap;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StaticMapInfoCollector implements InfoCollector {
+public class MapInfoCollector implements InfoCollector {
 
-    private static StaticMapInfoCollector instance = new StaticMapInfoCollector();
-    /*Info*/
-    Game Broodwar;
-
-    protected GameMap map;
-    protected List<BaseLocation> startingBaseLocation = new ArrayList<>();
-
-    protected static StaticMapInfoCollector Instance() {
+    private static MapInfoCollector instance = new MapInfoCollector();
+    protected static MapInfoCollector Instance() {
         return instance;
     }
+
+    private Game Broodwar;
+
+    protected GameMap map;
 
     @Override
     public void onStart(Game Broodwar) {
@@ -34,9 +36,9 @@ public class StaticMapInfoCollector implements InfoCollector {
          */
     }
 
-    public void updateMapSpecificInformation() {
+    private void updateMapSpecificInformation() {
 
-        GameMap gameMap = GameMap.UNKNOWN;
+        GameMap gameMap;
         String mapName = Broodwar.mapFileName().toUpperCase();
         if (mapName.matches(".*CIRCUIT.*")) {
             gameMap = GameMap.CIRCUITBREAKER;
@@ -53,7 +55,6 @@ public class StaticMapInfoCollector implements InfoCollector {
             }
         }
         map = gameMap;
-        startingBaseLocation = startingBase;
     }
 
 
@@ -63,37 +64,51 @@ public class StaticMapInfoCollector implements InfoCollector {
     protected List<Unit> getStaticMinerals() {
         return Broodwar.getStaticMinerals();
     }
-    public List<Unit> getStaticGeysers() {
+    protected List<Unit> getStaticGeysers() {
         return Broodwar.getStaticGeysers();
     }
+
     protected List<Unit> getGeyser() {
         return Broodwar.getGeysers();
     }
+
     protected boolean isExplored(TilePosition tilePosition) {
         return Broodwar.isExplored(tilePosition);
     }
+
     protected boolean isExplored(int x, int y) {
-        return Broodwar.isExplored(x,y);
+        return Broodwar.isExplored(x, y);
     }
+
     protected boolean isBuildable(TilePosition tilePosition, boolean includeBuilding) {
         return Broodwar.isBuildable(tilePosition, includeBuilding);
     }
+
     protected boolean isBuildable(TilePosition tilePosition) {
         return Broodwar.isBuildable(tilePosition);
     }
-    protected int mapHeight(){
+
+    protected int mapHeight() {
         return Broodwar.mapHeight();
     }
-    protected int mapWidth(){
+
+    protected int mapWidth() {
         return Broodwar.mapWidth();
     }
+
     protected boolean isWalkable(int i, int j) {
         return Broodwar.isWalkable(i, j);
     }
+
     protected boolean canBuildHere(TilePosition tilePosition, UnitType unitType) {
         return Broodwar.canBuildHere(tilePosition, unitType);
     }
+
     protected boolean hasPath(Position from, Position to) {
         return Broodwar.hasPath(from, to);
+    }
+
+    protected boolean isVisible(TilePosition tilePosition) {
+        return Broodwar.isVisible(tilePosition);
     }
 }

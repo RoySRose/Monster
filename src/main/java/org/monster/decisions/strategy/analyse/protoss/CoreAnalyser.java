@@ -2,7 +2,7 @@ package org.monster.decisions.strategy.analyse.protoss;
 
 import bwapi.UnitType;
 import org.monster.common.UnitInfo;
-import org.monster.common.constant.CommonCode;
+import org.monster.common.constant.EnemyUnitVisibleStatus;
 import org.monster.common.util.TimeUtils;
 import org.monster.common.util.UnitUtils;
 import org.monster.decisions.constant.EnemyStrategy;
@@ -48,7 +48,7 @@ public class CoreAnalyser extends UnitAnalyser {
             return;
         }
 
-        List<UnitInfo> coreList = UnitUtils.getEnemyUnitInfoList(CommonCode.EnemyUnitVisibleStatus.VISIBLE, UnitType.Protoss_Cybernetics_Core);
+        List<UnitInfo> coreList = UnitUtils.getEnemyUnitInfoList(EnemyUnitVisibleStatus.VISIBLE, UnitType.Protoss_Cybernetics_Core);
         if (!coreList.isEmpty() && coreList.get(0).getUnit().isUpgrading()) {
             ClueManager.Instance().addClueInfo(Clue.ClueInfo.DRAGOON_RANGE_FAST);
         }

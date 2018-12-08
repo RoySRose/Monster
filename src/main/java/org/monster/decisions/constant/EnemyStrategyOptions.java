@@ -8,6 +8,9 @@ import bwapi.UpgradeType;
 import org.monster.board.StrategyBoard;
 import org.monster.common.MetaType;
 import org.monster.common.constant.CommonCode;
+import org.monster.common.constant.RegionType;
+import org.monster.common.constant.UnitFindStatus;
+import org.monster.common.util.DrawingUtils;
 import org.monster.common.util.PositionUtils;
 import org.monster.common.util.TimeUtils;
 import org.monster.common.util.UnitUtils;
@@ -110,15 +113,15 @@ public class EnemyStrategyOptions {
                 case EXPANSION: // 앞마당
                     boolean baseCommandCentertOk = false;
                     boolean expansionCommandCenterOk = false;
-                    List<Unit> commandCenterList = UnitUtils.getUnitList(CommonCode.UnitFindStatus.ALL, UnitType.Terran_Command_Center);
+                    List<Unit> commandCenterList = UnitUtils.getUnitList(UnitFindStatus.ALL, UnitType.Terran_Command_Center);
                     for (Unit commandCenter : commandCenterList) {
                         if (commandCenter.isLifted()) {
                             continue;
                         }
-                        CommonCode.RegionType regionType = PositionUtils.positionToRegionType(commandCenter.getPosition());
-                        if (regionType == CommonCode.RegionType.MY_BASE) {
+                        RegionType regionType = PositionUtils.positionToRegionType(commandCenter.getPosition());
+                        if (regionType == RegionType.MY_BASE) {
                             baseCommandCentertOk = true;
-                        } else if (regionType == CommonCode.RegionType.MY_FIRST_EXPANSION) {
+                        } else if (regionType == RegionType.MY_FIRST_EXPANSION) {
                             expansionCommandCenterOk = true;
                         }
                     }
@@ -148,10 +151,10 @@ public class EnemyStrategyOptions {
                     boolean expansionTurretOk = false;
                     List<Unit> turretList = UnitUtils.getCompletedUnitList(UnitType.Terran_Missile_Turret);
                     for (Unit turret : turretList) {
-                        CommonCode.RegionType regionType = PositionUtils.positionToRegionType(turret.getPosition());
-                        if (regionType == CommonCode.RegionType.MY_BASE) {
+                        RegionType regionType = PositionUtils.positionToRegionType(turret.getPosition());
+                        if (regionType == RegionType.MY_BASE) {
                             baseTurretOk = true;
-                        } else if (regionType == CommonCode.RegionType.MY_FIRST_EXPANSION || regionType == CommonCode.RegionType.MY_THIRD_REGION) {
+                        } else if (regionType == RegionType.MY_FIRST_EXPANSION || regionType == RegionType.MY_THIRD_REGION) {
                             expansionTurretOk = true;
                         }
                     }
@@ -275,17 +278,17 @@ public class EnemyStrategyOptions {
                 List<Integer> times = buildingTime.get(unitType);
                 List<String> timeStrings = new ArrayList<>();
                 for (int time : times) {
-                    timeStrings.add(TimeUtils.framesToTimeString(time));
+                    timeStrings.add(DrawingUtils.framesToTimeString(time));
                 }
                 sb.append(unitType).append(timeStrings).append("\n");
             }
             for (TechType techType : techTime.keySet()) {
                 Integer time = techTime.get(techType);
-                sb.append(techType).append(TimeUtils.framesToTimeString(time)).append("\n");
+                sb.append(techType).append(DrawingUtils.framesToTimeString(time)).append("\n");
             }
             for (UpgradeType upgradeType : upgradeTime.keySet()) {
                 Integer time = upgradeTime.get(upgradeType);
-                sb.append(upgradeType).append(TimeUtils.framesToTimeString(time)).append("\n");
+                sb.append(upgradeType).append(DrawingUtils.framesToTimeString(time)).append("\n");
             }
 
             return sb.toString();

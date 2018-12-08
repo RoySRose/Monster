@@ -1,17 +1,5 @@
 package org.monster.bootstrap;
 
-/*
-+----------------------------------------------------------------------+
-| UAlbertaBot                                                          |
-+----------------------------------------------------------------------+
-| University of Alberta - AIIDE StarCraft Competition                  |
-+----------------------------------------------------------------------+
-|                                                                      |
-+----------------------------------------------------------------------+
-| Author: David Churchill <dave.churchill@gmail.com>                   |
-+----------------------------------------------------------------------+
-*/
-
 import bwapi.DefaultBWListener;
 import bwapi.Flag.Enum;
 import bwapi.Game;

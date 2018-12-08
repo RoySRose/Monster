@@ -9,11 +9,11 @@ import bwta.BWTA;
 import bwta.Region;
 import org.monster.board.StrategyBoard;
 import org.monster.common.UnitInfo;
-import org.monster.common.constant.CommonCode;
+import org.monster.common.constant.PlayerRange;
+import org.monster.common.util.MapUtils;
 import org.monster.common.util.MicroUtils;
 import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.UnitUtils;
-import org.monster.bootstrap.Monster;
 import org.monster.micro.constant.MicroConfig;
 import org.monster.micro.targeting.TargetPriority;
 
@@ -113,7 +113,7 @@ public class MicroDecisionMakerPrebot1 {
 
                 // 시즈에 붙어있는 밀리유닛 : +200점
                 if (enemyUnitType.groundWeapon().maxRange() <= MicroConfig.Tank.SIEGE_MODE_MIN_RANGE) {
-                    List<Unit> nearSiege = UnitUtils.getUnitsInRadius(CommonCode.PlayerRange.SELF, enemyPosition, MicroConfig.Tank.SIEGE_MODE_MIN_RANGE, UnitType.Terran_Siege_Tank_Siege_Mode);
+                    List<Unit> nearSiege = UnitUtils.getUnitsInRadius(PlayerRange.SELF, enemyPosition, MicroConfig.Tank.SIEGE_MODE_MIN_RANGE, UnitType.Terran_Siege_Tank_Siege_Mode);
                     if (!nearSiege.isEmpty()) {
                         specialScore += 100;
                     }
@@ -168,7 +168,7 @@ public class MicroDecisionMakerPrebot1 {
             Unit enemy = UnitUtils.enemyUnitInSight(enemyInfo);
             if (enemy == null) {
                 if (bestTargetInfo == null && !enemyInfo.getType().isBuilding()) {
-                    if (!PlayerUtils.isVisible(enemyInfo.getLastPosition().toTilePosition())) {
+                    if (!MapUtils.isVisible(enemyInfo.getLastPosition().toTilePosition())) {
                         int distanceToTarget = mechanicUnit.getDistance(enemyInfo.getLastPosition());
                         if (saveUnitLevel == 0 && distanceToTarget <= MicroConfig.Tank.SIEGE_MODE_MAX_RANGE + 5) {
                             bestTargetInfo = enemyInfo;

@@ -119,8 +119,8 @@ public abstract class RaceAction {
 //			} else {
 //				List<UnitInfo> filtered = new ArrayList<>();
 //				for (UnitInfo eui : euiList) {
-//					CommonCode.RegionType enemyRegionType = PositionUtils.positionToRegionType(eui.getLastPosition());
-//					for (CommonCode.RegionType regionType : positionRegion) {
+//					RegionType enemyRegionType = PositionUtils.positionToRegionType(eui.getLastPosition());
+//					for (RegionType regionType : positionRegion) {
 //						if (regionType == enemyRegionType) {
 //							filtered.add(eui); 
 //						}
@@ -198,8 +198,8 @@ public abstract class RaceAction {
 //			if (regionTypes == null) {
 //				count++;
 //			} else {
-//				CommonCode.RegionType euiRegionType = PositionUtils.positionToRegionType(eui.getLastPosition());
-//				for (CommonCode.RegionType regionType : regionTypes) {
+//				RegionType euiRegionType = PositionUtils.positionToRegionType(eui.getLastPosition());
+//				for (RegionType regionType : regionTypes) {
 //					if (euiRegionType == regionType) {
 //						count++;
 //						break;

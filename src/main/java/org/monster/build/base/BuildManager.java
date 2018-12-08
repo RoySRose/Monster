@@ -1,6 +1,14 @@
 package org.monster.build.base;
 
-import bwapi.*;
+import bwapi.Pair;
+import bwapi.Position;
+import bwapi.TechType;
+import bwapi.TilePosition;
+import bwapi.Unit;
+import bwapi.UnitCommand;
+import bwapi.UnitCommandType;
+import bwapi.UnitType;
+import bwapi.UpgradeType;
 import bwta.BWTA;
 import bwta.BaseLocation;
 import bwta.Chokepoint;
@@ -11,10 +19,16 @@ import org.monster.build.constant.BuildConfig;
 import org.monster.build.provider.BuildQueueProvider;
 import org.monster.common.LagObserver;
 import org.monster.common.MetaType;
-import org.monster.common.constant.CommonCode;
-import org.monster.common.util.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.monster.common.constant.UnitFindStatus;
+import org.monster.common.util.BaseUtils;
+import org.monster.common.util.ChokeUtils;
+import org.monster.common.util.MapUtils;
+import org.monster.common.util.PlayerUtils;
+import org.monster.common.util.TilePositionUtils;
+import org.monster.common.util.TimeUtils;
+import org.monster.common.util.UnitTypeUtils;
+import org.monster.common.util.UnitUtils;
+import org.monster.common.util.UpgradeUtils;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -22,8 +36,6 @@ import java.util.List;
 import java.util.Map;
 
 public class BuildManager extends GameManager {
-
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private static BuildManager instance = new BuildManager();
 
@@ -69,6 +81,7 @@ public class BuildManager extends GameManager {
 
         BuildOrderItem currentItem = buildQueue.getHighestPriorityItem();
 
+        // while there is still something left in the buildQueue
         while (!buildQueue.isEmpty()) {
             if (failureProtector.isSuspended(currentItem.metaType)) {
                 if (!buildQueue.canSkipCurrentItem()) {
@@ -89,6 +102,8 @@ public class BuildManager extends GameManager {
             } else {
                 seedPosition = getSeedPositionFromSeedLocationStrategy(currentItem.seedLocationStrategy);
             }
+
+            // this is the unit which can produce the currentItem
             Unit producer = getProducer(currentItem.metaType, seedPosition, currentItem.producerID);
 
             boolean canMake = false;
@@ -96,6 +111,7 @@ public class BuildManager extends GameManager {
             if (producer != null) {
                 canMake = canMakeNow(producer, currentItem.metaType);
             }
+
             // if we can make the current item, create it
             if (producer != null && canMake == true) {
                 MetaType t = currentItem.metaType;
@@ -108,7 +124,6 @@ public class BuildManager extends GameManager {
                             TilePosition desiredPosition = getDesiredPosition(t.getUnitType(), currentItem.seedLocation, currentItem.seedLocationStrategy);
 
                             if (desiredPosition != TilePosition.None) {
-                                logger.debug("push {} to ConstructionQueue with position {} ", t.getUnitType().toString(), desiredPosition);
                                 ConstructionManager.Instance().addConstructionTask(t.getUnitType(), desiredPosition);
                             } else {
                                 System.out.println("There is no place to construct :: " + currentItem.metaType.getUnitType() + " :: strategy :: " + currentItem.seedLocationStrategy);
@@ -124,7 +139,7 @@ public class BuildManager extends GameManager {
                                 }
 
                                 if (desiredPosition != TilePosition.None) {
-                                    logger.debug("push {} to ConstructionQueue with recalculated position {} ", t.getUnitType().toString(), desiredPosition);
+                                    System.out.println(" re calculate desiredPosition :: " + desiredPosition.getX() + "," + desiredPosition.getY());
                                     ConstructionManager.Instance().addConstructionTask(t.getUnitType(), desiredPosition);
                                 } else {
                                     System.out.println(" re calculate desiredPosition is null :: delete from quere");
@@ -144,31 +159,42 @@ public class BuildManager extends GameManager {
                         BuildQueueProvider.Instance().startUpgrade(t.getUpgradeType());
                     }
                 }
+                // remove it from the buildQueue
                 if (isOkToRemoveQueue) {
+//					System.out.println("here I am!!! Killing: " + buildQueue.getItem().metaType.getName());
                     buildQueue.removeCurrentItem();
                 }
                 // don't actually loop around in here
                 break;
-            } else if (buildQueue.canSkipCurrentItem()) {
+            }
+            // otherwise, if we can skip the current item
+            else if (buildQueue.canSkipCurrentItem()) {
                 // skip it and get the next one
                 buildQueue.skipCurrentItem();
                 currentItem = buildQueue.getItem();
             } else {
+                // so break out
+//				//FileUtils.appendTextToFile("log.txt", "\n frame count debug BuildManager break out :: " + System.currentTimeMillis());
                 break;
             }
         }
+
+//		//FileUtils.appendTextToFile("log.txt", "\n frame count debug BuildManager End :: " + System.currentTimeMillis());
     }
 
     public Unit getProducer(MetaType t, Position closestTo, int producerID) {
+        // get the type of unit that builds this
         UnitType producerType = t.whatBuilds();
 
+        // make a set of all candidate producers
         List<Unit> candidateProducers = new ArrayList<Unit>();
-        List<Unit> selectProducer = UnitUtils.getUnitList(CommonCode.UnitFindStatus.COMPLETE);
-
-        for (Unit unit : selectProducer) {
+        List<Unit> selectPorducer = UnitUtils.getUnitList(UnitFindStatus.COMPLETE);
+        for (Unit unit : selectPorducer) {
 
             if (unit == null)
                 continue;
+
+            // reasons a unit can not train the desired type
             if (unit.getType() != producerType) {
                 continue;
             }
@@ -195,8 +221,14 @@ public class BuildManager extends GameManager {
             if (producerID != -1 && unit.getID() != producerID) {
                 continue;
             }
+            if (unit.isConstructing() && (producerType == UnitType.Terran_Factory || producerType == UnitType.Terran_Starport || producerType == UnitType.Terran_Science_Facility || producerType == UnitType.Terran_Command_Center)) {
+                continue;
+            }
 
             if (t.isUnit()) {
+                // if the type dd an addon and the producer doesn't have
+                // one
+                // C++ : typedef std::pair<BWAPI::UnitType, int> ReqPair;
                 Pair<UnitType, Integer> ReqPair = null;
 
                 Map<UnitType, Integer> requiredUnitsMap = t.getUnitType().requiredUnits();
@@ -206,19 +238,20 @@ public class BuildManager extends GameManager {
                 if (requiredUnitsMap != null) {
                     Iterator<UnitType> it = requiredUnitsMap.keySet().iterator();
 
-//                    while (it.hasNext()) {
-//                        UnitType requiredType = it.next();
-//                        if (requiredType.isAddon()) {
-//                            if (unit.getAddon() == null || (unit.getAddon().getType() != requiredType)) {
-//                                able = false;
-//                            }
-//                        }
-//                    }
+                    while (it.hasNext()) {
+                        UnitType requiredType = it.next();
+                        if (requiredType.isAddon()) {
+                            if (unit.getAddon() == null || (unit.getAddon().getType() != requiredType)) {
+                                able = false;
+                            }
+                        }
+                    }
                 }
                 if (!able) continue;
             }
             candidateProducers.add(unit);
         }
+
         return getClosestUnitToPosition(candidateProducers, closestTo);
     }
 
@@ -226,9 +259,10 @@ public class BuildManager extends GameManager {
         if (units.size() == 0) {
             return null;
         }
+
         // if we don't care where the unit is return the first one we have
         if (closestTo == Position.None || closestTo == Position.Invalid || closestTo == Position.Unknown || closestTo.isValid() == false) {
-            return units.get(0);
+            return units.get(0); // C++ : return units.begin();
         }
 
         Unit closestUnit = null;
@@ -244,6 +278,7 @@ public class BuildManager extends GameManager {
                 minDist = distance;
             }
         }
+
         return closestUnit;
     }
 
@@ -251,9 +286,14 @@ public class BuildManager extends GameManager {
         if (producer == null) {
             return false;
         }
+
         boolean canMake = hasEnoughResources(t);
+
         if (canMake) {
             if (t.isUnit()) {
+                // Monster.Broodwar.canMake : Checks all the requirements
+                // include resources, supply, technology tree, availability, and
+                // required units
                 canMake = UnitUtils.canMake(t.getUnitType(), producer);
             } else if (t.isTech()) {
                 canMake = UpgradeUtils.canResearch(t.getTechType(), producer);
@@ -292,6 +332,7 @@ public class BuildManager extends GameManager {
                 }
             } else if (seedPositionStrategy == BuildOrderItem.SeedPositionStrategy.NextSupplePoint) {
                 if (fisrtSupplePointFull) {
+//                	20180815. hkk. 서플라이포인트가 Full 일 경우 작은 건물은 메인베이스가 Full 이더라도 지을수 있는 공간이 있을수 있으므로, 일단 찾아보고 null 이 나올경우 아래에서 처리
                     seedPositionStrategy = BuildOrderItem.SeedPositionStrategy.MainBaseLocation;
                 }
             }
@@ -310,8 +351,10 @@ public class BuildManager extends GameManager {
             desiredPosition = ConstructionPlaceFinder.Instance().getBuildLocationWithSeedPositionAndStrategy(unitType, seedPosition, seedPositionStrategy);
 
             if (desiredPosition == null) {
+//            	20180815. hkk. seedPosition 이 지정되어 들어올경우 null이 나와도 SeedPositionStrategy 가 의미가 없으므로 1번만 찾는다.
 
                 if (TilePositionUtils.isValidTilePosition(seedPosition)) {
+//                	//FileUtils.appendTextToFile("log.txt", "\n getDesiredPosition desiredPosition is null break :: " + unitType + " :: seedPosition :: "+ seedPosition);
                     break;
                 }
 
@@ -323,19 +366,24 @@ public class BuildManager extends GameManager {
                         break;
                     }
                 }
+//            	//FileUtils.appendTextToFile("log.txt", "\n getDesiredPosition desiredPosition is null :: "+ unitType + " :: "+ seedPosition + " :: " + seedPositionStrategy);
                 if (seedPositionStrategy == BuildOrderItem.SeedPositionStrategy.SeedPositionSpecified) {
+                    System.out.println("Fixed seedPosition out");
                     break;
                 }
                 if (seedPositionStrategy == BuildOrderItem.SeedPositionStrategy.getLastBuilingFinalLocation) {
+                    System.out.println("LastFinal seedPosition out, should not happen!!!!!!");
                     break;
                 }
                 if (seedPositionStrategy == BuildOrderItem.SeedPositionStrategy.LastBuilingPoint) {
                     seedPositionStrategy = BuildOrderItem.SeedPositionStrategy.getLastBuilingFinalLocation;
                 }
                 if (seedPositionStrategy == BuildOrderItem.SeedPositionStrategy.NextExpansionPoint) {
+                    System.out.println("No Place for Command CENTER_POS. wait or no construct");
                     break;
                 }
             } else {
+//            	//FileUtils.appendTextToFile("log.txt", "\n getDesiredPosition desiredPosition not null break:: "+ unitType + " :: "+ desiredPosition + " :: " + seedPositionStrategy);
                 break;
             }
         }
@@ -350,17 +398,21 @@ public class BuildManager extends GameManager {
         return PlayerUtils.gasSelf() - ConstructionManager.Instance().getReservedGas();
     }
 
+    // return whether or not we meet resources, including building reserves
     public boolean hasEnoughResources(MetaType type) {
         if ((type.mineralPrice() <= getAvailableMinerals()) && (type.gasPrice() <= getAvailableGas())) {
             return true;
         }
+
         return false;
+
     }
 
     public BuildOrderQueue getBuildQueue() {
         return buildQueue;
     }
 
+    /// seedPositionStrategy 을 현재 게임상황에 맞게 seedPosition 으로 바꾸어 리턴합니다
     private Position getSeedPositionFromSeedLocationStrategy(BuildOrderItem.SeedPositionStrategy seedLocationStrategy) {
         Position seedPosition = null;
         Chokepoint tempChokePoint;
@@ -380,7 +432,7 @@ public class BuildManager extends GameManager {
                 break;
             case MainBaseBackYard:
                 tempBaseLocation = BaseUtils.myMainBase();
-                tempChokePoint = ChokePointUtils.myFirstChoke();
+                tempChokePoint = ChokeUtils.myFirstChoke();
                 tempBaseRegion = BWTA.getRegion(tempBaseLocation.getPosition());
 
                 if (tempBaseLocation != null && tempChokePoint != null) {
@@ -399,20 +451,20 @@ public class BuildManager extends GameManager {
                     tempTilePosition = new TilePosition(bx, by);
 
                     // 해당 지점이 같은 Region 에 속하고 Buildable 한 타일인지 확인
-                    if (!tempTilePosition.isValid() || !StaticMapUtils.isBuildable(tempTilePosition, false) || tempBaseRegion != BWTA.getRegion(new Position(bx * BuildConfig.TILE_SIZE, by * BuildConfig.TILE_SIZE))) {
+                    if (!tempTilePosition.isValid() || !MapUtils.isBuildable(tempTilePosition, false) || tempBaseRegion != BWTA.getRegion(new Position(bx * BuildConfig.TILE_SIZE, by * BuildConfig.TILE_SIZE))) {
 
                         // BaseLocation 에서 ChokePoint 방향에 대해 오른쪽으로 90도 꺾은 방향의 Back Yard : 데카르트 좌표계에서 (cos(t-90) = sin(t),   sin(t-90) = - cos(t))
                         bx = tempBaseLocation.getTilePosition().getX() + (int) (d * Math.sin(theta) / BuildConfig.TILE_SIZE);
                         by = tempBaseLocation.getTilePosition().getY() + (int) (d * Math.cos(theta) / BuildConfig.TILE_SIZE);
                         tempTilePosition = new TilePosition(bx, by);
 
-                        if (!tempTilePosition.isValid() || !StaticMapUtils.isBuildable(tempTilePosition, false)) {
+                        if (!tempTilePosition.isValid() || !MapUtils.isBuildable(tempTilePosition, false)) {
                             // BaseLocation 에서 ChokePoint 방향에 대해 왼쪽으로 90도 꺾은 방향의 Back Yard : 데카르트 좌표계에서 (cos(t+90) = -sin(t),   sin(t+90) = cos(t))
                             bx = tempBaseLocation.getTilePosition().getX() - (int) (d * Math.sin(theta) / BuildConfig.TILE_SIZE);
                             by = tempBaseLocation.getTilePosition().getY() - (int) (d * Math.cos(theta) / BuildConfig.TILE_SIZE);
                             tempTilePosition = new TilePosition(bx, by);
 
-                            if (!tempTilePosition.isValid() || !StaticMapUtils.isBuildable(tempTilePosition, false) || tempBaseRegion != BWTA.getRegion(new Position(bx * BuildConfig.TILE_SIZE, by * BuildConfig.TILE_SIZE))) {
+                            if (!tempTilePosition.isValid() || !MapUtils.isBuildable(tempTilePosition, false) || tempBaseRegion != BWTA.getRegion(new Position(bx * BuildConfig.TILE_SIZE, by * BuildConfig.TILE_SIZE))) {
 
                                 // BaseLocation 에서 ChokePoint 방향 절반 지점의 Back Yard : 데카르트 좌표계에서 (cos(t),   sin(t))
                                 bx = tempBaseLocation.getTilePosition().getX() + (int) (d * Math.cos(theta) / BuildConfig.TILE_SIZE);
@@ -423,7 +475,7 @@ public class BuildManager extends GameManager {
                         }
                     }
                     if (tempTilePosition.isValid() == false
-                            || StaticMapUtils.isBuildable(tempTilePosition, false) == false) {
+                            || MapUtils.isBuildable(tempTilePosition, false) == false) {
                         seedPosition = tempTilePosition.toPosition();
                     } else {
                         seedPosition = tempBaseLocation.getPosition();
@@ -439,14 +491,14 @@ public class BuildManager extends GameManager {
                 break;
 
             case FirstChokePoint:
-                tempChokePoint = ChokePointUtils.myFirstChoke();
+                tempChokePoint = ChokeUtils.myFirstChoke();
                 if (tempChokePoint != null) {
                     seedPosition = tempChokePoint.getCenter();
                 }
                 break;
 
             case SecondChokePoint:
-                tempChokePoint = ChokePointUtils.mySecondChoke();
+                tempChokePoint = ChokeUtils.mySecondChoke();
                 if (tempChokePoint != null) {
                     seedPosition = tempChokePoint.getCenter();
                 }
@@ -472,8 +524,8 @@ public class BuildManager extends GameManager {
             //TODO 이거 필요한가?
             // producer 가 건물이 아닌 경우 : producer 가 생성될 예정인지 추가 파악
             // producerType : 일꾼. Larva. Hydralisk, Mutalisk
-            else if (producerType == UnitType.Zerg_Larva) {
-                if (UnitUtils.getCompletedUnitCount(UnitType.Zerg_Hatchery) == 0) {
+            else if(producerType == UnitType.Zerg_Larva){
+                if(UnitUtils.getCompletedUnitCount(UnitType.Zerg_Hatchery) == 0){
                     isProducerWillExist = false;
                 }
             }
@@ -521,7 +573,10 @@ public class BuildManager extends GameManager {
     }
 
     public void checkBuildOrderQueueDeadlockAndAndFixIt() {
-        // this will be true if any unit is on the first frame if it's training time remaining this can cause issues for the build order search system so don't plan a search on these frames
+        // this will be true if any unit is on the first frame if it's training
+        // time remaining
+        // this can cause issues for the build order search system so don't plan
+        // a search on these frames
         boolean canPlanBuildOrderNow = true;
         for (final Unit unit : UnitUtils.getUnitList()) {
             if (unit.getRemainingTrainTime() == 0) {
@@ -555,11 +610,14 @@ public class BuildManager extends GameManager {
         if (!buildQueue.isEmpty()) {
             BuildOrderItem currentItem = buildQueue.getHighestPriorityItem();
 
+            // if (buildQueue.canSkipCurrentItem() == false)
             if (currentItem.blocking == true) {
                 boolean isDeadlockCase = false;
 
+                // producerType을 먼저 알아낸다
                 UnitType producerType = currentItem.metaType.whatBuilds();
 
+                // 건물이나 유닛의 경우
                 if (currentItem.metaType.isUnit()) {
                     UnitType unitType = currentItem.metaType.getUnitType();
                     TechType requiredTechType = unitType.requiredTech();
@@ -573,11 +631,14 @@ public class BuildManager extends GameManager {
                     // Refinery 건물의 경우, Refinery 가 건설되지 않은 Geyser가 있는 경우에만 가능
                     if (!isDeadlockCase && unitType == UnitTypeUtils.getRefineryBuildingType(PlayerUtils.myRace())) {
 
+//						//FileUtils.appendTextToFile("log.txt", "\n checkBuildOrderQueueDeadlockAndAndFixIt :: refinery lock check");
                         boolean hasAvailableGeyser = true;
 
                         // Refinery가 지어질 수 있는 장소를 찾아본다
                         TilePosition testLocation = getDesiredPosition(unitType, currentItem.seedLocation,
                                 currentItem.seedLocationStrategy);
+
+//						//FileUtils.appendTextToFile("log.txt", "\n checkBuildOrderQueueDeadlockAndAndFixIt :: getDesiredPosition :: " + testLocation);
 
                         // Refinery 를 지으려는 장소를 찾을 수 없으면 dead lock
                         if (testLocation == TilePosition.None || testLocation == TilePosition.Invalid
@@ -616,25 +677,39 @@ public class BuildManager extends GameManager {
                         for (Unit unit : UnitUtils.getUnitList()) {
                             if (ProducerType == unit.getType() && unit.isCompleted()) {
 
-                                if (unit.canBuildAddon() == false) {
-                                    continue;
+                                    if (unit.canBuildAddon() == false) {
+                                        continue;
+                                    }
+                                if (currentItem.metaType.getUnitType() != UnitType.Terran_Comsat_Station) {
+                                    if (isBuildableTile(unit.getTilePosition().getX() + 4, unit.getTilePosition().getY() + 1) == false
+                                            || isBuildableTile(unit.getTilePosition().getX() + 5, unit.getTilePosition().getY() + 1) == false
+                                            || isBuildableTile(unit.getTilePosition().getX() + 4, unit.getTilePosition().getY() + 2) == false
+                                            || isBuildableTile(unit.getTilePosition().getX() + 5, unit.getTilePosition().getY() + 2) == false) {
+                                        //System.out.println("something is blocking addon place, so no cnt");
+                                        continue;
+                                    }
                                 }
                                 getAddonPossibeCnt++;
                             }
                         }
                         if (getAddonPossibeCnt == 0) {
+//							System.out.println("deadlock because no place to addon");
                             isDeadlockCase = true;
                         }
                     }
 
                     Iterator<UnitType> it = requiredUnits.keySet().iterator();
+                    // 선행 건물/유닛이 있는데
                     if (!isDeadlockCase && requiredUnits.size() > 0) {
+                        // for (Unit u : it)
                         while (it.hasNext()) {
                             UnitType requiredUnitType = it.next(); // C++ : u.first;
                             if (requiredUnitType != UnitType.None) {
 
+                                // 선행 건물 / 유닛이 존재하지 않고, 생산 중이지도 않고
                                 if (UnitUtils.getCompletedUnitCount(requiredUnitType) == 0
                                         && UnitUtils.getIncompletedUnitCount(requiredUnitType) == 0) {
+                                    // 선행 건물이 건설 예정이지도 않으면 dead lock
                                     if (requiredUnitType.isBuilding()) {
                                         if (ConstructionManager.Instance().getConstructionQueueItemCount(requiredUnitType, null) == 0) {
                                             isDeadlockCase = true;
@@ -705,6 +780,20 @@ public class BuildManager extends GameManager {
                     TechType techType = currentItem.metaType.getTechType();
                     UnitType requiredUnitType = techType.requiredUnit();
 
+                    /*
+                     * System.out.println("To research " + techType.toString() +
+                     * ", hasResearched " +
+                     * UpgradeUtils.selfISResearched(techType) +
+                     * ", isResearching " +
+                     * UpgradeUtils.selfISResearching(techType) +
+                     * ", producerType " + producerType.toString() +
+                     * " completedUnitCount " +
+                     * UnitUtils.getCompletedUnitCount(
+                     * producerType) + " incompleteUnitCount " +
+                     * UnitUtils.getIncompletedUnitCount(
+                     * producerType));
+                     */
+
                     if (UpgradeUtils.selfISResearched(techType)
                             || UpgradeUtils.selfISResearching(techType)) {
                         isDeadlockCase = true;
@@ -741,7 +830,11 @@ public class BuildManager extends GameManager {
                             && UnitUtils.getIncompletedUnitCount(producerType) == 0) {
                         if (ConstructionManager.Instance().getConstructionQueueItemCount(producerType, null) == 0) {
 
-                            // 업그레이드의 producerType이 Addon 건물인 경우, Addon 건물 건설이 시작되기 직전에는 getUnits, completedUnitCount, incompleteUnitCount 에서 확인할 수 없다 producerType의 producerType 건물에 의해 Addon 건물 건설이 시작되었는지까지 확인해야 한다
+                            // 업그레이드의 producerType이 Addon 건물인 경우, Addon 건물 건설이
+                            // 시작되기 직전에는 getUnits, completedUnitCount,
+                            // incompleteUnitCount 에서 확인할 수 없다
+                            // producerType의 producerType 건물에 의해 Addon 건물 건설이
+                            // 시작되었는지까지 확인해야 한다
                             if (producerType.isAddon()) {
 
                                 boolean isAddonConstructing = false;
@@ -756,6 +849,8 @@ public class BuildManager extends GameManager {
                                         if (unit.getType() != producerTypeOfProducerType) {
                                             continue;
                                         }
+                                        // 모건물이 완성되어있고, 모건물이 해당 Addon 건물을 건설중인지
+                                        // 확인한다
                                         if (unit.isCompleted() && unit.isConstructing()
                                                 && unit.getBuildType() == producerType) {
                                             isAddonConstructing = true;
@@ -799,6 +894,8 @@ public class BuildManager extends GameManager {
                 }
 
                 if (isDeadlockCase) {
+//					System.out.println(	"Build Order Dead lock case . remove BuildOrderItem " + currentItem.metaType.getName());
+
                     buildQueue.removeCurrentItem();
                 }
 
@@ -812,13 +909,17 @@ public class BuildManager extends GameManager {
             return false;
         }
 
-        if (StaticMapUtils.isBuildable(tp, true) == false) {
+        // 맵 데이터 뿐만 아니라 빌딩 데이터를 모두 고려해서 isBuildable 체크
+        //if (BWAPI::Broodwar->isBuildable(x, y) == false)
+        if (MapUtils.isBuildable(tp, true) == false) {
             return false;
         }
 
+        // constructionWorker 이외의 다른 유닛이 있으면 false를 리턴한다
         if (UnitUtils.getUnitsOnTile(tp).size() > 0) {
             return false;
         }
+
         return true;
     }
-}
+};

@@ -2,7 +2,7 @@ package org.monster.decisions.strategy.analyse.zerg;
 
 import bwapi.UnitType;
 import org.monster.common.UnitInfo;
-import org.monster.common.constant.CommonCode;
+import org.monster.common.constant.RegionType;
 import org.monster.decisions.constant.EnemyStrategy;
 import org.monster.decisions.strategy.analyse.Clue;
 import org.monster.decisions.strategy.analyse.UnitAnalyser;
@@ -23,7 +23,7 @@ public class ExtractorAnalyser extends UnitAnalyser {
         int overPoolFrame = EnemyStrategy.ZERG_OVERPOOL_GAS.buildTimeMap.frame(UnitType.Zerg_Extractor, 20);
         int doubleHatchFrame = EnemyStrategy.ZERG_2HAT_GAS.buildTimeMap.frame(UnitType.Zerg_Extractor, 20);
 
-        List<UnitInfo> found = found(CommonCode.RegionType.ENEMY_BASE);
+        List<UnitInfo> found = found(RegionType.ENEMY_BASE);
         if (!found.isEmpty()) {
             int buildFrame = buildStartFrameDefaultJustBefore(found.get(0));
             if (buildFrame < nineDroneFrame) {

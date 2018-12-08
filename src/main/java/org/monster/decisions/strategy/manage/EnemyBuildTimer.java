@@ -6,6 +6,7 @@ import bwapi.UnitType;
 import org.monster.board.StrategyBoard;
 import org.monster.common.UnitInfo;
 import org.monster.common.constant.CommonCode;
+import org.monster.common.constant.EnemyUnitVisibleStatus;
 import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.TimeUtils;
 import org.monster.common.util.UnitUtils;
@@ -265,7 +266,7 @@ public class EnemyBuildTimer {
             return;
         }
 
-        List<UnitInfo> buildingInfos = UnitUtils.getEnemyUnitInfoList(CommonCode.EnemyUnitVisibleStatus.VISIBLE, buildingType);
+        List<UnitInfo> buildingInfos = UnitUtils.getEnemyUnitInfoList(EnemyUnitVisibleStatus.VISIBLE, buildingType);
         if (!buildingInfos.isEmpty()) {
             if (buildingInfos.get(0).isCompleted()) {
                 // 완성된 건물 발견. 막 완성되었다고 가정한 시간과 전략별 시간 중 빠른 값 선택
@@ -339,7 +340,7 @@ public class EnemyBuildTimer {
         if (isCertainBuildTime(buildingType)) {
             return;
         }
-        if (UnitUtils.getEnemyUnitInfoList(CommonCode.EnemyUnitVisibleStatus.VISIBLE, flagUnitType).isEmpty()) {
+        if (UnitUtils.getEnemyUnitInfoList(EnemyUnitVisibleStatus.VISIBLE, flagUnitType).isEmpty()) {
             return;
         }
 

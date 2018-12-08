@@ -7,8 +7,12 @@ import bwapi.UnitType;
 import bwta.BWTA;
 import org.monster.bootstrap.GameManager;
 import org.monster.build.constant.BuildConfig;
-import org.monster.common.constant.CommonCode;
-import org.monster.common.util.*;
+import org.monster.common.constant.PlayerRange;
+import org.monster.common.util.BaseUtils;
+import org.monster.common.util.MapUtils;
+import org.monster.common.util.PlayerUtils;
+import org.monster.common.util.TimeUtils;
+import org.monster.common.util.UnitUtils;
 import org.monster.decisions.constant.StrategyConfig;
 
 import java.util.ArrayList;
@@ -17,7 +21,7 @@ import java.util.List;
 /// 지도를 바둑판처럼 Cell 들로 나누고, 매 frame 마다 각 Cell 의 timeLastVisited 시간정보, timeLastOpponentSeen 시간정보, ourUnits 와 oppUnits 목록을 업데이트 합니다
 public class MapGrid extends GameManager {
 
-    private static MapGrid instance = new MapGrid(StaticMapUtils.mapHeight() * 32, StaticMapUtils.mapHeight() * 32, BuildConfig.MAP_GRID_SIZE);
+    private static MapGrid instance = new MapGrid(MapUtils.mapHeight() * 32, MapUtils.mapHeight() * 32, BuildConfig.MAP_GRID_SIZE);
     public GridCell[] gridCells;
     private GridCell lastScanGridCell = null;
 
@@ -181,7 +185,7 @@ public class MapGrid extends GameManager {
     @Deprecated
     public List<Unit> getUnitsNearForAir(Position position, int radius, boolean ourUnits, boolean oppUnits) {
         List<Unit> units = new ArrayList<>();
-        List<Unit> unitsInRadius = UnitUtils.getUnitsInRadius(CommonCode.PlayerRange.ALL, position, radius);
+        List<Unit> unitsInRadius = UnitUtils.getUnitsInRadius(PlayerRange.ALL, position, radius);
         for (Unit u : unitsInRadius) {
             if (oppUnits && u.getPlayer() == PlayerUtils.enemyPlayer()) {
 
@@ -226,7 +230,7 @@ public class MapGrid extends GameManager {
     @Deprecated
     public List<Unit> getUnitsNear(Position position, int radius, boolean ourUnits, boolean oppUnits, UnitType unitType) {
         List<Unit> units = new ArrayList<>();
-        List<Unit> unitsInRadius = UnitUtils.getUnitsInRadius(CommonCode.PlayerRange.ALL, position, radius);
+        List<Unit> unitsInRadius = UnitUtils.getUnitsInRadius(PlayerRange.ALL, position, radius);
         for (Unit u : unitsInRadius) {
             if (ourUnits && u.getPlayer() == PlayerUtils.myPlayer()) {
                 if ((unitType == null || u.getType() == unitType) && !units.contains(u)) {

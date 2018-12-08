@@ -1,21 +1,25 @@
 package org.monster.common.util;
 
-import bwapi.*;
+import bwapi.Game;
+import bwapi.Player;
+import bwapi.Race;
+import bwapi.UnitType;
 
 public class PlayerInfoCollector implements InfoCollector {
 
-    /*Info*/
+    private static PlayerInfoCollector instance = new PlayerInfoCollector();
+    protected static PlayerInfoCollector Instance() {
+        return instance;
+    }
+
+    private Game Broodwar;
+
     protected static Player selfPlayer;
     protected static Player enemyPlayer;
     protected static Player neutralPlayer;
     protected static Race selfRace;
     protected static Race enemyRace;
-    private static PlayerInfoCollector instance = new PlayerInfoCollector();
-    private Game Broodwar;
 
-    public static PlayerInfoCollector Instance() {
-        return instance;
-    }
 
     @Override
     public void onStart(Game Broodwar) {
@@ -34,37 +38,42 @@ public class PlayerInfoCollector implements InfoCollector {
 
     }
 
-    protected int supplyUsedSelf(){
+    protected int supplyUsedSelf() {
         return Broodwar.self().supplyUsed();
     }
-    protected int supplyTotalSelf(){
+
+    protected int supplyTotalSelf() {
         return Broodwar.self().supplyTotal();
     }
-    protected int supplyUsedEnemy(){
+
+    protected int supplyUsedEnemy() {
         return Broodwar.enemy().supplyUsed();
     }
-    protected int supplyTotalEnemy(){
+
+    protected int supplyTotalEnemy() {
         return Broodwar.enemy().supplyTotal();
     }
-    protected int mineralSelf(){
-        return Broodwar.self().minerals();
-    }
-    protected int mineralEnemy(){
+
+    protected int mineralSelf() {
         return Broodwar.enemy().minerals();
     }
-    protected int gasSelf(){
-        return Broodwar.self().gas();
+
+    protected int mineralEnemy() {
+        return Broodwar.enemy().minerals();
     }
-    protected int gasEnemy(){
+
+    protected int gasSelf() {
         return Broodwar.enemy().gas();
     }
-    protected int getDamageFrom(UnitType unitType1, UnitType unitType2){
+
+    protected int gasEnemy() {
+        return Broodwar.enemy().gas();
+    }
+
+    protected int getDamageFrom(UnitType unitType1, UnitType unitType2) {
         return Broodwar.getDamageFrom(unitType1, unitType2);
     }
 
-    protected boolean isVisible(TilePosition tilePosition) {
-        return Broodwar.isVisible(tilePosition);
-    }
     protected int getLatency() {
         return Broodwar.getLatency();
     }

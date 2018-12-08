@@ -48,7 +48,7 @@ public class BuildingSquad extends Squad {
 //        engineeringBayControl.controlIfUnitExist(engineeringBayList, Collections.emptySet());
 
 //        List<Unit> combatList = unitListMap.getOrDefault(UnitType.Terran_Comsat_Station, new ArrayList<Unit>());
-//        List<UnitInfo> comsatEuiList = UnitUtils.getEnemyUnitInfoList(CommonCode.EnemyUnitVisibleStatus.ALL,
+//        List<UnitInfo> comsatEuiList = UnitUtils.getEnemyUnitInfoList(EnemyUnitVisibleStatus.ALL,
 //                UnitType.Protoss_Dark_Templar, UnitType.Protoss_Zealot, UnitType.Protoss_Dragoon, UnitType.Protoss_Observer,
 //                UnitType.Zerg_Lurker, UnitType.Zerg_Zergling, UnitType.Zerg_Hydralisk,
 //                UnitType.Terran_Wraith, UnitType.Terran_Ghost);

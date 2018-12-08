@@ -15,7 +15,18 @@ import org.monster.board.StrategyBoard;
 import org.monster.build.initialProvider.BlockingEntrance.BlockingEntrance;
 import org.monster.common.UnitInfo;
 import org.monster.common.constant.CommonCode;
-import org.monster.common.util.*;
+import org.monster.common.constant.EnemyUnitVisibleStatus;
+import org.monster.common.constant.RegionType;
+import org.monster.common.constant.UnitFindStatus;
+import org.monster.common.util.BaseUtils;
+import org.monster.common.util.ChokeUtils;
+import org.monster.common.util.MapUtils;
+import org.monster.common.util.MicroUtils;
+import org.monster.common.util.PlayerUtils;
+import org.monster.common.util.PositionUtils;
+import org.monster.common.util.TimeUtils;
+import org.monster.common.util.UnitUtils;
+import org.monster.common.util.UpgradeUtils;
 import org.monster.common.util.internal.IConditions;
 import org.monster.decisions.constant.EnemyStrategyOptions;
 import org.monster.decisions.constant.StrategyCode;
@@ -131,8 +142,8 @@ public class PositionFinder {
                 firstExpansionDetectingOk = false;
                 List<Unit> turretList = UnitUtils.getCompletedUnitList(UnitType.Terran_Missile_Turret);
                 for (Unit turret : turretList) {
-                    CommonCode.RegionType regionType = PositionUtils.positionToRegionType(turret.getPosition());
-                    if (regionType == CommonCode.RegionType.MY_FIRST_EXPANSION || regionType == CommonCode.RegionType.MY_THIRD_REGION) {
+                    RegionType regionType = PositionUtils.positionToRegionType(turret.getPosition());
+                    if (regionType == RegionType.MY_FIRST_EXPANSION || regionType == RegionType.MY_THIRD_REGION) {
                         firstExpansionDetectingOk = true;
                         break;
                     }
@@ -212,7 +223,7 @@ public class PositionFinder {
             }
             // 병력이 조금 있거나 앞마당이 차지되었다면 expansion에서 방어한다.
             if (myTankSupplyCount >= 2 * 4 || firstExpansionOccupied()) {
-                int tankCount = UnitUtils.getUnitCount(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Siege_Tank_Tank_Mode, UnitType.Terran_Siege_Tank_Siege_Mode);
+                int tankCount = UnitUtils.getUnitCount(UnitFindStatus.COMPLETE, UnitType.Terran_Siege_Tank_Tank_Mode, UnitType.Terran_Siege_Tank_Siege_Mode);
                 if (tankCount >= 1) {
                     return PositionFinder.CampType.SECOND_CHOKE;
                 } else {
@@ -268,7 +279,7 @@ public class PositionFinder {
             return expansionDefensePosition();
 
         } else if (campType == PositionFinder.CampType.SECOND_CHOKE) {
-            return ChokePointUtils.mySecondChoke().getCenter();
+            return ChokeUtils.mySecondChoke().getCenter();
 
         } else { // if (campType == PositionFinder.CampType.READY_TO) {
             return PositionUtils.myReadyToPosition();
@@ -325,7 +336,7 @@ public class PositionFinder {
         if (StrategyBoard.mainSquadMode.isAttackMode) {
             BaseLocation enemyBase = BaseUtils.enemyMainBase();
             if (enemyBase == null) {
-                return ChokePointUtils.mySecondChoke().getCenter();
+                return ChokeUtils.mySecondChoke().getCenter();
             }
 
             if (!enemyBaseDestroyed(enemyBase)) {
@@ -529,14 +540,14 @@ public class PositionFinder {
                 if (zeroToNSeconds < (nSeconds / 2)) {
                     watcherPosition = BaseUtils.myMainBase().getPosition();
                 } else {
-                    watcherPosition = ChokePointUtils.mySecondChoke().getCenter();
+                    watcherPosition = ChokeUtils.mySecondChoke().getCenter();
                 }
 
             } else if (StrategyBoard.buildTimeMap.featureEnabled(EnemyStrategyOptions.BuildTimeMap.Feature.DEFENSE_FRONT)) {
 
                 // 앞라인 방어인 경우 second choke (단, 딕텍팅을 대비하는 경우라면, 시간에 맞추어서 secondChoke로 변경)
                 if (!StrategyBoard.buildTimeMap.featureEnabled(EnemyStrategyOptions.BuildTimeMap.Feature.DETECT_IMPORTANT) || TimeUtils.after(StrategyBoard.turretBuildStartFrame)) {
-                    watcherPosition = ChokePointUtils.mySecondChoke().getCenter();
+                    watcherPosition = ChokeUtils.mySecondChoke().getCenter();
                 } else if (BaseUtils.enemyMainBase() != null) {
                     watcherPosition = BaseUtils.enemyMainBase().getPosition();
                 }
@@ -565,7 +576,7 @@ public class PositionFinder {
                 }
 
             } else {
-                watcherPosition = ChokePointUtils.mySecondChoke().getCenter();
+                watcherPosition = ChokeUtils.mySecondChoke().getCenter();
             }
         }
 
@@ -627,7 +638,7 @@ public class PositionFinder {
             List<BaseLocation> enemyOccupiedBases = BaseUtils.enemyOccupiedBases();
             if (!enemyOccupiedBases.isEmpty()) {
                 Position centerPosition = CommonCode.CENTER_POS;
-                BaseLocation enemyOccupied = BaseLocationUtils.getGroundClosestBaseToPosition(enemyOccupiedBases, BaseUtils.enemyFirstExpansion(), new IConditions.BaseCondition() {
+                BaseLocation enemyOccupied = BaseUtils.getGroundClosestBaseFromPosition(enemyOccupiedBases, BaseUtils.enemyFirstExpansion(), new IConditions.BaseCondition() {
                     @Override
                     public boolean correspond(BaseLocation base) {
                         if (base.equals(BaseUtils.enemyMainBase()) || base.equals(BaseUtils.enemyFirstExpansion())) {
@@ -656,11 +667,11 @@ public class PositionFinder {
 
     /// 첫번째 확장기지를 차지하였는지 여부
     private boolean firstExpansionOccupied() {
-        List<Unit> commandCenterOrDefenseTowerList = UnitUtils.getUnitList(CommonCode.UnitFindStatus.ALL,
+        List<Unit> commandCenterOrDefenseTowerList = UnitUtils.getUnitList(UnitFindStatus.ALL,
                 UnitType.Terran_Command_Center, UnitType.Terran_Missile_Turret, UnitType.Terran_Bunker);
         for (Unit bunkerOrTurret : commandCenterOrDefenseTowerList) {
-            CommonCode.RegionType towerRegionType = PositionUtils.positionToRegionType(bunkerOrTurret.getPosition());
-            if (towerRegionType == CommonCode.RegionType.MY_FIRST_EXPANSION || towerRegionType == CommonCode.RegionType.MY_THIRD_REGION) {
+            RegionType towerRegionType = PositionUtils.positionToRegionType(bunkerOrTurret.getPosition());
+            if (towerRegionType == RegionType.MY_FIRST_EXPANSION || towerRegionType == RegionType.MY_THIRD_REGION) {
                 return true;
             }
         }
@@ -737,13 +748,13 @@ public class PositionFinder {
 
     public Position baseFirstChokeMiddlePosition() {
         if (firstExpansionOccupied()) {
-            return ChokePointUtils.myFirstChoke().getCenter();
+            return ChokeUtils.myFirstChoke().getCenter();
 
         } else {
             if (this.basefirstChokeMiddlePosition != null) {
                 return basefirstChokeMiddlePosition;
             }
-            Position firstChokePosition = ChokePointUtils.myFirstChoke().getCenter();
+            Position firstChokePosition = ChokeUtils.myFirstChoke().getCenter();
             Position myBasePosition = BaseUtils.myMainBase().getPosition();
             double radian = MicroUtils.targetDirectionRadian(firstChokePosition, myBasePosition);
 
@@ -757,8 +768,8 @@ public class PositionFinder {
             return expansionDefensePosition;
         }
 
-        Chokepoint firstChoke = ChokePointUtils.myFirstChoke();
-        Chokepoint secondChoke = ChokePointUtils.mySecondChoke();
+        Chokepoint firstChoke = ChokeUtils.myFirstChoke();
+        Chokepoint secondChoke = ChokeUtils.mySecondChoke();
         BaseLocation firstExpansion = BaseUtils.myFirstExpansion();
 
         int x = (firstChoke.getX() + secondChoke.getX() + firstExpansion.getPosition().getX()) / 3;
@@ -782,9 +793,9 @@ public class PositionFinder {
             return expansionDefensePositionSiege;
         }
         Position myBasePosition = BaseUtils.myMainBase().getPosition();
-        Position firstChokePosition = ChokePointUtils.myFirstChoke().getCenter();
+        Position firstChokePosition = ChokeUtils.myFirstChoke().getCenter();
 
-        Pair<Position, Position> secondChokeSides = ChokePointUtils.mySecondChoke().getSides();
+        Pair<Position, Position> secondChokeSides = ChokeUtils.mySecondChoke().getSides();
         double firstDistance = myBasePosition.getDistance(secondChokeSides.first);
         double secondDistance = myBasePosition.getDistance(secondChokeSides.second);
 
@@ -812,7 +823,7 @@ public class PositionFinder {
 
     /// First Choke Point 방어지역
     public Position firstChokeDefensePosition() {
-        Position firstChokePosition = ChokePointUtils.myFirstChoke().getCenter();
+        Position firstChokePosition = ChokeUtils.myFirstChoke().getCenter();
         Position firstChokeDefensePosition = firstChokePosition;
         double radian = 0;
         if (PlayerUtils.enemyRace() == Race.Zerg) {
@@ -838,7 +849,7 @@ public class PositionFinder {
     }
 
     public boolean enemyBaseDestroyed(BaseLocation enemyBase) {
-        if (!StaticMapUtils.isExplored(enemyBase.getTilePosition())) {
+        if (!MapUtils.isExplored(enemyBase.getTilePosition())) {
             return false;
         }
 
@@ -849,7 +860,7 @@ public class PositionFinder {
 
     // 쥐 함수
     private Position letsfindRatPosition() {
-        List<UnitInfo> enemyResourceDepots = UnitUtils.getEnemyUnitInfoList(CommonCode.EnemyUnitVisibleStatus.ALL, UnitType.Terran_Command_Center, UnitType.Protoss_Nexus
+        List<UnitInfo> enemyResourceDepots = UnitUtils.getEnemyUnitInfoList(EnemyUnitVisibleStatus.ALL, UnitType.Terran_Command_Center, UnitType.Protoss_Nexus
                 , UnitType.Zerg_Hatchery, UnitType.Zerg_Lair, UnitType.Zerg_Hive);
 
         if (!enemyResourceDepots.isEmpty()) {
@@ -872,16 +883,16 @@ public class PositionFinder {
         }
 
         // starting location 중에서 탐험되지 않은 지역
-        List<BaseLocation> startingBases = StaticMapUtils.getStartingBaseLocation();
+        List<BaseLocation> startingBases = BWTA.getStartLocations();
         for (BaseLocation startingBase : startingBases) {
-            if (!StaticMapUtils.isExplored(startingBase.getTilePosition())) {
+            if (!MapUtils.isExplored(startingBase.getTilePosition())) {
                 return startingBase.getPosition();
             }
         }
 
         // 앞마당 지역
         BaseLocation enemyExpansion = BaseUtils.enemyFirstExpansion();
-        if (enemyExpansion != null && !StaticMapUtils.isExplored(enemyExpansion.getTilePosition())) {
+        if (enemyExpansion != null && !MapUtils.isExplored(enemyExpansion.getTilePosition())) {
             return enemyExpansion.getPosition();
         }
 
@@ -889,7 +900,7 @@ public class PositionFinder {
         List<BaseLocation> otherExpansions = BaseUtils.otherExpansions();
         if (otherExpansions != null) {
             for (BaseLocation otherExpansion : otherExpansions) {
-                if (!StaticMapUtils.isExplored(otherExpansion.getTilePosition())) {
+                if (!MapUtils.isExplored(otherExpansion.getTilePosition())) {
                     return otherExpansion.getPosition();
                 }
             }
