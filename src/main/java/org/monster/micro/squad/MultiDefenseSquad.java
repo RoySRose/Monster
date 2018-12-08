@@ -123,13 +123,13 @@ public class MultiDefenseSquad extends Squad {
         euiList.clear();
         Position targetPosition = getTargetPosition();
         for (Unit tank : unitList) {
-            if (!TimeUtils.executeUnitRotation(tank, LagObserver.groupsize())) {
+            if (!TimeUtils.isExecuteFrame(tank, LagObserver.groupsize())) {
                 continue;
             }
             if (tank.getDistance(targetPosition) < 250) {
                 continue;
             }
-            if (!TimeUtils.executeUnitRotation(tank, LagObserver.groupsize())) {
+            if (!TimeUtils.isExecuteFrame(tank, LagObserver.groupsize())) {
                 continue;
             }
             UnitUtils.addEnemyUnitInfosInRadiusForGround(euiList, tank.getPosition(), 100);

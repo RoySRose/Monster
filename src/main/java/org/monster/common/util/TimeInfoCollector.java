@@ -11,12 +11,13 @@ import java.util.Map;
 public class TimeInfoCollector implements InfoCollector {
 
     private static TimeInfoCollector instance = new TimeInfoCollector();
-    private static Map<UnitType, Integer> baseToBaseUnit = new HashMap<>();
-    private Game Broodwar;
-
     protected static TimeInfoCollector Instance() {
         return instance;
     }
+
+    private Game Broodwar;
+
+    private static Map<UnitType, Integer> baseToBaseUnit = new HashMap<>();
 
     @Override
     public void onStart(Game Broodwar) {

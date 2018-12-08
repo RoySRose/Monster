@@ -49,6 +49,7 @@ public class UpgradeUtils {
     public static int getSelfMaxUpgradeLevel(UpgradeType upgradeType) {
         return UpgradeInfoCollector.Instance().getSelfMaxUpgradeLevel(upgradeType);
     }
+
     public static int getEnemyMaxUpgradeLevel(UpgradeType upgradeType) {
         return UpgradeInfoCollector.Instance().getEnemyMaxUpgradeLevel(upgradeType);
     }

@@ -2,7 +2,7 @@ package org.monster.decisions.strategy.analyse.zerg;
 
 import bwapi.UnitType;
 import org.monster.common.UnitInfo;
-import org.monster.common.constant.CommonCode;
+import org.monster.common.constant.RegionType;
 import org.monster.decisions.constant.EnemyStrategy;
 import org.monster.decisions.strategy.analyse.Clue;
 import org.monster.decisions.strategy.analyse.UnitAnalyser;
@@ -56,7 +56,7 @@ public class HatcheryAnalyser extends UnitAnalyser {
         int overPoolFrame = EnemyStrategy.ZERG_OVERPOOL.buildTimeMap.frame(UnitType.Zerg_Hatchery, 10);
         int nineDroneFrame = EnemyStrategy.ZERG_9DRONE.buildTimeMap.frame(UnitType.Zerg_Hatchery, 10);
 
-        List<UnitInfo> found = found(CommonCode.RegionType.ENEMY_FIRST_EXPANSION);
+        List<UnitInfo> found = found(RegionType.ENEMY_FIRST_EXPANSION);
         if (!found.isEmpty()) {
             int buildFrame = buildStartFrameDefaultJustBefore(found.get(0));
 
@@ -76,7 +76,7 @@ public class HatcheryAnalyser extends UnitAnalyser {
                 ClueManager.Instance().addClueInfo(Clue.ClueInfo.DOUBLE_HATCH_LATE);
             }
 
-            found = found(CommonCode.RegionType.ENEMY_BASE);
+            found = found(RegionType.ENEMY_BASE);
             if (found.size() >= 2) {
                 int buildFrame = buildStartFrameDefaultJustBefore(found.get(0));
                 if (buildFrame < nineDroneFrame) {

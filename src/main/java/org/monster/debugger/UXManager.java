@@ -24,7 +24,7 @@ import org.monster.build.base.ConstructionTask;
 import org.monster.common.MapGrid;
 import org.monster.common.UnitInfo;
 import org.monster.common.util.BaseUtils;
-import org.monster.common.util.ChokePointUtils;
+import org.monster.common.util.ChokeUtils;
 import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.TimeUtils;
 import org.monster.common.util.UnitUtils;
@@ -552,14 +552,14 @@ public class UXManager {
 //            }
 
             // ChokePoint, BaseLocation 을 텍스트로 표시
-            if (ChokePointUtils.myFirstChoke() != null) {
+            if (ChokeUtils.myFirstChoke() != null) {
                 Broodwar.drawTextMap(BaseUtils.myMainBase().getPosition(), "My MainBaseLocation");
             }
-            if (ChokePointUtils.myFirstChoke() != null) {
-                Broodwar.drawTextMap(ChokePointUtils.myFirstChoke().getCenter(), "My First ChokePoint");
+            if (ChokeUtils.myFirstChoke() != null) {
+                Broodwar.drawTextMap(ChokeUtils.myFirstChoke().getCenter(), "My First ChokePoint");
             }
-            if (ChokePointUtils.mySecondChoke() != null) {
-                Broodwar.drawTextMap(ChokePointUtils.mySecondChoke().getCenter(), "My Second ChokePoint");
+            if (ChokeUtils.mySecondChoke() != null) {
+                Broodwar.drawTextMap(ChokeUtils.mySecondChoke().getCenter(), "My Second ChokePoint");
             }
             if (BaseUtils.myFirstExpansion() != null) {
                 Broodwar.drawTextMap(BaseUtils.myFirstExpansion().getPosition(), "My First ExpansionLocation");
@@ -571,8 +571,8 @@ public class UXManager {
 //            if (InformationManager.Instance().getFirstChokePoint(PlayerUtils.enemyPlayer()) != null) {
 //                Broodwar.drawTextMap(InformationManager.Instance().getFirstChokePoint(PlayerUtils.enemyPlayer()).getCenter(), "Enemy First ChokePoint");
 //            }
-            if (ChokePointUtils.enemySecondChoke() != null) {
-                Broodwar.drawTextMap(ChokePointUtils.enemySecondChoke().getCenter(), "Enemy Second ChokePoint");
+            if (ChokeUtils.enemySecondChoke() != null) {
+                Broodwar.drawTextMap(ChokeUtils.enemySecondChoke().getCenter(), "Enemy Second ChokePoint");
             }
             if (BaseUtils.enemyFirstExpansion() != null) {
                 Broodwar.drawTextMap(BaseUtils.enemyFirstExpansion().getPosition(), "Enemy First ExpansionLocation");

@@ -7,9 +7,8 @@ import bwapi.UnitType;
 import bwapi.Unitset;
 import bwta.BWTA;
 import org.monster.common.util.BaseUtils;
-import org.monster.common.util.StaticMapUtils;
+import org.monster.common.util.MapUtils;
 import org.monster.common.util.TimeUtils;
-import org.monster.bootstrap.Monster;
 import org.monster.common.util.UnitUtils;
 
 import java.util.Vector;
@@ -18,7 +17,6 @@ public class DistanceMap {
 
     private static DistanceMap instance = new DistanceMap();
 
-    ;
     private int cellSize;
     private int mapWidth;
     private int mapHeight;
@@ -35,16 +33,16 @@ public class DistanceMap {
     private Vector<TilePosition> sorted = new Vector<TilePosition>();
 
     public DistanceMap() {
-        this.dist = new int[StaticMapUtils.mapWidth() * StaticMapUtils.mapHeight()];
+        this.dist = new int[MapUtils.mapWidth() * MapUtils.mapHeight()];
         for (int i = 0; i < this.dist.length; i++) {
             this.dist[i] = -1;
         }
-        this.moveTo = new char[StaticMapUtils.mapWidth() * StaticMapUtils.mapHeight()];
+        this.moveTo = new char[MapUtils.mapWidth() * MapUtils.mapHeight()];
         for (int j = 0; j < this.moveTo.length; j++) {
             this.moveTo[j] = 'X';
         }
-        this.rows = StaticMapUtils.mapHeight();
-        this.cols = StaticMapUtils.mapWidth();
+        this.rows = MapUtils.mapHeight();
+        this.cols = MapUtils.mapWidth();
         this.startRow = -1;
         this.startCol = -1;
     }

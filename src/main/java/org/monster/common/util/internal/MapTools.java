@@ -2,12 +2,9 @@ package org.monster.common.util.internal;
 
 import bwapi.Position;
 import bwapi.TilePosition;
-import bwta.BaseLocation;
 import org.monster.common.DistanceMap;
-import org.monster.bootstrap.Monster;
-import org.monster.common.util.BaseLocationUtils;
 import org.monster.common.util.BaseUtils;
-import org.monster.common.util.StaticMapUtils;
+import org.monster.common.util.MapUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,8 +28,8 @@ public class MapTools {
 
     // constructor for MapTools
     public MapTools() {
-        rows = StaticMapUtils.mapHeight();
-        cols = StaticMapUtils.mapWidth();
+        rows = MapUtils.mapHeight();
+        cols = MapUtils.mapWidth();
         map = new boolean[rows * cols];
         units = new boolean[rows * cols];
         fringe = new int[rows * cols];
@@ -74,7 +71,7 @@ public class MapTools {
                     // check each walk tile within this TilePosition
                     for (int i = 0; i < 4; ++i) {
                         for (int j = 0; j < 4; ++j) {
-                            if (!StaticMapUtils.isWalkable(c * 4 + i, r * 4 + j)) {
+                            if (!MapUtils.isWalkable(c * 4 + i, r * 4 + j)) {
                                 clear = false;
                                 break;
                             }

@@ -3,12 +3,15 @@ package org.monster.common.util;
 import bwapi.Unit;
 import bwapi.UnitType;
 import org.monster.common.constant.CommonCode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class TimeUtils {
 
     public static final int FRAME = 1;
     public static final int SECOND = 24;
     public static final int MINUTE = 24 * 60;
+    private static final Logger logger = LoggerFactory.getLogger(TimeUtils.class);
 
     public static int getFrame() {
         return TimeInfoCollector.Instance().getframe();
@@ -67,28 +70,20 @@ public class TimeUtils {
         return frame / MINUTE;
     }
 
-    /// 유닛의 빌드시간
-    public static int buildSeconds(UnitType unitType) {
-        return unitType.buildTime() / TimeUtils.SECOND;
-    }
-
-    /// 남아있는 빌드시간
-    public static int remainBuildSeconds(Unit building) {
-        if (building.isCompleted()) {
-            return CommonCode.UNKNOWN;
-        }
-
-        double remainRate = (double) (building.getType().maxHitPoints() - building.getHitPoints()) / building.getType().maxHitPoints();
-        int remainBuildFrames = (int) (building.getType().buildTime() * remainRate);
-        return remainBuildFrames / SECOND;
-    }
-
     /// 시작된 빌드시간
     public static int buildStartFrames(Unit building) {
+
+        if (!building.getType().isBuilding()) {
+            logger.error("UnitType of parameter should be building");
+        }
         if (building.isCompleted()) {
             return CommonCode.UNKNOWN;
         }
-        if (building.getType() == UnitType.Zerg_Lair || building.getType() == UnitType.Zerg_Hive) { // 레어, 하이브 제외
+        if (building.getType() == UnitType.Zerg_Lair
+                || building.getType() == UnitType.Zerg_Hive
+                || building.getType() == UnitType.Zerg_Sunken_Colony
+                || building.getType() == UnitType.Zerg_Spore_Colony
+                || building.getType() == UnitType.Zerg_Greater_Spire) {
             return CommonCode.UNKNOWN;
         }
 
@@ -100,24 +95,13 @@ public class TimeUtils {
         return minutes * MINUTE + seconds * SECOND;
     }
 
-    public static String framesToTimeString(int frames) {
-        if (frames == CommonCode.UNKNOWN) {
-            return "unknown";
-        }
-
-        int minutes = framesToMinutes(frames);
-        int seconds = framesToSeconds(frames - minutes * MINUTE);
-        return minutes + "min " + seconds + "sec";
-    }
-
     /// 실행할 frame되어야 하는 frame이면 true
     public static boolean executeRotation(int group, int rotationSize) {
         return (TimeInfoCollector.Instance().getframe() % rotationSize) == group;
-//		return true;
     }
 
     /// unit이 실행할 rotation이면 true
-    public static boolean executeUnitRotation(Unit unit, int rotationSize) {
+    public static boolean isExecuteFrame(Unit unit, int rotationSize) {
         //TODO UnitBalancer비활성화로 주석처리
         //return !UnitBalancer.skipControl(unit);
         int unitGroup = unit.getID() % rotationSize;

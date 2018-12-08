@@ -3,7 +3,7 @@ package org.monster.decisions.strategy.action.impl;
 import bwapi.Unit;
 import bwapi.UnitType;
 import org.monster.board.StrategyBoard;
-import org.monster.common.constant.CommonCode;
+import org.monster.common.constant.UnitFindStatus;
 import org.monster.common.util.BaseUtils;
 import org.monster.common.util.UnitUtils;
 import org.monster.decisions.strategy.action.Action;
@@ -46,7 +46,7 @@ public class ScvScoutAfterBuild extends Action {
         if (assigned) {
             return;
         }
-        for (Unit building : UnitUtils.getUnitList(CommonCode.UnitFindStatus.ALL, buildingType)) {
+        for (Unit building : UnitUtils.getUnitList(UnitFindStatus.ALL, buildingType)) {
             if (building.getType() == buildingType && building.getRemainingBuildTime() <= remainingFrames) {
                 assigned = true;
                 break;

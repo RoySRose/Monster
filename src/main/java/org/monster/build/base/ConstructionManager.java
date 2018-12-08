@@ -9,7 +9,6 @@ import bwta.BWTA;
 import bwta.BaseLocation;
 import bwta.Region;
 import org.monster.bootstrap.GameManager;
-import org.monster.bootstrap.Monster;
 import org.monster.common.LagObserver;
 import org.monster.common.util.*;
 import org.monster.worker.WorkerManager;
@@ -611,7 +610,7 @@ public class ConstructionManager extends GameManager {
         // for each tile where the building will be built
         for (int x = 0; x < b.getType().tileWidth(); ++x) {
             for (int y = 0; y < b.getType().tileHeight(); ++y) {
-                if (!StaticMapUtils.isExplored(tile.getX() + x, tile.getY() + y)) {
+                if (!MapUtils.isExplored(tile.getX() + x, tile.getY() + y)) {
                     return false;
                 }
             }

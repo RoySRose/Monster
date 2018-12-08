@@ -2,7 +2,7 @@ package org.monster.decisions.strategy.analyse.zerg;
 
 import bwapi.UnitType;
 import org.monster.common.UnitInfo;
-import org.monster.common.constant.CommonCode;
+import org.monster.common.constant.RegionType;
 import org.monster.decisions.constant.EnemyStrategy;
 import org.monster.decisions.strategy.analyse.Clue;
 import org.monster.decisions.strategy.analyse.UnitAnalyser;
@@ -32,7 +32,7 @@ public class SpawningPoolAnalyser extends UnitAnalyser {
         int overPoolFrame = EnemyStrategy.ZERG_OVERPOOL.buildTimeMap.frame(UnitType.Zerg_Spawning_Pool, 20); // 오버풀,11풀,12풀
         int doubleFrame = EnemyStrategy.ZERG_2HAT_GAS.buildTimeMap.frame(UnitType.Zerg_Spawning_Pool, 10);
 
-        List<UnitInfo> found = found(CommonCode.RegionType.ENEMY_BASE);
+        List<UnitInfo> found = found(RegionType.ENEMY_BASE);
         if (!found.isEmpty()) {
             int buildFrame = buildStartFrameDefaultJustBefore(found.get(0));
             if (buildFrame < fiveDroneFrame) {

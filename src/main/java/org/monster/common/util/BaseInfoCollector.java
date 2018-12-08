@@ -12,54 +12,57 @@ import bwta.BaseLocation;
 import bwta.Region;
 import org.monster.common.UnitInfo;
 import org.monster.common.constant.CommonCode;
+import org.monster.common.constant.EnemyUnitVisibleStatus;
+import org.monster.common.constant.RegionType;
+import org.monster.common.util.internal.IConditions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class BaseInfoCollector implements InfoCollector {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private static BaseInfoCollector instance = new BaseInfoCollector();
+    protected static BaseInfoCollector Instance() {
+        return instance;
+    }
+
+    private Game Broodwar;
+    private Player selfPlayer;
+    private Player enemyPlayer;
+    private EnemyBaseLocator enemyBaseLocator = new EnemyBaseLocator();;
+    private ChokeInfoCollector chokeInfoCollector;
+    private RegionInfoCollector regionInfoCollector;
+
     protected Map<Player, BaseLocation> mainBaseLocation = new HashMap();
     protected Map<Player, Boolean> mainBaseLocationChanged = new HashMap();
-    /// 해당 Player가 점령하고 있는 Region 이 있는 BaseLocation<br>
-    /// 건물 여부를 기준으로 파악하기 때문에 부적절하게 판단할수도 있습니다
     protected Map<Player, List<BaseLocation>> occupiedBaseLocations = new HashMap();
     protected Map<Player, BaseLocation> firstExpansionLocation = new HashMap();
     protected List<BaseLocation> islandBaseLocations = new ArrayList();
     //TODO needed?
     protected List<BaseLocation> otherExpansionLocations = new ArrayList();
-    Game Broodwar;
-    private Player selfPlayer;
-    private Player enemyPlayer;
-    private EnemyBaseLocator enemyBaseLocator;
-    private ChokeInfoCollector chokeInfoCollector;
-    private RegionInfoCollector regionInfoCollector;
-
-    public static BaseInfoCollector Instance() {
-        return instance;
-    }
 
     @Override
     public void onStart(Game Broodwar) {
         this.Broodwar = Broodwar;
-        selfPlayer = Broodwar.self();
-        enemyPlayer = Broodwar.enemy();
+        this.selfPlayer = Broodwar.self();
+        this.enemyPlayer = Broodwar.enemy();
+        this.chokeInfoCollector = ChokeInfoCollector.Instance();
+        this.regionInfoCollector = RegionInfoCollector.Instance();
 
-        chokeInfoCollector = ChokeInfoCollector.Instance();
-        regionInfoCollector = RegionInfoCollector.Instance();
-
-        initialize();
+        this.occupiedBaseLocations.put(selfPlayer, new ArrayList<>());
+        this.occupiedBaseLocations.put(enemyPlayer, new ArrayList<>());
 
         updateIslandBases();
-        updateMyMainBase();
+        initilizeBaseLocations();
 
-        mainBaseLocation.put(enemyPlayer, null);
-        mainBaseLocationChanged.put(enemyPlayer, new Boolean(false));
-
-        enemyBaseLocator = new EnemyBaseLocator();
         //TODO
         //updateChokePointAndExpansionLocation();
     }
@@ -72,23 +75,17 @@ public class BaseInfoCollector implements InfoCollector {
         }
     }
 
-    private void initialize() {
-        occupiedBaseLocations.put(selfPlayer, new ArrayList<>());
-        occupiedBaseLocations.put(enemyPlayer, new ArrayList<>());
-    }
-
-    private void updateMyMainBase() {
-        setMyStartBaseLocation();
-    }
-
-    private void setMyStartBaseLocation() {
+    private void initilizeBaseLocations() {
         mainBaseLocation.put(selfPlayer, BWTA.getStartLocation(selfPlayer));
         mainBaseLocationChanged.put(selfPlayer, new Boolean(true));
+        mainBaseLocation.put(enemyPlayer, null);
+        mainBaseLocationChanged.put(enemyPlayer, new Boolean(false));
     }
 
     @Override
     public void update() {
         findEnemyBaseLocation();
+        checkMainBases();
         checkMainBases();
         initializeAndUpdateOccupiedBase();
     }
@@ -110,12 +107,10 @@ public class BaseInfoCollector implements InfoCollector {
         if (mainBaseLocation.get(player) != null) {
 
             TilePosition baseTile = mainBaseLocation.get(player).getTilePosition();
-
+            if (player == PlayerUtils.enemyPlayer() && !Broodwar.isExplored(baseTile)) {
+                return;
+            }
             if (existsPlayerBuildingInRegion(BWTA.getRegion(baseTile), player) == false) {
-
-                if (player == PlayerUtils.enemyPlayer() && !Broodwar.isExplored(baseTile)) {
-                    return;
-                }
                 repickMainBase(player);
             }
         }
@@ -204,11 +199,11 @@ public class BaseInfoCollector implements InfoCollector {
         if (baseLocation == null) {
             return false;
         }
-        // 반지름 10 (TilePosition 단위) 이면 거의 화면 가득이다
+
         if (radius > 10) {
+            logger.error("radius 10 is almost everything on the screen");
             radius = 10;
         }
-
 
         if (player == PlayerUtils.myPlayer()) {
             for (Unit ui : UnitUtils.getUnitList()) {
@@ -293,8 +288,104 @@ public class BaseInfoCollector implements InfoCollector {
         }
     }
 
+    protected BaseLocation getClosestBaseFromPosition(List<BaseLocation> baseList, Position position) {
+        return getClosestBaseFromPosition(baseList, position, new IConditions.BaseCondition() {
+            @Override
+            public boolean correspond(BaseLocation base) {
+                return true;
+            }
+        });
+    }
 
-    private class EnemyBaseLocator{
+    /**
+     * baseList 중 position에 가장 가까운 base 리턴
+     */
+    private BaseLocation getClosestBaseFromPosition(List<BaseLocation> baseList, Position position, IConditions.BaseCondition baseCondition) {
+        if (baseList.size() == 0) {
+            return null;
+        }
+
+        if (!PositionUtils.isValidPosition(position)) {
+            return baseList.get(0);
+        }
+
+        BaseLocation closestBase = null;
+        double closestDist = CommonCode.DOUBLE_MAX;
+
+        for (BaseLocation base : baseList) {
+            if (!baseCondition.correspond(base)) {
+                continue;
+            }
+            double dist = base.getPosition().getDistance(position);
+            if (dist > 0 && dist < closestDist) {
+                closestBase = base;
+                closestDist = dist;
+            }
+        }
+        return closestBase;
+    }
+
+    /**
+     * baseList 중 position에 가장 가까운 base 리턴
+     */
+    protected BaseLocation getGroundClosestBaseFromPosition(List<BaseLocation> baseList, BaseLocation fromBase, IConditions.BaseCondition baseCondition) {
+        if (baseList.size() == 0) {
+            return null;
+        }
+
+        BaseLocation closestBase = null;
+        double closestDist = CommonCode.DOUBLE_MAX;
+
+        for (BaseLocation base : baseList) {
+            if (equals(base, fromBase)) {
+                closestBase = base;
+                break;
+            }
+            if (!baseCondition.correspond(base)) {
+                continue;
+            }
+            double dist = base.getGroundDistance(fromBase);
+            if (dist > 0 && dist < closestDist) {
+                closestBase = base;
+                closestDist = dist;
+            }
+        }
+        return closestBase;
+    }
+
+    /**
+     * baseList 중 position에 가장 먼 base 리턴
+     */
+    protected BaseLocation getGroundFarthestBaseFromPosition(List<BaseLocation> baseList, BaseLocation fromBase, IConditions.BaseCondition baseCondition) {
+        if (baseList.size() == 0) {
+            return null;
+        }
+
+        BaseLocation farthestBase = null;
+        double farthestDistance = 0;
+
+        for (BaseLocation base : baseList) {
+            if (!baseCondition.correspond(base)) {
+                continue;
+            }
+            double dist = base.getGroundDistance(fromBase);
+            if (dist > 0 && dist > farthestDistance) {
+                farthestBase = base;
+                farthestDistance = dist;
+            }
+        }
+        return farthestBase;
+    }
+
+    protected boolean equals(BaseLocation a, BaseLocation b) {
+        if (a.getTilePosition().equals(b.getTilePosition())) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private class EnemyBaseLocator {
 
         private boolean enemyStartLocationFound;
         private Set<TilePosition> exploredStartLocations;
@@ -330,7 +421,7 @@ public class BaseInfoCollector implements InfoCollector {
 
                 if (!exploredStartLocations.contains(startLocation.getTilePosition()) && Broodwar.isExplored(startLocation.getTilePosition())) {
                     exploredStartLocations.add(startLocation.getTilePosition());
-                   // exploredStartLocations++;
+                    // exploredStartLocations++;
                     logger.debug("[Looking Enemy Base] Expect EnemyBase : explored Base increment to {}", exploredStartLocations);
                 } else {
                     // otherwise set it as unexplored base
@@ -468,7 +559,7 @@ public class BaseInfoCollector implements InfoCollector {
                 return null;
             }
 
-            List<UnitInfo> euiList = UnitUtils.getEnemyUnitInfoList(CommonCode.EnemyUnitVisibleStatus.ALL
+            List<UnitInfo> euiList = UnitUtils.getEnemyUnitInfoList(EnemyUnitVisibleStatus.ALL
                     , UnitType.Protoss_Probe, UnitType.Zerg_Drone, UnitType.Terran_SCV, UnitType.Zerg_Overlord
                     , UnitType.Zerg_Zergling, UnitType.Protoss_Zealot, UnitType.Terran_Marine);
 
@@ -477,10 +568,10 @@ public class BaseInfoCollector implements InfoCollector {
             }
 
             Position scoutPosition = euiList.get(0).getLastPosition();
-            CommonCode.RegionType regionType = PositionUtils.positionToRegionType(scoutPosition);
+            RegionType regionType = PositionUtils.positionToRegionType(scoutPosition);
 
 
-            if (regionType != CommonCode.RegionType.MY_BASE && regionType != CommonCode.RegionType.MY_FIRST_EXPANSION) {
+            if (regionType != RegionType.MY_BASE && regionType != RegionType.MY_FIRST_EXPANSION) {
                 return null;
             }
 

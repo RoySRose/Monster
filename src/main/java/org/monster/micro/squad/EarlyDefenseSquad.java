@@ -105,7 +105,7 @@ public class EarlyDefenseSquad extends Squad {
             scvCnt--;
         }
 
-        //List<Unit> myUnitList = UnitUtils.getUnitsInRadius(CommonCode.PlayerRange.SELF, closeEnemyUnit.getPosition(), REACT_RADIUS);
+        //List<Unit> myUnitList = UnitUtils.getUnitsInRadius(PlayerRange.SELF, closeEnemyUnit.getPosition(), REACT_RADIUS);
         //if (myUnitList.isEmpty() && !marineList.isEmpty()) {
 		/*if(!marineList.isEmpty()){
 			return marineList;

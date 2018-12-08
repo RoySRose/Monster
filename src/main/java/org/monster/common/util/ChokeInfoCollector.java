@@ -13,57 +13,60 @@ import java.util.Map;
 public class ChokeInfoCollector implements InfoCollector {
 
     private static ChokeInfoCollector instance = new ChokeInfoCollector();
-    protected Map<Player, Chokepoint> firstChokePoint = new HashMap();
-    protected Map<Player, Chokepoint> secondChokePoint = new HashMap();
-    Game Broodwar;
+    protected static ChokeInfoCollector Instance() {
+        return instance;
+    }
+
+    private Game Broodwar;
     private Player selfPlayer;
     private Player enemyPlayer;
 
-    public static ChokeInfoCollector Instance() {
-        return instance;
-    }
+    protected Map<Player, Chokepoint> firstChokePoint = new HashMap();
+    protected Map<Player, Chokepoint> secondChokePoint = new HashMap();
 
     @Override
     public void onStart(Game Broodwar) {
         this.Broodwar = Broodwar;
-        selfPlayer = Broodwar.self();
-        enemyPlayer = Broodwar.enemy();
+        this.selfPlayer = Broodwar.self();
+        this.enemyPlayer = Broodwar.enemy();
     }
 
+    //TODO 뒷마당이 존재하는 맵에서는?
     protected void updateClosestChokePoints(Player player, BaseLocation sourceBase) {
 
-        firstChokePoint.put(player, BWTA.getNearestChokepoint(sourceBase.getTilePosition()));
+        Chokepoint firstChoke = BWTA.getNearestChokepoint(sourceBase.getTilePosition());
+        firstChokePoint.put(player, firstChoke);
 
-        Chokepoint secondChoke = findClosestChokePoint(sourceBase, firstChokePoint.get(player));
+        Chokepoint secondChoke = findSecondChokePoint(sourceBase, firstChoke);
         secondChokePoint.put(player, secondChoke);
     }
 
-    protected Chokepoint findClosestChokePoint(BaseLocation sourceBase, Chokepoint skipChokepoint) {
+    private Chokepoint findSecondChokePoint(BaseLocation sourceBase, Chokepoint firstChoke) {
 
         double tempDistance;
         double closestDistance = CommonCode.DOUBLE_MAX;
-        Chokepoint closestChokepoint = null;
+        Chokepoint closestChokePoint = null;
 
         for (Chokepoint chokepoint : BWTA.getChokepoints()) {
-            if (chokepoint.getCenter().equals(skipChokepoint.getCenter()))
+            if (chokepoint.getCenter().equals(firstChoke.getCenter()))
                 continue;
 
             tempDistance = PositionUtils.getGroundDistance(sourceBase.getPosition(),
                     chokepoint.getPoint()) * 1.1;
             tempDistance += PositionUtils.getGroundDistance(CommonCode.CENTER_POS, chokepoint.getPoint());
 
-            if (tempDistance < closestDistance && tempDistance > 0) {
+            if (tempDistance > 0 && tempDistance < closestDistance) {
                 closestDistance = tempDistance;
-                closestChokepoint = chokepoint;
+                closestChokePoint = chokepoint;
             }
         }
-        return closestChokepoint;
+        return closestChokePoint;
     }
 
     @Override
     public void update() {
         /**
-         * 현재까진느 Base가 정해져야 나오는 정보 들이므로 매 프레임 업데이트 할것이 없음
+         * need?
          */
     }
 }

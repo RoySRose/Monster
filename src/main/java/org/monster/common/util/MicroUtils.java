@@ -10,6 +10,7 @@ import bwapi.WeaponType;
 import org.monster.common.LagObserver;
 import org.monster.common.UnitInfo;
 import org.monster.common.constant.CommonCode;
+import org.monster.common.constant.PlayerRange;
 import org.monster.decisions.strategy.manage.AirForceManager;
 import org.monster.micro.FleeOption;
 import org.monster.micro.KitingOption;
@@ -24,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+//TODO move class to another package?
 public class MicroUtils {
 
     private static final Map<Integer, Integer> UNIT_HEALED_FRAME = new HashMap<>();
@@ -163,7 +165,7 @@ public class MicroUtils {
 
     private static int airRiskOfPosition(UnitType myUnitType, Position movePosition, int radius) {
         int risk = 0;
-        List<Unit> unitsInRadius = UnitUtils.getUnitsInRadius(CommonCode.PlayerRange.ALL, movePosition, radius);
+        List<Unit> unitsInRadius = UnitUtils.getUnitsInRadius(PlayerRange.ALL, movePosition, radius);
         for (Unit unit : unitsInRadius) {
             if (unit.getPlayer() == PlayerUtils.enemyPlayer()) { // 적군인 경우
                 int damage = PlayerUtils.getDamageFrom(unit.getType(), myUnitType);
@@ -388,7 +390,7 @@ public class MicroUtils {
     }
 
     private static boolean groundUnitFreeKiting(Unit rangedUnit) {
-        List<Unit> nearUnits = UnitUtils.getUnitsInRadius(CommonCode.PlayerRange.SELF, rangedUnit.getPosition(), (int) (rangedUnit.getType().topSpeed() * rangedUnit.getType().groundWeapon().damageCooldown() * 0.8));
+        List<Unit> nearUnits = UnitUtils.getUnitsInRadius(PlayerRange.SELF, rangedUnit.getPosition(), (int) (rangedUnit.getType().topSpeed() * rangedUnit.getType().groundWeapon().damageCooldown() * 0.8));
         boolean freeKiting = true;
         int myGroundUnitCount = 0;
         for (Unit unit : nearUnits) {
@@ -507,7 +509,7 @@ public class MicroUtils {
 
     private static int riskOfPosition(UnitType myUnitType, Position movePosition, int radius, boolean united) {
         int risk = 0;
-        List<Unit> unitsInRadius = UnitUtils.getUnitsInRadius(CommonCode.PlayerRange.ALL, movePosition, radius);
+        List<Unit> unitsInRadius = UnitUtils.getUnitsInRadius(PlayerRange.ALL, movePosition, radius);
         for (Unit unit : unitsInRadius) {
             if (unit.getPlayer() == PlayerUtils.enemyPlayer()) { // 적군인 경우
                 if (PlayerUtils.getDamageFrom(unit.getType(), myUnitType) > 0) { // 적군이 공격할 수 있으면 위험하겠지

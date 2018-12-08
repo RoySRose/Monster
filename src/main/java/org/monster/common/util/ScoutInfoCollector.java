@@ -7,7 +7,6 @@ import bwta.BWTA;
 import bwta.BaseLocation;
 import bwta.Region;
 import org.monster.common.util.internal.MapTools;
-import org.monster.bootstrap.Monster;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -18,13 +17,13 @@ import java.util.Vector;
 public class ScoutInfoCollector implements InfoCollector {
 
     private static ScoutInfoCollector instance = new ScoutInfoCollector();
-    /*Info*/
-    private static Map<Position, Vector<Position>> baseRegionVerticesMap = new HashMap<>();
-    Game Broodwar;
-
     protected static ScoutInfoCollector Instance() {
         return instance;
     }
+
+    private Game Broodwar;
+
+    protected static Map<Position, Vector<Position>> baseRegionVerticesMap = new HashMap<>();
 
     @Override
     public void onStart(Game Broodwar) {
@@ -41,10 +40,6 @@ public class ScoutInfoCollector implements InfoCollector {
         for (BaseLocation base : BWTA.getStartLocations()) {
             calculateEnemyRegionVertices(base);
         }
-    }
-
-    protected Vector<Position> getRegionVertices(BaseLocation base) {
-        return baseRegionVerticesMap.get(base.getPosition());
     }
 
     // Enemy MainBaseLocation 이 있는 Region 의 가장자리를 enemyBaseRegionVertices 에 저장한다
@@ -75,19 +70,19 @@ public class ScoutInfoCollector implements InfoCollector {
             // 2) in all 4 directions there's a buildable tile
             boolean surrounded = true;
             if (BWTA.getRegion(new TilePosition(tp.getX() + 1, tp.getY())) != enemyRegion
-                    || !StaticMapUtils.isBuildable(new TilePosition(tp.getX() + 1, tp.getY()))
+                    || !MapUtils.isBuildable(new TilePosition(tp.getX() + 1, tp.getY()))
                     || BWTA.getRegion(new TilePosition(tp.getX(), tp.getY() + 1)) != enemyRegion
-                    || !StaticMapUtils.isBuildable(new TilePosition(tp.getX(), tp.getY() + 1))
+                    || !MapUtils.isBuildable(new TilePosition(tp.getX(), tp.getY() + 1))
                     || BWTA.getRegion(new TilePosition(tp.getX() - 1, tp.getY())) != enemyRegion
-                    || !StaticMapUtils.isBuildable(new TilePosition(tp.getX() - 1, tp.getY()))
+                    || !MapUtils.isBuildable(new TilePosition(tp.getX() - 1, tp.getY()))
                     || BWTA.getRegion(new TilePosition(tp.getX(), tp.getY() - 1)) != enemyRegion
-                    || !StaticMapUtils.isBuildable(new TilePosition(tp.getX(), tp.getY() - 1))) {
+                    || !MapUtils.isBuildable(new TilePosition(tp.getX(), tp.getY() - 1))) {
                 surrounded = false;
             }
 
             // push the tiles that aren't surrounded
             // Region의 가장자리 타일들만 추가한다
-            if (!surrounded && StaticMapUtils.isBuildable(tp)) {
+            if (!surrounded && MapUtils.isBuildable(tp)) {
                 unsortedVertices.add(new Position(tp.toPosition().getX() + 16, tp.toPosition().getY() + 16));
             }
         }

@@ -12,6 +12,7 @@ import org.monster.build.initialProvider.InitialBuildProvider;
 import org.monster.build.provider.BuildQueueProvider;
 import org.monster.common.MapGrid;
 import org.monster.common.util.InfoCollectorManager;
+import org.monster.common.UnitBalancer;
 import org.monster.common.util.UnitCache;
 import org.monster.debugger.BigWatch;
 import org.monster.debugger.PreBotUXManager;
@@ -27,7 +28,7 @@ import org.slf4j.LoggerFactory;
 
 public class GameCommander {
 
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private static GameCommander instance = new GameCommander();
     private UnitBalancer unitBalancer = new UnitBalancer(); // for debugging

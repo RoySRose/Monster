@@ -87,7 +87,7 @@ public class VultureTravelManager {
             if (beforeBase == null) {
                 beforeBase = BaseUtils.myFirstExpansion();
             }
-            closeBase = BaseLocationUtils.getGroundClosestBaseToPosition(otherBases, beforeBase, new IConditions.BaseCondition() {
+            closeBase = BaseUtils.getGroundClosestBaseFromPosition(otherBases, beforeBase, new IConditions.BaseCondition() {
                 @Override
                 public boolean correspond(BaseLocation base) {
                     return !baseSet.contains(base);
@@ -119,7 +119,7 @@ public class VultureTravelManager {
     private void updateVisitFrame() {
         // 시야가 밝혀졌다면 visitFrame을 계속 업데이트 한다.
         for (TravelSite travelSite : travelSites) {
-            if (PlayerUtils.isVisible(travelSite.baseLocation.getTilePosition())) {
+            if (MapUtils.isVisible(travelSite.baseLocation.getTilePosition())) {
                 travelSite.visitFrame = TimeUtils.getFrame();
             }
         }

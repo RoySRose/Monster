@@ -128,11 +128,11 @@ public class ComsatControl extends Control {
 //                continue;
 //            }
 //            // 주위에 베슬이 있는지 확인하고 베슬이 여기로 오는 로직인지도 확인한 후에 오게 되면 패스 아니면 스캔으로 넘어간다
-//            List<Unit> nearVessel = UnitUtils.getUnitsInRadius(CommonCode.PlayerRange.SELF, eui.getLastPosition(), UnitType.Terran_Science_Vessel.sightRange() * 2, UnitType.Terran_Science_Vessel);
+//            List<Unit> nearVessel = UnitUtils.getUnitsInRadius(PlayerRange.SELF, eui.getLastPosition(), UnitType.Terran_Science_Vessel.sightRange() * 2, UnitType.Terran_Science_Vessel);
 //            if (nearVessel != null) {
 //                Unit neareasetVessel = UnitUtils.getClosestUnitToPositionNotStunned(nearVessel, eui.getLastPosition());
 //                if (neareasetVessel != null) {
-//                    List<Unit> nearAllies = UnitUtils.getUnitsInRadius(CommonCode.PlayerRange.SELF, neareasetVessel.getPosition(), UnitType.Terran_Science_Vessel.sightRange());
+//                    List<Unit> nearAllies = UnitUtils.getUnitsInRadius(PlayerRange.SELF, neareasetVessel.getPosition(), UnitType.Terran_Science_Vessel.sightRange());
 //                    if (nearAllies != null && nearAllies.size() > 2) {
 //                        continue;// 베슬이 올것으로 예상됨
 //                    }
@@ -200,7 +200,7 @@ public class ComsatControl extends Control {
 //        if (BaseUtils.enemyFirstExpansion() != null) {
 //            scanTilePositionCandidate.add(BaseUtils.enemyFirstExpansion().getTilePosition());
 //            if (PlayerUtils.enemyRace() == Race.Protoss || PlayerUtils.enemyRace() == Race.Terran) {
-//                scanTilePositionCandidate.add(ChokePointUtils.enemySecondChoke().getCenter().toTilePosition());
+//                scanTilePositionCandidate.add(ChokeUtils.enemySecondChoke().getCenter().toTilePosition());
 //            }
 //        }
 //

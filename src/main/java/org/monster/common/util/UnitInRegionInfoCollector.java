@@ -16,17 +16,18 @@ import java.util.Set;
 public class UnitInRegionInfoCollector implements InfoCollector {
 
     private static UnitInRegionInfoCollector instance = new UnitInRegionInfoCollector();
-    private Map<Region, List<UnitInfo>> euiListInMyRegion = new HashMap<>();
-    private Set<UnitInfo> euisInMainBaseRegion = new HashSet<>();
-    private Set<UnitInfo> euisInExpansionRegion = new HashSet<>();
-    private Set<UnitInfo> euisInThirdRegion = new HashSet<>();
-    Game Broodwar;
+    private Game Broodwar;
     private Player selfPlayer;
     private Player enemyPlayer;
     private RegionInfoCollector regionInfoCollector;
     private BaseInfoCollector baseInfoCollector;
 
-    public static UnitInRegionInfoCollector Instance() {
+    private Map<Region, List<UnitInfo>> euiListInMyRegion = new HashMap<>();
+    private Set<UnitInfo> euisInMainBaseRegion = new HashSet<>();
+    private Set<UnitInfo> euisInExpansionRegion = new HashSet<>();
+    private Set<UnitInfo> euisInThirdRegion = new HashSet<>();
+
+    protected static UnitInRegionInfoCollector Instance() {
         return instance;
     }
 
@@ -38,7 +39,6 @@ public class UnitInRegionInfoCollector implements InfoCollector {
         regionInfoCollector = RegionInfoCollector.Instance();
         baseInfoCollector = BaseInfoCollector.Instance();
     }
-
 
 
     @Override
@@ -65,13 +65,11 @@ public class UnitInRegionInfoCollector implements InfoCollector {
         Region myExpansionRegion = BWTA.getRegion(baseInfoCollector.firstExpansionLocation.get(selfPlayer).getPosition());
         Region myThirdRegion = BWTA.getRegion(regionInfoCollector.thirdRegion.get(selfPlayer).getCenter());
 
-//        Map<Integer, UnitInfo> unitAndUnitInfoMap = unitData.get(enemyPlayer).getUnitAndUnitInfoMap();
         for (UnitInfo eui : UnitUtils.getEnemyUnitInfoList()) {
             if (UnitUtils.ignorableEnemyUnitInfo(eui)) {
                 continue;
             }
             if (!PositionUtils.isValidPosition(eui.getLastPosition())) {
-//				System.out.println("updateEnemiesInMyRegion. invalid eui=" + eui);
                 continue;
             }
 

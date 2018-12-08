@@ -17,18 +17,22 @@ public class InfoCollectorManager extends GameManager {
 
     public void onStart(Game Broodwar) {
 
-        //ORDER SENSITIVE!!!!!!
+        /**
+         * ORDER SENSITIVE!!!!!!
+         */
         infoCollectors.add(PlayerInfoCollector.Instance());
-        infoCollectors.add(StaticMapInfoCollector.Instance());
+        infoCollectors.add(MapInfoCollector.Instance());
         infoCollectors.add(UnitCache.getCurrentCache());
         infoCollectors.add(BaseInfoCollector.Instance());
         infoCollectors.add(ChokeInfoCollector.Instance());
         infoCollectors.add(RegionInfoCollector.Instance());
+        infoCollectors.add(PositionInfoCollector.Instance());
+        //infoCollectors.add(TilePositionInfoCollector.Instance());
         infoCollectors.add(UnitInRegionInfoCollector.Instance());
         infoCollectors.add(TimeInfoCollector.Instance());
-        //infoCollectors.add(MapInfoCollector.Instance());
         infoCollectors.add(UpgradeInfoCollector.Instance());
         infoCollectors.add(ScoutInfoCollector.Instance());
+
         infoCollectors.add(DrawDebugger.Instance());
 
         for (InfoCollector infoCollector : infoCollectors) {

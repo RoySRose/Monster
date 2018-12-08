@@ -2,6 +2,7 @@ package org.monster.build.base;
 
 import org.monster.common.MetaType;
 import org.monster.common.constant.CommonCode;
+import org.monster.common.util.DrawingUtils;
 import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.TimeUtils;
 
@@ -45,7 +46,7 @@ public class BuildManagerFailureProtector {
             failInfo.failCount = 0;
             failInfo.suspendStartFrame = TimeUtils.getFrame();
 
-            String message = "*** " + metaType.getName() + " locked - " + TimeUtils.framesToTimeString(failInfo.suspendDurationFrame) + " ***";
+            String message = "*** " + metaType.getName() + " locked - " + DrawingUtils.framesToTimeString(failInfo.suspendDurationFrame) + " ***";
             PlayerUtils.printf(message);
             System.out.println(message);
         }

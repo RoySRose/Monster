@@ -12,6 +12,7 @@ import org.monster.bootstrap.GameManager;
 import org.monster.build.initialProvider.BlockingEntrance.BlockingEntrance;
 import org.monster.common.LagObserver;
 import org.monster.common.constant.CommonCode;
+import org.monster.common.constant.PlayerRange;
 import org.monster.common.util.BaseUtils;
 import org.monster.common.util.CommandUtils;
 import org.monster.common.util.PlayerUtils;
@@ -625,7 +626,7 @@ public class WorkerManager extends GameManager {
             return false;
         }
 
-        for (Unit enemy : UnitUtils.getUnitsInRadius(CommonCode.PlayerRange.ENEMY, depot.getPosition(), 200)) {
+        for (Unit enemy : UnitUtils.getUnitsInRadius(PlayerRange.ENEMY, depot.getPosition(), 200)) {
             if (enemy.getType().canAttack()) {
                 return true;
             }

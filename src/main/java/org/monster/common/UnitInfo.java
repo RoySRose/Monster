@@ -112,12 +112,6 @@ public class UnitInfo {
         return unit;
     }
 
-    public boolean isVisible(){return visible;}
-
-    private void setVisible(boolean visible) {
-        this.visible = visible;
-    }
-
     public void setUnit(Unit unit) {
         this.unit = unit;
         this.setUpdateFrame(TimeUtils.getFrame());
@@ -131,6 +125,14 @@ public class UnitInfo {
         this.setRemainingBuildTime(unit.getRemainingBuildTime());
         this.setVisible(unit.isVisible());
         this.setFlying(unit.isFlying());
+    }
+
+    public boolean isVisible() {
+        return visible;
+    }
+
+    private void setVisible(boolean visible) {
+        this.visible = visible;
     }
 
     public boolean isFlying() {

@@ -5,8 +5,8 @@ import bwapi.Race;
 import bwapi.TilePosition;
 import bwapi.Unit;
 import bwapi.UnitType;
+import org.monster.common.util.MapUtils;
 import org.monster.common.util.PlayerUtils;
-import org.monster.common.util.StaticMapUtils;
 import org.monster.common.util.internal.GameMap;
 
 import java.util.HashMap;
@@ -98,9 +98,9 @@ public class BlockingEntrance {
         }
 
 //        mapName = Map.CIRCUITBREAKER;
-        if (StaticMapUtils.getMap() == GameMap.FIGHTING_SPIRITS) {
+        if (MapUtils.getMap() == GameMap.FIGHTING_SPIRITS) {
             mapName = Map.FIGHTING_SPIRITS;
-        } else if (StaticMapUtils.getMap() == GameMap.CIRCUITBREAKER) {
+        } else if (MapUtils.getMap() == GameMap.CIRCUITBREAKER) {
             mapName = Map.CIRCUITBREAKER;
         } else {
             mapName = Map.UNKNOWN;
@@ -153,7 +153,7 @@ public class BlockingEntrance {
             yinc = false;
         }
 
-        if (StaticMapUtils.getMap() == GameMap.FIGHTING_SPIRITS) {
+        if (MapUtils.getMap() == GameMap.FIGHTING_SPIRITS) {
             xinc = true;
             yinc = true;
         }
@@ -168,10 +168,10 @@ public class BlockingEntrance {
     public void SetBlockingTilePosition() {
 
 //		서킷브레이커만 4X4
-        if (StaticMapUtils.getMap() == GameMap.CIRCUITBREAKER) {
+        if (MapUtils.getMap() == GameMap.CIRCUITBREAKER) {
             maxSupplyCntX = 7;
             maxSupplyCntY = 2;
-        } else if (StaticMapUtils.getMap() == GameMap.FIGHTING_SPIRITS) {
+        } else if (MapUtils.getMap() == GameMap.FIGHTING_SPIRITS) {
             maxSupplyCntX = 2;
             maxSupplyCntY = 7;
         }
@@ -203,7 +203,7 @@ public class BlockingEntrance {
 
 
 //    	맵 : Over_wath
-        if (StaticMapUtils.getMap() == GameMap.OVERWATCH) {
+        if (MapUtils.getMap() == GameMap.OVERWATCH) {
     		
     		
 			/*int[] fix_supplyXX = { 0, 115, 94, 0, 21 };
@@ -290,7 +290,7 @@ public class BlockingEntrance {
             }
 
 
-        } else if (StaticMapUtils.getMap() == GameMap.CIRCUITBREAKER) {
+        } else if (MapUtils.getMap() == GameMap.CIRCUITBREAKER) {
 
             postitionStorage.put(combine(Map.CIRCUITBREAKER, Location.One, Building.SUPPLY_AREA), new TilePosition(115, 0));
             postitionStorage.put(combine(Map.CIRCUITBREAKER, Location.Five, Building.SUPPLY_AREA), new TilePosition(115, 125));
@@ -402,7 +402,7 @@ public class BlockingEntrance {
             postitionStorage.put(combine(Map.CIRCUITBREAKER, Location.Five, Building.BARRACK_LAND), new TilePosition(105, 95));
             postitionStorage.put(combine(Map.CIRCUITBREAKER, Location.Seven, Building.BARRACK_LAND), new TilePosition(18, 95));
             postitionStorage.put(combine(Map.CIRCUITBREAKER, Location.Eleven, Building.BARRACK_LAND), new TilePosition(17, 31));
-        } else if (StaticMapUtils.getMap() == GameMap.FIGHTING_SPIRITS) {
+        } else if (MapUtils.getMap() == GameMap.FIGHTING_SPIRITS) {
 
 //    		System.out.println("맵 ==>> 투혼");
 
@@ -650,7 +650,7 @@ public class BlockingEntrance {
             yinc = false;
         }
 
-        if (StaticMapUtils.getMap() == GameMap.FIGHTING_SPIRITS) {
+        if (MapUtils.getMap() == GameMap.FIGHTING_SPIRITS) {
             xinc = true;
             yinc = true;
         }

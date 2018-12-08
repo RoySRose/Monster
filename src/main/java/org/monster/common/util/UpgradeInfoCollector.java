@@ -14,6 +14,15 @@ public class UpgradeInfoCollector implements InfoCollector {
         return instance;
     }
 
+    @Override
+    public void onStart(Game Broodwar) {
+        this.Broodwar = Broodwar;
+    }
+
+    @Override
+    public void update() {
+    }
+
     protected boolean selfIsResearched(TechType techType) {
         return Broodwar.self().hasResearched(techType);
     }
@@ -28,15 +37,6 @@ public class UpgradeInfoCollector implements InfoCollector {
 
     protected int enemyUpgradedLevel(UpgradeType upgradeType) {
         return Broodwar.enemy().getUpgradeLevel(upgradeType);
-    }
-
-    @Override
-    public void onStart(Game Broodwar) {
-        this.Broodwar = Broodwar;
-    }
-
-    @Override
-    public void update() {
     }
 
     protected boolean selfISResearching(TechType techType) {
@@ -58,6 +58,7 @@ public class UpgradeInfoCollector implements InfoCollector {
     protected int getSelfMaxUpgradeLevel(UpgradeType upgradeType) {
         return Broodwar.self().getMaxUpgradeLevel(upgradeType);
     }
+
     protected int getEnemyMaxUpgradeLevel(UpgradeType upgradeType) {
         return Broodwar.enemy().getMaxUpgradeLevel(upgradeType);
     }

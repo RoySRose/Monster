@@ -30,8 +30,11 @@ import org.monster.common.MetaType;
 import org.monster.common.UnitInfo;
 import org.monster.common.constant.CommonCode;
 import org.monster.common.constant.CommonConfig;
+import org.monster.common.constant.EnemyUnitVisibleStatus;
+import org.monster.common.constant.UnitFindStatus;
 import org.monster.common.util.BaseUtils;
-import org.monster.common.util.ChokePointUtils;
+import org.monster.common.util.ChokeUtils;
+import org.monster.common.util.DrawingUtils;
 import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.PositionUtils;
 import org.monster.common.util.TimeUtils;
@@ -94,7 +97,7 @@ public class PreBotUXManager {
     public static PreBotUXManager Instance() {
         return instance;
     }
-    
+
     public void setUxOption(int uxOption) {
         this.uxOption = uxOption;
     }
@@ -288,7 +291,7 @@ public class PreBotUXManager {
         if (StrategyBoard.initiated) {
             battleColor = UxColor.CHAR_RED;
         }
-        Broodwar.drawTextScreen(170, 353, battleColor + StrategyBoard.mainSquadMode.toString() + ": " + TimeUtils.framesToTimeString(TimeUtils.getFrame()) + "(" + TimeUtils.getFrame() + ")");
+        Broodwar.drawTextScreen(170, 353, battleColor + StrategyBoard.mainSquadMode.toString() + ": " + DrawingUtils.framesToTimeString(TimeUtils.getFrame()) + "(" + TimeUtils.getFrame() + ")");
 
         char apmColor = UxColor.CHAR_WHITE;
         int apm = Broodwar.getAPM();
@@ -311,29 +314,29 @@ public class PreBotUXManager {
         Set<UnitType> buildTimeCertain = EnemyBuildTimer.Instance().buildTimeCertain;
 
         int y = 20;
-        Broodwar.drawTextScreen(20, y += 15, "engine Build Frame : " + TimeUtils.framesToTimeString(StrategyBoard.engineeringBayBuildStartFrame));
-        Broodwar.drawTextScreen(20, y += 15, "turret Build Frame : " + TimeUtils.framesToTimeString(StrategyBoard.turretBuildStartFrame));
-        Broodwar.drawTextScreen(20, y += 15, "turret Need  Frame : " + TimeUtils.framesToTimeString(StrategyBoard.turretNeedFrame));
+        Broodwar.drawTextScreen(20, y += 15, "engine Build Frame : " + DrawingUtils.framesToTimeString(StrategyBoard.engineeringBayBuildStartFrame));
+        Broodwar.drawTextScreen(20, y += 15, "turret Build Frame : " + DrawingUtils.framesToTimeString(StrategyBoard.turretBuildStartFrame));
+        Broodwar.drawTextScreen(20, y += 15, "turret Need  Frame : " + DrawingUtils.framesToTimeString(StrategyBoard.turretNeedFrame));
         y += 15;
 
-        Broodwar.drawTextScreen(20, y += 15, "academy Build Frame : " + TimeUtils.framesToTimeString(StrategyBoard.academyFrame));
-        Broodwar.drawTextScreen(20, y += 15, "comsat Build Frame : " + TimeUtils.framesToTimeString(StrategyBoard.academyFrame + UnitType.Terran_Academy.buildTime()));
+        Broodwar.drawTextScreen(20, y += 15, "academy Build Frame : " + DrawingUtils.framesToTimeString(StrategyBoard.academyFrame));
+        Broodwar.drawTextScreen(20, y += 15, "comsat Build Frame : " + DrawingUtils.framesToTimeString(StrategyBoard.academyFrame + UnitType.Terran_Academy.buildTime()));
         y += 15;
 
-        Broodwar.drawTextScreen(20, y += 15, "darkTemplarInMyBaseFrame : " + TimeUtils.framesToTimeString(EnemyBuildTimer.Instance().darkTemplarInMyBaseFrame));
-        Broodwar.drawTextScreen(20, y += 15, "reaverInMyBaseFrame : " + TimeUtils.framesToTimeString(EnemyBuildTimer.Instance().reaverInMyBaseFrame));
-        Broodwar.drawTextScreen(20, y += 15, "mutaliskInMyBaseFrame : " + TimeUtils.framesToTimeString(EnemyBuildTimer.Instance().mutaliskInMyBaseFrame));
-        Broodwar.drawTextScreen(20, y += 15, "lurkerInMyBaseFrame : " + TimeUtils.framesToTimeString(EnemyBuildTimer.Instance().lurkerInMyBaseFrame));
+        Broodwar.drawTextScreen(20, y += 15, "darkTemplarInMyBaseFrame : " + DrawingUtils.framesToTimeString(EnemyBuildTimer.Instance().darkTemplarInMyBaseFrame));
+        Broodwar.drawTextScreen(20, y += 15, "reaverInMyBaseFrame : " + DrawingUtils.framesToTimeString(EnemyBuildTimer.Instance().reaverInMyBaseFrame));
+        Broodwar.drawTextScreen(20, y += 15, "mutaliskInMyBaseFrame : " + DrawingUtils.framesToTimeString(EnemyBuildTimer.Instance().mutaliskInMyBaseFrame));
+        Broodwar.drawTextScreen(20, y += 15, "lurkerInMyBaseFrame : " + DrawingUtils.framesToTimeString(EnemyBuildTimer.Instance().lurkerInMyBaseFrame));
         y += 15;
 
         for (UnitType unitType : buildTimeExpectMap.keySet()) {
             Integer buildTimeExpect = buildTimeExpectMap.get(unitType);
             if (buildTimeExpect != null && buildTimeExpect != CommonCode.UNKNOWN) {
-                String expect = TimeUtils.framesToTimeString(buildTimeExpect);
+                String expect = DrawingUtils.framesToTimeString(buildTimeExpect);
                 String minimum = "";
                 Integer buildMinimum = buildTimeMinimumMap.get(unitType);
                 if (buildMinimum != null && buildMinimum != CommonCode.UNKNOWN) {
-                    minimum = TimeUtils.framesToTimeString(buildMinimum);
+                    minimum = DrawingUtils.framesToTimeString(buildMinimum);
                 }
 
                 Broodwar.drawTextScreen(20, y += 15, unitType + " : " + expect + " - min: " + minimum + " (" + buildTimeCertain.contains(unitType) + ")");
@@ -384,9 +387,9 @@ public class PreBotUXManager {
         Broodwar.drawTextScreen(x + 100, y, "" + UxColor.CHAR_WHITE + history);
         y += 11;
 
-        int vultureCount = UnitUtils.getUnitCount(CommonCode.UnitFindStatus.ALL, UnitType.Terran_Vulture);
-        int tankCount = UnitUtils.getUnitCount(CommonCode.UnitFindStatus.ALL, UnitType.Terran_Siege_Tank_Tank_Mode, UnitType.Terran_Siege_Tank_Siege_Mode);
-        int goliathCount = UnitUtils.getUnitCount(CommonCode.UnitFindStatus.ALL, UnitType.Terran_Goliath);
+        int vultureCount = UnitUtils.getUnitCount(UnitFindStatus.ALL, UnitType.Terran_Vulture);
+        int tankCount = UnitUtils.getUnitCount(UnitFindStatus.ALL, UnitType.Terran_Siege_Tank_Tank_Mode, UnitType.Terran_Siege_Tank_Siege_Mode);
+        int goliathCount = UnitUtils.getUnitCount(UnitFindStatus.ALL, UnitType.Terran_Goliath);
 
 //        UnitType selected = BuildQueueProvider.Instance().getFactoryUnitSelector().getSelected();
 //        if (selected != UnitType.None) {
@@ -399,11 +402,11 @@ public class PreBotUXManager {
         y += 11;
 
         Broodwar.drawTextScreen(x, y, UxColor.CHAR_WHITE + "Wraith Count : ");
-        Broodwar.drawTextScreen(x + 75, y, "" + UxColor.CHAR_WHITE + StrategyBoard.wraithCount + " / " + UnitUtils.getUnitCount(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Wraith));
+        Broodwar.drawTextScreen(x + 75, y, "" + UxColor.CHAR_WHITE + StrategyBoard.wraithCount + " / " + UnitUtils.getUnitCount(UnitFindStatus.COMPLETE, UnitType.Terran_Wraith));
         y += 11;
 
         Broodwar.drawTextScreen(x, y, UxColor.CHAR_WHITE + "Valkyrie Count : ");
-        Broodwar.drawTextScreen(x + 75, y, "" + UxColor.CHAR_WHITE + StrategyBoard.valkyrieCount + " / " + UnitUtils.getUnitCount(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Valkyrie));
+        Broodwar.drawTextScreen(x + 75, y, "" + UxColor.CHAR_WHITE + StrategyBoard.valkyrieCount + " / " + UnitUtils.getUnitCount(UnitFindStatus.COMPLETE, UnitType.Terran_Valkyrie));
         y += 11;
 
         Broodwar.drawTextScreen(x, y, UxColor.CHAR_RED + "MYKillScore : ");
@@ -814,14 +817,14 @@ public class PreBotUXManager {
         }
 
         // ChokePoint, BaseLocation 을 텍스트로 표시
-        if (ChokePointUtils.myFirstChoke() != null) {
+        if (ChokeUtils.myFirstChoke() != null) {
             Broodwar.drawTextMap(BaseUtils.myMainBase().getPosition(), "My MainBaseLocation");
         }
-        if (ChokePointUtils.myFirstChoke() != null) {
-            Broodwar.drawTextMap(ChokePointUtils.myFirstChoke().getCenter(), "My First ChokePoint");
+        if (ChokeUtils.myFirstChoke() != null) {
+            Broodwar.drawTextMap(ChokeUtils.myFirstChoke().getCenter(), "My First ChokePoint");
         }
-        if (ChokePointUtils.mySecondChoke() != null) {
-            Broodwar.drawTextMap(ChokePointUtils.mySecondChoke().getCenter(), "My Second ChokePoint");
+        if (ChokeUtils.mySecondChoke() != null) {
+            Broodwar.drawTextMap(ChokeUtils.mySecondChoke().getCenter(), "My Second ChokePoint");
         }
         if (BaseUtils.myFirstExpansion() != null) {
             Broodwar.drawTextMap(BaseUtils.myFirstExpansion().getPosition(), "My First ExpansionLocation");
@@ -833,8 +836,8 @@ public class PreBotUXManager {
 //            if (UnitTypeUtils.getFirstChokePoint(PlayerUtils.enemyPlayer()) != null) {
 //                Broodwar.drawTextMap(InformationManager.Instance().getFirstChokePoint(PlayerUtils.enemyPlayer()).getCenter(), "Enemy First ChokePoint");
 //            }
-        if (ChokePointUtils.enemySecondChoke() != null) {
-            Broodwar.drawTextMap(ChokePointUtils.enemySecondChoke().getCenter(), "Enemy Second ChokePoint");
+        if (ChokeUtils.enemySecondChoke() != null) {
+            Broodwar.drawTextMap(ChokeUtils.enemySecondChoke().getCenter(), "Enemy Second ChokePoint");
         }
         if (BaseUtils.enemyFirstExpansion() != null) {
             Broodwar.drawTextMap(BaseUtils.enemyFirstExpansion().getPosition(), "Enemy First ExpansionLocation");
@@ -1343,7 +1346,7 @@ public class PreBotUXManager {
 
         y += 15;
         Broodwar.drawTextScreen(x, y, "" + "*" + "SCV");
-        Broodwar.drawTextScreen(x + 120, y, "" + UnitUtils.getUnitCount(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_SCV));
+        Broodwar.drawTextScreen(x + 120, y, "" + UnitUtils.getUnitCount(UnitFindStatus.COMPLETE, UnitType.Terran_SCV));
         y += 10;
         for (Squad squad : CombatManager.Instance().squadData.getSquadMap().values()) {
             Color squadColor = UxColor.SQUAD_COLOR.get(squad.getClass());
@@ -1487,7 +1490,7 @@ public class PreBotUXManager {
     }
 
     private void drawEnemyAirDefenseRange() {
-        List<UnitInfo> airDefenseEuiList = UnitUtils.getEnemyUnitInfoList(CommonCode.EnemyUnitVisibleStatus.ALL, UnitTypeUtils.enemyAirDefenseUnitType());
+        List<UnitInfo> airDefenseEuiList = UnitUtils.getEnemyUnitInfoList(EnemyUnitVisibleStatus.ALL, UnitTypeUtils.enemyAirDefenseUnitType());
         for (UnitInfo eui : airDefenseEuiList) {
             if (eui.getType() == UnitType.Terran_Bunker) {
                 Broodwar.drawCircleMap(eui.getLastPosition(), Broodwar.enemy().weaponMaxRange(UnitType.Terran_Marine.groundWeapon()) + 96, Color.White);
@@ -1495,7 +1498,7 @@ public class PreBotUXManager {
                 Broodwar.drawCircleMap(eui.getLastPosition(), eui.getType().airWeapon().maxRange(), Color.White);
             }
         }
-        List<UnitInfo> wraithKillerEuiList = UnitUtils.getEnemyUnitInfoList(CommonCode.EnemyUnitVisibleStatus.ALL, UnitTypeUtils.wraithKillerUnitType());
+        List<UnitInfo> wraithKillerEuiList = UnitUtils.getEnemyUnitInfoList(EnemyUnitVisibleStatus.ALL, UnitTypeUtils.wraithKillerUnitType());
         for (UnitInfo eui : wraithKillerEuiList) {
             Broodwar.drawCircleMap(eui.getLastPosition(), eui.getType().airWeapon().maxRange(), Color.Grey);
         }
@@ -1589,7 +1592,7 @@ public class PreBotUXManager {
     private void drawPositionInformation() {
 
         if (StrategyBoard.mainSquadLeaderPosition != null) {
-            Broodwar.drawTextMap(PositionUtils.positionAdjsuted(StrategyBoard.mainSquadLeaderPosition, 0, -20), UxColor.CHAR_WHITE + "V");
+            Broodwar.drawTextMap(DrawingUtils.positionAdjusted(StrategyBoard.mainSquadLeaderPosition, 0, -20), UxColor.CHAR_WHITE + "V");
         }
         if (StrategyBoard.campPosition.equals(StrategyBoard.mainPosition)) {
             Broodwar.drawTextMap(StrategyBoard.campPosition, UxColor.CHAR_ORANGE + "camp & main");
@@ -1598,14 +1601,14 @@ public class PreBotUXManager {
                 Broodwar.drawTextMap(StrategyBoard.campPosition, UxColor.CHAR_YELLOW + "camp");
             }
             if (StrategyBoard.mainPosition != null) {
-                Broodwar.drawTextMap(PositionUtils.positionAdjsuted(StrategyBoard.mainPosition, 0, -10), UxColor.CHAR_RED + "main");
+                Broodwar.drawTextMap(DrawingUtils.positionAdjusted(StrategyBoard.mainPosition, 0, -10), UxColor.CHAR_RED + "main");
             }
         }
         if (StrategyBoard.campPositionSiege != null) {
             Broodwar.drawTextMap(StrategyBoard.campPositionSiege, UxColor.CHAR_YELLOW + "camp (siege)");
         }
         if (StrategyBoard.watcherPosition != null) {
-            Broodwar.drawTextMap(PositionUtils.positionAdjsuted(StrategyBoard.watcherPosition, 0, -20), UxColor.CHAR_BLUE + "watcherPos");
+            Broodwar.drawTextMap(DrawingUtils.positionAdjusted(StrategyBoard.watcherPosition, 0, -20), UxColor.CHAR_BLUE + "watcherPos");
         }
         if (StrategyBoard.mainSquadCenter != null) {
             Broodwar.drawTextMap(StrategyBoard.mainSquadCenter, "mainSqCntr");
@@ -1654,8 +1657,8 @@ public class PreBotUXManager {
     public void drawTurretMap() {
         BaseLocation myBase = BaseUtils.myMainBase();
         BaseLocation myFirstExpansion = BaseUtils.myFirstExpansion();
-        Chokepoint myFirstChoke = ChokePointUtils.myFirstChoke();
-        Chokepoint mySecondChoke = ChokePointUtils.mySecondChoke();
+        Chokepoint myFirstChoke = ChokeUtils.myFirstChoke();
+        Chokepoint mySecondChoke = ChokeUtils.mySecondChoke();
 
         int turretCount = UnitUtils.getCompletedUnitCount(UnitType.Terran_Missile_Turret);
 
@@ -1683,7 +1686,7 @@ public class PreBotUXManager {
 //		
 //		Position betweenChoke2 = Position.None;
 //		
-//		if (StaticMapUtils.getMapSpecificInformation().getMap() == GameMap.FIGHTING_SPIRITS) {
+//		if (MapUtils.getMapSpecificInformation().getMap() == GameMap.FIGHTING_SPIRITS) {
 //			betweenChoke2 = new Position((firstChokeMainHalf.getX() * 4 + mySecondChoke.getX() * 7) / 11,
 //			(firstChokeMainHalf.getY() * 4 + mySecondChoke.getY() * 7) / 11);
 //		}else {

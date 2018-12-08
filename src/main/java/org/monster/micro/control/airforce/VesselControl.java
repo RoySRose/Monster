@@ -8,10 +8,13 @@ import bwapi.UnitType;
 import bwapi.WeaponType;
 import org.monster.board.StrategyBoard;
 import org.monster.common.UnitInfo;
-import org.monster.common.constant.CommonCode;
-import org.monster.common.util.*;
+import org.monster.common.constant.PlayerRange;
+import org.monster.common.util.CommandUtils;
+import org.monster.common.util.MicroUtils;
+import org.monster.common.util.PlayerUtils;
+import org.monster.common.util.PositionUtils;
+import org.monster.common.util.UnitUtils;
 import org.monster.decisions.constant.EnemyStrategy;
-import org.monster.bootstrap.Monster;
 import org.monster.micro.FleeOption;
 import org.monster.micro.constant.MicroConfig;
 import org.monster.micro.control.Control;
@@ -92,8 +95,8 @@ public class VesselControl extends Control {
         double risk = 0;
 
         List<Unit> dangerous_targets = null;
-        dangerous_targets = UnitUtils.getUnitsInRadius(CommonCode.PlayerRange.ENEMY, position, VESSEL_SIGHT, UnitType.Terran_Missile_Turret);
-        dangerous_targets.addAll(UnitUtils.getUnitsInRadius(CommonCode.PlayerRange.ENEMY, position, VESSEL_SIGHT, UnitType.Terran_Goliath));
+        dangerous_targets = UnitUtils.getUnitsInRadius(PlayerRange.ENEMY, position, VESSEL_SIGHT, UnitType.Terran_Missile_Turret);
+        dangerous_targets.addAll(UnitUtils.getUnitsInRadius(PlayerRange.ENEMY, position, VESSEL_SIGHT, UnitType.Terran_Goliath));
         for (Unit enemyunits : dangerous_targets) {
 
             double inrange = PlayerUtils.enemyPlayer().weaponMaxRange(enemyunits.getType().airWeapon());
@@ -123,7 +126,7 @@ public class VesselControl extends Control {
             if (StrategyBoard.currentStrategy == EnemyStrategy.ZERG_AIR1
                     || StrategyBoard.currentStrategy == EnemyStrategy.ZERG_AIR2) {
                 if (vessel.getEnergy() >= 75) {
-                    List<Unit> irradiateTargets = UnitUtils.getUnitsInRadius(CommonCode.PlayerRange.ENEMY, vessel.getPosition(), VESSEL_SIGHT + 300, UnitType.Zerg_Mutalisk, UnitType.Zerg_Guardian);
+                    List<Unit> irradiateTargets = UnitUtils.getUnitsInRadius(PlayerRange.ENEMY, vessel.getPosition(), VESSEL_SIGHT + 300, UnitType.Zerg_Mutalisk, UnitType.Zerg_Guardian);
                     for (Unit target : irradiateTargets) {
                         if (target.getHitPoints() > target.getType().maxHitPoints() * 0.9) {
                             CommandUtils.useTechTarget(vessel, TechType.Irradiate, target);
@@ -134,7 +137,7 @@ public class VesselControl extends Control {
             }
             // 싸베 디펜시브 매트릭스 쓰기
             else if (vessel.getEnergy() >= 100) {
-                List<Unit> matrixTargets = UnitUtils.getUnitsInRadius(CommonCode.PlayerRange.SELF, vessel.getPosition(), VESSEL_SIGHT + 300);
+                List<Unit> matrixTargets = UnitUtils.getUnitsInRadius(PlayerRange.SELF, vessel.getPosition(), VESSEL_SIGHT + 300);
                 for (Unit target : matrixTargets) {
                     if (target.getType() == UnitType.Terran_SCV
                             || target.getType() == UnitType.Terran_Vulture_Spider_Mine
@@ -185,7 +188,7 @@ public class VesselControl extends Control {
             }
 
             if (invisibleEnemyUnit != null) {
-                List<Unit> nearallies = UnitUtils.getUnitsInRadius(CommonCode.PlayerRange.SELF, vessel.getPosition(), VESSEL_SIGHT);
+                List<Unit> nearallies = UnitUtils.getUnitsInRadius(PlayerRange.SELF, vessel.getPosition(), VESSEL_SIGHT);
                 if (nearallies.size() > 2) {
                     if (invisibleEnemyUnit.getDistance(vessel) <= UnitType.Terran_Science_Vessel.sightRange() * 2 / 3) {
                         orderPosition = invisibleEnemyUnit.getPosition();// 움직이시오.
@@ -196,7 +199,7 @@ public class VesselControl extends Control {
             Unit mostDangerousTarget = null;
             double mostDangercheck = -99999;
 
-            List<Unit> dangerous_targets = UnitUtils.getUnitsInRadius(CommonCode.PlayerRange.ENEMY, vessel.getPosition(), VESSEL_SIGHT);
+            List<Unit> dangerous_targets = UnitUtils.getUnitsInRadius(PlayerRange.ENEMY, vessel.getPosition(), VESSEL_SIGHT);
             for (Unit target : dangerous_targets) {
                 double temp = target.getType().airWeapon().maxRange() - target.getPosition().getDistance(vessel.getPosition());
                 if (temp > mostDangercheck) {

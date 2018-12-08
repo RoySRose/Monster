@@ -4,7 +4,6 @@ import bwapi.Game;
 import bwapi.TilePosition;
 import bwapi.Unit;
 import bwapi.UnitType;
-import org.monster.bootstrap.Monster;
 import org.monster.build.base.ConstructionManager;
 import org.monster.build.base.ConstructionTask;
 import org.monster.common.MapGrid;
@@ -21,6 +20,11 @@ import java.util.Vector;
 public class UnitCache implements InfoCollector {
 
     private static UnitCache unitCache = new UnitCache();
+    public static UnitCache getCurrentCache() {
+        return unitCache;
+    }
+
+    private Game Broodwar;
     // 아군 UnitType 발견 여부
     private Map<UnitType, Boolean> selfUnitDiscovered = new HashMap<>();
     private Map<UnitType, Boolean> selfCompleteUnitDiscovered = new HashMap<>();
@@ -42,14 +46,8 @@ public class UnitCache implements InfoCollector {
     // 적군 UnitType별 맵
     private Map<UnitType, List<UnitInfo>> enemyAllUnitInfoByTypeMap = new HashMap<>(); /// 적군 모든 유닛정보
     private Map<UnitType, List<UnitInfo>> enemyVisibleUnitInfoByTypeMap = new HashMap<>(); /// 보이는 적군 유닛정보
-    private int supplyUsed;
+    //TODO badUnitstoRemove needed?
     private Vector<Integer> badUnitstoRemove = new Vector<Integer>();
-    private Game Broodwar;
-
-    public static UnitCache getCurrentCache() {
-        return unitCache;
-    }
-    ////////////////////// 아군 유닛 리스트 관련
 
     @Override
     public void onStart(Game Broodwar) {
@@ -486,18 +484,21 @@ public class UnitCache implements InfoCollector {
     }
 
     protected List<Unit> getUnitsOnTile(TilePosition tilePosition) {
-        return  Broodwar.getUnitsOnTile(tilePosition);
+        return Broodwar.getUnitsOnTile(tilePosition);
     }
 
     protected boolean canMake(UnitType unitType, Unit unit) {
         return Broodwar.canMake(unitType, unit);
     }
+
     protected boolean canMake(UnitType unitType) {
         return Broodwar.canMake(unitType);
     }
+
     protected Unit getUnit(int unitId) {
         return Broodwar.getUnit(unitId);
     }
+
     protected int myDeadNumUnits(UnitType unitType) {
         return Broodwar.self().deadUnitCount(unitType);
     }

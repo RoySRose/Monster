@@ -10,8 +10,10 @@ import org.monster.board.StrategyBoard;
 import org.monster.bootstrap.GameManager;
 import org.monster.common.LagObserver;
 import org.monster.common.UnitInfo;
-import org.monster.common.constant.CommonCode;
+import org.monster.common.constant.PlayerRange;
+import org.monster.common.constant.UnitFindStatus;
 import org.monster.common.util.BaseUtils;
+import org.monster.common.util.MapUtils;
 import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.RegionUtils;
 import org.monster.common.util.TimeUtils;
@@ -249,7 +251,7 @@ public class CombatManager extends GameManager {
         }
 
         // create defense squad
-        List<Unit> commandCenters = UnitUtils.getUnitList(CommonCode.UnitFindStatus.ALL, UnitType.Terran_Command_Center);
+        List<Unit> commandCenters = UnitUtils.getUnitList(UnitFindStatus.ALL, UnitType.Terran_Command_Center);
 
         Region baseRegion = BWTA.getRegion(BaseUtils.myMainBase().getPosition());
         Region expansionRegion = BWTA.getRegion(BaseUtils.myFirstExpansion().getPosition());
@@ -366,7 +368,7 @@ public class CombatManager extends GameManager {
                 maxRatio = 0.0d;
             }
 
-            int vultureCount = UnitUtils.getUnitCount(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Vulture);
+            int vultureCount = UnitUtils.getUnitCount(UnitFindStatus.COMPLETE, UnitType.Terran_Vulture);
             int maxCount = (int) (vultureCount * maxRatio);
 
             List<Unit> assignableVultures = new ArrayList<>();
@@ -440,14 +442,14 @@ public class CombatManager extends GameManager {
         }
 
         // 게릴라 지역에 적군이 없다.
-        if (PlayerUtils.isVisible(squad.getTargetPosition().toTilePosition())) {
+        if (MapUtils.isVisible(squad.getTargetPosition().toTilePosition())) {
             Set<UnitInfo> euiList = UnitUtils.getAllEnemyUnitInfosInRadiusForGround(squad.getTargetPosition(), MicroConfig.Vulture.GEURILLA_ENEMY_RADIUS);
             if (euiList.isEmpty()) {
                 return true;
             }
 
             // 일꾼이 없는 경우
-            List<Unit> workers = UnitUtils.getUnitsInRadius(CommonCode.PlayerRange.ENEMY, squad.getTargetPosition(), MicroConfig.Vulture.GEURILLA_ENEMY_RADIUS, UnitType.Terran_SCV, UnitType.Protoss_Probe, UnitType.Zerg_Drone);
+            List<Unit> workers = UnitUtils.getUnitsInRadius(PlayerRange.ENEMY, squad.getTargetPosition(), MicroConfig.Vulture.GEURILLA_ENEMY_RADIUS, UnitType.Terran_SCV, UnitType.Protoss_Probe, UnitType.Zerg_Drone);
             if (workers.isEmpty()) {
                 int vulturePower = VultureFightPredictor.powerOfWatchers(squad.unitList);
                 int enemyPower = VultureFightPredictor.powerOfEnemiesByUnitInfo(euiList);

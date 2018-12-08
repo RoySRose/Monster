@@ -15,17 +15,18 @@ import java.util.Set;
 public class RegionInfoCollector implements InfoCollector {
 
     private static RegionInfoCollector instance = new RegionInfoCollector();
-    protected Map<Player, Region> thirdRegion = new HashMap();
-    protected Map<Player, Set<Region>> occupiedRegions = new HashMap();
-    Game Broodwar;
+    protected static RegionInfoCollector Instance() {
+        return instance;
+    }
+
+    private Game Broodwar;
     private Player selfPlayer;
     private Player enemyPlayer;
     private BaseInfoCollector baseInfoCollector;
     private ChokeInfoCollector chokeInfoCollector;
 
-    public static RegionInfoCollector Instance() {
-        return instance;
-    }
+    protected Map<Player, Region> thirdRegion = new HashMap();
+    protected Map<Player, Set<Region>> occupiedRegions = new HashMap();
 
     @Override
     public void onStart(Game Broodwar) {

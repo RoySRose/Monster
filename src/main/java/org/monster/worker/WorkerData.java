@@ -8,9 +8,8 @@ import bwta.BaseLocation;
 import bwta.Region;
 import org.monster.common.util.BaseUtils;
 import org.monster.common.util.CommandUtils;
+import org.monster.common.util.MapUtils;
 import org.monster.common.util.PlayerUtils;
-import org.monster.common.util.StaticMapUtils;
-import org.monster.common.util.UnitUtils;
 import org.monster.micro.Minerals;
 
 import java.util.ArrayList;
@@ -60,7 +59,7 @@ public class WorkerData {
     private Map<Integer, Unit> workerMineralMap = new HashMap<Integer, Unit>();
 
     public WorkerData() {
-        for (Unit unit : StaticMapUtils.getStaticMinerals()) {
+        for (Unit unit : MapUtils.getStaticMinerals()) {
             if ((unit.getType() == UnitType.Resource_Mineral_Field)) {
                 workersOnMineralPatch.put(unit.getID(), 0);
             }
@@ -515,7 +514,7 @@ public class WorkerData {
         int radius = 320;
         int c = 0;
         ArrayList<Minerals> mineralList = new ArrayList<Minerals>();
-        for (Unit unit : StaticMapUtils.getMinerals()) {
+        for (Unit unit : MapUtils.getMinerals()) {
             if (unit.getType() == UnitType.Resource_Mineral_Field && unit.getDistance(depot) < radius) {
                 //mineralsNearDepot.add(unit);
                 Minerals newMineral = new Minerals();
@@ -528,7 +527,7 @@ public class WorkerData {
 
         if (mineralList.size() == 0) {
             mineralList = new ArrayList<Minerals>();
-            for (Unit unit : StaticMapUtils.getMinerals()) {
+            for (Unit unit : MapUtils.getMinerals()) {
 	        	/*if(unit.getDistance(enemyBaseLocation) < radius)
 	        		continue;*/
                 if ((unit.getType() == UnitType.Resource_Mineral_Field)) {
@@ -552,7 +551,7 @@ public class WorkerData {
 
         int mineralsNearDepot = 0;
 
-        for (Unit unit : StaticMapUtils.getStaticMinerals()) {
+        for (Unit unit : MapUtils.getStaticMinerals()) {
             if ((unit.getType() == UnitType.Resource_Mineral_Field) && unit.getDistance(depot) < 320) {
                 mineralsNearDepot++;
             }
@@ -569,7 +568,7 @@ public class WorkerData {
 
         int mineralsNearDepot = 0;
 
-        for (Unit unit : StaticMapUtils.getMinerals()) {
+        for (Unit unit : MapUtils.getMinerals()) {
             if (unit.getDistance(depot) < 320) {
                 mineralsNearDepot += unit.getResources();
             }
@@ -583,7 +582,7 @@ public class WorkerData {
             return null;
         }
 
-        for (Unit geyser : StaticMapUtils.getGeysers()) {
+        for (Unit geyser : MapUtils.getGeysers()) {
             if (geyser.getDistance(base) < 320) {
                 return geyser;
             }

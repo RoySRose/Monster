@@ -4,7 +4,6 @@ import bwapi.Game;
 import bwapi.Player;
 import bwapi.Unit;
 import bwapi.UnitType;
-import bwta.BWTA;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -54,7 +53,7 @@ public class UnitCacheTest {
 
 
     @Before
-    public void createUnits() throws Exception{
+    public void createUnits() throws Exception {
 
         PowerMockito.mockStatic(TimeUtils.class);
         when(TimeUtils.getFrame()).thenReturn(1);
@@ -116,26 +115,26 @@ public class UnitCacheTest {
         logger.debug("==========UnitCacheTest==========");
         //add unit
         unitCache.updateEnemyUnitInfo(unit1);
-        List<UnitInfo> enemyUnitInfoList= unitCache.enemyAllUnits(UnitType.AllUnits);
-        for(UnitInfo unitInfo : enemyUnitInfoList){
+        List<UnitInfo> enemyUnitInfoList = unitCache.enemyAllUnits(UnitType.AllUnits);
+        for (UnitInfo unitInfo : enemyUnitInfoList) {
             logger.debug("before:{},{}", unitInfo.getUnitID(), unitInfo.getType());
         }
         assertEquals(1, enemyUnitInfoList.size());
 
         //add unit
         unitCache.updateEnemyUnitInfo(unit2);
-        enemyUnitInfoList= unitCache.enemyAllUnits(UnitType.AllUnits);
+        enemyUnitInfoList = unitCache.enemyAllUnits(UnitType.AllUnits);
 
-        for(UnitInfo unitInfo : enemyUnitInfoList){
+        for (UnitInfo unitInfo : enemyUnitInfoList) {
             logger.debug("after:{},{}", unitInfo.getUnitID(), unitInfo.getType());
         }
         assertEquals(2, enemyUnitInfoList.size());
 
         //add morphed unit
         unitCache.updateEnemyUnitInfo(dupUnit2);
-        enemyUnitInfoList= unitCache.enemyAllUnits(UnitType.AllUnits);
+        enemyUnitInfoList = unitCache.enemyAllUnits(UnitType.AllUnits);
 
-        for(UnitInfo unitInfo : enemyUnitInfoList){
+        for (UnitInfo unitInfo : enemyUnitInfoList) {
             logger.debug("last:{},{}", unitInfo.getUnitID(), unitInfo.getType());
         }
         assertEquals(2, enemyUnitInfoList.size());
@@ -165,14 +164,14 @@ public class UnitCacheTest {
         unitCache.destroyedUnitInfo(unitNotOnMap2);
         assertEquals(1, unitCache.enemyAllCount(Zerg_Overload));
 
-        for(UnitInfo unitInfo : unitCache.enemyAllUnits(UnitType.AllUnits)){
+        for (UnitInfo unitInfo : unitCache.enemyAllUnits(UnitType.AllUnits)) {
             logger.debug("before morph:{},{}", unitInfo.getUnitID(), unitInfo.getType());
         }
 
         unitCache.updateEnemyUnitInfo(dupUnit2);
         alwaysTrue();
 
-        for(UnitInfo unitInfo : unitCache.enemyAllUnits(UnitType.AllUnits)){
+        for (UnitInfo unitInfo : unitCache.enemyAllUnits(UnitType.AllUnits)) {
             logger.debug("after morph:{},{}", unitInfo.getUnitID(), unitInfo.getType());
         }
 

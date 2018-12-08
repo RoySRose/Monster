@@ -8,8 +8,6 @@ import bwapi.UnitType;
 import bwta.BaseLocation;
 import org.monster.board.StrategyBoard;
 import org.monster.common.UnitInfo;
-import org.monster.common.constant.CommonCode;
-import org.monster.common.constant.CommonCode.UnitFindStatus;
 import org.monster.common.util.BaseUtils;
 import org.monster.common.util.CommandUtils;
 import org.monster.common.util.MicroUtils;
@@ -59,7 +57,7 @@ public class WatcherControl extends Control {
         Position fleePosition = StrategyBoard.mainSquadCenter;
         int coverRadius = StrategyBoard.mainSquadCoverRadius;
         if (PlayerUtils.enemyRace() == Race.Terran) {
-            int tankCount = UnitUtils.getUnitCount(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Siege_Tank_Tank_Mode, UnitType.Terran_Siege_Tank_Siege_Mode);
+            int tankCount = UnitUtils.getUnitCount(org.monster.common.constant.UnitFindStatus.COMPLETE, UnitType.Terran_Siege_Tank_Tank_Mode, UnitType.Terran_Siege_Tank_Siege_Mode);
             if (tankCount >= 3 && StrategyBoard.mainSquadCrossBridge) {
                 int watcherBackEnoughDistance = (int) (StrategyBoard.mainSquadCoverRadius * (1 + (Math.log(unitList.size()) * 0.3)));
                 double radian = MicroUtils.targetDirectionRadian(fleePosition, BaseUtils.myMainBase().getPosition());
@@ -80,7 +78,7 @@ public class WatcherControl extends Control {
 
         } else {
             if (StrategyBoard.currentStrategy == EnemyStrategy.PROTOSS_FAST_DARK || StrategyBoard.currentStrategy == EnemyStrategy.ZERG_FAST_LURKER) {
-                List<Unit> turretList = UnitUtils.getUnitList(CommonCode.UnitFindStatus.ALL, UnitType.Terran_Missile_Turret);
+                List<Unit> turretList = UnitUtils.getUnitList(org.monster.common.constant.UnitFindStatus.ALL, UnitType.Terran_Missile_Turret);
                 Unit closeTurret = UnitUtils.getClosestUnitToPosition(turretList, StrategyBoard.mainSquadCenter);
                 if (closeTurret != null) {
                     fleePosition = closeTurret.getPosition();
@@ -103,7 +101,7 @@ public class WatcherControl extends Control {
         FleeOption fOptionMainBattle = new FleeOption(fleePosition, true, MicroConfig.Angles.WIDE);
         KitingOption kOptionMainBattle = new KitingOption(fOptionMainBattle, KitingOption.CoolTimeAttack.COOLTIME_ALWAYS_IN_RANGE);
 
-        List<Unit> otherMechanics = UnitUtils.getUnitList(UnitFindStatus.COMPLETE, UnitType.Terran_Siege_Tank_Tank_Mode, UnitType.Terran_Siege_Tank_Siege_Mode, UnitType.Terran_Goliath);
+        List<Unit> otherMechanics = UnitUtils.getUnitList(org.monster.common.constant.UnitFindStatus.COMPLETE, UnitType.Terran_Siege_Tank_Tank_Mode, UnitType.Terran_Siege_Tank_Siege_Mode, UnitType.Terran_Goliath);
 
         for (Unit unit : unitList) {
             if (skipControl(unit)) {
@@ -155,7 +153,7 @@ public class WatcherControl extends Control {
                             Position randomPosition = PositionUtils.randomPosition(unit.getPosition(), MicroConfig.RANDOM_MOVE_DISTANCE);
 
                             boolean avoidExpansionLocation = false;
-                            if (UnitUtils.getUnitCount(CommonCode.UnitFindStatus.ALL, UnitType.Terran_Command_Center) <= 1) {
+                            if (UnitUtils.getUnitCount(org.monster.common.constant.UnitFindStatus.ALL, UnitType.Terran_Command_Center) <= 1) {
                                 BaseLocation myFirstExpansion = BaseUtils.myFirstExpansion();
                                 if (randomPosition.getDistance(myFirstExpansion) < 200) {
                                     avoidExpansionLocation = true;
