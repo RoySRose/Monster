@@ -1,26 +1,37 @@
 package org.monster.finder;
 
 import bwta.Chokepoint;
-import org.monster.board.Location;
 import org.monster.board.StrategyBoard;
 
 public abstract class DefaultChokePointFinder implements LocationFinder {
 
-    Chokepoint chokepoint;
-    Location location;
+    private static Chokepoint chokepoint;
+    private static String keyString;
 
-    public DefaultChokePointFinder(Location location) {
-        this.location = location;
+    public DefaultChokePointFinder() {
+        this.keyString = this.getClass().getName();
     }
 
     @Override
-    public abstract boolean calculateLocation();
+    public final void process(){
+        chokepoint = findLocation();
+        pushToStrategyBoard();
+    }
+
+    private final void pushToStrategyBoard() {
+        StrategyBoard.chokePoints.put(keyString, chokepoint);
+    }
 
     @Override
-    public abstract void decisionLogic();
+    public final boolean isProceedCalc(){
+        return isCalcLocation();
+    }
 
-    @Override
-    public void pushToStrategyBoard() {
-        StrategyBoard.locations.put(location, chokepoint);
+    public abstract boolean isCalcLocation();
+
+    public abstract Chokepoint findLocation();
+
+    public final Chokepoint get(){
+        return StrategyBoard.chokePoints.get(keyString);
     }
 }

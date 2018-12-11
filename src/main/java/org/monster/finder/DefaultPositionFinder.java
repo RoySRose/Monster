@@ -1,26 +1,40 @@
 package org.monster.finder;
 
 import bwapi.Position;
-import org.monster.board.Location;
 import org.monster.board.StrategyBoard;
 
 public abstract class DefaultPositionFinder implements LocationFinder {
 
-    Position position;
-    Location location;
+    private static Position position;
+    private static String keyString;
 
-    public DefaultPositionFinder(Location location) {
-        this.location = location;
+    public DefaultPositionFinder() {
+        this.keyString = this.getClass().getName();
     }
 
     @Override
-    public abstract boolean calculateLocation();
+    public final void process(){
+        position = findLocation();
+        pushToStrategyBoard();
+        afterCalc();
+    }
+
+    private final void pushToStrategyBoard() {
+        StrategyBoard.positions.put(keyString, position);
+    }
 
     @Override
-    public abstract void decisionLogic();
+    public final boolean isProceedCalc(){
+        return isCalcLocation();
+    }
 
-    @Override
-    public void pushToStrategyBoard() {
-        StrategyBoard.locations.put(location, position);
+    public void afterCalc(){};
+
+    public abstract boolean isCalcLocation();
+
+    public abstract Position findLocation();
+
+    public static final Position get(){
+        return StrategyBoard.positions.get(keyString);
     }
 }

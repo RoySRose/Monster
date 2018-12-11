@@ -39,26 +39,23 @@ public class PositionInfoCollector implements InfoCollector {
     }
 
     public void updateReadyToAttackPosition() {
-        try {
-            Position myExpansionPosition = baseInfoCollector.firstExpansionLocation.get(selfPlayer).getPosition();
-            Position enemyExpansionPosition = baseInfoCollector.firstExpansionLocation.get(enemyPlayer).getPosition();
-            Position centerTilePosition = CommonCode.CENTER_POS;
 
-            int myX = myExpansionPosition.getX() + centerTilePosition.getX();
-            int myY = myExpansionPosition.getY() + centerTilePosition.getY();
+        Position myExpansionPosition = baseInfoCollector.firstExpansionLocation.get(selfPlayer).getPosition();
+        Position enemyExpansionPosition = baseInfoCollector.firstExpansionLocation.get(enemyPlayer).getPosition();
+        Position centerTilePosition = CommonCode.CENTER_POS;
 
-            int enemyX = enemyExpansionPosition.getX() + centerTilePosition.getX();
-            int enemyY = enemyExpansionPosition.getY() + centerTilePosition.getY();
+        int myX = myExpansionPosition.getX() + centerTilePosition.getX();
+        int myY = myExpansionPosition.getY() + centerTilePosition.getY();
 
-            Position myReadyToPosition = new Position(myX / 2, myY / 2);
-            Position enemyReadyToPosition = new Position(enemyX / 2, enemyY / 2);
+        int enemyX = enemyExpansionPosition.getX() + centerTilePosition.getX();
+        int enemyY = enemyExpansionPosition.getY() + centerTilePosition.getY();
 
-            readyToAttackPosition.put(selfPlayer, myReadyToPosition);
-            readyToAttackPosition.put(enemyPlayer, enemyReadyToPosition);
+        Position myReadyToPosition = new Position(myX / 2, myY / 2);
+        Position enemyReadyToPosition = new Position(enemyX / 2, enemyY / 2);
 
-        } catch (Exception ex) {
-            System.out.println(ex);
-        }
+        readyToAttackPosition.put(selfPlayer, myReadyToPosition);
+        readyToAttackPosition.put(enemyPlayer, enemyReadyToPosition);
+
     }
 
 }

@@ -7,6 +7,8 @@ import bwta.BaseLocation;
 import bwta.Region;
 import org.monster.common.constant.RegionType;
 import org.monster.common.util.internal.MapTools;
+import org.monster.finder.position.dynamic.EnemyReadyToAttackPosFinder;
+import org.monster.finder.position.dynamic.MyReadyToAttackPosFinder;
 
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
@@ -180,11 +182,11 @@ public class PositionUtils {
 
     @Deprecated
     public static Position myReadyToPosition() {
-        return PositionInfoCollector.Instance().readyToAttackPosition.get(PlayerUtils.myPlayer());
+        return MyReadyToAttackPosFinder.get();
     }
 
     @Deprecated
     public static Position enemyReadyToPosition() {
-        return PositionInfoCollector.Instance().readyToAttackPosition.get(PlayerUtils.enemyPlayer());
+        return EnemyReadyToAttackPosFinder.get();
     }
 }

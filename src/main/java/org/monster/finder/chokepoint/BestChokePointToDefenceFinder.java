@@ -1,28 +1,24 @@
 package org.monster.finder.chokepoint;
 
-import org.monster.board.Location;
+import bwta.Chokepoint;
 import org.monster.finder.DefaultChokePointFinder;
-import org.monster.finder.LocationFinder;
 
 //TODO 일단 옮겨놓긴 했는데 다음 초크 포인트 찾는거는 유틸성으로 보임. util 쪽으로 옮겨야할지도. 참고용
-public class BestChokePointToDefenceFinder extends DefaultChokePointFinder implements LocationFinder {
-
-    public BestChokePointToDefenceFinder() {
-        super(Location.BestChokePointToDefence);
-    }
+public class BestChokePointToDefenceFinder extends DefaultChokePointFinder {
 
     @Override
-    public boolean calculateLocation() {
-        //every frame?
+    public boolean isCalcLocation() {
+        //return StrategyBoard.decisions.get(Decision.NeedToAdd);
         return true;
     }
 
     @Override
-    public void decisionLogic() {
+    public Chokepoint findLocation() {
 
+        return null;
     }
-
 }
+
 //
 //
 //    public Chokepoint getNextChokepoint(Chokepoint currChoke, Player toPlayer) {
