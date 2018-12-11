@@ -1,25 +1,21 @@
 package org.monster.finder.baselocation;
 
-import org.monster.board.Location;
+import bwta.BaseLocation;
 import org.monster.finder.DefaultBaseLocationFinder;
-import org.monster.finder.LocationFinder;
 
 //TODO
-public class NextExpansionFinder extends DefaultBaseLocationFinder implements LocationFinder {
+public class NextExpansionFinder extends DefaultBaseLocationFinder {
 
-    public NextExpansionFinder() {
-        super(Location.MyNextExpansion);
+    @Override
+    public boolean isCalcLocation() {
+        //return StrategyBoard.decisions.get(Decision.NeedToAdd);
+        return true;
     }
 
     @Override
-    public boolean calculateLocation() {
-        return false;
-        //return StrategyBoard.decisions.getOrDefault(Decision.ExpandMyExpansion, false);
-    }
+    public BaseLocation findLocation() {
 
-    @Override
-    public void decisionLogic() {
-
+        return null;
     }
 }
 

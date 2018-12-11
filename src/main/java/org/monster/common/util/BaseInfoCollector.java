@@ -15,6 +15,8 @@ import org.monster.common.constant.CommonCode;
 import org.monster.common.constant.EnemyUnitVisibleStatus;
 import org.monster.common.constant.RegionType;
 import org.monster.common.util.internal.IConditions;
+import org.monster.finder.position.dynamic.EnemyReadyToAttackPosFinder;
+import org.monster.finder.position.dynamic.MyReadyToAttackPosFinder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -146,6 +148,12 @@ public class BaseInfoCollector implements InfoCollector {
             }
             mainBaseLocationChanged.put(player, new Boolean(false));
             TimeInfoCollector.Instance().clearBaseToBaseFrame();
+
+            if(player == PlayerUtils.enemyPlayer()) {
+                EnemyReadyToAttackPosFinder.setCalculate(true);
+            }else if(player == PlayerUtils.myPlayer()){
+                MyReadyToAttackPosFinder.setCalculate(true);
+            }
         }
     }
 

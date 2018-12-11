@@ -1,6 +1,8 @@
 package org.monster.board;
 
 import bwapi.Position;
+import bwta.BaseLocation;
+import bwta.Chokepoint;
 import org.monster.common.MetaType;
 import org.monster.common.constant.CommonCode;
 import org.monster.common.util.TimeUtils;
@@ -115,13 +117,20 @@ public class StrategyBoard {
     // [정찰SCV 할당]
     public static boolean assignScoutScv = false;
 
+
+
+    /**
+     * Strategy for Monster
+     */
     public static Map<Decision, Boolean> decisions = new HashMap<>();
-    public static Map<Location, Object> locations = new HashMap<>();
+    public static Map<String, Position> positions = new HashMap<>();
+    public static Map<String, BaseLocation> baseLocations = new HashMap<>();
+    public static Map<String, Chokepoint> chokePoints = new HashMap<>();
 
     public static void init() {
-        for(Decision decision : Decision.values())
+        //TODO 더 좋은 방법이 있을것 같은데..
+        for(Decision decision : Decision.values()) {
             decisions.put(decision, false);
-        for(Location location : Location.values())
-            locations.put(location, new Object());
+        }
     }
 }
