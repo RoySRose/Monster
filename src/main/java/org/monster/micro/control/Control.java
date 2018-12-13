@@ -14,7 +14,7 @@ import org.monster.common.util.CommandUtils;
 import org.monster.common.util.PositionUtils;
 import org.monster.common.util.RegionUtils;
 import org.monster.common.util.TimeUtils;
-import org.monster.decisions.strategy.manage.PositionFinder;
+import org.monster.strategy.manage.PositionFinder;
 
 import java.util.Collection;
 import java.util.HashMap;

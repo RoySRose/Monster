@@ -20,7 +20,8 @@ import org.monster.common.util.TimeUtils;
 import org.monster.common.util.UnitUtils;
 import org.monster.common.util.internal.IConditions;
 import org.monster.debugger.BigWatch;
-import org.monster.decisions.strategy.manage.VultureTravelManager;
+import org.monster.strategy.manage.PositionFinder;
+import org.monster.strategy.manage.VultureTravelManager;
 import org.monster.micro.compute.GuerillaScore;
 import org.monster.micro.compute.VultureFightPredictor;
 import org.monster.micro.constant.MicroConfig;
@@ -30,6 +31,8 @@ import org.monster.micro.squad.MultiDefenseSquad;
 import org.monster.micro.squad.ScvScoutSquad;
 import org.monster.micro.squad.Squad;
 import org.monster.micro.targeting.TargetFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -37,6 +40,8 @@ import java.util.List;
 import java.util.Set;
 
 public class CombatManager extends GameManager {
+
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private static CombatManager instance = new CombatManager();
     public SquadData squadData = new SquadData();
@@ -98,6 +103,9 @@ public class CombatManager extends GameManager {
     public void update() {
         logObserver.start();
 
+        //TODO 전환전까지 jvm fatal 오류 방지용
+        PositionFinder.Instance().update();
+
         combatUnitArrangement();
         squadExecution();
 
@@ -132,13 +140,10 @@ public class CombatManager extends GameManager {
         
         mainSquad.findEnemiesAndExecuteSquad();
 
-        for (Squad squad : squadData.getSquadMap().values()) {
-        	
-            squad.findEnemiesAndExecuteSquad(); // squad 유닛 명령 지시
-//            squad.execute();
-        }
-        
-//        squad.execute();
+//        for (Squad squad : squadData.getSquadMap().values()) {
+//
+//            squad.findEnemiesAndExecuteSquad(); // squad 유닛 명령 지시
+//        }
     }
 
     private void updateSquadDefault(MicroConfig.SquadInfo squadInfo) {

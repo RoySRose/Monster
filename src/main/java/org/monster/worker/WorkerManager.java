@@ -9,7 +9,6 @@ import bwta.BWTA;
 import bwta.Region;
 import org.monster.board.StrategyBoard;
 import org.monster.bootstrap.GameManager;
-import org.monster.build.initialProvider.BlockingEntrance.BlockingEntrance;
 import org.monster.common.LagObserver;
 import org.monster.common.constant.CommonCode;
 import org.monster.common.constant.PlayerRange;
@@ -18,7 +17,6 @@ import org.monster.common.util.CommandUtils;
 import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.TimeUtils;
 import org.monster.common.util.UnitUtils;
-import org.monster.micro.Minerals;
 import org.monster.micro.constant.MicroConfig;
 
 import java.util.List;
@@ -30,7 +28,6 @@ public class WorkerManager extends GameManager {
     /// 각 Worker 에 대한 WorkerJob 상황을 저장하는 자료구조 객체
     private WorkerData workerData = new WorkerData();
     /// 일꾼 중 한명을 Repair Worker 로 정해서, 전체 수리 대상을 하나씩 순서대로 수리합니다
-    private Unit currentRepairWorker = null;
     private boolean scvIsOut = false;
 
     /// static singleton 객체를 리턴합니다

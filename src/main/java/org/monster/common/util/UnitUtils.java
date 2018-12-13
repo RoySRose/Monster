@@ -20,8 +20,8 @@ import org.monster.common.constant.RegionType;
 import org.monster.common.constant.UnitFindStatus;
 import org.monster.common.util.internal.IConditions;
 import org.monster.common.util.internal.SpecificValueCache;
-import org.monster.decisions.constant.StrategyConfig;
-import org.monster.decisions.strategy.manage.PositionFinder;
+import org.monster.strategy.constant.StrategyConfig;
+import org.monster.strategy.manage.PositionFinder;
 import org.monster.micro.CombatManager;
 import org.monster.micro.constant.MicroConfig;
 import org.monster.micro.squad.Squad;
@@ -40,6 +40,10 @@ public class UnitUtils {
 
     public static int getUnitCount() {
         return getUnitCount(UnitFindStatus.ALL, UnitType.AllUnits);
+    }
+
+    public static int getUnitCount(UnitFindStatus unitFindStatus) {
+        return  getUnitCount(unitFindStatus, UnitType.AllUnits);
     }
 
     public static int getUnitCount(UnitType... unitTypes) {
@@ -108,6 +112,10 @@ public class UnitUtils {
 
     public static List<Unit> getUnitList(UnitType unitTypes) {
         return getUnitList(UnitFindStatus.ALL, unitTypes);
+    }
+
+    public static List<Unit> getUnitList(UnitFindStatus unitFindStatus) {
+        return getUnitList(unitFindStatus, UnitType.AllUnits);
     }
 
     public static List<Unit> getCompletedUnitList(UnitType unitTypes) {
@@ -205,6 +213,10 @@ public class UnitUtils {
 
     public static List<UnitInfo> getEnemyUnitInfoList(UnitType unitType) {
         return getEnemyUnitInfoList(EnemyUnitVisibleStatus.ALL, unitType);
+    }
+
+    public static List<UnitInfo> getEnemyUnitInfoList(EnemyUnitVisibleStatus enemyUnitVisibleStatus) {
+        return getEnemyUnitInfoList(enemyUnitVisibleStatus, UnitType.AllUnits);
     }
 
     public static List<UnitInfo> getEnemyVisibleUnitInfoList() {
@@ -397,9 +409,17 @@ public class UnitUtils {
                 }
             }
 
+            System.out.println("666");
+            System.out.println(eui.getLastPosition());
+            System.out.println("777");
+            System.out.println(position);
+
+            System.out.println("888");
+            System.out.println(eui.getLastPosition().getDistance(position));
             if (eui.getLastPosition().getDistance(position) < radius + weaponRange) {
                 euis.add(eui);
             }
+            System.out.println("999");
         }
     }
 

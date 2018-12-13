@@ -2,7 +2,7 @@ package org.monster.build.initialProvider;
 
 import org.monster.bootstrap.GameManager;
 import org.monster.build.initialProvider.buildSets.FourDroneZergling;
-import org.monster.decisions.constant.EnemyStrategyOptions;
+import org.monster.strategy.constant.EnemyStrategyOptions;
 
 public class InitialBuildProvider extends GameManager {
 

@@ -4,14 +4,12 @@ package org.monster.build.provider;
 import bwapi.Unit;
 import bwapi.UnitType;
 import bwapi.UpgradeType;
-import org.monster.bootstrap.Monster;
 import org.monster.build.base.BuildManager;
 import org.monster.common.MetaType;
-import org.monster.common.constant.CommonCode;
 import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.UnitUtils;
 import org.monster.common.util.UpgradeUtils;
-import org.monster.decisions.strategy.manage.AttackExpansionManager;
+import org.monster.strategy.manage.AttackExpansionManager;
 
 //EXAMPLE
 @Deprecated

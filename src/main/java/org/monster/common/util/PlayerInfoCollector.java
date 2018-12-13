@@ -55,7 +55,7 @@ public class PlayerInfoCollector implements InfoCollector {
     }
 
     protected int mineralSelf() {
-        return Broodwar.enemy().minerals();
+        return Broodwar.self().minerals();
     }
 
     protected int mineralEnemy() {
@@ -63,7 +63,7 @@ public class PlayerInfoCollector implements InfoCollector {
     }
 
     protected int gasSelf() {
-        return Broodwar.enemy().gas();
+        return Broodwar.self().gas();
     }
 
     protected int gasEnemy() {
