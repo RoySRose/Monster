@@ -29,6 +29,8 @@ import org.monster.common.util.TimeUtils;
 import org.monster.common.util.UnitTypeUtils;
 import org.monster.common.util.UnitUtils;
 import org.monster.common.util.UpgradeUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -36,6 +38,8 @@ import java.util.List;
 import java.util.Map;
 
 public class BuildManager extends GameManager {
+
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private static BuildManager instance = new BuildManager();
 
@@ -81,7 +85,6 @@ public class BuildManager extends GameManager {
 
         BuildOrderItem currentItem = buildQueue.getHighestPriorityItem();
 
-        // while there is still something left in the buildQueue
         while (!buildQueue.isEmpty()) {
             if (failureProtector.isSuspended(currentItem.metaType)) {
                 if (!buildQueue.canSkipCurrentItem()) {
@@ -102,8 +105,6 @@ public class BuildManager extends GameManager {
             } else {
                 seedPosition = getSeedPositionFromSeedLocationStrategy(currentItem.seedLocationStrategy);
             }
-
-            // this is the unit which can produce the currentItem
             Unit producer = getProducer(currentItem.metaType, seedPosition, currentItem.producerID);
 
             boolean canMake = false;
@@ -112,25 +113,24 @@ public class BuildManager extends GameManager {
                 canMake = canMakeNow(producer, currentItem.metaType);
             }
 
-            // if we can make the current item, create it
             if (producer != null && canMake == true) {
                 MetaType t = currentItem.metaType;
 
                 if (t.isUnit()) {
                     if (t.getUnitType().isBuilding()) {
-
                         if (!t.getUnitType().isAddon()) {
 
                             TilePosition desiredPosition = getDesiredPosition(t.getUnitType(), currentItem.seedLocation, currentItem.seedLocationStrategy);
 
                             if (desiredPosition != TilePosition.None) {
+                                logger.debug("push {} to ConstructionQueue with position {} ", t.getUnitType().toString(), desiredPosition);
                                 ConstructionManager.Instance().addConstructionTask(t.getUnitType(), desiredPosition);
                             } else {
-                                System.out.println("There is no place to construct :: " + currentItem.metaType.getUnitType() + " :: strategy :: " + currentItem.seedLocationStrategy);
+                                logger.debug("There is no place to construct :: " + currentItem.metaType.getUnitType() + " :: strategy :: " + currentItem.seedLocationStrategy);
                                 if (currentItem.seedLocation != null)
-                                    System.out.println(" seedPosition " + currentItem.seedLocation.getX() + "," + currentItem.seedLocation.getY());
+                                    logger.debug(" seedPosition " + currentItem.seedLocation.getX() + "," + currentItem.seedLocation.getY());
                                 if (desiredPosition != null)
-                                    System.out.println(" desiredPosition " + desiredPosition.getX() + "," + desiredPosition.getY());
+                                    logger.debug(" desiredPosition " + desiredPosition.getX() + "," + desiredPosition.getY());
 
                                 if (t.getUnitType() == UnitType.Terran_Supply_Depot || t.getUnitType() == UnitType.Terran_Academy || t.getUnitType() == UnitType.Terran_Armory) {
                                     desiredPosition = getDesiredPosition(t.getUnitType(), TilePosition.None, BuildOrderItem.SeedPositionStrategy.NextSupplePoint);
@@ -139,10 +139,10 @@ public class BuildManager extends GameManager {
                                 }
 
                                 if (desiredPosition != TilePosition.None) {
-                                    System.out.println(" re calculate desiredPosition :: " + desiredPosition.getX() + "," + desiredPosition.getY());
+                                    logger.debug("push {} to ConstructionQueue with recalculated position {} ", t.getUnitType().toString(), desiredPosition);
                                     ConstructionManager.Instance().addConstructionTask(t.getUnitType(), desiredPosition);
                                 } else {
-                                    System.out.println(" re calculate desiredPosition is null :: delete from quere");
+                                    logger.debug(" re calculate desiredPosition is null :: delete from quere");
                                     failureProtector.update(currentItem.metaType);
                                     isOkToRemoveQueue = true;
                                 }
@@ -159,42 +159,31 @@ public class BuildManager extends GameManager {
                         BuildQueueProvider.Instance().startUpgrade(t.getUpgradeType());
                     }
                 }
-                // remove it from the buildQueue
                 if (isOkToRemoveQueue) {
-//					System.out.println("here I am!!! Killing: " + buildQueue.getItem().metaType.getName());
+					logger.debug("OkToRemoveQueue: " + buildQueue.getItem().metaType.getName());
                     buildQueue.removeCurrentItem();
                 }
-                // don't actually loop around in here
                 break;
             }
-            // otherwise, if we can skip the current item
             else if (buildQueue.canSkipCurrentItem()) {
-                // skip it and get the next one
                 buildQueue.skipCurrentItem();
                 currentItem = buildQueue.getItem();
             } else {
-                // so break out
-//				//FileUtils.appendTextToFile("log.txt", "\n frame count debug BuildManager break out :: " + System.currentTimeMillis());
                 break;
             }
         }
-
-//		//FileUtils.appendTextToFile("log.txt", "\n frame count debug BuildManager End :: " + System.currentTimeMillis());
     }
 
     public Unit getProducer(MetaType t, Position closestTo, int producerID) {
-        // get the type of unit that builds this
         UnitType producerType = t.whatBuilds();
 
-        // make a set of all candidate producers
-        List<Unit> candidateProducers = new ArrayList<Unit>();
-        List<Unit> selectPorducer = UnitUtils.getUnitList(UnitFindStatus.COMPLETE);
-        for (Unit unit : selectPorducer) {
+        List<Unit> candidateProducers = new ArrayList<>();
+        List<Unit> selectProducer = UnitUtils.getUnitList(UnitFindStatus.COMPLETE);
+        for (Unit unit : selectProducer) {
 
             if (unit == null)
                 continue;
 
-            // reasons a unit can not train the desired type
             if (unit.getType() != producerType) {
                 continue;
             }
@@ -221,14 +210,8 @@ public class BuildManager extends GameManager {
             if (producerID != -1 && unit.getID() != producerID) {
                 continue;
             }
-            if (unit.isConstructing() && (producerType == UnitType.Terran_Factory || producerType == UnitType.Terran_Starport || producerType == UnitType.Terran_Science_Facility || producerType == UnitType.Terran_Command_Center)) {
-                continue;
-            }
 
             if (t.isUnit()) {
-                // if the type dd an addon and the producer doesn't have
-                // one
-                // C++ : typedef std::pair<BWAPI::UnitType, int> ReqPair;
                 Pair<UnitType, Integer> ReqPair = null;
 
                 Map<UnitType, Integer> requiredUnitsMap = t.getUnitType().requiredUnits();
@@ -238,20 +221,19 @@ public class BuildManager extends GameManager {
                 if (requiredUnitsMap != null) {
                     Iterator<UnitType> it = requiredUnitsMap.keySet().iterator();
 
-                    while (it.hasNext()) {
-                        UnitType requiredType = it.next();
-                        if (requiredType.isAddon()) {
-                            if (unit.getAddon() == null || (unit.getAddon().getType() != requiredType)) {
-                                able = false;
-                            }
-                        }
-                    }
+//                    while (it.hasNext()) {
+//                        UnitType requiredType = it.next();
+//                        if (requiredType.isAddon()) {
+//                            if (unit.getAddon() == null || (unit.getAddon().getType() != requiredType)) {
+//                                able = false;
+//                            }
+//                        }
+//                    }
                 }
                 if (!able) continue;
             }
             candidateProducers.add(unit);
         }
-
         return getClosestUnitToPosition(candidateProducers, closestTo);
     }
 
@@ -259,10 +241,8 @@ public class BuildManager extends GameManager {
         if (units.size() == 0) {
             return null;
         }
-
-        // if we don't care where the unit is return the first one we have
         if (closestTo == Position.None || closestTo == Position.Invalid || closestTo == Position.Unknown || closestTo.isValid() == false) {
-            return units.get(0); // C++ : return units.begin();
+            return units.get(0);
         }
 
         Unit closestUnit = null;
@@ -278,7 +258,6 @@ public class BuildManager extends GameManager {
                 minDist = distance;
             }
         }
-
         return closestUnit;
     }
 
@@ -286,14 +265,9 @@ public class BuildManager extends GameManager {
         if (producer == null) {
             return false;
         }
-
         boolean canMake = hasEnoughResources(t);
-
         if (canMake) {
             if (t.isUnit()) {
-                // Monster.Broodwar.canMake : Checks all the requirements
-                // include resources, supply, technology tree, availability, and
-                // required units
                 canMake = UnitUtils.canMake(t.getUnitType(), producer);
             } else if (t.isTech()) {
                 canMake = UpgradeUtils.canResearch(t.getTechType(), producer);
@@ -301,7 +275,6 @@ public class BuildManager extends GameManager {
                 canMake = UpgradeUtils.canUpgrade(t.getUpgradeType(), producer);
             }
         }
-
         return canMake;
     }
 
@@ -332,7 +305,6 @@ public class BuildManager extends GameManager {
                 }
             } else if (seedPositionStrategy == BuildOrderItem.SeedPositionStrategy.NextSupplePoint) {
                 if (fisrtSupplePointFull) {
-//                	20180815. hkk. 서플라이포인트가 Full 일 경우 작은 건물은 메인베이스가 Full 이더라도 지을수 있는 공간이 있을수 있으므로, 일단 찾아보고 null 이 나올경우 아래에서 처리
                     seedPositionStrategy = BuildOrderItem.SeedPositionStrategy.MainBaseLocation;
                 }
             }
@@ -351,10 +323,8 @@ public class BuildManager extends GameManager {
             desiredPosition = ConstructionPlaceFinder.Instance().getBuildLocationWithSeedPositionAndStrategy(unitType, seedPosition, seedPositionStrategy);
 
             if (desiredPosition == null) {
-//            	20180815. hkk. seedPosition 이 지정되어 들어올경우 null이 나와도 SeedPositionStrategy 가 의미가 없으므로 1번만 찾는다.
 
                 if (TilePositionUtils.isValidTilePosition(seedPosition)) {
-//                	//FileUtils.appendTextToFile("log.txt", "\n getDesiredPosition desiredPosition is null break :: " + unitType + " :: seedPosition :: "+ seedPosition);
                     break;
                 }
 
@@ -366,20 +336,19 @@ public class BuildManager extends GameManager {
                         break;
                     }
                 }
-//            	//FileUtils.appendTextToFile("log.txt", "\n getDesiredPosition desiredPosition is null :: "+ unitType + " :: "+ seedPosition + " :: " + seedPositionStrategy);
                 if (seedPositionStrategy == BuildOrderItem.SeedPositionStrategy.SeedPositionSpecified) {
-                    System.out.println("Fixed seedPosition out");
+                    logger.debug("Fixed seedPosition out");
                     break;
                 }
                 if (seedPositionStrategy == BuildOrderItem.SeedPositionStrategy.getLastBuilingFinalLocation) {
-                    System.out.println("LastFinal seedPosition out, should not happen!!!!!!");
+                    logger.debug("LastFinal seedPosition out, should not happen!!!!!!");
                     break;
                 }
                 if (seedPositionStrategy == BuildOrderItem.SeedPositionStrategy.LastBuilingPoint) {
                     seedPositionStrategy = BuildOrderItem.SeedPositionStrategy.getLastBuilingFinalLocation;
                 }
                 if (seedPositionStrategy == BuildOrderItem.SeedPositionStrategy.NextExpansionPoint) {
-                    System.out.println("No Place for Command CENTER_POS. wait or no construct");
+                    logger.debug("No Place for Command CENTER_POS. wait or no construct");
                     break;
                 }
             } else {
@@ -403,9 +372,7 @@ public class BuildManager extends GameManager {
         if ((type.mineralPrice() <= getAvailableMinerals()) && (type.gasPrice() <= getAvailableGas())) {
             return true;
         }
-
         return false;
-
     }
 
     public BuildOrderQueue getBuildQueue() {
@@ -610,14 +577,12 @@ public class BuildManager extends GameManager {
         if (!buildQueue.isEmpty()) {
             BuildOrderItem currentItem = buildQueue.getHighestPriorityItem();
 
-            // if (buildQueue.canSkipCurrentItem() == false)
             if (currentItem.blocking == true) {
                 boolean isDeadlockCase = false;
 
                 // producerType을 먼저 알아낸다
                 UnitType producerType = currentItem.metaType.whatBuilds();
 
-                // 건물이나 유닛의 경우
                 if (currentItem.metaType.isUnit()) {
                     UnitType unitType = currentItem.metaType.getUnitType();
                     TechType requiredTechType = unitType.requiredTech();
@@ -631,19 +596,14 @@ public class BuildManager extends GameManager {
                     // Refinery 건물의 경우, Refinery 가 건설되지 않은 Geyser가 있는 경우에만 가능
                     if (!isDeadlockCase && unitType == UnitTypeUtils.getRefineryBuildingType(PlayerUtils.myRace())) {
 
-//						//FileUtils.appendTextToFile("log.txt", "\n checkBuildOrderQueueDeadlockAndAndFixIt :: refinery lock check");
                         boolean hasAvailableGeyser = true;
 
                         // Refinery가 지어질 수 있는 장소를 찾아본다
-                        TilePosition testLocation = getDesiredPosition(unitType, currentItem.seedLocation,
-                                currentItem.seedLocationStrategy);
-
-//						//FileUtils.appendTextToFile("log.txt", "\n checkBuildOrderQueueDeadlockAndAndFixIt :: getDesiredPosition :: " + testLocation);
+                        TilePosition testLocation = getDesiredPosition(unitType, currentItem.seedLocation,currentItem.seedLocationStrategy);
 
                         // Refinery 를 지으려는 장소를 찾을 수 없으면 dead lock
-                        if (testLocation == TilePosition.None || testLocation == TilePosition.Invalid
-                                || testLocation.isValid() == false) {
-                            //System.out.println("Build Order Dead lock case . Cann't find place to construct " + unitType); // C++ : unitType.getName()
+                        if (testLocation == TilePosition.None || testLocation == TilePosition.Invalid || testLocation.isValid() == false) {
+                            logger.debug("Build Order Dead lock case . Cann't find place to construct " + unitType); // C++ : unitType.getName()
                             hasAvailableGeyser = false;
                         } else {
                             // Refinery 를 지으려는 장소에 Refinery 가 이미 건설되어 있다면 dead lock
@@ -685,7 +645,7 @@ public class BuildManager extends GameManager {
                                             || isBuildableTile(unit.getTilePosition().getX() + 5, unit.getTilePosition().getY() + 1) == false
                                             || isBuildableTile(unit.getTilePosition().getX() + 4, unit.getTilePosition().getY() + 2) == false
                                             || isBuildableTile(unit.getTilePosition().getX() + 5, unit.getTilePosition().getY() + 2) == false) {
-                                        //System.out.println("something is blocking addon place, so no cnt");
+                                        //logger.debug("something is blocking addon place, so no cnt");
                                         continue;
                                     }
                                 }
@@ -693,7 +653,7 @@ public class BuildManager extends GameManager {
                             }
                         }
                         if (getAddonPossibeCnt == 0) {
-//							System.out.println("deadlock because no place to addon");
+//							logger.debug("deadlock because no place to addon");
                             isDeadlockCase = true;
                         }
                     }
@@ -780,20 +740,6 @@ public class BuildManager extends GameManager {
                     TechType techType = currentItem.metaType.getTechType();
                     UnitType requiredUnitType = techType.requiredUnit();
 
-                    /*
-                     * System.out.println("To research " + techType.toString() +
-                     * ", hasResearched " +
-                     * UpgradeUtils.selfISResearched(techType) +
-                     * ", isResearching " +
-                     * UpgradeUtils.selfISResearching(techType) +
-                     * ", producerType " + producerType.toString() +
-                     * " completedUnitCount " +
-                     * UnitUtils.getCompletedUnitCount(
-                     * producerType) + " incompleteUnitCount " +
-                     * UnitUtils.getIncompletedUnitCount(
-                     * producerType));
-                     */
-
                     if (UpgradeUtils.selfISResearched(techType)
                             || UpgradeUtils.selfISResearching(techType)) {
                         isDeadlockCase = true;
@@ -849,8 +795,7 @@ public class BuildManager extends GameManager {
                                         if (unit.getType() != producerTypeOfProducerType) {
                                             continue;
                                         }
-                                        // 모건물이 완성되어있고, 모건물이 해당 Addon 건물을 건설중인지
-                                        // 확인한다
+                                        // 모건물이 완성되어있고, 모건물이 해당 Addon 건물을 건설중인지 확인한다
                                         if (unit.isCompleted() && unit.isConstructing()
                                                 && unit.getBuildType() == producerType) {
                                             isAddonConstructing = true;
@@ -894,8 +839,7 @@ public class BuildManager extends GameManager {
                 }
 
                 if (isDeadlockCase) {
-//					System.out.println(	"Build Order Dead lock case . remove BuildOrderItem " + currentItem.metaType.getName());
-
+					logger.debug(	"Build Order Dead lock case . remove BuildOrderItem " + currentItem.metaType.getName());
                     buildQueue.removeCurrentItem();
                 }
 

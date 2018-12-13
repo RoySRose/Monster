@@ -14,7 +14,7 @@ import org.monster.common.util.MicroUtils;
 import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.PositionUtils;
 import org.monster.common.util.UnitUtils;
-import org.monster.decisions.constant.EnemyStrategy;
+import org.monster.strategy.constant.EnemyStrategy;
 import org.monster.micro.FleeOption;
 import org.monster.micro.constant.MicroConfig;
 import org.monster.micro.control.Control;

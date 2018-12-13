@@ -6,11 +6,11 @@ import bwta.Chokepoint;
 import org.monster.common.MetaType;
 import org.monster.common.constant.CommonCode;
 import org.monster.common.util.TimeUtils;
-import org.monster.decisions.constant.EnemyStrategy;
-import org.monster.decisions.constant.EnemyStrategyOptions;
-import org.monster.decisions.constant.StrategyCode;
-import org.monster.decisions.strategy.manage.PositionFinder;
-import org.monster.decisions.strategy.manage.SpiderMineManger;
+import org.monster.strategy.constant.EnemyStrategy;
+import org.monster.strategy.constant.EnemyStrategyOptions;
+import org.monster.strategy.constant.StrategyCode;
+import org.monster.strategy.manage.PositionFinder;
+import org.monster.strategy.manage.SpiderMineManger;
 import org.monster.micro.constant.MicroConfig;
 
 import java.util.ArrayList;
@@ -127,7 +127,7 @@ public class StrategyBoard {
     public static Map<String, BaseLocation> baseLocations = new HashMap<>();
     public static Map<String, Chokepoint> chokePoints = new HashMap<>();
 
-    public static void init() {
+    public void init() {
         //TODO 더 좋은 방법이 있을것 같은데..
         for(Decision decision : Decision.values()) {
             decisions.put(decision, false);

@@ -13,7 +13,7 @@ import org.monster.common.util.MapUtils;
 import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.TimeUtils;
 import org.monster.common.util.UnitUtils;
-import org.monster.decisions.constant.StrategyConfig;
+import org.monster.strategy.constant.StrategyConfig;
 
 import java.util.ArrayList;
 import java.util.List;

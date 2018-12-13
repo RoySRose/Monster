@@ -5,7 +5,7 @@ import bwapi.Unit;
 import bwapi.UnitType;
 import org.monster.common.util.MicroUtils;
 import org.monster.common.util.UnitUtils;
-import org.monster.decisions.strategy.manage.VultureTravelManager;
+import org.monster.strategy.manage.VultureTravelManager;
 import org.monster.micro.constant.MicroConfig;
 import org.monster.micro.control.groundforce.VultureControl;
 import org.monster.micro.targeting.TargetFilter;

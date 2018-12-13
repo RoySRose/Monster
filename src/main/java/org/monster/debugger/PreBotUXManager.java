@@ -29,7 +29,6 @@ import org.monster.common.MapGrid;
 import org.monster.common.MetaType;
 import org.monster.common.UnitInfo;
 import org.monster.common.constant.CommonCode;
-import org.monster.common.constant.CommonConfig;
 import org.monster.common.constant.EnemyUnitVisibleStatus;
 import org.monster.common.constant.UnitFindStatus;
 import org.monster.common.util.BaseUtils;
@@ -40,19 +39,19 @@ import org.monster.common.util.PositionUtils;
 import org.monster.common.util.TimeUtils;
 import org.monster.common.util.UnitTypeUtils;
 import org.monster.common.util.UnitUtils;
-import org.monster.decisions.constant.EnemyStrategy;
-import org.monster.decisions.constant.StrategyCode;
-import org.monster.decisions.strategy.StrategyManager;
-import org.monster.decisions.strategy.manage.AirForceManager;
-import org.monster.decisions.strategy.manage.AirForceTeam;
-import org.monster.decisions.strategy.manage.ClueManager;
-import org.monster.decisions.strategy.manage.EnemyBuildTimer;
-import org.monster.decisions.strategy.manage.StrategyAnalyseManager;
 import org.monster.micro.CombatManager;
 import org.monster.micro.MicroDecision;
-import org.monster.micro.Minerals;
+import org.monster.strategy.manage.EnemyStrategyAnalyzer;
+import org.monster.worker.Minerals;
 import org.monster.micro.squad.Squad;
 import org.monster.micro.squad.WatcherSquad;
+import org.monster.strategy.StrategyManager;
+import org.monster.strategy.constant.EnemyStrategy;
+import org.monster.strategy.constant.StrategyCode;
+import org.monster.strategy.manage.AirForceManager;
+import org.monster.strategy.manage.AirForceTeam;
+import org.monster.strategy.manage.ClueManager;
+import org.monster.strategy.manage.EnemyBuildTimer;
 import org.monster.worker.WorkerData;
 import org.monster.worker.WorkerManager;
 
@@ -133,7 +132,7 @@ public class PreBotUXManager {
                 int mouseX = Broodwar.getMousePosition().getX() + Broodwar.getScreenPosition().getX();
                 int mouseY = Broodwar.getMousePosition().getY() + Broodwar.getScreenPosition().getY();
                 Broodwar.drawTextMap(mouseX + 20, mouseY,
-                        "(" + (int) (mouseX / CommonConfig.UxConfig.TILE_SIZE) + ", " + (int) (mouseY / CommonConfig.UxConfig.TILE_SIZE) + ")");
+                        "(" + (int) (mouseX / 32) + ", " + (int) (mouseY / 32) + ")");
                 Broodwar.drawTextMap(mouseX + 20, mouseY + 10, "(" + (int) (mouseX) + ", " + (int) (mouseY) + ")");
                 // 미네랄PATH
             } else if (uxOption == 2) {
@@ -256,7 +255,7 @@ public class PreBotUXManager {
 //
 //    private int drawCalculation(int x, int y) {
 //        y += 10;
-//        Broodwar.drawTextScreen(x, y += 10, UxColor.CHAR_RED + "Decision : " + AttackDecisionMaker.Instance().decision + ", phase3: " + StrategyAnalyseManager.Instance().getPhase() + ", strategy" + StrategyBoard.currentStrategy.name());
+//        Broodwar.drawTextScreen(x, y += 10, UxColor.CHAR_RED + "Decision : " + AttackDecisionMaker.Instance().decision + ", phase3: " + EnemyStrategyAnalyzer.Instance().getPhase() + ", strategy" + StrategyBoard.currentStrategy.name());
 //        Broodwar.drawTextScreen(x, y += 10, "MineralToPredict: " + AttackDecisionMaker.Instance().UXMineralToPredict);
 //        Broodwar.drawTextScreen(x, y += 10, "GasToPredict    : " + AttackDecisionMaker.Instance().UXGasToPredict);
 //        Broodwar.drawTextScreen(x, y += 10, "MineralMinus:   : " + AttackDecisionMaker.Instance().UXMinusMineralToPredict);
@@ -807,13 +806,6 @@ public class PreBotUXManager {
             for (int i6 = 0; i6 < red1.size(); i6++) {
                 Broodwar.drawLineMap(red1.get(i6), red2.get(i6), Color.Red);
             }
-
-            // OccupiedBaseLocation 을 원으로 표시
-//            for (BaseLocation baseLocation : UnitTypeUtils.getOccupiedBaseLocations(PlayerUtils.myPlayer())) {
-//                Broodwar.drawCircleMap(baseLocation.getPosition(), 10 * CommonConfig.UxConfig.TILE_SIZE, Color.Blue);
-//            }
-//            for (BaseLocation baseLocation : UnitTypeUtils.getOccupiedBaseLocations(PlayerUtils.enemyPlayer())) {
-//                Broodwar.drawCircleMap(baseLocation.getPosition(), 10 * CommonConfig.UxConfig.TILE_SIZE, Color.Red);
         }
 
         // ChokePoint, BaseLocation 을 텍스트로 표시
@@ -1161,18 +1153,6 @@ public class PreBotUXManager {
 
     /// 정찰 상태를 Screen 에 표시합니다
     public void drawScoutInformation(int x, int y) {
-//		int currentScoutStatus = OldScoutManager.Instance().getScoutStatus();
-//		String scoutStatusString = null;
-//
-//		if(currentScoutStatus == OldScoutManager.ScoutStatus.MovingToAnotherBaseLocation.ordinal()){
-//			scoutStatusString = "Moving To Another Base Location";
-//		}else if(currentScoutStatus == OldScoutManager.ScoutStatus.MoveAroundEnemyBaseLocation.ordinal()){
-//			scoutStatusString = "Move Around Enemy BaseLocation";
-//		}else if(currentScoutStatus == OldScoutManager.ScoutStatus.NoScout.ordinal()){
-//			scoutStatusString = "No Scout";
-//		}else{
-//			scoutStatusString = "No Scout";
-//		}
 
         // get the enemy base location, if we have one
         BaseLocation enemyBaseLocation = BaseUtils.enemyMainBase();
@@ -1182,47 +1162,6 @@ public class PreBotUXManager {
         } else {
             Broodwar.drawTextScreen(x, y, "Enemy MainBaseLocation : Unknown");
         }
-
-//		if (currentScoutStatus == OldScoutManager.ScoutStatus.NoScout.ordinal()) {
-//			Prebot.Broodwar.drawTextScreen(x, y + 10, "No Scout Unit");
-//		}
-//		else {
-//			
-//			Unit scoutUnit = OldScoutManager.Instance().getScoutUnit();
-//			if (scoutUnit != null) {
-//				Prebot.Broodwar.drawTextScreen(x, y + 10, "Scout Unit : " + scoutUnit.getType() + " " + scoutUnit.getID() + " (" + scoutUnit.getTilePosition().getX() + ", " + scoutUnit.getTilePosition().getY() + ")");
-//	
-//				Position scoutMoveTo = scoutUnit.getTargetPosition();
-//	
-//				if (scoutMoveTo != null && scoutMoveTo != Position.None && scoutMoveTo.isValid()) {
-//	
-//					double currentScoutTargetDistance;
-//	
-//					if (currentScoutStatus == OldScoutManager.ScoutStatus.MovingToAnotherBaseLocation.ordinal()) {
-//						if (scoutUnit.getType().isFlyer()) {
-//							currentScoutTargetDistance = (int)(scoutUnit.getPosition().getDistance(scoutMoveTo));
-//						}
-//						else {
-//							currentScoutTargetDistance = PositionUtils.getGroundDistance(scoutUnit.getPosition(), scoutMoveTo);
-//						}
-//	
-//						Prebot.Broodwar.drawTextScreen(x, y + 20, "Target = (" + scoutMoveTo.getX() / CommonConfig.UxConfig.TILE_SIZE + ", " + scoutMoveTo.getY() / CommonConfig.UxConfig.TILE_SIZE + ") Distance = " + currentScoutTargetDistance);
-//					}
-//					/*
-//					else if (currentScoutStatus == ScoutManager.ScoutStatus.MoveAroundEnemyBaseLocation.ordinal()) {
-//	
-//						Vector<Position> vertices = ScoutManager.Instance().getEnemyRegionVertices();
-//						for (int i = 0 ; i < vertices.size() ; ++i)
-//						{
-//							Broodwar.drawCircleMap(vertices.get(i), 4, Color.Green, false);
-//							Broodwar.drawTextMap(vertices.get(i), "" + i);
-//						}
-//						Broodwar.drawCircleMap(scoutMoveTo, 5, Color.Red, true);
-//					}
-//					*/
-//				}
-//			}
-//		}
     }
 
     /// Unit 의 Target 으로 잇는 선을 Map 에 표시합니다
@@ -1466,7 +1405,7 @@ public class PreBotUXManager {
         int y = 10;
         Race enemyRace = PlayerUtils.enemyRace();
         EnemyStrategy strategy = StrategyBoard.currentStrategy;
-        int phase = StrategyAnalyseManager.Instance().getPhase();
+        int phase = EnemyStrategyAnalyzer.Instance().getPhase();
 
         Broodwar.drawTextScreen(20, y += 12, UxColor.CHAR_YELLOW + "[" + strategy.name() + " ...(phase " + phase + ")]");
         Broodwar.drawTextScreen(20, y += 12, UxColor.CHAR_YELLOW + "FAC RATIO : " + StrategyBoard.factoryRatio + ".. (" + UnitUtils.myFactoryUnitSupplyCount() + ")");

@@ -11,7 +11,7 @@ import org.monster.common.LagObserver;
 import org.monster.common.UnitInfo;
 import org.monster.common.constant.CommonCode;
 import org.monster.common.constant.PlayerRange;
-import org.monster.decisions.strategy.manage.AirForceManager;
+import org.monster.strategy.manage.AirForceManager;
 import org.monster.micro.FleeOption;
 import org.monster.micro.KitingOption;
 import org.monster.micro.MirrorBugFixed;
@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-//TODO move class to another package?
+//TODO move class to micro package?
 public class MicroUtils {
 
     private static final Map<Integer, Integer> UNIT_HEALED_FRAME = new HashMap<>();

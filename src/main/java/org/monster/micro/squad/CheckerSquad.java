@@ -5,7 +5,7 @@ import bwapi.UnitType;
 import org.monster.board.StrategyBoard;
 import org.monster.common.UnitInfo;
 import org.monster.common.util.UnitUtils;
-import org.monster.decisions.strategy.manage.VultureTravelManager;
+import org.monster.strategy.manage.VultureTravelManager;
 import org.monster.micro.CombatManager;
 import org.monster.micro.constant.MicroConfig;
 import org.monster.micro.control.groundforce.VultureControl;

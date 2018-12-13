@@ -9,7 +9,7 @@ import org.monster.common.util.MicroUtils;
 import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.TimeUtils;
 import org.monster.common.util.UnitUtils;
-import org.monster.decisions.strategy.manage.PositionFinder;
+import org.monster.strategy.manage.PositionFinder;
 import org.monster.micro.CombatManager;
 import org.monster.micro.constant.MicroConfig;
 import org.monster.micro.control.airforce.ValkyrieControl;
@@ -17,6 +17,8 @@ import org.monster.micro.control.groundforce.GoliathControl;
 import org.monster.micro.control.groundforce.TankControl;
 import org.monster.micro.control.groundforce.ZerglingControl;
 import org.monster.micro.targeting.TargetFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +27,7 @@ import java.util.Set;
 
 public class MainAttackSquad extends Squad {
 
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 //	private Set<UnitInfo> euisNearUnit = new HashSet<>();
 //	private Set<UnitInfo> euisNearBaseRegion = new HashSet<>();
 //	
@@ -149,17 +152,13 @@ public class MainAttackSquad extends Squad {
         euiList.clear();
 
         UnitUtils.addEnemyUnitInfosInRadius(TargetFilter.UNFIGHTABLE | TargetFilter.LARVA_LURKER_EGG, euiList, StrategyBoard.mainSquadCenter, StrategyBoard.mainSquadCoverRadius + 50, true, false);
-
         if (StrategyBoard.mainSquadMode.isAttackMode) {
             for (Unit unit : unitList) {
-//            	System.out.println("main attack findEnemies unit :: " + unit.getType());
                 if (unit.getDistance(StrategyBoard.mainSquadCenter) > StrategyBoard.mainSquadCoverRadius + 50) {
                     UnitUtils.addEnemyUnitInfosInRadius(TargetFilter.UNFIGHTABLE | TargetFilter.LARVA_LURKER_EGG, euiList, unit.getPosition(), unit.getType().sightRange() + MicroConfig.COMMON_ADD_RADIUS, true, false);
                 }
             }
-
         }
-
         if (!StrategyBoard.mainSquadMode.isAttackMode || PlayerUtils.enemyRace() == Race.Terran) {
             if (StrategyBoard.campType == PositionFinder.CampType.INSIDE) {
                 euiList.addAll(UnitUtils.euiListInBase());
@@ -172,7 +171,6 @@ public class MainAttackSquad extends Squad {
                 euiList.addAll(UnitUtils.euiListInThirdRegion());
             }
         }
-
         if (TimeUtils.beforeTime(8, 0)) {
             UnitUtils.addEnemyUnitInfosInRadiusForGround(euiList, StrategyBoard.mainSquadCenter, StrategyBoard.mainSquadCoverRadius);
             List<Unit> myBuildings = UnitUtils.myBuildingsInMainSquadRegion();
@@ -180,7 +178,6 @@ public class MainAttackSquad extends Squad {
                 UnitUtils.addEnemyUnitInfosInRadiusForGround(euiList, building.getPosition(), building.getType().sightRange() + MicroConfig.COMMON_ADD_RADIUS);
             }
         }
-
 //		System.out.println("###");
 //		System.out.println(unitList);
 //		System.out.println(euiList);

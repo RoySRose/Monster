@@ -9,7 +9,7 @@ import org.monster.common.constant.CommonCode;
 import org.monster.common.util.MicroUtils;
 import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.UnitUtils;
-import org.monster.decisions.strategy.manage.AirForceManager;
+import org.monster.strategy.manage.AirForceManager;
 
 import java.util.HashMap;
 import java.util.Map;

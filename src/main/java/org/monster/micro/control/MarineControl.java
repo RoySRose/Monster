@@ -16,8 +16,8 @@ import org.monster.common.util.CommandUtils;
 import org.monster.common.util.MicroUtils;
 import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.UnitUtils;
-import org.monster.decisions.strategy.manage.PositionFinder;
-import org.monster.decisions.strategy.manage.PositionFinder.CampType;
+import org.monster.strategy.manage.PositionFinder;
+import org.monster.strategy.manage.PositionFinder.CampType;
 import org.monster.micro.KitingOption;
 
 import java.util.Collection;

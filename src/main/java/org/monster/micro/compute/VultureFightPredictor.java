@@ -9,7 +9,7 @@ import org.monster.common.UnitInfo;
 import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.UnitUtils;
 import org.monster.common.util.UpgradeUtils;
-import org.monster.decisions.constant.StrategyCode;
+import org.monster.strategy.constant.StrategyCode;
 
 import java.util.Collection;
 import java.util.HashMap;

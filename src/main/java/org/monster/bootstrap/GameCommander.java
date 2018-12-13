@@ -19,7 +19,7 @@ import org.monster.debugger.PreBotUXManager;
 import org.monster.debugger.UXManager;
 import org.monster.debugger.chat.ChatBot;
 import org.monster.decisions.DecisionManager;
-import org.monster.decisions.strategy.StrategyManager;
+import org.monster.strategy.StrategyManager;
 import org.monster.finder.LocationManager;
 import org.monster.micro.CombatManager;
 import org.monster.worker.WorkerManager;
@@ -78,7 +78,6 @@ public class GameCommander {
     }
 
     public void onEnd(boolean isWinner) {
-        StrategyManager.Instance().onEnd(isWinner);
     }
 
     /// player가 게임을 진행할 수 없으면 true를 반환

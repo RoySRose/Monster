@@ -10,7 +10,6 @@ import org.monster.common.util.BaseUtils;
 import org.monster.common.util.CommandUtils;
 import org.monster.common.util.MapUtils;
 import org.monster.common.util.PlayerUtils;
-import org.monster.micro.Minerals;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,12 +23,9 @@ public class WorkerData {
     //CC에 배정된 일꾼 수
     public static Map<Integer, Integer> depotWorkerCount = new HashMap<Integer, Integer>();
 
-    ;
-    //수리중인 일꾼
     //CC에 배정된 미네랄 리스트(미네랄 트릭 위해)
     public static Map<Unit, List<Minerals>> depotMineral = new HashMap<Unit, List<Minerals>>();
 
-    ;
     /// 일꾼 목록
     public ArrayList<Unit> workers = new ArrayList<Unit>();
     //Gas 에 배정된 일꾼 수
