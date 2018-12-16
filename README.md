@@ -7,6 +7,19 @@ Monster bot is a Starcraft AI Bot playing with Zerg.
 - BWMirror_v2_5.jar(maybe with v2.6), going to be change to BWAPI4j in the future
 - Windows 7 or higher
 
+## Commit Rules
+
+commit 내용은 영어로 기입하는것으로 합니다.
+일반 형식을 따를 시 해당 issue에 해당 커밋이 표기 됩니다.
+
+#### 일반 형식
+[#issue number] commit 내용 
+
+#### issue 번호가 없을시 
+[#noissue] commit 내용
+
+예) [#25] finder refactoring
+
 ## Using Git
 
 - Git 사용시 Merge 대신 Rebase 사용.  
