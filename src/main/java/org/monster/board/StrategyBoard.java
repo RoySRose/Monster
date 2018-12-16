@@ -26,11 +26,6 @@ public class StrategyBoard {
         return instance;
     }
 
-    // [적 전략 및 빌드매니저 대응 정보]
-    // 빌드매니저: 초반빌드, 마린수, 팩토리유닛비율, 업그레이드순서, 애드온 타이밍 등의 정보를 사용
-    // 컴뱃매니저: 상대 전략에 따른 마이크로 변화 (TBD)
-    // - watcher : 전략에 따라 벌처의 MinePositionLevel이 변경된다.
-    // - barrack : 입구봉쇄, 위치 변경 등
     public static EnemyStrategy startStrategy = EnemyStrategy.UNKNOWN;
     public static EnemyStrategy currentStrategy = EnemyStrategy.UNKNOWN;
     public static List<EnemyStrategy> strategyHistory = new ArrayList<>();
@@ -42,18 +37,8 @@ public class StrategyBoard {
     public static EnemyStrategyOptions.ExpansionOption expansionOption = null;
     public static EnemyStrategyOptions.BuildTimeMap buildTimeMap = new EnemyStrategyOptions.BuildTimeMap();
 
-    //expand여부
-    public static boolean expandExpansion;
-
-
     public static int wraithCount = 0;
     public static int valkyrieCount = 0;
-
-
-    // 벙커가 필요한 frame (bunkerBuildStartFrame 이전에는 벙커를 짓지 않는다.)
-//	public static int bunkerNeedFrame = CommonCode.INT_MAX;
-//	public static int bunkerBuildStartFrame = CommonCode.INT_MAX;
-//	public static RegionType bunkerRegionType = RegionType.MY_BASE;
 
     // 터렛이 필요한 frame (turretBuildStartFrame 이전에는 터렛을 짓지 않는다.)
     public static int turretNeedFrame = TimeUtils.timeToFrames(13, 0);
@@ -61,13 +46,7 @@ public class StrategyBoard {
     public static int engineeringBayBuildStartFrame = TimeUtils.timeToFrames(13, 0);
     public static int academyFrame = TimeUtils.timeToFrames(13, 0);
 
-//	public static List<RegionType> turretRegionType = new ArrayList<>();
-
     public static boolean EXOK = false; // 앞마당 커맨드가 제자리에 안착했는지 여부
-
-    // 적 전략 특이사항
-    public static boolean gasRushed = false;
-    public static boolean photonRushed = false;
 
     // [적군 위치에 따른 상태 파악]
     // 빌드매니저: COMMING, IN_MY_REGION인 경우 벌처, 팩토리가 없는 경우 마린을 우선적으로 추가 생산한다.
@@ -116,8 +95,6 @@ public class StrategyBoard {
 
     // [정찰SCV 할당]
     public static boolean assignScoutScv = false;
-
-
 
     /**
      * Strategy for Monster

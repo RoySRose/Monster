@@ -133,9 +133,9 @@ public class BuildManager extends GameManager {
                                     logger.debug(" desiredPosition " + desiredPosition.getX() + "," + desiredPosition.getY());
 
                                 if (t.getUnitType() == UnitType.Terran_Supply_Depot || t.getUnitType() == UnitType.Terran_Academy || t.getUnitType() == UnitType.Terran_Armory) {
-                                    desiredPosition = getDesiredPosition(t.getUnitType(), TilePosition.None, BuildOrderItem.SeedPositionStrategy.NextSupplePoint);
+                                    desiredPosition = getDesiredPosition(t.getUnitType(), TilePosition.None, SeedPositionStrategy.NextSupplePoint);
                                 } else {
-                                    desiredPosition = getDesiredPosition(t.getUnitType(), TilePosition.None, BuildOrderItem.SeedPositionStrategy.MainBaseLocation);
+                                    desiredPosition = getDesiredPosition(t.getUnitType(), TilePosition.None, SeedPositionStrategy.MainBaseLocation);
                                 }
 
                                 if (desiredPosition != TilePosition.None) {
@@ -278,7 +278,7 @@ public class BuildManager extends GameManager {
         return canMake;
     }
 
-    public TilePosition getDesiredPosition(UnitType unitType, TilePosition seedPosition, BuildOrderItem.SeedPositionStrategy seedPositionStrategy) {
+    public TilePosition getDesiredPosition(UnitType unitType, TilePosition seedPosition, SeedPositionStrategy seedPositionStrategy) {
         TilePosition desiredPosition = null;
 
         mainBaseLocationFull = false;
@@ -291,32 +291,32 @@ public class BuildManager extends GameManager {
         int count = 0;
         while (count < 15) {
             count++;
-            if (seedPositionStrategy == BuildOrderItem.SeedPositionStrategy.MainBaseLocation) {
+            if (seedPositionStrategy == SeedPositionStrategy.MainBaseLocation) {
                 if (mainBaseLocationFull) {
-                    seedPositionStrategy = BuildOrderItem.SeedPositionStrategy.SecondChokePoint;
+                    seedPositionStrategy = SeedPositionStrategy.SecondChokePoint;
                 }
-            } else if (seedPositionStrategy == BuildOrderItem.SeedPositionStrategy.FirstChokePoint) {
+            } else if (seedPositionStrategy == SeedPositionStrategy.FirstChokePoint) {
                 if (firstChokePointFull) {
-                    seedPositionStrategy = BuildOrderItem.SeedPositionStrategy.SecondChokePoint;
+                    seedPositionStrategy = SeedPositionStrategy.SecondChokePoint;
                 }
-            } else if (seedPositionStrategy == BuildOrderItem.SeedPositionStrategy.FirstExpansionLocation) {
+            } else if (seedPositionStrategy == SeedPositionStrategy.FirstExpansionLocation) {
                 if (firstExpansionLocationFull) {
-                    seedPositionStrategy = BuildOrderItem.SeedPositionStrategy.SecondChokePoint;
+                    seedPositionStrategy = SeedPositionStrategy.SecondChokePoint;
                 }
-            } else if (seedPositionStrategy == BuildOrderItem.SeedPositionStrategy.NextSupplePoint) {
+            } else if (seedPositionStrategy == SeedPositionStrategy.NextSupplePoint) {
                 if (fisrtSupplePointFull) {
-                    seedPositionStrategy = BuildOrderItem.SeedPositionStrategy.MainBaseLocation;
+                    seedPositionStrategy = SeedPositionStrategy.MainBaseLocation;
                 }
             }
 
-            if (seedPositionStrategy == BuildOrderItem.SeedPositionStrategy.SecondChokePoint) {
+            if (seedPositionStrategy == SeedPositionStrategy.SecondChokePoint) {
                 if (secondChokePointFull) {
-                    seedPositionStrategy = BuildOrderItem.SeedPositionStrategy.SecondMainBaseLocation;
+                    seedPositionStrategy = SeedPositionStrategy.SecondMainBaseLocation;
                 }
             }
-            if (seedPositionStrategy == BuildOrderItem.SeedPositionStrategy.SecondMainBaseLocation) {
+            if (seedPositionStrategy == SeedPositionStrategy.SecondMainBaseLocation) {
                 if (secondStartLocationFull) {
-                    seedPositionStrategy = BuildOrderItem.SeedPositionStrategy.LastBuilingPoint;
+                    seedPositionStrategy = SeedPositionStrategy.LastBuilingPoint;
                 }
             }
 
@@ -329,25 +329,25 @@ public class BuildManager extends GameManager {
                 }
 
                 if (unitType == UnitType.Terran_Supply_Depot || unitType == UnitType.Terran_Academy || unitType == UnitType.Terran_Armory) {
-                    if (seedPositionStrategy == BuildOrderItem.SeedPositionStrategy.MainBaseLocation) {
+                    if (seedPositionStrategy == SeedPositionStrategy.MainBaseLocation) {
 
-                        seedPositionStrategy = BuildOrderItem.SeedPositionStrategy.SecondMainBaseLocation;
-                    } else if (seedPositionStrategy == BuildOrderItem.SeedPositionStrategy.SecondMainBaseLocation) {
+                        seedPositionStrategy = SeedPositionStrategy.SecondMainBaseLocation;
+                    } else if (seedPositionStrategy == SeedPositionStrategy.SecondMainBaseLocation) {
                         break;
                     }
                 }
-                if (seedPositionStrategy == BuildOrderItem.SeedPositionStrategy.SeedPositionSpecified) {
+                if (seedPositionStrategy == SeedPositionStrategy.SeedPositionSpecified) {
                     logger.debug("Fixed seedPosition out");
                     break;
                 }
-                if (seedPositionStrategy == BuildOrderItem.SeedPositionStrategy.getLastBuilingFinalLocation) {
+                if (seedPositionStrategy == SeedPositionStrategy.getLastBuilingFinalLocation) {
                     logger.debug("LastFinal seedPosition out, should not happen!!!!!!");
                     break;
                 }
-                if (seedPositionStrategy == BuildOrderItem.SeedPositionStrategy.LastBuilingPoint) {
-                    seedPositionStrategy = BuildOrderItem.SeedPositionStrategy.getLastBuilingFinalLocation;
+                if (seedPositionStrategy == SeedPositionStrategy.LastBuilingPoint) {
+                    seedPositionStrategy = SeedPositionStrategy.getLastBuilingFinalLocation;
                 }
-                if (seedPositionStrategy == BuildOrderItem.SeedPositionStrategy.NextExpansionPoint) {
+                if (seedPositionStrategy == SeedPositionStrategy.NextExpansionPoint) {
                     logger.debug("No Place for Command CENTER_POS. wait or no construct");
                     break;
                 }
@@ -380,7 +380,7 @@ public class BuildManager extends GameManager {
     }
 
     /// seedPositionStrategy 을 현재 게임상황에 맞게 seedPosition 으로 바꾸어 리턴합니다
-    private Position getSeedPositionFromSeedLocationStrategy(BuildOrderItem.SeedPositionStrategy seedLocationStrategy) {
+    private Position getSeedPositionFromSeedLocationStrategy(SeedPositionStrategy seedLocationStrategy) {
         Position seedPosition = null;
         Chokepoint tempChokePoint;
         BaseLocation tempBaseLocation;
@@ -714,7 +714,7 @@ public class BuildManager extends GameManager {
 
 //                  //Creep 이 해당 지역 주위에 Hatchery나 Creep Colony 등을 통해 먼저 지어져야 하는데, 해당 지역 주위에 지어지지 않고 있으면 dead lock
                     if (!isDeadlockCase && unitType.isBuilding() && unitType.requiresCreep()
-                            && currentItem.seedLocationStrategy == BuildOrderItem.SeedPositionStrategy.SeedPositionSpecified) {
+                            && currentItem.seedLocationStrategy == SeedPositionStrategy.SeedPositionSpecified) {
                         boolean hasFoundCreepGenerator = false;
                         List<Unit> ourUnits = UnitUtils.getUnitsInRadius(currentItem.seedLocation.toPosition(), 4 * Config.TILE_SIZE);
 

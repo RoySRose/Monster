@@ -6,6 +6,7 @@ import org.monster.build.base.BuildManager;
 import org.monster.build.base.BuildOrderItem;
 import org.monster.build.base.BuildOrderQueue;
 import org.monster.build.base.ConstructionManager;
+import org.monster.build.base.SeedPositionStrategy;
 import org.monster.build.provider.DefaultBuildableItem;
 import org.monster.common.MetaType;
 import org.monster.common.util.PlayerUtils;
@@ -162,7 +163,7 @@ public class BuilderSupplyDepot extends DefaultBuildableItem {
 
             if (currentSupplyShortage > onBuildingSupplyCount) {
                 setHighPriority(true);
-                setSeedPositionStrategy(BuildOrderItem.SeedPositionStrategy.NextSupplePoint);
+                setSeedPositionStrategy(SeedPositionStrategy.NextSupplePoint);
                 //this.setSeedPositionStrategy(BuildOrderItem.SeedPositionStrategy.NextSupplePoint);
                 //System.out.println("return supply true");
                 return true;

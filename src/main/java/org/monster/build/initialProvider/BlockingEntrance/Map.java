@@ -1,5 +1,6 @@
 package org.monster.build.initialProvider.BlockingEntrance;
 
+@Deprecated
 public enum Map {
     UNKNOWN(0),
     OVERWATCH(1),

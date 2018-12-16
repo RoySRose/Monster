@@ -1,5 +1,6 @@
 package org.monster.build.initialProvider.BlockingEntrance;
 
+@Deprecated
 public enum Building {
     START(0),
     FIRST_SUPPLY(1),

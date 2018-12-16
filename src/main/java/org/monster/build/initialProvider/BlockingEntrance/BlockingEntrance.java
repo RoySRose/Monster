@@ -11,7 +11,7 @@ import org.monster.common.util.internal.GameMap;
 
 import java.util.HashMap;
 
-//
+@Deprecated
 public class BlockingEntrance {
 
     public static boolean entranceBlock = true;

@@ -256,20 +256,20 @@ public class BuildOrderQueue {
         queueAsHighestPriority(metaType, blocking, -1);
     }
 
-    public void queueAsHighestPriority(MetaType metaType, BuildOrderItem.SeedPositionStrategy seedPositionStrategy, boolean blocking) {
+    public void queueAsHighestPriority(MetaType metaType, SeedPositionStrategy seedPositionStrategy, boolean blocking) {
         int newPriority = highestPriority + defaultPrioritySpacing;
         queueItem(new BuildOrderItem(metaType, seedPositionStrategy, newPriority, blocking, -1));
     }
 
     public void queueAsHighestPriority(MetaType metaType) {
-        queueAsHighestPriority(metaType, BuildOrderItem.SeedPositionStrategy.MainBaseLocation, true);
+        queueAsHighestPriority(metaType, SeedPositionStrategy.MainBaseLocation, true);
     }
 
-    public void queueAsHighestPriority(MetaType metaType, BuildOrderItem.SeedPositionStrategy seedPositionStrategy) {
+    public void queueAsHighestPriority(MetaType metaType, SeedPositionStrategy seedPositionStrategy) {
         queueAsHighestPriority(metaType, seedPositionStrategy, true);
     }
 
-    public void queueAsHighestPriority(UnitType unitType, BuildOrderItem.SeedPositionStrategy seedPositionStrategy, boolean blocking) {
+    public void queueAsHighestPriority(UnitType unitType, SeedPositionStrategy seedPositionStrategy, boolean blocking) {
         int newPriority = highestPriority + defaultPrioritySpacing;
         queueItem(new BuildOrderItem(new MetaType(unitType), seedPositionStrategy, newPriority, blocking, -1));
     }
@@ -327,20 +327,20 @@ public class BuildOrderQueue {
         queueAsLowestPriority(metaType, blocking, -1);
     }
 
-    public void queueAsLowestPriority(MetaType metaType, BuildOrderItem.SeedPositionStrategy seedPositionStrategy, boolean blocking) {
+    public void queueAsLowestPriority(MetaType metaType, SeedPositionStrategy seedPositionStrategy, boolean blocking) {
         queueItem(new BuildOrderItem(metaType, seedPositionStrategy, 0, blocking, -1));
     }
 
-    public void queueAsLowestPriority(UnitType unitType, BuildOrderItem.SeedPositionStrategy seedPositionStrategy, boolean blocking) {
+    public void queueAsLowestPriority(UnitType unitType, SeedPositionStrategy seedPositionStrategy, boolean blocking) {
         queueItem(new BuildOrderItem(new MetaType(unitType), seedPositionStrategy, 0, blocking, -1));
     }
 
-    public void queueAsLowestPriority(UnitType unitType, BuildOrderItem.SeedPositionStrategy seedPositionStrategy) {
+    public void queueAsLowestPriority(UnitType unitType, SeedPositionStrategy seedPositionStrategy) {
         queueAsLowestPriority(unitType, seedPositionStrategy, true);
     }
 
     public void queueAsLowestPriority(UnitType unitType) {
-        queueAsLowestPriority(unitType, BuildOrderItem.SeedPositionStrategy.MainBaseLocation, true);
+        queueAsLowestPriority(unitType, SeedPositionStrategy.MainBaseLocation, true);
     }
 
     public void queueAsLowestPriority(MetaType metaType, TilePosition seedPosition, boolean blocking) {
