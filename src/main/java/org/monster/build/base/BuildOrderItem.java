@@ -13,9 +13,6 @@ public class BuildOrderItem {
     public int producerID;                ///< producer unitID (건물ID, 유닛ID)
     public SeedPositionStrategy seedLocationStrategy;    ///< 건설위치 초안 결정 정책
 
-    ;
-
-    /// 건설 위치는 SeedPositionStrategy::MainBaseLocation 을 통해 찾는다
     /// @param metaType : 빌드 대상 타입
     /// @param priority : 0 = 가장 낮은 우선순위. 숫자가 클수록 더 높은 우선순위. 큐에 있는 아이템들 중에서 가장 높은 우선순위의 아이템 (우선순위가 높으면 먼저 큐에 넣은 것)이 먼저 생산 진행됨.
     /// @param blocking : true = 지금 이것을 생산할 수 없으면, 이것 생산 가능해질때까지 기다림.  false = 지금 이것을 생산을 할 수 없으면 다음것 먼저 생산 실행.
@@ -26,7 +23,7 @@ public class BuildOrderItem {
         this.blocking = blocking;
         this.producerID = producerID;
         this.seedLocation = TilePosition.None;
-        this.seedLocationStrategy = BuildOrderItem.SeedPositionStrategy.MainBaseLocation;
+        this.seedLocationStrategy = SeedPositionStrategy.MainBaseLocation;
     }
 
     public BuildOrderItem(MetaType metaType, int priority, boolean blocking) {
@@ -48,7 +45,7 @@ public class BuildOrderItem {
         this.blocking = blocking;
         this.producerID = producerID;
         this.seedLocation = seedLocation;
-        this.seedLocationStrategy = BuildOrderItem.SeedPositionStrategy.SeedPositionSpecified;
+        this.seedLocationStrategy = SeedPositionStrategy.SeedPositionSpecified;
     }
 
     public BuildOrderItem(MetaType metaType, TilePosition seedLocation) {
@@ -60,7 +57,7 @@ public class BuildOrderItem {
     }
 
     /// 건설 위치를 seedPositionStrategy 를 이용해서 찾는다. 못찾을 경우, 다른 SeedPositionStrategy 로 계속 찾는다
-    public BuildOrderItem(MetaType metaType, BuildOrderItem.SeedPositionStrategy seedPositionStrategy, int priority, boolean blocking, int producerID) {
+    public BuildOrderItem(MetaType metaType, SeedPositionStrategy seedPositionStrategy, int priority, boolean blocking, int producerID) {
         this.metaType = metaType;
         this.priority = priority;
         this.blocking = blocking;
@@ -69,11 +66,11 @@ public class BuildOrderItem {
         this.seedLocationStrategy = seedPositionStrategy;
     }
 
-    public BuildOrderItem(MetaType metaType, BuildOrderItem.SeedPositionStrategy seedPositionStrategy) {
+    public BuildOrderItem(MetaType metaType, SeedPositionStrategy seedPositionStrategy) {
         this(metaType, seedPositionStrategy, 0, true, -1);
     }
 
-    public BuildOrderItem(MetaType metaType, BuildOrderItem.SeedPositionStrategy seedPositionStrategy, int priority) {
+    public BuildOrderItem(MetaType metaType, SeedPositionStrategy seedPositionStrategy, int priority) {
         this(metaType, seedPositionStrategy, priority, true, -1);
     }
 
@@ -103,25 +100,6 @@ public class BuildOrderItem {
         }
 
         return false;
-    }
-
-    /// 건설위치 초안 결정 정책
-    /// 향후 적진 길목, 언덕 위 등 추가
-    public enum SeedPositionStrategy {
-        NoLocation,                 /// < Default
-        MainBaseLocation,            ///< 아군 베이스
-        SecondMainBaseLocation,        ///< My 2nd Base
-        MainBaseBackYard,            ///< 아군 베이스 뒷편
-        FirstChokePoint,            ///< 아군 첫번째 길목
-        FirstExpansionLocation,        ///< 아군 첫번째 앞마당
-        SecondChokePoint,            ///< 아군 두번째 길목
-        SeedPositionSpecified,        ///< 별도 지정 위치
-        NextExpansionPoint,            ///< 다음 멀티 위치
-        NextSupplePoint,            ///< 다음 서플 위치
-        LastBuilingPoint,            ///< 최종 건물 위치
-        FreeSpaceUsing,                ///< 남는 여백 활용
-        //LastBuilingPoint2,			///< 최종 건물 위치
-        getLastBuilingFinalLocation ///< 완전 더이상 없다
     }
 
 }

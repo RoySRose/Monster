@@ -4,7 +4,7 @@ import bwapi.TilePosition;
 import bwapi.Unit;
 import bwapi.UnitType;
 import org.monster.build.base.BuildManager;
-import org.monster.build.base.BuildOrderItem;
+import org.monster.build.base.SeedPositionStrategy;
 import org.monster.common.MetaType;
 import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.UnitUtils;
@@ -21,7 +21,7 @@ public abstract class DefaultBuildableItem implements BuildableItem {
     private int recoverItemCount = -1;
 
     public DefaultBuildableItem(MetaType metaType) {
-        buildCondition = new BuildCondition(false, false, BuildOrderItem.SeedPositionStrategy.NoLocation, TilePosition.None);
+        buildCondition = new BuildCondition(false, false, SeedPositionStrategy.NoLocation, TilePosition.None);
 //    	buildCondition = new BuildCondition(false, false, BuildOrderItem.SeedPositionStrategy.MainBaseLocation, TilePosition.None);
         this.metaType = metaType;
         //setProducerOfUnit();
@@ -42,7 +42,7 @@ public abstract class DefaultBuildableItem implements BuildableItem {
         this.buildCondition.highPriority = highPriority;
     }
 
-    public final void setSeedPositionStrategy(BuildOrderItem.SeedPositionStrategy seedPositionStrategy) {
+    public final void setSeedPositionStrategy(SeedPositionStrategy seedPositionStrategy) {
         this.buildCondition.seedPositionStrategy = seedPositionStrategy;
     }
 
@@ -57,7 +57,7 @@ public abstract class DefaultBuildableItem implements BuildableItem {
 
     private final void build() {
         if (!metaType.isUnit() &&
-                (buildCondition.seedPositionStrategy != BuildOrderItem.SeedPositionStrategy.NoLocation
+                (buildCondition.seedPositionStrategy != SeedPositionStrategy.NoLocation
                         || buildCondition.tilePosition != TilePosition.None)) {
             System.out.println("Only UnitType can have position attribute");
         }
@@ -73,7 +73,7 @@ public abstract class DefaultBuildableItem implements BuildableItem {
 
     private final void setBuildQueue() {
         if (buildCondition.highPriority) {
-            if (buildCondition.seedPositionStrategy != BuildOrderItem.SeedPositionStrategy.NoLocation) {
+            if (buildCondition.seedPositionStrategy != SeedPositionStrategy.NoLocation) {
                 BuildManager.Instance().buildQueue.queueAsHighestPriority(metaType, buildCondition.seedPositionStrategy, buildCondition.blocking);
             } else if (buildCondition.tilePosition != TilePosition.None) {
                 BuildManager.Instance().buildQueue.queueAsHighestPriority(metaType, buildCondition.tilePosition, buildCondition.blocking);
@@ -81,7 +81,7 @@ public abstract class DefaultBuildableItem implements BuildableItem {
                 BuildManager.Instance().buildQueue.queueAsHighestPriority(metaType, buildCondition.blocking);
             }
         } else {
-            if (buildCondition.seedPositionStrategy != BuildOrderItem.SeedPositionStrategy.NoLocation) {
+            if (buildCondition.seedPositionStrategy != SeedPositionStrategy.NoLocation) {
                 BuildManager.Instance().buildQueue.queueAsLowestPriority(metaType, buildCondition.seedPositionStrategy, buildCondition.blocking);
             } else if (buildCondition.tilePosition != TilePosition.None) {
                 BuildManager.Instance().buildQueue.queueAsLowestPriority(metaType, buildCondition.tilePosition, buildCondition.blocking);
@@ -126,7 +126,7 @@ public abstract class DefaultBuildableItem implements BuildableItem {
     private final void setDefaultConditions() {
         this.buildCondition.blocking = false;
         this.buildCondition.highPriority = false;
-        this.buildCondition.seedPositionStrategy = BuildOrderItem.SeedPositionStrategy.NoLocation;
+        this.buildCondition.seedPositionStrategy = SeedPositionStrategy.NoLocation;
 //        this.buildCondition.seedPositionStrategy = BuildOrderItem.SeedPositionStrategy.MainBaseLocation;
         this.buildCondition.tilePosition = TilePosition.None;
     }

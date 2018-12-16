@@ -1,5 +1,6 @@
 package org.monster.build.initialProvider.BlockingEntrance;
 
+@Deprecated
 public enum Location {
     START(0),
     One(1),

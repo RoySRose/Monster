@@ -195,7 +195,7 @@ public class ConstructionManager extends GameManager {
 //                } else if (b.getType().equals(UnitType.Terran_Command_Center)) {
 //                    relocationTilePosition = BuildManager.Instance().getDesiredPosition(b.getType(), TilePosition.None, BuildOrderItem.SeedPositionStrategy.NextExpansionPoint);
 //                } else {
-                relocationTilePosition = BuildManager.Instance().getDesiredPosition(b.getType(), TilePosition.None, BuildOrderItem.SeedPositionStrategy.MainBaseLocation);
+                relocationTilePosition = BuildManager.Instance().getDesiredPosition(b.getType(), TilePosition.None, SeedPositionStrategy.MainBaseLocation);
 //                }
                 if (relocationTilePosition == TilePosition.None) {
                     System.out.println(" relocationTilePosition recalculate desiredPosition None");
@@ -204,7 +204,7 @@ public class ConstructionManager extends GameManager {
                 } else {
                     for (BaseLocation baseLocation : BWTA.getBaseLocations()) {
                         if (TilePositionUtils.equals(relocationTilePosition, baseLocation.getTilePosition())) {
-                            relocationTilePosition = BuildManager.Instance().getDesiredPosition(b.getType(), relocationTilePosition, BuildOrderItem.SeedPositionStrategy.NoLocation);
+                            relocationTilePosition = BuildManager.Instance().getDesiredPosition(b.getType(), relocationTilePosition, SeedPositionStrategy.NoLocation);
                             break;
                         }
                     }
