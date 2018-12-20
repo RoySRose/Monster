@@ -1,11 +1,10 @@
 package org.monster.micro;
 
-import bwapi.Race;
-import bwapi.Unit;
-import bwapi.UnitType;
-import bwta.BWTA;
-import bwta.BaseLocation;
-import bwta.Region;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.monster.board.StrategyBoard;
 import org.monster.bootstrap.GameManager;
 import org.monster.common.LagObserver;
@@ -20,8 +19,6 @@ import org.monster.common.util.TimeUtils;
 import org.monster.common.util.UnitUtils;
 import org.monster.common.util.internal.IConditions;
 import org.monster.debugger.BigWatch;
-import org.monster.strategy.manage.PositionFinder;
-import org.monster.strategy.manage.VultureTravelManager;
 import org.monster.micro.compute.GuerillaScore;
 import org.monster.micro.compute.VultureFightPredictor;
 import org.monster.micro.constant.MicroConfig;
@@ -31,14 +28,19 @@ import org.monster.micro.squad.MultiDefenseSquad;
 import org.monster.micro.squad.ScvScoutSquad;
 import org.monster.micro.squad.Squad;
 import org.monster.micro.targeting.TargetFilter;
+import org.monster.strategy.manage.PositionFinder;
+import org.monster.strategy.manage.VultureTravelManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import bwapi.Race;
+import bwapi.Unit;
+import bwapi.UnitType;
+import bwta.BWTA;
+import bwta.BaseLocation;
+import bwta.Region;
 
+@Deprecated
 public class CombatManager extends GameManager {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
