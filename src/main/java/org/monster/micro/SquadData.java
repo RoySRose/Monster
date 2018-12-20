@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Deprecated
 public class SquadData {
 
     private Map<String, Squad> squadMap = new HashMap<>(); // 이름별 squad 저장
