@@ -21,7 +21,7 @@ import org.monster.debugger.chat.ChatBot;
 import org.monster.decisions.DecisionManager;
 import org.monster.strategy.StrategyManager;
 import org.monster.finder.LocationManager;
-import org.monster.oldmicro.CombatManager;
+import org.monster.micro.CombatManager;
 import org.monster.worker.WorkerManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,8 +66,6 @@ public class GameCommander {
             DecisionManager.Instance().onStart();
             LocationManager.Instance().onStart();
             //AttackDecisionMaker.Instance().onStart();
-
-            CombatManager.Instance().onStart();
 
             UXManager.Instance().onStart(Broodwar);
             PreBotUXManager.Instance().onStart(Broodwar);
