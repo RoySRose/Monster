@@ -22,10 +22,10 @@ import org.monster.common.util.internal.IConditions;
 import org.monster.common.util.internal.SpecificValueCache;
 import org.monster.strategy.constant.StrategyConfig;
 import org.monster.strategy.manage.PositionFinder;
-import org.monster.micro.CombatManager;
-import org.monster.micro.constant.MicroConfig;
-import org.monster.micro.squad.Squad;
-import org.monster.micro.targeting.TargetFilter;
+import org.monster.oldmicro.CombatManager;
+import org.monster.oldmicro.constant.MicroConfig;
+import org.monster.oldmicro.squad.Squad;
+import org.monster.oldmicro.targeting.TargetFilter;
 import org.monster.worker.WorkerManager;
 
 import java.util.ArrayList;

@@ -6,12 +6,12 @@ import bwta.Chokepoint;
 import org.monster.common.MetaType;
 import org.monster.common.constant.CommonCode;
 import org.monster.common.util.TimeUtils;
+import org.monster.oldmicro.constant.MicroConfig;
 import org.monster.strategy.constant.EnemyStrategy;
 import org.monster.strategy.constant.EnemyStrategyOptions;
 import org.monster.strategy.constant.StrategyCode;
 import org.monster.strategy.manage.PositionFinder;
 import org.monster.strategy.manage.SpiderMineManger;
-import org.monster.micro.constant.MicroConfig;
 
 import java.util.ArrayList;
 import java.util.HashMap;

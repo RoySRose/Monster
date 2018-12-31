@@ -16,7 +16,7 @@ public class CommandUtils {
     }
 
     public static void attackMove(Unit unit, Position targetPosition) {
-        if (validCommand(unit, targetPosition, UnitCommandType.Attack_Move, true, true)) {
+        if (validCommand(unit, targetPosition, UnitCommandType.Attack_Move, true, false)) {
             unit.attack(targetPosition);
         }
     }

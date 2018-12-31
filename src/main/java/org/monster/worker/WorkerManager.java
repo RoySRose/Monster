@@ -17,7 +17,7 @@ import org.monster.common.util.CommandUtils;
 import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.TimeUtils;
 import org.monster.common.util.UnitUtils;
-import org.monster.micro.constant.MicroConfig;
+import org.monster.oldmicro.constant.MicroConfig;
 
 import java.util.List;
 

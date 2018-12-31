@@ -21,7 +21,7 @@ import org.monster.debugger.chat.ChatBot;
 import org.monster.decisions.DecisionManager;
 import org.monster.strategy.StrategyManager;
 import org.monster.finder.LocationManager;
-import org.monster.micro.CombatManager;
+import org.monster.oldmicro.CombatManager;
 import org.monster.worker.WorkerManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

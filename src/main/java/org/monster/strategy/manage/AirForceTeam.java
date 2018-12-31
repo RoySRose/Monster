@@ -9,7 +9,7 @@ import org.monster.common.util.UnitTypeUtils;
 import org.monster.common.util.TimeUtils;
 import org.monster.common.util.UnitUtils;
 import org.monster.common.util.UpgradeUtils;
-import org.monster.micro.constant.MicroConfig;
+import org.monster.oldmicro.constant.MicroConfig;
 
 import java.util.HashMap;
 import java.util.HashSet;

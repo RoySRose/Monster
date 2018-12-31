@@ -30,11 +30,11 @@ import org.monster.common.util.UpgradeUtils;
 import org.monster.common.util.internal.IConditions;
 import org.monster.strategy.constant.EnemyStrategyOptions;
 import org.monster.strategy.constant.StrategyCode;
-import org.monster.micro.CombatManager;
-import org.monster.micro.compute.VultureFightPredictor;
-import org.monster.micro.constant.MicroConfig;
-import org.monster.micro.squad.Squad;
-import org.monster.micro.targeting.TargetFilter;
+import org.monster.oldmicro.CombatManager;
+import org.monster.oldmicro.compute.VultureFightPredictor;
+import org.monster.oldmicro.constant.MicroConfig;
+import org.monster.oldmicro.squad.Squad;
+import org.monster.oldmicro.targeting.TargetFilter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
