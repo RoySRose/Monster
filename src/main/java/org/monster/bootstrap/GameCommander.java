@@ -67,8 +67,6 @@ public class GameCommander {
             LocationManager.Instance().onStart();
             //AttackDecisionMaker.Instance().onStart();
 
-            CombatManager.Instance().onStart();
-
             UXManager.Instance().onStart(Broodwar);
             PreBotUXManager.Instance().onStart(Broodwar);
         } catch (Exception e) {

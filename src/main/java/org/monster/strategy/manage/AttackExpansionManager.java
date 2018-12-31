@@ -8,8 +8,8 @@ import org.monster.common.UnitInfo;
 import org.monster.common.constant.EnemyUnitVisibleStatus;
 import org.monster.common.constant.UnitFindStatus;
 import org.monster.common.util.*;
+import org.monster.oldmicro.constant.MicroConfig;
 import org.monster.strategy.constant.EnemyStrategyOptions;
-import org.monster.micro.constant.MicroConfig;
 import org.monster.worker.WorkerManager;
 
 import java.util.List;

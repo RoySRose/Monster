@@ -19,8 +19,8 @@ import org.monster.common.util.PositionUtils;
 import org.monster.common.util.TimeUtils;
 import org.monster.common.util.UnitTypeUtils;
 import org.monster.common.util.UnitUtils;
-import org.monster.micro.compute.WraithFightPredictor;
-import org.monster.micro.constant.MicroConfig;
+import org.monster.oldmicro.compute.WraithFightPredictor;
+import org.monster.oldmicro.constant.MicroConfig;
 import org.monster.worker.WorkerManager;
 
 import java.util.ArrayList;

@@ -1,18 +1,19 @@
 package org.monster.debugger;
 
 import bwapi.Color;
-import org.monster.micro.squad.CheckerSquad;
-import org.monster.micro.squad.EarlyDefenseSquad;
-import org.monster.micro.squad.GuerillaSquad;
-import org.monster.micro.squad.MainAttackSquad;
-import org.monster.micro.squad.MultiDefenseSquad;
-import org.monster.micro.squad.ScvScoutSquad;
-import org.monster.micro.squad.SpecialSquad;
-import org.monster.micro.squad.Squad;
-import org.monster.micro.squad.WatcherSquad;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import org.monster.oldmicro.squad.CheckerSquad;
+import org.monster.oldmicro.squad.EarlyDefenseSquad;
+import org.monster.oldmicro.squad.GuerillaSquad;
+import org.monster.oldmicro.squad.MainAttackSquad;
+import org.monster.oldmicro.squad.MultiDefenseSquad;
+import org.monster.oldmicro.squad.ScvScoutSquad;
+import org.monster.oldmicro.squad.SpecialSquad;
+import org.monster.oldmicro.squad.Squad;
+import org.monster.oldmicro.squad.WatcherSquad;
 
 public class UxColor {
 

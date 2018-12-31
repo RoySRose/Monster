@@ -26,8 +26,8 @@ import org.monster.common.util.UnitUtils;
 import org.monster.common.util.internal.GameMap;
 import org.monster.common.util.internal.IConditions;
 import org.monster.strategy.constant.EnemyStrategyOptions;
-import org.monster.micro.PositionReserveInfo;
-import org.monster.micro.constant.MicroConfig;
+import org.monster.oldmicro.PositionReserveInfo;
+import org.monster.oldmicro.constant.MicroConfig;
 
 import java.util.ArrayList;
 import java.util.HashMap;

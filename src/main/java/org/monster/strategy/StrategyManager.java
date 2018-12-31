@@ -7,7 +7,7 @@ import org.monster.board.StrategyBoard;
 import org.monster.bootstrap.GameManager;
 import org.monster.common.util.BaseUtils;
 import org.monster.common.util.UnitUtils;
-import org.monster.micro.constant.MicroConfig;
+import org.monster.oldmicro.constant.MicroConfig;
 import org.monster.strategy.manage.EnemyStrategyAnalyzer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
