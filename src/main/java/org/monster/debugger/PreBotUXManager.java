@@ -116,7 +116,7 @@ public class PreBotUXManager {
 		initDisplay1();
 	}
 
-	public void onStart(Game Broodwar) throws ClassNotFoundException, NoSuchFieldException, SecurityException, NoSuchMethodException {
+	public void onStart(Game Broodwar){
     	for (int i = 0; i<drawStrategyListOrigin.length; i++) {
     		drawStrategyListOrigin[i] = new ArrayList<UxDrawConfig>();
 		}
@@ -162,10 +162,10 @@ public class PreBotUXManager {
 	public int option = 0;
 
 	public void update() {
-		
 		if(player.getName().equals("staeminba")){
 			getSMDisplay();
 		}
+		getSMDisplay();
 
 	}
 	
@@ -346,11 +346,9 @@ public class PreBotUXManager {
 	    }
 
 	    // 게임 개요 정보를 Screen 에 표시합니다
-	    public void drawGameInformationOnScreen(int x, int y) {
+	    public void drawGameInformationOnScreen() {
 	        uxDrawConfig = UxDrawConfig.newInstanceObjectType("L","Current Strategy",StrategyBoard.currentStrategy.name(),UxColor.CHAR_WHITE);
 	    	drawStrategyLeftList.add(uxDrawConfig);
-
-	        y = 10;
 
 	        String history = "";
 	        for (int i = StrategyBoard.strategyHistory.size() - 1; i >= 0; i--) {
@@ -831,7 +829,7 @@ public class PreBotUXManager {
 	    }
 
 	    /// BuildOrderQueue 를 Screen 에 표시합니다
-	    public void drawBuildOrderQueueOnScreen(int x, int y) {
+	    public void drawBuildOrderQueueOnScreen() {
 	        char initialFinishedColor;
 
 	        Deque<BuildOrderItem> buildQueue = BuildManager.Instance().buildQueue.getQueue();
@@ -851,7 +849,7 @@ public class PreBotUXManager {
 	    }
 
 	    /// Build 진행 상태를 Screen 에 표시합니다
-	    public void drawBuildStatusOnScreen(int x, int y)  {
+	    public void drawBuildStatusOnScreen()  {
 	        // 건설 / 훈련 중인 유닛 진행상황 표시
 	        Vector<Unit> unitsUnderConstruction = new Vector<Unit>();
 	        for (Unit unit : Broodwar.self().getUnits()) {
@@ -877,7 +875,6 @@ public class PreBotUXManager {
 	        int reps = unitsUnderConstruction.size() < 10 ? unitsUnderConstruction.size() : 10;
 
 	        for (Unit unit : unitsUnderConstruction) {
-	            y += 10;
 	            UnitType t = unit.getType();
 	            if (t == UnitType.Zerg_Egg) {
 	                t = unit.getBuildType();
@@ -1660,7 +1657,7 @@ public class PreBotUXManager {
 ////			radius1 + turretCount * 15
 
 	    }
-	    private void addDrawStrategyListOrigin() throws IllegalArgumentException, IllegalAccessException{
+	    private void addDrawStrategyListOrigin() throws IllegalArgumentException, IllegalAccessException, ClassNotFoundException{
 			// TODO Auto-generated method stub
 	    	if(!drawStrategyListOrigin[uxOption].isEmpty()){
 	    		UxDrawConfig uxDrawConfig;
@@ -1671,14 +1668,14 @@ public class PreBotUXManager {
 	    				Field fld = null;
 	    				try{
 	    					fld = c.getDeclaredField(drwaConfig.getValue());
-	    					if (!fld.isAccessible()) fld.setAccessible(true);
-	    					fld.get(drwaConfig.getValue());
-
-
+	    					if (!fld.isAccessible()) {
+	    						fld.setAccessible(true);
+	    					}
 	    				} catch (Exception e) {
+	    					System.out.println(e.getMessage());
 	    					continue;
 	    				}
-		        		uxDrawConfig = UxDrawConfig.newInstanceObjectType(fld.getName(),fld.get(c).toString(),drwaConfig.getColor());
+		        		uxDrawConfig = UxDrawConfig.newInstanceObjectType(fld.getName(),fld.get(drwaConfig.getValue()),drwaConfig.getColor());
 		        		uxDrawConfig.setPos(drwaConfig.getPos());
 		        		if(drwaConfig.getPos() == UxDrawConfig.posMap.get("L")){
 		        			drawStrategyLeftList.add(uxDrawConfig);
@@ -1748,7 +1745,7 @@ public class PreBotUXManager {
 	    /*
 	     * 사용자 별 화면 */
 	    
-	    public void getSMDisplay(){
+	    public void getSMDisplay() {
 			if (uxOption == 0) {
 				clearList();
 				drawDebugginUxMenu();
@@ -1759,10 +1756,10 @@ public class PreBotUXManager {
                 // 미네랄PATH
             } else if (uxOption == 2) {
             	 clearList();
-            	 drawGameInformationOnScreen(5, 5);
+            	 drawGameInformationOnScreen();
                  drawBWTAResultOnMap();
-                 drawBuildOrderQueueOnScreen(500, 50);
-                 drawBuildStatusOnScreen(370, 50);
+                 drawBuildOrderQueueOnScreen();
+                 drawBuildStatusOnScreen();
                  drawReservedBuildingTilesOnMap();
                  drawTilesToAvoidOnMap();
                  drawWorkerMiningStatusOnMap();
@@ -1819,13 +1816,20 @@ public class PreBotUXManager {
             drawPathData();
             drawSquadUnitTagMap();
             
-            addDrawStrategyListOrigin();	            
+			try {
+				addDrawStrategyListOrigin();
+			} catch (IllegalArgumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
             drawStrategyList();
 
             clearDecisionListForUx();
 	    }
-		public void getJwDisplay() throws Exception {
-		}
-
-
 	}
