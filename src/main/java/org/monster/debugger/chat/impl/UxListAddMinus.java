@@ -23,7 +23,7 @@ public class UxListAddMinus extends ChatExecuter {
 			String key = option.split(" ")[2];
 			String value = option.split(" ")[3];
 			
-			UxDrawConfig ux = UxDrawConfig.newInstanceClassType(pos,key,value,UxColor.CHAR_GREEN);
+			UxDrawConfig ux = UxDrawConfig.newInstanceFiledType(pos,key,UxDrawConfig.classMap.get(key.toUpperCase()),value,UxColor.CHAR_GREEN);
 			PreBotUXManager.Instance().drawStrategyListOrigin[PreBotUXManager.Instance().getUxOption()].add(ux);
 		}else if('m' == getType()){
 			for (UxDrawConfig drawList : PreBotUXManager.Instance().drawStrategyListOrigin[PreBotUXManager.Instance().getUxOption()]) {

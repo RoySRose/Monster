@@ -342,35 +342,6 @@ public class UXManager {
         // 아군이 입은 피해 누적값
         currentY += 10;
 
-        // 아군 모든 유닛 숫자 합계
-        //Broodwar.drawTextScreen(x, currentY,  white + " allUnitCount: " + UnitUtils.getUnitCount(UnitType.AllUnits));
-        //currentY += 10;
-
-        // 아군 건설/훈련 완료한 유닛 숫자 합계
-        //Broodwar.drawTextScreen(x, currentY,  white + " completedUnitCount: " + UnitUtils.getCompletedUnitCount(UnitType.AllUnits));
-        //currentY += 10;
-
-        // 아군 건설/훈련중인 유닛 숫자 합계
-        //Broodwar.drawTextScreen(x, currentY,  white + " incompleteUnitCount: " + Broodwar.self().incompleteUnitCount(UnitType.AllUnits));
-        //currentY += 10;
-
-        // 아군 유닛 파괴/사망 숫자 누적값
-        //Broodwar.drawTextScreen(x, currentY,  white + " deadUnitCount: " + Broodwar.self().deadUnitCount(UnitType.AllUnits));
-        //currentY += 10;
-
-        // 상대방 유닛을 파괴/사망 시킨 숫자 누적값
-        //Broodwar.drawTextScreen(x, currentY,  white + " killedUnitCount: " + Broodwar.self().killedUnitCount(UnitType.AllUnits));
-        //currentY += 10;
-
-        //Broodwar.drawTextScreen(x, currentY,  white + " UnitScore: " + Broodwar.self().getUnitScore());
-        //currentY += 10;
-        //Broodwar.drawTextScreen(x, currentY,  white + " RazingScore: " + Broodwar.self().getRazingScore());
-        //currentY += 10;
-        //Broodwar.drawTextScreen(x, currentY,  white + " BuildingScore: " + Broodwar.self().getBuildingScore());
-        //currentY += 10;
-        //Broodwar.drawTextScreen(x, currentY,  white + " KillScore: " + Broodwar.self().getKillScore());
-        //currentY += 10;
-
         // 적군의 UnitType 별 파악된 Unit 숫자를 표시
         Broodwar.drawTextScreen(x, currentY + 20, white + " UNIT NAME");
         Broodwar.drawTextScreen(x + 110, currentY + 20, white + " Created");
@@ -383,64 +354,6 @@ public class UXManager {
 
     /// BWTA 라이브러리에 의한 Map 분석 결과 정보를 Map 에 표시합니다
     public void drawBWTAResultOnMap() {
-		/*//we will iterate through all the base locations, and draw their outlines.
-		// C+ . for (std.set<BWTA.BaseLocation*>.const_iterator i = BWTA.getBaseLocations().begin(); i != BWTA.getBaseLocations().end(); i++)
-		for(BaseLocation baseLocation : BWTA.getBaseLocations())
-		{
-			TilePosition p = baseLocation.getTilePosition();
-			Position c = baseLocation.getPosition();
-
-			//draw outline of Base location 
-			Broodwar.drawBoxMap(p.getX() * 32, p.getY() * 32, p.getX() * 32 + 4 * 32, p.getY() * 32 + 3 * 32, Color.Blue);
-
-			//draw a circle at each mineral patch
-			// C++ : for (BWAPI.Unitset.iterator j = (*i).getStaticMinerals().begin(); j != (*i).getStaticMinerals().end(); j++)
-			for(Unit unit : baseLocation.getStaticMinerals())
-			{
-				Position q = unit.getInitialPosition();
-				Broodwar.drawCircleMap(q.getX(), q.getY(), 30, Color.Cyan);
-			}
-
-			//draw the outlines of vespene geysers
-			// C++ : for (BWAPI.Unitset.iterator j = (*i).getGeysers().begin(); j != (*i).getGeysers().end(); j++)
-			for(Unit unit :baseLocation.getGeysers() )
-			{
-				TilePosition q = unit.getInitialTilePosition();
-				Broodwar.drawBoxMap(q.getX() * 32, q.getY() * 32, q.getX() * 32 + 4 * 32, q.getY() * 32 + 2 * 32, Color.Orange);
-			}
-
-			//if this is an island expansion, draw a yellow circle around the base location
-			if (baseLocation.isIsland())
-			{
-				Broodwar.drawCircleMap(c, 80, Color.Yellow);
-			}
-		}
-
-		//we will iterate through all the regions and draw the polygon outline of it in green.
-		// C++ : for (std.set<BWTA.Region*>.const_iterator r = BWTA.getRegions().begin(); r != BWTA.getRegions().end(); r++)
-		for(Region region : BWTA.getRegions())
-		{
-			Polygon p = region.getPolygon();
-			for (int j = 0; j<p.getPoints().size(); j++)
-			{
-				Position point1 = p.getPoints().get(j);
-				Position point2 = p.getPoints().get((j + 1) % p.getPoints().size());
-				Broodwar.drawLineMap(point1, point2, Color.Green);
-			}
-		}
-
-		//we will visualize the chokepoints with red lines
-		// C++ : for (std.set<BWTA.Region*>.const_iterator r = BWTA.getRegions().begin(); r != BWTA.getRegions().end(); r++)
-		for(Region region : BWTA.getRegions())
-		{
-			// C++ : for (std.set<BWTA.Chokepoint*>.const_iterator c = (*r).getChokepoints().begin(); c != (*r).getChokepoints().end(); c++)
-			for(Chokepoint Chokepoint : region.getChokepoints())
-			{
-				Position point1 = Chokepoint.getSides().first;
-				Position point2 = Chokepoint.getSides().second;
-				Broodwar.drawLineMap(point1, point2, Color.Red);
-			}
-		}*/
         int blueCount = 0;
         int cyanCount = 0;
         int orangeCount = 0;
@@ -608,14 +521,6 @@ public class UXManager {
     public void drawBuildOrderQueueOnScreen(int x, int y) {
         Broodwar.drawTextScreen(x, y, white + " <Build Order>");
 
-		/*
-		std.deque< BuildOrderItem >* queue = BuildManager.Instance().buildQueue.getQueue();
-		size_t reps = queue.size() < 24 ? queue.size() : 24;
-		for (size_t i(0); i<reps; i++) {
-			const MetaType & type = (*queue)[queue.size() - 1 - i].metaType;
-			Monster.game.drawTextScreen(x, y + 10 + (i * 10), " %s", type.getName().c_str());
-		}
-		*/
 
         Deque<BuildOrderItem> buildQueue = BuildManager.Instance().buildQueue.getQueue();
         int itemCount = 0;
@@ -699,16 +604,6 @@ public class UXManager {
 
     /// Construction 을 하지 못하는 Tile 들을 Map 에 표시합니다
     public void drawTilesToAvoidOnMap() {
-//			Set<TilePosition> tilesToAvoid = ConstructionPlaceFinder.Instance().getTilesToAvoid();
-//			for (TilePosition t : tilesToAvoid)
-//			{
-//				int x1 = t.getX() * 32 + 8;
-//				int y1 = t.getY() * 32 + 8;
-//				int x2 = (t.getX() + 1) * 32 - 8;
-//				int y2 = (t.getY() + 1) * 32 - 8;
-        //
-//				Broodwar.drawBoxMap(x1, y1, x2, y2, Color.Orange, false);
-//			}
         int y = 0;
         int x = 0;
 

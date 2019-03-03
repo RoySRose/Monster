@@ -22,7 +22,7 @@ public class ChatBot {
      * 2) UX 타입 변경				: d + 숫자			ex) d1=?, d0=prebot1 display
      * 3) 전략 변경				: $ + 전략명			ex) $TERRAN INIT
      * 4) 레이쓰 공격레벨 변경		: w + 숫자			ex) w1
-     * 5) 디버깅 변수 추가 			: a + class + 변수 	ex) a strategyBoard startStrategy
+     * 5) 디버깅 변수 추가 			: a + class + 변수 	ex) a L strategyBoard startStrategy
      * 5) 디버깅 변수 제거 			: m + 변수이름  		ex) m startStrategy
      * 6) 디버깅 초기화
      *

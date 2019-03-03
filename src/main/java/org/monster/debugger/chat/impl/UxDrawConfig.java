@@ -1,6 +1,8 @@
 package org.monster.debugger.chat.impl;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,8 +28,20 @@ public class UxDrawConfig {
 
 	private char color;
 	private Class<?> clazz;
+	private Method method;
+	public Method getMethod() {
+		return method;
+	}
+
+
 	private Field field;
+	//private Field field;
 	
+	public Field getField() {
+		return field;
+	}
+
+
 	private int pos = posMap.get("L");
 	
 	public void setPos(int pos) {
@@ -50,18 +64,22 @@ public class UxDrawConfig {
 		this.color = color;
 	}
 
-	private UxDrawConfig(Class<?> clazz, Field field, char color) {
+	public UxDrawConfig(String pos, String key, Class<?> clazz, Method method, char color) {
+		this.pos = posMap.get(pos.toUpperCase());
+		this.key = key;
+		this.clazz = clazz;
+		this.method = method;
+		this.color = color;
+		// TODO Auto-generated constructor stub
+	}
+	
+	public UxDrawConfig(String pos, String key,  Class<?> clazz, Field field, char color) {
+		this.pos = posMap.get(pos.toUpperCase());
+		this.key = key;
 		this.clazz = clazz;
 		this.field = field;
 		this.color = color;
-
-	}
-
-	private UxDrawConfig(String key, Object value, char color) {
-		this.key = key;
-		this.value = value;
-		this.color = color;
-
+		// TODO Auto-generated constructor stub
 	}
 
 	public UxDrawConfig(String pos, String key, Object value, char color) {
@@ -71,36 +89,83 @@ public class UxDrawConfig {
 		this.color = color;
 		// TODO Auto-generated constructor stub
 	}
+	
+	public UxDrawConfig(String pos, String key, int value, char color) {
+		this.pos = posMap.get(pos.toUpperCase());
+		this.key = key;
+		this.value = value;
+		this.color = color;
+		// TODO Auto-generated constructor stub
+	}
 
-	public static UxDrawConfig newInstanceClassType(Class<?> clazz, Field field, char color) {
-		return new UxDrawConfig(clazz, field, color);
+	public static UxDrawConfig newInstanceFiledType(String pos, String key, Class<?> clazz, String field, char color) {
+		Class<?> c = clazz.getClass();
+		Field fld = null;
+		try{
+			fld = c.getDeclaredField(field);
+			if (!fld.isAccessible()) {
+				fld.setAccessible(true);
+			}
+		} catch (Exception e) {
+//			System.out.println(e.getMessage());
+		}
+		System.out.println(fld.getName().toString());
+		return new UxDrawConfig(pos, key, c, fld, color);
 	}
 	
-	public static UxDrawConfig newInstanceClassType(String pos,String key, Object value, char color) {
+	public static UxDrawConfig newInstanceMethodType(String pos, String key, Class<?> clazz, String method, char color) {
+		Method invokeMethod = null;
+		try {
+			invokeMethod = clazz.getDeclaredMethod(method);
+			if (!invokeMethod.isAccessible()) {
+				invokeMethod.setAccessible(true);
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return new UxDrawConfig(pos, key, clazz, invokeMethod, color);
+	}
+
+	/*public static UxDrawConfig newInstanceStringType(String pos, String key, String value, char color) {
+		
+		return new UxDrawConfig(pos, key, value, color);
+	}*/
+	
+	public static UxDrawConfig newInstanceStringType(String pos, String key, Object value, char color) {
+		
 		return new UxDrawConfig(pos, key, value, color);
 	}
-
-	public static UxDrawConfig newInstanceObjectType(String pos, String key, Object value) {
-		return newInstanceObjectType(pos, key, value, UxColor.CHAR_YELLOW);
-	}
 	
-	public static UxDrawConfig newInstanceObjectType(String key, Object value, char color) {
+/*	public static UxDrawConfig newInstanceObjectType(String key, Object value, char color) {
 		return new UxDrawConfig(key, value, color);
 	}
 	
 	public static UxDrawConfig newInstanceObjectType(String pos,String key, Object value, char color) {
 		return new UxDrawConfig(pos, key, value, color);
-	}
+	}*/
+
 
 	public String getClassFieldName() {
 		if (clazz != null) {
-			return this.clazz.getSimpleName() + "." + this.field.getName();
-		} else if(this.key.equals("")){
+			if(method != null){
+				try {
+					return this.key + " : " + this.method.invoke(clazz).toString();
+				} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}else if(field != null){
+				return this.key + " : " +this.field.getName().toString();
+			}
+		}else if(this.key.equals("")){
 			return this.value.toString();
 		}else{
 			return this.key + " : " + this.value.toString();
 		}
+		return key;
 	}
+	
 
 	public String getFieldName() {
 		if (this.field == null) {
@@ -131,6 +196,5 @@ public class UxDrawConfig {
 		this.clazz = classMap.get(className.toUpperCase());
 	}
 
-	/// 일꾼 유닛에게 지정하는 임무의 종류
 
 };
