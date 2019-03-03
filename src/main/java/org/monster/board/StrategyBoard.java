@@ -20,7 +20,7 @@ import java.util.Map;
 
 public class StrategyBoard {
 
-    private static StrategyBoard instance = new StrategyBoard();
+    public static StrategyBoard instance = new StrategyBoard();
 
     public static StrategyBoard Instance() {
         return instance;
