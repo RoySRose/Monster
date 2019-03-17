@@ -4,6 +4,7 @@ import bwapi.Race;
 import org.monster.common.util.PlayerUtils;
 
 //TODO not in use, how about in the future?
+@Deprecated
 public class DefenseTowerTimer {
 
     private static DefenseTowerTimer instance = new DefenseTowerTimer();

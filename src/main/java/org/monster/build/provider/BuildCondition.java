@@ -1,14 +1,14 @@
 package org.monster.build.provider;
 
 import bwapi.TilePosition;
-import org.monster.build.base.BuildOrderItem;
+import org.monster.build.base.SeedPositionStrategy;
 //import prebot.common.util.*;
 
 public class BuildCondition {
 
     public boolean blocking = false;
     public boolean highPriority = false;
-    public BuildOrderItem.SeedPositionStrategy seedPositionStrategy = BuildOrderItem.SeedPositionStrategy.MainBaseLocation;
+    public SeedPositionStrategy seedPositionStrategy = SeedPositionStrategy.MainBaseLocation;
     public TilePosition tilePosition = TilePosition.None;
 	/*public static boolean blocking=false;
     public static boolean highPriority=false;
@@ -23,7 +23,7 @@ public class BuildCondition {
         this.tilePosition = TilePosition.None;*/
     }
 
-    public BuildCondition(boolean blocking, boolean highPriority, BuildOrderItem.SeedPositionStrategy seedPositionStrategy, TilePosition tilePostition) {
+    public BuildCondition(boolean blocking, boolean highPriority, SeedPositionStrategy seedPositionStrategy, TilePosition tilePostition) {
         this.blocking = blocking;
         this.highPriority = highPriority;
         this.seedPositionStrategy = seedPositionStrategy;

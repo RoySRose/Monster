@@ -8,3 +8,4 @@
 *.dll
 .settings/
 target/
+/src/main/java/org/monster/macro

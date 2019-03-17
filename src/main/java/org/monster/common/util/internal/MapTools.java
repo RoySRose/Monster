@@ -2,8 +2,9 @@ package org.monster.common.util.internal;
 
 import bwapi.Position;
 import bwapi.TilePosition;
-import org.monster.main.Monster;
 import org.monster.common.DistanceMap;
+import org.monster.common.util.BaseUtils;
+import org.monster.common.util.MapUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,8 +28,8 @@ public class MapTools {
 
     // constructor for MapTools
     public MapTools() {
-        rows = Monster.Broodwar.mapHeight();
-        cols = Monster.Broodwar.mapWidth();
+        rows = MapUtils.mapHeight();
+        cols = MapUtils.mapWidth();
         map = new boolean[rows * cols];
         units = new boolean[rows * cols];
         fringe = new int[rows * cols];
@@ -70,7 +71,7 @@ public class MapTools {
                     // check each walk tile within this TilePosition
                     for (int i = 0; i < 4; ++i) {
                         for (int j = 0; j < 4; ++j) {
-                            if (!Monster.Broodwar.isWalkable(c * 4 + i, r * 4 + j)) {
+                            if (!MapUtils.isWalkable(c * 4 + i, r * 4 + j)) {
                                 clear = false;
                                 break;
                             }
@@ -208,7 +209,7 @@ public class MapTools {
     /// Position 에서 가까운 순서대로 타일의 목록을 반환한다
     public final Vector<TilePosition> getClosestTilesTo(Position pos) {
         // make sure the distance map is calculated with pos as a destination
-        int a = getGroundDistance(Monster.Broodwar.self().getStartLocation().toPosition(), pos);
+        int a = getGroundDistance(BaseUtils.myMainBase().getPosition(), pos);
 
         return allMaps.get(pos).getSortedTiles();
     }

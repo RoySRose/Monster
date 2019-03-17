@@ -1,4 +1,4 @@
-package org.monster.micro.control.factory;
+package org.monster.micro.control.groundforce;
 
 import bwapi.Position;
 import bwapi.Race;
@@ -6,15 +6,17 @@ import bwapi.Unit;
 import bwapi.UnitType;
 import bwta.BWTA;
 import bwta.Chokepoint;
+import org.monster.board.StrategyBoard;
 import org.monster.common.UnitInfo;
-import org.monster.common.constant.CommonCode;
+import org.monster.common.constant.PlayerRange;
 import org.monster.common.util.CommandUtils;
 import org.monster.common.util.MicroUtils;
 import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.PositionUtils;
 import org.monster.common.util.TimeUtils;
 import org.monster.common.util.UnitUtils;
-import org.monster.main.Monster;
+import org.monster.strategy.manage.PositionFinder;
+import org.monster.strategy.manage.TankPositionManager;
 import org.monster.micro.FleeOption;
 import org.monster.micro.KitingOption;
 import org.monster.micro.MicroDecision;
@@ -22,9 +24,6 @@ import org.monster.micro.MicroDecisionMakerPrebot1;
 import org.monster.micro.constant.MicroConfig;
 import org.monster.micro.constant.MicroConfig.MainSquadMode;
 import org.monster.micro.control.Control;
-import org.monster.board.StrategyBoard;
-import org.monster.strategy.manage.PositionFinder;
-import org.monster.strategy.manage.TankPositionManager;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -59,7 +58,7 @@ public class TankControl extends Control {
             return;
         }
 
-        List<Unit> vultureAndGoliath = UnitUtils.getUnitList(CommonCode.UnitFindRange.COMPLETE, UnitType.Terran_Vulture, UnitType.Terran_Goliath);
+        List<Unit> vultureAndGoliath = UnitUtils.getCompletedUnitList(UnitType.Terran_Vulture, UnitType.Terran_Goliath);
         this.hasEnoughBackUpUnitToSiege = vultureAndGoliath.size() > ENOUGH_BACKUP_VULTURE_AND_GOLIATH;
         this.siegeModeSpreadRadius = StrategyBoard.mainSquadCoverRadius;
         if (StrategyBoard.campType == PositionFinder.CampType.INSIDE
@@ -272,7 +271,7 @@ public class TankControl extends Control {
         if (eui.getType() == UnitType.Terran_Siege_Tank_Tank_Mode || eui.getType() == UnitType.Terran_Siege_Tank_Siege_Mode) {
 
             int distanceToTarget;
-            Unit enemy = UnitUtils.unitInSight(eui);
+            Unit enemy = UnitUtils.enemyUnitInSight(eui);
             if (enemy != null) {
                 distanceToTarget = tank.getDistance(enemy);
             } else {
@@ -296,7 +295,7 @@ public class TankControl extends Control {
                 return false;
             }
             if (MicroUtils.isMeleeUnit(eui.getType())) {
-                if (!hasEnoughBackUpUnitToSiege || Monster.Broodwar.self().supplyUsed() > 380) {
+                if (!hasEnoughBackUpUnitToSiege || PlayerUtils.supplyUsedSelf() > 380) {
                     return false;
                 }
             }
@@ -313,7 +312,7 @@ public class TankControl extends Control {
                 return true;
             } else {
                 if (!eui.getType().isBuilding()) {
-                    List<Unit> siegeModeTanks = UnitUtils.getUnitsInRadius(CommonCode.PlayerRange.SELF, tank.getPosition(), MicroConfig.Tank.SIEGE_LINK_DISTANCE, UnitType.Terran_Siege_Tank_Siege_Mode);
+                    List<Unit> siegeModeTanks = UnitUtils.getUnitsInRadius(PlayerRange.SELF, tank.getPosition(), MicroConfig.Tank.SIEGE_LINK_DISTANCE, UnitType.Terran_Siege_Tank_Siege_Mode);
                     for (Unit siegeModeTank : siegeModeTanks) {
                         if (tank.getID() == siegeModeTank.getID()) {
                             continue;

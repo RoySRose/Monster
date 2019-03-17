@@ -1,12 +1,12 @@
 package org.monster.strategy.analyse.terran;
 
 import bwapi.UnitType;
-import org.monster.strategy.analyse.UnitAnalyser;
-import org.monster.decisions.constant.EnemyStrategy;
 import org.monster.common.UnitInfo;
+import org.monster.strategy.constant.EnemyStrategy;
 import org.monster.strategy.analyse.Clue;
+import org.monster.strategy.analyse.UnitAnalyser;
 import org.monster.strategy.manage.ClueManager;
-import org.monster.strategy.manage.StrategyAnalyseManager;
+import org.monster.strategy.manage.EnemyStrategyAnalyzer;
 
 import java.util.List;
 
@@ -49,7 +49,7 @@ public class BarracksAnalyser extends UnitAnalyser {
             }
         } else {
             int mechanicFirstBarrackFrame = EnemyStrategy.TERRAN_MECHANIC.buildTimeMap.frame(UnitType.Terran_Barracks, 15);
-            int baseLastCheckFrame = StrategyAnalyseManager.Instance().lastCheckFrame(StrategyAnalyseManager.LastCheckLocation.BASE);
+            int baseLastCheckFrame = EnemyStrategyAnalyzer.Instance().lastCheckFrame(EnemyStrategyAnalyzer.LastCheckLocation.BASE);
             if (baseLastCheckFrame > mechanicFirstBarrackFrame) {
                 ClueManager.Instance().addClueInfo(Clue.ClueInfo.BARRACK_NOT_FOUND);
             }

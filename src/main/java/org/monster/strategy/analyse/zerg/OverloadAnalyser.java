@@ -11,7 +11,7 @@ public class OverloadAnalyser extends UnitAnalyser {
 
     @Override
     public void analyse() {
-//		List<UnitInfo> found = found(CommonCode.RegionType.ENEMY_BASE);
+//		List<UnitInfo> found = found(RegionType.ENEMY_BASE);
 //		if (!found.isEmpty()) {
 //			
 //		}

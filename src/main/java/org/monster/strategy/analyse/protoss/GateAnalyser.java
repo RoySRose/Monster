@@ -2,11 +2,11 @@ package org.monster.strategy.analyse.protoss;
 
 import bwapi.UnitType;
 import org.monster.common.UnitInfo;
-import org.monster.decisions.constant.EnemyStrategy;
+import org.monster.strategy.constant.EnemyStrategy;
 import org.monster.strategy.analyse.Clue;
 import org.monster.strategy.analyse.UnitAnalyser;
 import org.monster.strategy.manage.ClueManager;
-import org.monster.strategy.manage.StrategyAnalyseManager;
+import org.monster.strategy.manage.EnemyStrategyAnalyzer;
 
 import java.util.List;
 
@@ -46,7 +46,7 @@ public class GateAnalyser extends UnitAnalyser {
             }
         } else {
             int twoGateFirstGateFrame = EnemyStrategy.PROTOSS_2GATE.buildTimeMap.frame(UnitType.Protoss_Gateway, 20);
-            int baseLastCheckFrame = StrategyAnalyseManager.Instance().lastCheckFrame(StrategyAnalyseManager.LastCheckLocation.BASE);
+            int baseLastCheckFrame = EnemyStrategyAnalyzer.Instance().lastCheckFrame(EnemyStrategyAnalyzer.LastCheckLocation.BASE);
             if (baseLastCheckFrame > twoGateFirstGateFrame) {
                 ClueManager.Instance().addClueInfo(Clue.ClueInfo.GATE_NOT_FOUND);
             }

@@ -5,15 +5,15 @@ import bwapi.Unit;
 import bwapi.UnitType;
 import bwta.BWTA;
 import bwta.Region;
+import org.monster.board.StrategyBoard;
 import org.monster.common.LagObserver;
 import org.monster.common.UnitInfo;
+import org.monster.common.constant.CommonCode;
 import org.monster.common.util.BaseUtils;
 import org.monster.common.util.CommandUtils;
-import org.monster.common.util.InfoUtils;
 import org.monster.common.util.PositionUtils;
-import org.monster.common.util.TilePositionUtils;
+import org.monster.common.util.RegionUtils;
 import org.monster.common.util.TimeUtils;
-import org.monster.board.StrategyBoard;
 import org.monster.strategy.manage.PositionFinder;
 
 import java.util.Collection;
@@ -40,12 +40,12 @@ public abstract class Control {
     public abstract void control(Collection<Unit> unitList, Collection<UnitInfo> euiList);
 
     protected boolean skipControl(Unit unit) {
-        return !TimeUtils.executeUnitRotation(unit, LagObserver.groupsize());
+        return !TimeUtils.isExecuteFrame(unit, LagObserver.groupsize());
 //        return UnitBalancer.skipControl(unit);
     }
 
     public boolean findRat(Collection<Unit> unitList) {
-        Position centerPosition = TilePositionUtils.getCenterTilePosition().toPosition();
+        Position centerPosition = CommonCode.CENTER_POS;
         for (Unit unit : unitList) {
             if (skipControl(unit)) {
                 continue;
@@ -94,17 +94,17 @@ public abstract class Control {
             return outOfRegionLongTime(unit);
         }
         // 세번째 지역까지 OK
-        if (unitRegion == InfoUtils.myThirdRegion()) {
+        if (unitRegion == RegionUtils.myThirdRegion()) {
             return false;
         }
         if (campType == PositionFinder.CampType.SECOND_CHOKE) {
             return outOfRegionLongTime(unit);
         }
         // 세번째 지역 반경 OK
-        if (unit.getDistance(InfoUtils.myThirdRegion()) < 600) {
+        if (unit.getDistance(RegionUtils.myThirdRegion()) < 600) {
             return false;
         }
-        if (unit.getDistance(InfoUtils.myReadyToPosition()) < 300) {
+        if (unit.getDistance(PositionUtils.myReadyToPosition()) < 300) {
             return false;
         }
 
@@ -113,11 +113,11 @@ public abstract class Control {
 
     private boolean outOfRegionLongTime(Unit unit) {
         Integer outFrame = unitOutOfRegionMap.get(unit.getID());
-        if (outFrame == null || TimeUtils.elapsedFrames(outFrame) > 10 * TimeUtils.SECOND) { // 이력이없거나 오래된 정보는 새로만든다.
-            unitOutOfRegionMap.put(unit.getID(), TimeUtils.elapsedFrames());
+        if (outFrame == null || TimeUtils.getFrame(outFrame) > 10 * TimeUtils.SECOND) { // 이력이없거나 오래된 정보는 새로만든다.
+            unitOutOfRegionMap.put(unit.getID(), TimeUtils.getFrame());
             return false;
         } else {
-            return TimeUtils.elapsedFrames(outFrame) > 2 * TimeUtils.SECOND;
+            return TimeUtils.getFrame(outFrame) > 2 * TimeUtils.SECOND;
         }
     }
 }

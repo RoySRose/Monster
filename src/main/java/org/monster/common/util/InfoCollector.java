@@ -5,5 +5,6 @@ import bwapi.Game;
 public interface InfoCollector {
 
     void onStart(Game Broodwar);
+
     void update();
 }

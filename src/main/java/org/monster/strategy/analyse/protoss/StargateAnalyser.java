@@ -1,9 +1,8 @@
 package org.monster.strategy.analyse.protoss;
 
 import bwapi.UnitType;
-import org.monster.decisions.constant.EnemyStrategy;
 import org.monster.common.UnitInfo;
-
+import org.monster.strategy.constant.EnemyStrategy;
 import org.monster.strategy.analyse.Clue;
 import org.monster.strategy.analyse.UnitAnalyser;
 import org.monster.strategy.manage.ClueManager;

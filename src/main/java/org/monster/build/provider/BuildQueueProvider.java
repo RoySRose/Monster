@@ -5,16 +5,16 @@ import bwapi.UnitType;
 import bwapi.UpgradeType;
 import org.monster.build.provider.items.building.BuilderHatchery;
 import org.monster.build.provider.items.building.BuilderSpawningPool;
-import org.monster.build.provider.items.unit.BuilderDrone;
-import org.monster.build.provider.items.upgrade.BuilderMetabolicBoost;
-import org.monster.main.GameManager;
 import org.monster.build.provider.items.tech.BuilderConsume;
+import org.monster.build.provider.items.unit.BuilderDrone;
 import org.monster.build.provider.items.unit.BuilderZergling;
+import org.monster.build.provider.items.upgrade.BuilderMetabolicBoost;
 import org.monster.common.LagObserver;
 import org.monster.common.MetaType;
 import org.monster.common.constant.CommonCode;
 import org.monster.common.util.TimeUtils;
-import org.monster.main.Monster;
+import org.monster.bootstrap.GameManager;
+import org.monster.common.util.UpgradeUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,19 +25,11 @@ public class BuildQueueProvider extends GameManager {
 
     private static BuildQueueProvider instance = new BuildQueueProvider();
     List<BuildableItem> buildableList = new ArrayList<>();
-
-    private Map<Integer, Integer> notOperatingFactoryTime = new HashMap<>();
-    private Map<UpgradeType, Integer> upgradeStartMap = new HashMap<>();
-
     ResearchSelector researchSelector;
     UpgradeSelector upgradeSelector;
     FactoryUnitSelector factoryUnitSelector;
-
-    /// static singleton 객체를 리턴합니다
-    public static BuildQueueProvider Instance() {
-        return instance;
-    }
-
+    private Map<Integer, Integer> notOperatingFactoryTime = new HashMap<>();
+    private Map<UpgradeType, Integer> upgradeStartMap = new HashMap<>();
 
     public BuildQueueProvider() {
 
@@ -70,20 +62,24 @@ public class BuildQueueProvider extends GameManager {
 
     }
 
+    /// static singleton 객체를 리턴합니다
+    public static BuildQueueProvider Instance() {
+        return instance;
+    }
 
     public void startUpgrade(UpgradeType upgradeType) {
-        upgradeStartMap.put(upgradeType, TimeUtils.elapsedFrames());
+        upgradeStartMap.put(upgradeType, TimeUtils.getFrame());
     }
 
     public int upgradeRemainingFrame(UpgradeType upgradeType) {
-        if (!Monster.Broodwar.self().isUpgrading(upgradeType)) {
+        if (!UpgradeUtils.selfIsUpgrading(upgradeType)) {
             return CommonCode.UNKNOWN;
         }
         Integer startFrame = upgradeStartMap.get(upgradeType);
         if (startFrame == null) {
             return CommonCode.UNKNOWN;
         }
-        return upgradeType.upgradeTime() - TimeUtils.elapsedFrames(startFrame);
+        return upgradeType.upgradeTime() - TimeUtils.getFrame(startFrame);
     }
 
 
@@ -105,20 +101,20 @@ public class BuildQueueProvider extends GameManager {
 
 //    public void executeCombatUnitTrainingBlocked() {
 //
-//        if (Monster.Broodwar.self().supplyTotal() - Monster.Broodwar.self().supplyUsed() < 4) {
+//        if (PlayerUtils.supplyTotalSelf() - PlayerUtils.supplyUsedSelf() < 4) {
 //            return;
 //        }
-//        if (Monster.Broodwar.self().supplyUsed() > 392) {
+//        if (PlayerUtils.supplyUsedSelf() > 392) {
 //            return;
 //        }
-//        if (Monster.Broodwar.self().minerals() < 500) {
+//        if (PlayerUtils.mineralSelf() < 500) {
 //            return;
 //        }
 //        BuildOrderQueue tempbuildQueue = BuildManager.Instance().getBuildQueue();
 //        if (tempbuildQueue.isEmpty()) {
 //            return;
 //        }
-//        List<Unit> factories = UnitUtils.getUnitList(CommonCode.UnitFindRange.COMPLETE, UnitType.Terran_Factory);
+//        List<Unit> factories = UnitUtils.getCompletedUnitList(UnitType.Terran_Factory);
 //        if (factories.isEmpty()) {
 //            return;
 //        }
@@ -135,7 +131,7 @@ public class BuildQueueProvider extends GameManager {
 //
 //            Integer notOperatingFrame = notOperatingFactoryTime.get(factory.getID());
 //            if (notOperatingFrame == null) {
-//                notOperatingFactoryTime.put(factory.getID(), TimeUtils.elapsedFrames());
+//                notOperatingFactoryTime.put(factory.getID(), TimeUtils.getFrame());
 //            } else {
 //                if (TimeUtils.elapsedSeconds(notOperatingFrame) >= 3) {
 //                    notOperatingFactories.add(factory);
@@ -177,12 +173,12 @@ public class BuildQueueProvider extends GameManager {
 //            blockingItem = tempbuildQueue.getItem();
 //        }
 //
-//        boolean isArmoryExists = Monster.Broodwar.self().completedUnitCount(UnitType.Terran_Armory) > 0;
+//        boolean isArmoryExists = UnitUtils.getCompletedUnitCount(UnitType.Terran_Armory) > 0;
 //        boolean vultureInTheQueue = tempbuildQueue.getItemCount(UnitType.Terran_Vulture) > 0;
 //
-//        int totVulture = Monster.Broodwar.self().allUnitCount(UnitType.Terran_Vulture);
-//        int totTank = Monster.Broodwar.self().allUnitCount(UnitType.Terran_Siege_Tank_Tank_Mode) + Monster.Broodwar.self().allUnitCount(UnitType.Terran_Siege_Tank_Siege_Mode);
-//        int totGoliath = Monster.Broodwar.self().allUnitCount(UnitType.Terran_Goliath);
+//        int totVulture = UnitUtils.getUnitCount(UnitType.Terran_Vulture);
+//        int totTank = UnitUtils.getUnitCount(UnitType.Terran_Siege_Tank_Tank_Mode) + UnitUtils.getUnitCount(UnitType.Terran_Siege_Tank_Siege_Mode);
+//        int totGoliath = UnitUtils.getUnitCount(UnitType.Terran_Goliath);
 //
 //        int vultureratio = StrategyBoard.factoryRatio.vulture;
 //        int tankratio = StrategyBoard.factoryRatio.tank;
@@ -235,7 +231,7 @@ public class BuildQueueProvider extends GameManager {
 //
 //            if (!vultureInTheQueue) {
 //                int mineralNeed = selected.mineralPrice();
-//                if (Monster.Broodwar.self().gas() < 250) {
+//                if (PlayerUtils.gasSelf() < 250) {
 //                    mineralNeed = 75;
 //                }
 //                mineralNeed = blockingItem.metaType.mineralPrice() + mineralNeed;

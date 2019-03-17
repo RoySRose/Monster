@@ -7,9 +7,9 @@ import bwapi.UnitType;
 import org.monster.common.UnitInfo;
 import org.monster.common.constant.CommonCode;
 import org.monster.common.util.MicroUtils;
-import org.monster.strategy.manage.AirForceManager;
 import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.UnitUtils;
+import org.monster.strategy.manage.AirForceManager;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -58,7 +58,7 @@ public class WraithTargetCalculator extends TargetScoreCalculator {
             return getDistanceScore(unit, eui.getLastPosition());
         }
 
-        Unit unitInSight = UnitUtils.unitInSight(eui);
+        Unit unitInSight = UnitUtils.enemyUnitInSight(eui);
         if (unitInSight == null) {
             return CommonCode.NONE;
         }

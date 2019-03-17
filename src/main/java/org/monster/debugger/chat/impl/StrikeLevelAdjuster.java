@@ -1,7 +1,7 @@
 package org.monster.debugger.chat.impl;
 
-import org.monster.strategy.manage.AirForceManager;
 import org.monster.debugger.chat.ChatExecuter;
+import org.monster.strategy.manage.AirForceManager;
 
 public class StrikeLevelAdjuster extends ChatExecuter {
     public StrikeLevelAdjuster(char type) {

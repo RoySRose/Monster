@@ -6,12 +6,12 @@ import bwapi.UnitType;
 import org.monster.board.StrategyBoard;
 import org.monster.common.UnitInfo;
 import org.monster.common.constant.CommonCode;
-import org.monster.common.util.InfoUtils;
+import org.monster.common.constant.EnemyUnitVisibleStatus;
 import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.TimeUtils;
 import org.monster.common.util.UnitUtils;
-import org.monster.decisions.constant.EnemyStrategyOptions;
-import org.monster.decisions.constant.EnemyStrategy;
+import org.monster.strategy.constant.EnemyStrategy;
+import org.monster.strategy.constant.EnemyStrategyOptions;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -266,7 +266,7 @@ public class EnemyBuildTimer {
             return;
         }
 
-        List<UnitInfo> buildingInfos = UnitUtils.getEnemyUnitInfoList(CommonCode.EnemyUnitFindRange.VISIBLE, buildingType);
+        List<UnitInfo> buildingInfos = UnitUtils.getEnemyUnitInfoList(EnemyUnitVisibleStatus.VISIBLE, buildingType);
         if (!buildingInfos.isEmpty()) {
             if (buildingInfos.get(0).isCompleted()) {
                 // 완성된 건물 발견. 막 완성되었다고 가정한 시간과 전략별 시간 중 빠른 값 선택
@@ -296,10 +296,10 @@ public class EnemyBuildTimer {
             // 미발견. 전략별 시간 선택. 전략별 시간 이후 적 본진, 앞마당, 가스가 모두 정찰 되었다면 최후 정찰시간을 이후로 최소값을 증가시킨다.
             if (buildFrameByStrategy != CommonCode.UNKNOWN) {
 
-                int gasLastCheckFrame = StrategyAnalyseManager.Instance().lastCheckFrame(StrategyAnalyseManager.LastCheckLocation.GAS);
+                int gasLastCheckFrame = EnemyStrategyAnalyzer.Instance().lastCheckFrame(EnemyStrategyAnalyzer.LastCheckLocation.GAS);
                 if (!avoidRashExpectation(buildingType)) {
-                    int baseLastCheckFrame = StrategyAnalyseManager.Instance().lastCheckFrame(StrategyAnalyseManager.LastCheckLocation.BASE);
-                    int expansionLastCheckFrame = StrategyAnalyseManager.Instance().lastCheckFrame(StrategyAnalyseManager.LastCheckLocation.FIRST_EXPANSION);
+                    int baseLastCheckFrame = EnemyStrategyAnalyzer.Instance().lastCheckFrame(EnemyStrategyAnalyzer.LastCheckLocation.BASE);
+                    int expansionLastCheckFrame = EnemyStrategyAnalyzer.Instance().lastCheckFrame(EnemyStrategyAnalyzer.LastCheckLocation.FIRST_EXPANSION);
 
                     if (baseLastCheckFrame > buildFrameByStrategy && gasLastCheckFrame > buildFrameByStrategy && expansionLastCheckFrame > buildFrameByStrategy) {
                         int minimumFrame = baseLastCheckFrame < gasLastCheckFrame ? baseLastCheckFrame : gasLastCheckFrame;
@@ -309,7 +309,7 @@ public class EnemyBuildTimer {
                 }
 
                 // 가스가 없으면 모든 가스가 필요한 건물의 최소 빌드타임을 대충 올려놓는다.
-                if (buildingType.gasPrice() > 0 && InfoUtils.enemyBaseGas() != null) {
+                if (buildingType.gasPrice() > 0 && UnitUtils.enemyBaseGas() != null) {
                     if (UnitUtils.getEnemyUnitCount(UnitType.Protoss_Assimilator, UnitType.Zerg_Extractor, UnitType.Terran_Refinery) == 0) {
                         updateBuildTimeMinimum(buildingType, gasLastCheckFrame + UnitType.Terran_Refinery.buildTime() + 10 * TimeUtils.SECOND);
                     }
@@ -340,11 +340,11 @@ public class EnemyBuildTimer {
         if (isCertainBuildTime(buildingType)) {
             return;
         }
-        if (UnitUtils.getEnemyUnitInfoList(CommonCode.EnemyUnitFindRange.VISIBLE, flagUnitType).isEmpty()) {
+        if (UnitUtils.getEnemyUnitInfoList(EnemyUnitVisibleStatus.VISIBLE, flagUnitType).isEmpty()) {
             return;
         }
 
-        int expectBuildTime = TimeUtils.elapsedFrames() - flagUnitType.buildTime() - buildingType.buildTime();
+        int expectBuildTime = TimeUtils.getFrame() - flagUnitType.buildTime() - buildingType.buildTime();
 
         if (buildingType == UnitType.Protoss_Citadel_of_Adun) {
             if (flagUnitType == UnitType.Protoss_Dark_Templar || flagUnitType == UnitType.Protoss_High_Templar) {

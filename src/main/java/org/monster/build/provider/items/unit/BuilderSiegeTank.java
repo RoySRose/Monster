@@ -1,13 +1,12 @@
 package org.monster.build.provider.items.unit;
 
 import bwapi.UnitType;
+import org.monster.board.StrategyBoard;
 import org.monster.build.provider.DefaultBuildableItem;
 import org.monster.build.provider.FactoryUnitSelector;
 import org.monster.common.MetaType;
 import org.monster.common.util.UnitUtils;
-import org.monster.decisions.constant.EnemyStrategyOptions;
-import org.monster.main.Monster;
-import org.monster.board.StrategyBoard;
+import org.monster.strategy.constant.EnemyStrategyOptions;
 
 //EXAMPLE
 @Deprecated
@@ -22,11 +21,11 @@ public class BuilderSiegeTank extends DefaultBuildableItem {
 
     public final boolean buildCondition() {
 
-        if (Monster.Broodwar.self().completedUnitCount(UnitType.Terran_Factory) == 0) {
+        if (UnitUtils.getCompletedUnitCount(UnitType.Terran_Factory) == 0) {
             return false;
         }
 
-        if (Monster.Broodwar.self().completedUnitCount(UnitType.Terran_Machine_Shop) == 0) {
+        if (UnitUtils.getCompletedUnitCount(UnitType.Terran_Machine_Shop) == 0) {
             return false;
         }
 

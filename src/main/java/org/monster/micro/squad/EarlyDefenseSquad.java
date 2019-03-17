@@ -7,7 +7,6 @@ import bwta.Region;
 import org.monster.board.StrategyBoard;
 import org.monster.common.UnitInfo;
 import org.monster.common.util.BaseUtils;
-import org.monster.common.util.InfoUtils;
 import org.monster.common.util.UnitUtils;
 import org.monster.micro.SquadData;
 import org.monster.micro.constant.MicroConfig;
@@ -71,7 +70,7 @@ public class EarlyDefenseSquad extends Squad {
 
         List<Unit> enemyInSightList = new ArrayList<>();
         for (UnitInfo eui : euiList) {
-            Unit enemy = UnitUtils.unitInSight(eui);
+            Unit enemy = UnitUtils.enemyUnitInSight(eui);
             if (enemy != null) {
                 enemyInSightList.add(enemy);
             }
@@ -106,7 +105,7 @@ public class EarlyDefenseSquad extends Squad {
             scvCnt--;
         }
 
-        //List<Unit> myUnitList = UnitUtils.getUnitsInRadius(CommonCode.PlayerRange.SELF, closeEnemyUnit.getPosition(), REACT_RADIUS);
+        //List<Unit> myUnitList = UnitUtils.getUnitsInRadius(PlayerRange.SELF, closeEnemyUnit.getPosition(), REACT_RADIUS);
         //if (myUnitList.isEmpty() && !marineList.isEmpty()) {
 		/*if(!marineList.isEmpty()){
 			return marineList;
@@ -191,7 +190,7 @@ public class EarlyDefenseSquad extends Squad {
     public void findEnemies() {
         euiList.clear();
 
-        List<UnitInfo> enemyUnitsInRegion = InfoUtils.euiListInMyRegion(BaseUtils.myMainBase().getRegion());
+        List<UnitInfo> enemyUnitsInRegion = UnitUtils.euiListInMyRegion(BaseUtils.myMainBase().getRegion());
         if (enemyUnitsInRegion.size() >= 1) {
             for (UnitInfo enemy : enemyUnitsInRegion) {
                 euiList.add(enemy);

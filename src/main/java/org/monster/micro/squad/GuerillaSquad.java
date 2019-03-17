@@ -5,15 +5,16 @@ import bwapi.Unit;
 import bwapi.UnitType;
 import org.monster.common.util.MicroUtils;
 import org.monster.common.util.UnitUtils;
-import org.monster.micro.constant.MicroConfig;
-import org.monster.micro.targeting.TargetFilter;
 import org.monster.strategy.manage.VultureTravelManager;
+import org.monster.micro.constant.MicroConfig;
+import org.monster.micro.control.groundforce.VultureControl;
+import org.monster.micro.targeting.TargetFilter;
 
 import java.util.List;
 
 public class GuerillaSquad extends Squad {
     private Position targetPosition;
-    private org.monster.micro.control.factory.VultureControl vultureControl = new org.monster.micro.control.factory.VultureControl();
+    private VultureControl vultureControl = new VultureControl();
 
     public GuerillaSquad(Position position) {
         super(MicroConfig.SquadInfo.GUERILLA_, position);

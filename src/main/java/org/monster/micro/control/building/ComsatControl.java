@@ -19,7 +19,7 @@ public class ComsatControl extends Control {
 //
 //    @Override
 //    public void control(Collection<Unit> unitList, Collection<UnitInfo> euiList) {
-//        if (TimeUtils.elapsedFrames(scanUsedFrame) < 4 * TimeUtils.SECOND) {
+//        if (TimeUtils.getFrame(scanUsedFrame) < 4 * TimeUtils.SECOND) {
 //            return;
 //        }
 //        if (!TimeUtils.executeRotation(0, 23)) {
@@ -29,7 +29,7 @@ public class ComsatControl extends Control {
 //        Position scanPosition;
 //        boolean scanAtReadyTo;
 //        if (PlayerUtils.enemyRace() == Race.Terran && PositionFinder.Instance().scanAtReadyToPosition()) {
-//            scanPosition = InfoUtils.myReadyToPosition();
+//            scanPosition = UnitTypeUtils.myReadyToPosition();
 //            scanAtReadyTo = true;
 //        } else { // 상대 클록 유닛
 //            scanPosition = scanPositionForInvisibleEnemy(euiList);
@@ -49,7 +49,7 @@ public class ComsatControl extends Control {
 //                if (comsatMaxEnergy != null) {
 //                    MapGrid.Instance().scanAtPosition(scanPosition);
 //                    comsatMaxEnergy.useTech(TechType.Scanner_Sweep, scanPosition);
-//                    scanUsedFrame = TimeUtils.elapsedFrames();
+//                    scanUsedFrame = TimeUtils.getFrame();
 //
 //                    if (scanAtReadyTo) {
 //                        System.out.println("scan for ready to position. position=" + scanPosition + ", time=" + TimeUtils.framesToTimeString(scanUsedFrame));
@@ -64,14 +64,14 @@ public class ComsatControl extends Control {
 //
 //        Unit comsatToUse = null;
 //        int usableEnergy = 150;
-//        int comsatCnt = UnitUtils.getUnitCount(CommonCode.UnitFindRange.COMPLETE, UnitType.Terran_Comsat_Station);
+//        int comsatCnt = UnitUtils.getUnitCount(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Comsat_Station);
 //        if (comsatCnt > 1) {
 //            usableEnergy = 135;
 //        }
 //        if (comsatCnt > 2) {
 //
 //            if (comsatCnt < 6) {
-//                usableEnergy -= 20 * (UnitUtils.getUnitCount(CommonCode.UnitFindRange.COMPLETE, UnitType.Terran_Comsat_Station) - 2);
+//                usableEnergy -= 20 * (UnitUtils.getUnitCount(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Comsat_Station) - 2);
 //            } else {
 //                usableEnergy -= 20 * 3;
 //            }
@@ -81,7 +81,7 @@ public class ComsatControl extends Control {
 //        if (UnitUtils.invisibleEnemyDiscovered() || StrategyBoard.buildTimeMap.featureEnabled(EnemyStrategyOptions.BuildTimeMap.Feature.DETECT_IMPORTANT)) {
 //            usableEnergy += 50;
 //
-//            if (UnitUtils.getUnitCount(CommonCode.UnitFindRange.COMPLETE, UnitType.Terran_Science_Vessel) > 0) {
+//            if (UnitUtils.getUnitCount(CommonCode.UnitFindStatus.COMPLETE, UnitType.Terran_Science_Vessel) > 0) {
 //                usableEnergy -= 25;
 //            }
 //
@@ -92,7 +92,7 @@ public class ComsatControl extends Control {
 //        }
 //
 //        for (Unit comsatStation : unitList) {
-//            if (TimeUtils.elapsedFrames(comsatStation.getLastCommandFrame()) < 5 * TimeUtils.SECOND) {
+//            if (TimeUtils.getFrame(comsatStation.getLastCommandFrame()) < 5 * TimeUtils.SECOND) {
 //                continue;
 //            }
 //
@@ -108,7 +108,7 @@ public class ComsatControl extends Control {
 //            if (PositionUtils.isValidPosition(scanPositionForObservation)) {
 //                MapGrid.Instance().scanAtPosition(scanPositionForObservation);
 //                comsatToUse.useTech(TechType.Scanner_Sweep, scanPositionForObservation);
-//                scanUsedFrame = TimeUtils.elapsedFrames();
+//                scanUsedFrame = TimeUtils.getFrame();
 //            }
 //        }
 //
@@ -128,18 +128,18 @@ public class ComsatControl extends Control {
 //                continue;
 //            }
 //            // 주위에 베슬이 있는지 확인하고 베슬이 여기로 오는 로직인지도 확인한 후에 오게 되면 패스 아니면 스캔으로 넘어간다
-//            List<Unit> nearVessel = UnitUtils.getUnitsInRadius(CommonCode.PlayerRange.SELF, eui.getLastPosition(), UnitType.Terran_Science_Vessel.sightRange() * 2, UnitType.Terran_Science_Vessel);
+//            List<Unit> nearVessel = UnitUtils.getUnitsInRadius(PlayerRange.SELF, eui.getLastPosition(), UnitType.Terran_Science_Vessel.sightRange() * 2, UnitType.Terran_Science_Vessel);
 //            if (nearVessel != null) {
 //                Unit neareasetVessel = UnitUtils.getClosestUnitToPositionNotStunned(nearVessel, eui.getLastPosition());
 //                if (neareasetVessel != null) {
-//                    List<Unit> nearAllies = UnitUtils.getUnitsInRadius(CommonCode.PlayerRange.SELF, neareasetVessel.getPosition(), UnitType.Terran_Science_Vessel.sightRange());
+//                    List<Unit> nearAllies = UnitUtils.getUnitsInRadius(PlayerRange.SELF, neareasetVessel.getPosition(), UnitType.Terran_Science_Vessel.sightRange());
 //                    if (nearAllies != null && nearAllies.size() > 2) {
 //                        continue;// 베슬이 올것으로 예상됨
 //                    }
 //                }
 //            }
 //
-//            List<Unit> myAttackUnits = UnitUtils.getUnitList(CommonCode.UnitFindRange.COMPLETE, UnitType.Terran_Vulture,
+//            List<Unit> myAttackUnits = UnitUtils.getCompletedUnitList(UnitType.Terran_Vulture,
 //                    UnitType.Terran_Siege_Tank_Tank_Mode, UnitType.Terran_Siege_Tank_Siege_Mode, UnitType.Terran_Goliath);
 //
 //            Race enemyRace = PlayerUtils.enemyRace();
@@ -177,7 +177,7 @@ public class ComsatControl extends Control {
 //                        if (myAttackUnitInWeaponRangeCount >= 5
 //                                || myAttackUnit.getType() == UnitType.Terran_Siege_Tank_Tank_Mode
 //                                || myAttackUnit.getType() == UnitType.Terran_Siege_Tank_Siege_Mode
-//                                || (myAttackUnit.getType() == UnitType.Terran_Bunker && UnitUtils.getUnitCount(UnitFindRange.COMPLETE, UnitType.Terran_Marine) > 0)) {
+//                                || (myAttackUnit.getType() == UnitType.Terran_Bunker && UnitUtils.getUnitCount(UnitFindStatus.COMPLETE, UnitType.Terran_Marine) > 0)) {
 //                            return eui.getLastPosition();
 //                        }
 //                    }
@@ -194,13 +194,13 @@ public class ComsatControl extends Control {
 //        if (BaseUtils.enemyMainBase() != null) {
 //            scanTilePositionCandidate.add(BaseUtils.enemyMainBase().getTilePosition());
 //            if (PlayerUtils.enemyRace() == Race.Protoss || PlayerUtils.enemyRace() == Race.Terran) {
-//                scanTilePositionCandidate.add(InfoUtils.enemyFirstChoke().getCenter().toTilePosition());
+//                scanTilePositionCandidate.add(UnitTypeUtils.enemyFirstChoke().getCenter().toTilePosition());
 //            }
 //        }
 //        if (BaseUtils.enemyFirstExpansion() != null) {
 //            scanTilePositionCandidate.add(BaseUtils.enemyFirstExpansion().getTilePosition());
 //            if (PlayerUtils.enemyRace() == Race.Protoss || PlayerUtils.enemyRace() == Race.Terran) {
-//                scanTilePositionCandidate.add(ChokePointUtils.enemySecondChoke().getCenter().toTilePosition());
+//                scanTilePositionCandidate.add(ChokeUtils.enemySecondChoke().getCenter().toTilePosition());
 //            }
 //        }
 //
@@ -213,7 +213,7 @@ public class ComsatControl extends Control {
 //                    if (cell == null) {
 //                        continue;
 //                    }
-//                    if (TimeUtils.elapsedFrames(cell.getTimeLastScan()) > 12000) {
+//                    if (TimeUtils.getFrame(cell.getTimeLastScan()) > 12000) {
 //                        scanTilePositionCandidate.add(islands.getTilePosition());
 //                    }
 //                }
@@ -230,15 +230,15 @@ public class ComsatControl extends Control {
 //        }
 //        int oldestLastCheckTime = CommonCode.INT_MAX;
 //        for (TilePosition scanTilePosition : scanTilePositionCandidate) {
-//            if (Monster.Broodwar.isVisible(scanTilePosition)) {
+//            if (PlayerUtils.isVisible(scanTilePosition)) {
 //                continue;
 //            }
 //            Position scanPosotion = scanTilePosition.toPosition();
 //            MapGrid.GridCell cell = MapGrid.Instance().getCell(scanPosotion);
 //
 //
-//            int lastScanTime = TimeUtils.elapsedFrames(cell.getTimeLastScan());
-//            int lastVisitTime = TimeUtils.elapsedFrames(cell.getTimeLastVisited());
+//            int lastScanTime = TimeUtils.getFrame(cell.getTimeLastScan());
+//            int lastVisitTime = TimeUtils.getFrame(cell.getTimeLastVisited());
 //            int lastCheckTime = Math.min(lastScanTime, lastVisitTime);
 //
 //            if (lastCheckTime < oldestLastCheckTime) {
@@ -255,7 +255,7 @@ public class ComsatControl extends Control {
 //            Position squadFrontPosition = MicroUtils.getMovePosition(StrategyBoard.mainSquadLeaderPosition, radian, 700).makeValid();
 //
 ////			if (!Prebot.Broodwar.isVisibleenemyCommandInfo(squadFrontPosition.toTilePosition())) {}
-//            scanEnemySquadFrame = TimeUtils.elapsedFrames();
+//            scanEnemySquadFrame = TimeUtils.getFrame();
 //            return squadFrontPosition;
 //        }
 //
@@ -283,7 +283,7 @@ public class ComsatControl extends Control {
 //            }
 //
 //            int lastFullCheckFrame = enemyResourceDepot.getValue().getLastFullCheckFrame();
-//            if (TimeUtils.elapsedFrames(lastFullCheckFrame) > 2500) {
+//            if (TimeUtils.getFrame(lastFullCheckFrame) > 2500) {
 //                if (lastFullCheckFrame < earlist) {
 //                    scanPosition = enemyResourceDepot.getKey().getLastPosition();
 //                    earlist = lastFullCheckFrame;

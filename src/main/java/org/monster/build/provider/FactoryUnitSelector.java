@@ -2,11 +2,11 @@ package org.monster.build.provider;
 
 
 import bwapi.UnitType;
+import org.monster.board.StrategyBoard;
 import org.monster.build.base.BuildManager;
 import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.UnitUtils;
-import org.monster.main.Monster;
-import org.monster.board.StrategyBoard;
+import org.monster.bootstrap.Monster;
 
 //EXAMPLE
 @Deprecated
@@ -90,7 +90,7 @@ public class FactoryUnitSelector implements Selector<UnitType> {
     }
 
     public int GetCurrentTot(UnitType checkunit) {
-        return BuildManager.Instance().buildQueue.getItemCount(checkunit) + Monster.Broodwar.self().allUnitCount(checkunit);
+        return BuildManager.Instance().buildQueue.getItemCount(checkunit) + UnitUtils.getUnitCount(checkunit);
     }
 
 //	public void setCombatUnitRatio() {
@@ -124,7 +124,7 @@ public class FactoryUnitSelector implements Selector<UnitType> {
 //	original source ======================
 
     public int GetCurrentTotBlocked(UnitType checkunit) {
-        int cnt = Monster.Broodwar.self().allUnitCount(checkunit);
+        int cnt = UnitUtils.getUnitCount(checkunit);
         return cnt;
     }
     //BuildCondition buildCondition;
@@ -150,7 +150,7 @@ public class FactoryUnitSelector implements Selector<UnitType> {
             wgt = StrategyBoard.factoryRatio.weight;
 
             UnitType selected = chooseunit(vultureratio, tankratio, goliathratio, wgt, totalVulture, totalTank, totalGoliath);
-            if (PlayerUtils.hasMoreResourceThan(selected.mineralPrice(), selected.gasPrice()) && Monster.Broodwar.self().supplyUsed() <= 392) {
+            if (PlayerUtils.hasMoreResourceThan(selected.mineralPrice(), selected.gasPrice()) && PlayerUtils.supplyUsedSelf() <= 392) {
 //				System.out.println("vultureratio=" + vultureratio + ", tankratio" + tankratio + ", goliathratio=" + goliathratio + ", wgt=" + wgt
 //						+ ", totalVulture=" + totalVulture+ ", totalTank" + totalTank+ ", totalGoliath=" + totalGoliath + " => selected=" + selected);
                 unitType = selected;

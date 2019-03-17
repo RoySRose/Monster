@@ -5,11 +5,13 @@ import bwapi.Unit;
 import bwapi.UnitType;
 import org.monster.common.LagObserver;
 import org.monster.common.UnitInfo;
-import org.monster.debugger.BigWatch;
 import org.monster.common.util.TimeUtils;
 import org.monster.common.util.UnitUtils;
+import org.monster.debugger.BigWatch;
 import org.monster.micro.CombatManager;
 import org.monster.micro.constant.MicroConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -17,11 +19,15 @@ import java.util.List;
 import java.util.Set;
 
 public abstract class Squad {
+
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
     public Set<Unit> unitList = new HashSet<>();
     public Set<UnitInfo> euiList = new HashSet<>();
     protected UnitType[] unitTypes;
     private int squadExecutedFrame;
     private String squadName;
+
     public Squad(MicroConfig.SquadInfo squadInfo) {
         this.squadName = squadInfo.squadName;
     }
@@ -38,7 +44,7 @@ public abstract class Squad {
     }
 
     public boolean squadExecuted() {
-        return squadExecutedFrame == TimeUtils.elapsedFrames();
+        return squadExecutedFrame == TimeUtils.getFrame();
     }
 
     public void setUnitType(UnitType... unitTypes) {
@@ -67,8 +73,8 @@ public abstract class Squad {
 
     /// squad 실행
     public void findEnemiesAndExecuteSquad() {
-        if (squadExecutedFrame == TimeUtils.elapsedFrames()) {
-//			System.out.println("ALREADY EXECUTED SQUAD - " + squadName);
+        if (squadExecutedFrame == TimeUtils.getFrame()) {
+//			logger.debug("ALREADY EXECUTED SQUAD - " + squadName);
             return;
         }
         BigWatch.start("findEnemies - " + squadName);
@@ -83,7 +89,7 @@ public abstract class Squad {
             BigWatch.record("squadExecution - " + squadName);
         }
 
-        squadExecutedFrame = TimeUtils.elapsedFrames();
+        squadExecutedFrame = TimeUtils.getFrame();
     }
 
     public abstract void execute();
@@ -101,19 +107,26 @@ public abstract class Squad {
 
     /// 적 탐색
     protected void findEnemies() {
+
+
         euiList.clear();
+
         if (LagObserver.groupsize() > 10) {
+
             for (Unit unit : unitList) {
-                if (!TimeUtils.executeUnitRotation(unit, LagObserver.groupsize())) {
+                if (!TimeUtils.isExecuteFrame(unit, LagObserver.groupsize())) {
                     continue;
                 }
                 UnitUtils.addEnemyUnitInfosInRadiusForGround(euiList, unit.getPosition(), unit.getType().sightRange());
             }
         } else {
-            for (Unit unit : unitList) {
-                UnitUtils.addEnemyUnitInfosInRadiusForGround(euiList, unit.getPosition(), unit.getType().sightRange());
-            }
+
+//            for (Unit unit : unitList) {
+//                logger.debug("555");
+//                UnitUtils.addEnemyUnitInfosInRadiusForGround(euiList, unit.getPosition(), unit.getType().sightRange());
+//            }
         }
+
     }
 
     protected Set<UnitInfo> getMainSquadEnemies() {
@@ -121,7 +134,7 @@ public abstract class Squad {
         if (mainSquad.squadExecuted()) {
             return mainSquad.euiList;
         } else {
-            System.out.println("#### SOMETHING'S WRONG!!! MAIN SQUAD'S EUILIST MUST NOT BE EMPTY ####");
+            logger.debug("#### SOMETHING'S WRONG!!! MAIN SQUAD'S EUILIST MUST NOT BE EMPTY ####");
             return null;
         }
     }

@@ -5,18 +5,20 @@ import bwapi.Unit;
 import bwapi.UnitType;
 import org.monster.board.StrategyBoard;
 import org.monster.common.UnitInfo;
-import org.monster.common.util.InfoUtils;
-
 import org.monster.common.util.MicroUtils;
 import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.TimeUtils;
 import org.monster.common.util.UnitUtils;
-import org.monster.main.Monster;
+import org.monster.strategy.manage.PositionFinder;
 import org.monster.micro.CombatManager;
 import org.monster.micro.constant.MicroConfig;
 import org.monster.micro.control.airforce.ValkyrieControl;
+import org.monster.micro.control.groundforce.GoliathControl;
+import org.monster.micro.control.groundforce.TankControl;
+import org.monster.micro.control.groundforce.ZerglingControl;
 import org.monster.micro.targeting.TargetFilter;
-import org.monster.strategy.manage.PositionFinder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +27,7 @@ import java.util.Set;
 
 public class MainAttackSquad extends Squad {
 
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 //	private Set<UnitInfo> euisNearUnit = new HashSet<>();
 //	private Set<UnitInfo> euisNearBaseRegion = new HashSet<>();
 //	
@@ -36,23 +39,25 @@ public class MainAttackSquad extends Squad {
 //		return euisNearBaseRegion;
 //	}
 
-    private org.monster.micro.control.factory.TankControl tankControl = new org.monster.micro.control.factory.TankControl();
-    private org.monster.micro.control.factory.GoliathControl goliathControl = new org.monster.micro.control.factory.GoliathControl();
+    private TankControl tankControl = new TankControl();
+    private GoliathControl goliathControl = new GoliathControl();
     private ValkyrieControl valkyrieControl = new ValkyrieControl();
+    private ZerglingControl zerglingControl = new ZerglingControl();
 
     public MainAttackSquad() {
         super(MicroConfig.SquadInfo.MAIN_ATTACK);
-        setUnitType(UnitType.Terran_Siege_Tank_Tank_Mode, UnitType.Terran_Siege_Tank_Siege_Mode, UnitType.Terran_Goliath, UnitType.Terran_Valkyrie);
+        setUnitType(UnitType.Zerg_Zergling);
+//        setUnitType(UnitType.Terran_Siege_Tank_Tank_Mode, UnitType.Terran_Siege_Tank_Siege_Mode, UnitType.Terran_Goliath, UnitType.Terran_Valkyrie);
     }
 
     @Override
     public boolean want(Unit unit) {
-        if (unit.getType() == UnitType.Terran_Siege_Tank_Tank_Mode || unit.getType() == UnitType.Terran_Siege_Tank_Siege_Mode) {
-            Squad squad = CombatManager.Instance().squadData.getSquad(unit);
-            if (squad instanceof MultiDefenseSquad) {
-                return false;
-            }
-        }
+//        if (unit.getType() == UnitType.Terran_Siege_Tank_Tank_Mode || unit.getType() == UnitType.Terran_Siege_Tank_Siege_Mode) {
+//            Squad squad = CombatManager.Instance().squadData.getSquad(unit);
+//            if (squad instanceof MultiDefenseSquad) {
+//                return false;
+//            }
+//        }
         return true;
     }
 
@@ -67,11 +72,13 @@ public class MainAttackSquad extends Squad {
         List<Unit> tankList = new ArrayList<>();
         List<Unit> goliathList = new ArrayList<>();
         List<Unit> valkyrieList = new ArrayList<>();
+        List<Unit> zerglingList = new ArrayList<>();
 
         tankList.addAll(unitListMap.getOrDefault(UnitType.Terran_Siege_Tank_Tank_Mode, new ArrayList<Unit>()));
         tankList.addAll(unitListMap.getOrDefault(UnitType.Terran_Siege_Tank_Siege_Mode, new ArrayList<Unit>()));
         goliathList.addAll(unitListMap.getOrDefault(UnitType.Terran_Goliath, new ArrayList<Unit>()));
         valkyrieList.addAll(unitListMap.getOrDefault(UnitType.Terran_Valkyrie, new ArrayList<Unit>()));
+        zerglingList.addAll(unitListMap.getOrDefault(UnitType.Zerg_Zergling, new ArrayList<Unit>()));
 
         StrategyBoard.initiated = this.updateInitiatedFlag();
         int saveUnitLevel = this.saveUnitLevel(tankList, goliathList);
@@ -91,6 +98,7 @@ public class MainAttackSquad extends Squad {
             Set<UnitInfo> airEuiList = MicroUtils.filterTargetInfos(euiList, TargetFilter.GROUND_UNIT);
             valkyrieControl.controlIfUnitExist(valkyrieList, airEuiList);
         }
+        zerglingControl.controlIfUnitExist(zerglingList, euiList);
     }
 
     private boolean updateInitiatedFlag() {
@@ -131,7 +139,7 @@ public class MainAttackSquad extends Squad {
             saveUnitLevel = 0;
         } else { // combat manager 자체 판단
             if (PlayerUtils.enemyRace() != Race.Terran) {
-                if (Monster.Broodwar.self().supplyUsed() >= 380) { // || pushLine) {
+                if (PlayerUtils.supplyUsedSelf() >= 380) { // || pushLine) {
                     saveUnitLevel = 0;
                 }
             }
@@ -144,29 +152,25 @@ public class MainAttackSquad extends Squad {
         euiList.clear();
 
         UnitUtils.addEnemyUnitInfosInRadius(TargetFilter.UNFIGHTABLE | TargetFilter.LARVA_LURKER_EGG, euiList, StrategyBoard.mainSquadCenter, StrategyBoard.mainSquadCoverRadius + 50, true, false);
-
         if (StrategyBoard.mainSquadMode.isAttackMode) {
             for (Unit unit : unitList) {
                 if (unit.getDistance(StrategyBoard.mainSquadCenter) > StrategyBoard.mainSquadCoverRadius + 50) {
                     UnitUtils.addEnemyUnitInfosInRadius(TargetFilter.UNFIGHTABLE | TargetFilter.LARVA_LURKER_EGG, euiList, unit.getPosition(), unit.getType().sightRange() + MicroConfig.COMMON_ADD_RADIUS, true, false);
                 }
             }
-
         }
-
         if (!StrategyBoard.mainSquadMode.isAttackMode || PlayerUtils.enemyRace() == Race.Terran) {
             if (StrategyBoard.campType == PositionFinder.CampType.INSIDE) {
-                euiList.addAll(InfoUtils.euiListInBase());
+                euiList.addAll(UnitUtils.euiListInBase());
             } else if (StrategyBoard.campType == PositionFinder.CampType.FIRST_CHOKE || StrategyBoard.campType == PositionFinder.CampType.EXPANSION) {
-                euiList.addAll(InfoUtils.euiListInBase());
-                euiList.addAll(InfoUtils.euiListInExpansion());
+                euiList.addAll(UnitUtils.euiListInBase());
+                euiList.addAll(UnitUtils.euiListInExpansion());
             } else {
-                euiList.addAll(InfoUtils.euiListInBase());
-                euiList.addAll(InfoUtils.euiListInExpansion());
-                euiList.addAll(InfoUtils.euiListInThirdRegion());
+                euiList.addAll(UnitUtils.euiListInBase());
+                euiList.addAll(UnitUtils.euiListInExpansion());
+                euiList.addAll(UnitUtils.euiListInThirdRegion());
             }
         }
-
         if (TimeUtils.beforeTime(8, 0)) {
             UnitUtils.addEnemyUnitInfosInRadiusForGround(euiList, StrategyBoard.mainSquadCenter, StrategyBoard.mainSquadCoverRadius);
             List<Unit> myBuildings = UnitUtils.myBuildingsInMainSquadRegion();
@@ -174,7 +178,6 @@ public class MainAttackSquad extends Squad {
                 UnitUtils.addEnemyUnitInfosInRadiusForGround(euiList, building.getPosition(), building.getType().sightRange() + MicroConfig.COMMON_ADD_RADIUS);
             }
         }
-
 //		System.out.println("###");
 //		System.out.println(unitList);
 //		System.out.println(euiList);

@@ -1,13 +1,19 @@
 package org.monster.debugger.chat;
 
+import bwapi.Game;
+
 public abstract class ChatExecuter {
     private char type;
 
     public ChatExecuter(char ch) {
         this.type = Character.toLowerCase(ch);
     }
+    
+    public char getType() {
+		return type;
+	}
 
-    public boolean isExecuteCharacter(char ch) {
+	public boolean isExecuteCharacter(char ch) {
         return this.type == Character.toLowerCase(ch);
     }
 

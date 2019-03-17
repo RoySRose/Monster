@@ -10,18 +10,14 @@ import org.monster.board.StrategyBoard;
 import org.monster.build.initialProvider.BlockingEntrance.BlockingEntrance;
 import org.monster.common.LagObserver;
 import org.monster.common.UnitInfo;
-import org.monster.common.util.MicroUtils;
-import org.monster.common.util.PlayerUtils;
-import org.monster.common.util.TimeUtils;
-import org.monster.common.util.UnitUtils;
-import org.monster.decisions.constant.StrategyCode;
-import org.monster.main.Monster;
+import org.monster.common.util.*;
+import org.monster.strategy.constant.StrategyCode;
+import org.monster.strategy.manage.PositionFinder;
 import org.monster.micro.CombatManager;
+import org.monster.micro.compute.VultureFightPredictor;
 import org.monster.micro.constant.MicroConfig;
 import org.monster.micro.control.groundforce.WatcherControl;
-import org.monster.micro.predictor.VultureFightPredictor;
 import org.monster.micro.targeting.TargetFilter;
-import org.monster.strategy.manage.PositionFinder;
 
 import java.util.Collection;
 import java.util.List;
@@ -33,7 +29,7 @@ public class WatcherSquad extends Squad {
     private StrategyCode.SmallFightPredict smallFightPredict = StrategyCode.SmallFightPredict.ATTACK;
     private int watcherFleeStartFrame = 0;
 
-//	private Position otherWatcherPosition;
+    //	private Position otherWatcherPosition;
 //	private Position[] regroupPositions = new Position[MAX_REGROUP_POSITION_SIZE];
 //	private int regroupPositionIndex = 0;
 //	private int otherWatcherPositionIndex = 0;
@@ -84,13 +80,13 @@ public class WatcherSquad extends Squad {
 
             } else if (PositionFinder.Instance().otherPositionTimeUp(regroupLeader)) {
                 smallFightPredict = StrategyCode.SmallFightPredict.BACK;
-                watcherFleeStartFrame = TimeUtils.elapsedFrames();
+                watcherFleeStartFrame = TimeUtils.getFrame();
 //				System.out.println("watcher flee - other position time up");
 
             } else {
                 smallFightPredict = VultureFightPredictor.watcherPredictByUnitInfo(unitList, euiList);
                 if (smallFightPredict == StrategyCode.SmallFightPredict.BACK) {
-                    watcherFleeStartFrame = TimeUtils.elapsedFrames();
+                    watcherFleeStartFrame = TimeUtils.getFrame();
 //					System.out.println("watcher flee - enemy");
                 }
             }
@@ -142,7 +138,7 @@ public class WatcherSquad extends Squad {
                 if (unit.getID() == closestUnit.getID() || unit.getDistance(closestUnit) < 500) {
                     continue;
                 }
-                if (!TimeUtils.executeUnitRotation(unit, LagObserver.groupsize())) {
+                if (!TimeUtils.isExecuteFrame(unit, LagObserver.groupsize())) {
                     continue;
                 }
                 addEnemyUnitInfosInRadius(euiList, unit.getPosition(), goalPosition, UnitType.Terran_Vulture.sightRange());
@@ -173,10 +169,10 @@ public class WatcherSquad extends Squad {
 
             int weaponRange = 0; // radius 안의 공격범위가 닿는 적까지 포함
             if (eui.getType() == UnitType.Terran_Bunker) {
-                weaponRange = Monster.Broodwar.enemy().weaponMaxRange(UnitType.Terran_Marine.groundWeapon()) + 96;
+                weaponRange = PlayerUtils.enemyPlayer().weaponMaxRange(UnitType.Terran_Marine.groundWeapon()) + 96;
             } else {
                 if (eui.getType().groundWeapon() != WeaponType.None) {
-                    weaponRange = Math.max(weaponRange, Monster.Broodwar.enemy().weaponMaxRange(eui.getType().groundWeapon()));
+                    weaponRange = Math.max(weaponRange, PlayerUtils.enemyPlayer().weaponMaxRange(eui.getType().groundWeapon()));
                 }
             }
 
@@ -194,7 +190,7 @@ public class WatcherSquad extends Squad {
 
                 if (add) {
                     euis.add(eui);
-                    Monster.Broodwar.drawCircleMap(eui.getLastPosition(), 30, Color.Red, false);
+                    DrawingUtils.drawCircleMap(eui.getLastPosition(), 30, Color.Red, false);
                 }
             }
         }

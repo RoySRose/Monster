@@ -24,12 +24,12 @@ public class BuildConfig {
     public static final int BUILDING_DEFENSE_TOWER_SPACING = 1;
     /// 건물과 건물간 띄울 최소한의 간격 - 일반적인 건물의 경우
     public static int buildingSpacing = 1;
-    /// 건물과 건물간 띄울 최소한의 간격 - ResourceDepot 건물의 경우 (Nexus, Hatchery, Command Center)
+    /// 건물과 건물간 띄울 최소한의 간격 - ResourceDepot 건물의 경우 (Nexus, Hatchery, Command CENTER_POS)
     public static int buildingResourceDepotSpacing = 1;
 	
 	
 	/*public static int BuildingSpacing = 0;
-	/// 건물과 건물간 띄울 최소한의 간격 - ResourceDepot 건물의 경우 (Nexus, Hatchery, Command Center)
+	/// 건물과 건물간 띄울 최소한의 간격 - ResourceDepot 건물의 경우 (Nexus, Hatchery, Command CENTER_POS)
 	public static int BuildingResourceDepotSpacing = 0;
 	/// 건물과 건물간 띄울 최소한의 간격 - Protoss_Pylon 건물의 경우 - 게임 초기에
 	public static int BuildingPylonEarlyStageSpacing = 4;

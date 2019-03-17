@@ -9,16 +9,16 @@ import bwta.Region;
 import org.monster.board.StrategyBoard;
 import org.monster.common.LagObserver;
 import org.monster.common.UnitInfo;
-import org.monster.common.constant.CommonCode;
+import org.monster.common.constant.UnitFindStatus;
 import org.monster.common.util.BaseUtils;
-import org.monster.common.util.ChokePointUtils;
+import org.monster.common.util.ChokeUtils;
 import org.monster.common.util.CommandUtils;
 import org.monster.common.util.MicroUtils;
 import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.UnitUtils;
-import org.monster.micro.KitingOption;
 import org.monster.strategy.manage.PositionFinder;
 import org.monster.strategy.manage.PositionFinder.CampType;
+import org.monster.micro.KitingOption;
 
 import java.util.Collection;
 import java.util.List;
@@ -58,8 +58,8 @@ public class MarineControl extends Control {
 //                //TODO remove
 //                Position holdConPosition = null; //InformationManager.Instance().isHoldConPosition();
 //                safePosition = (InformationManager.Instance().isSafePosition() == null) ? BlockingEntrance.Instance().first_supple.toPosition() : safePosition;
-//                holdConPosition = ChokePointUtils.myFirstChoke().getPoint();
-//                Position firstCheokePoint = ChokePointUtils.myFirstChoke().getCenter();
+//                holdConPosition = ChokeUtils.myFirstChoke().getPoint();
+//                Position firstCheokePoint = ChokeUtils.myFirstChoke().getCenter();
 //
 //                MicroDecision decision = decisionMaker.makeDecision(marine, euiList);
 //
@@ -157,7 +157,7 @@ public class MarineControl extends Control {
 //
 //                MicroDecision decision = decisionMaker.makeDecision(marine, euiList);
 //                if (decision.type == MicroDecision.MicroDecisionType.KITING_UNIT) {
-//                    Unit enemyInSight = UnitUtils.unitInSight(decision.eui);
+//                    Unit enemyInSight = UnitUtils.enemyUnitInSight(decision.eui);
 //
 //                    if (marineDangerousOutOfMyRegion(marine, decision.eui)) {
 //                        intoTheBunker(bunker, marine);
@@ -207,13 +207,13 @@ public class MarineControl extends Control {
     }
 
     public Unit getCompleteBunker(Region campRegion) {
-        Collection<Unit> bunkers = UnitUtils.getUnitList(CommonCode.UnitFindRange.COMPLETE, UnitType.Terran_Bunker);
-        return UnitUtils.getClosestUnitToPosition(bunkers, ChokePointUtils.mySecondChoke().getCenter());
+        Collection<Unit> bunkers = UnitUtils.getCompletedUnitList(UnitType.Terran_Bunker);
+        return UnitUtils.getClosestUnitToPosition(bunkers, ChokeUtils.mySecondChoke().getCenter());
     }
 
     private Unit getIncompleteBunker(Region campRegion) {
-        Collection<Unit> bunkers = UnitUtils.getUnitList(CommonCode.UnitFindRange.INCOMPLETE, UnitType.Terran_Bunker);
-        return UnitUtils.getClosestUnitToPosition(bunkers, ChokePointUtils.mySecondChoke().getCenter());
+        Collection<Unit> bunkers = UnitUtils.getUnitList(UnitFindStatus.INCOMPLETE, UnitType.Terran_Bunker);
+        return UnitUtils.getClosestUnitToPosition(bunkers, ChokeUtils.mySecondChoke().getCenter());
     }
 
     private void intoTheBunker(Unit bunker, Unit marine) {
@@ -257,7 +257,7 @@ public class MarineControl extends Control {
         CampType campType = StrategyBoard.campType;
         // 베이스 지역 OK
         if (campType == PositionFinder.CampType.INSIDE || campType == PositionFinder.CampType.FIRST_CHOKE) {
-            Position firstCheokePoint = ChokePointUtils.myFirstChoke().getPoint();
+            Position firstCheokePoint = ChokeUtils.myFirstChoke().getPoint();
 
             if (eui != null && !MicroUtils.isRangeUnit(eui.getType())) {
                 if (marine.getDistance(firstCheokePoint) < NEAR_BASE_DISTANCE) {
@@ -295,14 +295,14 @@ public class MarineControl extends Control {
 		
 		
 	/*	// 세번째 지역까지 OK
-		if (unitRegion == InfoUtils.myThirdRegion()) {
+		if (unitRegion == UnitTypeUtils.myThirdRegion()) {
 			return true;
 		}
 		if (campType == PositionFinder.CampType.SECOND_CHOKE) {
 			return true;
 		}
 		// 세번째 지역 반경 OK
-		if (marine.getDistance(InfoUtils.myThirdRegion()) < 500) {
+		if (marine.getDistance(UnitTypeUtils.myThirdRegion()) < 500) {
 			return true;
 		}*/
 

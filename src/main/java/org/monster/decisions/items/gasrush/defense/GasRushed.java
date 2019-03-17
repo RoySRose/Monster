@@ -1,7 +1,25 @@
 package org.monster.decisions.items.gasrush.defense;
 
+import org.monster.board.Decision;
+import org.monster.decisions.DecisionMaker;
+import org.monster.decisions.DefaultDecisionMaker;
+
 //TODO gas 러쉬를 당했는지 판단하기 위한 클래스
-public class GasRushed {
+public class GasRushed extends DefaultDecisionMaker implements DecisionMaker {
+
+    public GasRushed() {
+        super(Decision.GasRushed);
+    }
+
+    @Override
+    public boolean calculateDecision() {
+        return true;
+    }
+
+    @Override
+    public void decisionLogic() {
+
+    }
 
 //    private Unit gasRushEnemyRefi;
 //    private boolean gasRushed;
@@ -13,7 +31,7 @@ public class GasRushed {
 //
 //    if (checkGasRush == true) {
 //
-//        for (Unit unit : Monster.Broodwar.self().getUnits()) {
+//        for (Unit unit : UnitUtils.getUnitList()) {
 //            if (unit.getType() == UnitType.Terran_Refinery && unit.isCompleted() && myfirstGas != null) {
 //                if (myfirstGas.getPosition().equals(unit.getPosition())) {
 ////						//FileUtils.appendTextToFile("log.txt", "\n Information checkGasRush :: we have Refinery :: not danger gas rush");
@@ -21,8 +39,8 @@ public class GasRushed {
 //                }
 //            }
 //        }
-//        for (Unit unit : Monster.Broodwar.enemy().getUnits()) {
-//            if (unit.getType() == InfoUtils.getRefineryBuildingType(enemyRace) && myfirstGas != null) {
+//        for (Unit unit : UnitUtils.getEnemyVisibleUnitInfoList()) {
+//            if (unit.getType() == UnitTypeUtils.getRefineryBuildingType(enemyRace) && myfirstGas != null) {
 //                if (myfirstGas.getPosition().equals(unit.getPosition())) {
 ////						//FileUtils.appendTextToFile("log.txt", "\n  checkGasRush :: gasRsuhed is true :: "+ Prebot.Broodwar.getFrameCount() + " :: " + unit.getType());
 //                    gasRushed = true;// 가스 러쉬 당함

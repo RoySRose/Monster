@@ -3,19 +3,14 @@ package org.monster.strategy.manage;
 import bwapi.TilePosition;
 import bwapi.Unit;
 import bwta.BaseLocation;
-import org.monster.common.util.BaseUtils;
-import org.monster.main.Monster;
 import org.monster.common.UnitInfo;
 import org.monster.common.constant.CommonCode;
-import org.monster.common.util.BaseLocationUtils;
-import org.monster.common.util.TilePositionUtils;
-import org.monster.common.util.TimeUtils;
-import org.monster.common.util.UnitUtils;
+import org.monster.common.util.*;
 import org.monster.common.util.internal.IConditions;
-import org.monster.micro.constant.MicroConfig;
-import org.monster.micro.predictor.GuerillaScore;
-import org.monster.micro.predictor.VultureFightPredictor;
 import org.monster.strategy.TravelSite;
+import org.monster.micro.compute.GuerillaScore;
+import org.monster.micro.compute.VultureFightPredictor;
+import org.monster.micro.constant.MicroConfig;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -77,7 +72,7 @@ public class VultureTravelManager {
         if (!travelSites.isEmpty()) {
             return;
         }
-        List<BaseLocation> otherBases = BaseUtils.enemyOtherExpansions();
+        List<BaseLocation> otherBases = BaseUtils.otherExpansions();
         if (otherBases.isEmpty()) {
             return;
         }
@@ -87,12 +82,12 @@ public class VultureTravelManager {
 
         BaseLocation beforeBase = null;
         BaseLocation closeBase = null;
-        TilePosition centerTilePosition = TilePositionUtils.getCenterTilePosition();
+        TilePosition centerTilePosition = CommonCode.CENTER_TILE_POS;
         for (int i = 0; i < otherBases.size(); i++) {
             if (beforeBase == null) {
                 beforeBase = BaseUtils.myFirstExpansion();
             }
-            closeBase = BaseLocationUtils.getGroundClosestBaseToPosition(otherBases, beforeBase, new IConditions.BaseCondition() {
+            closeBase = BaseUtils.getGroundClosestBaseFromPosition(otherBases, beforeBase, new IConditions.BaseCondition() {
                 @Override
                 public boolean correspond(BaseLocation base) {
                     return !baseSet.contains(base);
@@ -124,7 +119,7 @@ public class VultureTravelManager {
     private void updateVisitFrame() {
         // 시야가 밝혀졌다면 visitFrame을 계속 업데이트 한다.
         for (TravelSite travelSite : travelSites) {
-            if (Monster.Broodwar.isVisible(travelSite.baseLocation.getTilePosition())) {
+            if (MapUtils.isVisible(travelSite.baseLocation.getTilePosition())) {
                 travelSite.visitFrame = TimeUtils.getFrame();
             }
         }
@@ -139,7 +134,7 @@ public class VultureTravelManager {
 
         for (Integer vultureId : checkerSiteMap2.keySet()) {
             // 유효하지 않은 벌처
-            Unit checker = Monster.Broodwar.getUnit(vultureId);
+            Unit checker = UnitUtils.enemyUnitInSight(vultureId);
             if (!UnitUtils.isCompleteValidUnit(checker)) {
                 invalidList.add(checker.getID());
                 continue;
@@ -183,7 +178,7 @@ public class VultureTravelManager {
         String ignoreExpiredSquadName = null;
         for (String squadName : guerillaIgnoreMap.keySet()) {
             Integer startTime = guerillaIgnoreMap.get(squadName);
-            if (startTime != null && TimeUtils.elapsedFrames(startTime) > MicroConfig.Vulture.GEURILLA_IGNORE_FRAME) {
+            if (startTime != null && TimeUtils.getFrame(startTime) > MicroConfig.Vulture.GEURILLA_IGNORE_FRAME) {
                 ignoreExpiredSquadName = squadName;
                 break;
             }
@@ -196,12 +191,12 @@ public class VultureTravelManager {
     private void refreshRetiredCheckers() {
         List<Integer> removeList = new ArrayList<>();
         for (Integer checkerId : checkerRetiredTimeMap.keySet()) {
-            Unit checker = Monster.Broodwar.getUnit(checkerId);
+            Unit checker = UnitUtils.enemyUnitInSight(checkerId);
             if (!UnitUtils.isCompleteValidUnit(checker)) {
                 removeList.add(checkerId);
             } else {
                 int retiredTime = checkerRetiredTimeMap.get(checkerId);
-                if (TimeUtils.elapsedFrames(retiredTime) > MicroConfig.Vulture.CHECKER_RETIRE_FRAME) {
+                if (TimeUtils.getFrame(retiredTime) > MicroConfig.Vulture.CHECKER_RETIRE_FRAME) {
                     removeList.add(checkerId);
                 }
             }
@@ -244,7 +239,7 @@ public class VultureTravelManager {
         TravelSite bestTravelSite = null;
 
         for (TravelSite travelSite : travelSites) {
-            if (assignableVultures.size() < MicroConfig.Vulture.GEURILLA_FREE_VULTURE_COUNT && TimeUtils.elapsedFrames(travelSite.guerillaExamFrame) < MicroConfig.Vulture.GEURILLA_INTERVAL_FRAME) {
+            if (assignableVultures.size() < MicroConfig.Vulture.GEURILLA_FREE_VULTURE_COUNT && TimeUtils.getFrame(travelSite.guerillaExamFrame) < MicroConfig.Vulture.GEURILLA_INTERVAL_FRAME) {
                 continue;
             }
 

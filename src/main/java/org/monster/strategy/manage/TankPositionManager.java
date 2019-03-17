@@ -6,9 +6,9 @@ import bwapi.UnitType;
 import bwta.BWTA;
 import bwta.BaseLocation;
 import bwta.Chokepoint;
-import org.monster.common.util.BaseUtils;
-import org.monster.main.Monster;
 import org.monster.common.constant.CommonCode;
+import org.monster.common.constant.PlayerRange;
+import org.monster.common.util.BaseUtils;
 import org.monster.common.util.MicroUtils;
 import org.monster.common.util.PositionUtils;
 import org.monster.common.util.TimeUtils;
@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+@Deprecated
 public class TankPositionManager {
 
     private static final int NARROW_WIDTH = 250;
@@ -53,7 +54,7 @@ public class TankPositionManager {
         List<Integer> expiredList = new ArrayList<>();
         for (Integer tankId : siegeModeReservedMap.keySet()) {
             PositionReserveInfo mineReserved = siegeModeReservedMap.get(tankId);
-            if (TimeUtils.elapsedFrames(mineReserved.reservedFrame) > POSITION_EXPIRE_FRAME) {
+            if (TimeUtils.getFrame(mineReserved.reservedFrame) > POSITION_EXPIRE_FRAME) {
                 expiredList.add(tankId);
             }
         }
@@ -103,11 +104,11 @@ public class TankPositionManager {
                             continue;
                         }
 
-                        List<Unit> siegeModeTanks = UnitUtils.getUnitsInRadius(CommonCode.PlayerRange.SELF, movePosition, SIEGE_ARRANGE_RADIUS, UnitType.Terran_Siege_Tank_Siege_Mode);
+                        List<Unit> siegeModeTanks = UnitUtils.getUnitsInRadius(PlayerRange.SELF, movePosition, SIEGE_ARRANGE_RADIUS, UnitType.Terran_Siege_Tank_Siege_Mode);
                         int reservedCount = getPositionReserveCountInRadius(movePosition, SIEGE_ARRANGE_RADIUS);
 
                         if (siegeModeTanks.size() + reservedCount < seigeNumLimit) {
-                            PositionReserveInfo reserveInfo = new PositionReserveInfo(tank.getID(), movePosition, TimeUtils.elapsedFrames());
+                            PositionReserveInfo reserveInfo = new PositionReserveInfo(tank.getID(), movePosition, TimeUtils.getFrame());
                             if (siegeModeReservedMap.containsValue(reserveInfo)) {
                                 continue;
                             }
@@ -143,7 +144,7 @@ public class TankPositionManager {
     private int getPositionReserveCountInRadius(Position position, int radius) {
         int count = 0;
         for (PositionReserveInfo positionReserveInfo : siegeModeReservedMap.values()) {
-            Unit tank = Monster.Broodwar.getUnit(positionReserveInfo.unitId);
+            Unit tank = UnitUtils.enemyUnitInSight(positionReserveInfo.unitId);
             if (tank.isSieged()) {
                 continue;
             }
@@ -170,7 +171,7 @@ public class TankPositionManager {
         }
 
         Position leftPosition = new Position(position.getX() - 30, position.getY());
-        List<Unit> nearUnitList = UnitUtils.getUnitsInRadius(CommonCode.PlayerRange.SELF, leftPosition, NEAR_BUILDING_DISTANCE);
+        List<Unit> nearUnitList = UnitUtils.getUnitsInRadius(PlayerRange.SELF, leftPosition, NEAR_BUILDING_DISTANCE);
         for (Unit nearUnit : nearUnitList) {
             if (nearUnit.getType().isBuilding() && nearUnit.getType().canBuildAddon()) {
                 return false;
@@ -178,7 +179,7 @@ public class TankPositionManager {
         }
 
 
-        List<Unit> unitList = Monster.Broodwar.getUnitsOnTile(position.getX(), position.getY());
+        List<Unit> unitList = UnitUtils.getUnitsOnTile(position.toTilePosition());
         for (Unit unit : unitList) {
             if (unit.getType().isBuilding()) {
                 return false;

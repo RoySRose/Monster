@@ -5,20 +5,19 @@ import bwapi.UnitType;
 import bwta.BWTA;
 import bwta.BaseLocation;
 import bwta.Region;
+import org.monster.board.StrategyBoard;
 import org.monster.common.UnitInfo;
-import org.monster.common.constant.CommonCode;
+import org.monster.common.constant.PlayerRange;
 import org.monster.common.util.BaseUtils;
 import org.monster.common.util.CommandUtils;
-import org.monster.common.util.InfoUtils;
 import org.monster.common.util.MicroUtils;
 import org.monster.common.util.UnitUtils;
-import org.monster.micro.targeting.DefaultTargetCalculator;
-import org.monster.board.StrategyBoard;
 import org.monster.micro.FleeOption;
 import org.monster.micro.KitingOption;
 import org.monster.micro.MicroDecision;
 import org.monster.micro.MicroDecisionMaker;
 import org.monster.micro.constant.MicroConfig;
+import org.monster.micro.targeting.DefaultTargetCalculator;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -42,11 +41,11 @@ public class ScoutDefenseSquad extends Squad {
     public List<Unit> recruit(List<Unit> assignableUnitList) {
         BaseLocation myBase = BaseUtils.myMainBase();
         Region myRegion = BWTA.getRegion(myBase.getPosition());
-        List<UnitInfo> euiList = InfoUtils.euiListInMyRegion(myRegion);
+        List<UnitInfo> euiList = UnitUtils.euiListInMyRegion(myRegion);
 
         List<Unit> enemyUnitList = new ArrayList<>(); // 메인베이스 지역 내의 시야에 있는 적 리스트
         for (UnitInfo eui : euiList) {
-            Unit enemyUnit = UnitUtils.unitInSight(eui);
+            Unit enemyUnit = UnitUtils.enemyUnitInSight(eui);
             if (enemyUnit != null) {
                 enemyUnitList.add(enemyUnit);
             }
@@ -57,7 +56,7 @@ public class ScoutDefenseSquad extends Squad {
 
         // 메인베이스와 가장 가까운 적 유닛이, 아군유닛의 REACT_RADIUS 내로 들어왔으면 유닛 할당
         Unit closeEnemyUnit = UnitUtils.getClosestUnitToPosition(enemyUnitList, myBase.getPosition());
-        List<Unit> myUnitList = UnitUtils.getUnitsInRadius(CommonCode.PlayerRange.SELF, closeEnemyUnit.getPosition(), REACT_RADIUS);
+        List<Unit> myUnitList = UnitUtils.getUnitsInRadius(PlayerRange.SELF, closeEnemyUnit.getPosition(), REACT_RADIUS);
         if (myUnitList.isEmpty()) {
             return Collections.emptyList();
         }

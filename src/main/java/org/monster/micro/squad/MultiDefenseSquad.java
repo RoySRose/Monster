@@ -8,26 +8,27 @@ import org.monster.common.LagObserver;
 import org.monster.common.constant.CommonCode;
 import org.monster.common.util.MicroUtils;
 import org.monster.common.util.PlayerUtils;
-import org.monster.common.util.TilePositionUtils;
 import org.monster.common.util.TimeUtils;
 import org.monster.common.util.UnitUtils;
 import org.monster.micro.constant.MicroConfig;
+import org.monster.micro.control.groundforce.TankControl;
 import org.monster.micro.targeting.TargetFilter;
 
 import java.util.List;
 
 public class MultiDefenseSquad extends Squad {
 
-    private org.monster.micro.control.factory.TankControl tankControl = new org.monster.micro.control.factory.TankControl();
+    private TankControl tankControl = new TankControl();
     private MultiDefenseSquad.DefenseType type;
     private Unit commandCenter = null;
     private Position defensePosition = null;
     private int defenseUnitAssignedFrame = CommonCode.UNKNOWN;
+
     public MultiDefenseSquad(Position basePosition) {
         super(MicroConfig.SquadInfo.MULTI_DEFENSE_, basePosition);
         setUnitType(UnitType.Terran_Siege_Tank_Tank_Mode, UnitType.Terran_Siege_Tank_Siege_Mode, UnitType.Terran_Vulture);
 
-        Position centerPosition = TilePositionUtils.getCenterTilePosition().toPosition();
+        Position centerPosition = CommonCode.CENTER_POS;
         double radian = MicroUtils.targetDirectionRadian(centerPosition, basePosition);
         Position defensePosition = MicroUtils.getMovePosition(centerPosition, radian, 1000).makeValid();
 
@@ -57,9 +58,9 @@ public class MultiDefenseSquad extends Squad {
 
     public boolean alreadyDefenseUnitAssigned() {
         if (type == MultiDefenseSquad.DefenseType.CENTER_DEFENSE) {
-            return TimeUtils.elapsedFrames(defenseUnitAssignedFrame) < 2 * TimeUtils.MINUTE;
+            return TimeUtils.getFrame(defenseUnitAssignedFrame) < 2 * TimeUtils.MINUTE;
         } else {
-            return TimeUtils.elapsedFrames(defenseUnitAssignedFrame) < 30 * TimeUtils.SECOND;
+            return TimeUtils.getFrame(defenseUnitAssignedFrame) < 30 * TimeUtils.SECOND;
         }
     }
 
@@ -122,13 +123,13 @@ public class MultiDefenseSquad extends Squad {
         euiList.clear();
         Position targetPosition = getTargetPosition();
         for (Unit tank : unitList) {
-            if (!TimeUtils.executeUnitRotation(tank, LagObserver.groupsize())) {
+            if (!TimeUtils.isExecuteFrame(tank, LagObserver.groupsize())) {
                 continue;
             }
             if (tank.getDistance(targetPosition) < 250) {
                 continue;
             }
-            if (!TimeUtils.executeUnitRotation(tank, LagObserver.groupsize())) {
+            if (!TimeUtils.isExecuteFrame(tank, LagObserver.groupsize())) {
                 continue;
             }
             UnitUtils.addEnemyUnitInfosInRadiusForGround(euiList, tank.getPosition(), 100);

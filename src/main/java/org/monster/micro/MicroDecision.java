@@ -8,6 +8,7 @@ public class MicroDecision {
     public MicroDecisionType type;
     public Unit myUnit;
     public UnitInfo eui;
+
     private MicroDecision(MicroDecisionType type, Unit myUnit) {
         this.type = type;
         this.myUnit = myUnit;

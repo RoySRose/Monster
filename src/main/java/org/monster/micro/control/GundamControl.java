@@ -57,7 +57,7 @@ public class GundamControl extends Control {
                 CommandUtils.attackUnit(worker, eui.getUnit());
             } else {
                 UnitInfo enemyUnitInfo = getClosestEnemyUnitFromWorker(enemyUnit, worker);
-                //Unit unitInSight = UnitUtils.unitInSight(closeBuildingInfo);
+                //Unit enemyUnitInSight = UnitUtils.enemyUnitInSight(closeBuildingInfo);
                 if (enemyUnitInfo != null) {
                     WorkerManager.Instance().setCombatWorker(worker);
                     CommandUtils.attackUnit(worker, enemyUnitInfo.getUnit());

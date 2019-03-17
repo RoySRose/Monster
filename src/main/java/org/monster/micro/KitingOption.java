@@ -4,6 +4,7 @@ public class KitingOption {
 
     public FleeOption fOption;
     public CoolTimeAttack cooltimeAlwaysAttack;
+
     public KitingOption(FleeOption fOption, CoolTimeAttack cooltimeAlwaysAttack) {
         this.fOption = fOption;
         this.cooltimeAlwaysAttack = cooltimeAlwaysAttack;

@@ -1,12 +1,12 @@
 package org.monster.strategy.analyse.terran;
 
 import bwapi.UnitType;
-import org.monster.strategy.analyse.UnitAnalyser;
-import org.monster.decisions.constant.EnemyStrategy;
 import org.monster.common.UnitInfo;
+import org.monster.strategy.constant.EnemyStrategy;
 import org.monster.strategy.analyse.Clue;
+import org.monster.strategy.analyse.UnitAnalyser;
 import org.monster.strategy.manage.ClueManager;
-import org.monster.strategy.manage.StrategyAnalyseManager;
+import org.monster.strategy.manage.EnemyStrategyAnalyzer;
 
 import java.util.List;
 
@@ -46,7 +46,7 @@ public class FactoryAnalyser extends UnitAnalyser {
             }
         } else {
             int firstBuildFrame = EnemyStrategy.TERRAN_2FAC.buildTimeMap.frame(UnitType.Terran_Barracks, 30);
-            int baseLastCheckFrame = StrategyAnalyseManager.Instance().lastCheckFrame(StrategyAnalyseManager.LastCheckLocation.BASE);
+            int baseLastCheckFrame = EnemyStrategyAnalyzer.Instance().lastCheckFrame(EnemyStrategyAnalyzer.LastCheckLocation.BASE);
             if (baseLastCheckFrame > firstBuildFrame) {
                 ClueManager.Instance().addClueInfo(Clue.ClueInfo.FACTORY_NOT_FOUND);
             }

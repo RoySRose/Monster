@@ -1,6 +1,6 @@
 package org.monster.debugger.chat.impl;
 
-import org.monster.main.PreBotUXManager;
+import org.monster.debugger.PreBotUXManager;
 import org.monster.debugger.chat.ChatExecuter;
 
 public class UxOptionChanger extends ChatExecuter {

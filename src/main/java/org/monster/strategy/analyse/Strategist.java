@@ -7,8 +7,8 @@ import org.monster.common.constant.CommonCode;
 import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.TimeUtils;
 import org.monster.common.util.UnitUtils;
-import org.monster.decisions.constant.EnemyStrategyOptions;
-import org.monster.decisions.constant.EnemyStrategy;
+import org.monster.strategy.constant.EnemyStrategy;
+import org.monster.strategy.constant.EnemyStrategyOptions;
 import org.monster.strategy.manage.ClueManager;
 import org.monster.strategy.manage.EnemyBuildTimer;
 
@@ -87,7 +87,7 @@ public abstract class Strategist {
 
         } else {
             // default mission
-            if (UnitUtils.getUnitList(CommonCode.UnitFindRange.COMPLETE, UnitType.Terran_Command_Center).size() < 2) {
+            if (UnitUtils.getCompletedUnitCount(UnitType.Terran_Command_Center) < 2) {
                 return false;
             }
 

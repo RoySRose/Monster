@@ -7,18 +7,18 @@ import bwapi.UnitType;
 import org.monster.board.StrategyBoard;
 import org.monster.common.UnitInfo;
 import org.monster.common.constant.CommonCode;
+import org.monster.common.util.UnitTypeUtils;
 import org.monster.common.util.MicroUtils;
 import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.UnitUtils;
-import org.monster.decisions.constant.StrategyCode;
-import org.monster.decisions.constant.StrategyConfig;
-import org.monster.main.Monster;
-import org.monster.micro.constant.MicroConfig;
-import org.monster.micro.predictor.WraithFightPredictor;
-import org.monster.micro.targeting.TargetScoreCalculator;
-import org.monster.micro.targeting.WraithTargetCalculator;
+import org.monster.strategy.constant.StrategyCode;
+import org.monster.strategy.constant.StrategyConfig;
 import org.monster.strategy.manage.AirForceManager;
 import org.monster.strategy.manage.AirForceTeam;
+import org.monster.micro.compute.WraithFightPredictor;
+import org.monster.micro.constant.MicroConfig;
+import org.monster.micro.targeting.TargetScoreCalculator;
+import org.monster.micro.targeting.WraithTargetCalculator;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -49,7 +49,7 @@ public class MicroDecisionMaker {
             if (!MicroUtils.canAttack(myUnit, eui)) {
                 continue;
             }
-            Unit enemyUnit = UnitUtils.unitInSight(eui);
+            Unit enemyUnit = UnitUtils.enemyUnitInSight(eui);
             if (enemyUnit == null) {
                 if (bestTargetUnitInfo == null) {
                     int distanceToTarget = myUnit.getDistance(eui.getLastPosition());
@@ -125,7 +125,7 @@ public class MicroDecisionMaker {
             }
 
             boolean isAirDefenseBuilding = false;
-            for (UnitType airDefenseUnitType : UnitUtils.enemyAirDefenseUnitType()) {
+            for (UnitType airDefenseUnitType : UnitTypeUtils.enemyAirDefenseUnitType()) {
                 if (eui.getType() == airDefenseUnitType) {
                     isAirDefenseBuilding = true;
                     break;
@@ -154,11 +154,11 @@ public class MicroDecisionMaker {
 
         // air driving 오차로 상대 건물 공격범위안으로 들어왔을 경우
         for (UnitInfo eui : euiListAirDefenseBuilding) {
-            Unit enemyUnit = UnitUtils.unitInSight(eui);
+            Unit enemyUnit = UnitUtils.enemyUnitInSight(eui);
             if (enemyUnit != null) {
                 // 벙커 별도 처리
                 if (enemyUnit.getType() == UnitType.Terran_Bunker) {
-                    int range = Monster.Broodwar.enemy().weaponMaxRange(UnitType.Terran_Marine.groundWeapon()) + 64;// + AirForceManager.AIR_FORCE_SAFE_DISTANCE;
+                    int range = PlayerUtils.enemyPlayer().weaponMaxRange(UnitType.Terran_Marine.groundWeapon()) + 64;// + AirForceManager.AIR_FORCE_SAFE_DISTANCE;
                     if (enemyUnit.getDistance(airForceTeam.leaderUnit) < range) {
                         return MicroDecision.fleeFromUnit(airForceTeam.leaderUnit, eui);
                     }
@@ -218,7 +218,7 @@ public class MicroDecisionMaker {
                     }
 
                     for (UnitInfo eui : euiListAirWeapon) {
-                        Unit unitInSight = UnitUtils.unitInSight(eui);
+                        Unit unitInSight = UnitUtils.enemyUnitInSight(eui);
                         if (unitInSight != null) {
                             if (isInWeaponRangeSafely(unitInSight, airForceTeam.leaderUnit)) {
                                 return MicroDecision.fleeFromUnit(airForceTeam.leaderUnit, eui);
@@ -251,7 +251,7 @@ public class MicroDecisionMaker {
         } else {
             // isInWeaponRange는 제외해도 괜찮다.
             int enemyUnitDistance = myUnit.getDistance(enemyUnit);
-            int weaponMaxRange = Monster.Broodwar.enemy().weaponMaxRange(enemyUnit.getType().airWeapon()) + 30;
+            int weaponMaxRange = PlayerUtils.enemyPlayer().weaponMaxRange(enemyUnit.getType().airWeapon()) + 30;
 
             if (enemyUnit.getType() == UnitType.Terran_Goliath) {
                 weaponMaxRange += 300;
@@ -274,7 +274,7 @@ public class MicroDecisionMaker {
         boolean inWeaponRange = false;
         boolean protectedByBuilding = false;
         for (UnitInfo eui : euiListTarget) {
-            Unit enemyInSight = UnitUtils.unitInSight(eui);
+            Unit enemyInSight = UnitUtils.enemyUnitInSight(eui);
             if (enemyInSight != null) {
                 if (!enemyInSight.isDetected()) {
                     continue;
@@ -328,7 +328,7 @@ public class MicroDecisionMaker {
                     continue;
                 }
 
-                Unit enemyUnit = UnitUtils.unitInSight(eui);
+                Unit enemyUnit = UnitUtils.enemyUnitInSight(eui);
                 if (enemyUnit == null) {
                     continue;
                 }
@@ -427,7 +427,7 @@ public class MicroDecisionMaker {
         Position enemyPosition = eui.getLastPosition();
         UnitType enemyUnitType = eui.getType();
 
-        Unit enemyUnit = UnitUtils.unitInSight(eui);
+        Unit enemyUnit = UnitUtils.enemyUnitInSight(eui);
         if (UnitUtils.isValidUnit(enemyUnit)) {
             enemyIsComplete = enemyUnit.isCompleted();
             enemyPosition = enemyUnit.getPosition();
@@ -444,12 +444,12 @@ public class MicroDecisionMaker {
         int enemyWeaponRange = 0;
 
         if (enemyUnitType == UnitType.Terran_Bunker) {
-            enemyWeaponRange = Monster.Broodwar.enemy().weaponMaxRange(UnitType.Terran_Marine.groundWeapon()) + 96;
+            enemyWeaponRange = PlayerUtils.enemyPlayer().weaponMaxRange(UnitType.Terran_Marine.groundWeapon()) + 96;
         } else {
             if (myUnit.isFlying()) {
-                enemyWeaponRange = Monster.Broodwar.enemy().weaponMaxRange(enemyUnitType.airWeapon());
+                enemyWeaponRange = PlayerUtils.enemyPlayer().weaponMaxRange(enemyUnitType.airWeapon());
             } else {
-                enemyWeaponRange = Monster.Broodwar.enemy().weaponMaxRange(enemyUnitType.groundWeapon());
+                enemyWeaponRange = PlayerUtils.enemyPlayer().weaponMaxRange(enemyUnitType.groundWeapon());
             }
         }
         return distanceToNearEnemy <= enemyWeaponRange + BACKOFF_DIST;
@@ -458,7 +458,7 @@ public class MicroDecisionMaker {
     // 접근하면 안되는 적이 있는지 판단 (성큰, 포톤캐논, 시즈탱크, 벙커)
     private boolean isDangerousType(Unit myUnit, UnitType enemyUnitType, Unit enemyUnit) {
         if (myUnit.isFlying()) {
-            UnitType[] enemyAirDefenseUnitType = UnitUtils.enemyAirDefenseUnitType();
+            UnitType[] enemyAirDefenseUnitType = UnitTypeUtils.enemyAirDefenseUnitType();
             for (UnitType airDefenseUnitType : enemyAirDefenseUnitType) {
                 if (enemyUnitType == airDefenseUnitType) {
                     return true;
@@ -482,7 +482,7 @@ public class MicroDecisionMaker {
             return false;
         }
 
-        Unit enemyUnit = UnitUtils.unitInSight(eui);
+        Unit enemyUnit = UnitUtils.enemyUnitInSight(eui);
         if (enemyUnit == null || enemyUnit.isDetected()) {
             return false;
         }

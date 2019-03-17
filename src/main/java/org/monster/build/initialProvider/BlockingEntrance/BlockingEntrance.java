@@ -7,22 +7,20 @@ import bwapi.Unit;
 import bwapi.UnitType;
 import org.monster.common.util.MapUtils;
 import org.monster.common.util.PlayerUtils;
-import org.monster.common.util.internal.MapSpecificInformation;
+import org.monster.common.util.internal.GameMap;
 
 import java.util.HashMap;
 
-//
+@Deprecated
 public class BlockingEntrance {
 
-    private Game broodwar;
     public static boolean entranceBlock = true;
     private static BlockingEntrance instance = new BlockingEntrance();
     private static Location loc_t = null;
     private final int SMALL = 42;
     private final int BIG = 84;
-    ;
     private final int CENTER = 64;
-
+    ;
     //필요한것
     //스타팅 위치
     //첫 서플 위치
@@ -44,9 +42,10 @@ public class BlockingEntrance {
     public TilePosition bunker1 = TilePosition.None;
     public TilePosition bunker2 = TilePosition.None;
     public TilePosition entrance_turret1 = TilePosition.None;
-
     //public TilePosition entrance_turret = TilePosition.None;
     public TilePosition entrance_turret2 = TilePosition.None;
+    //    private int starting_int = 0;
+    public TilePosition supply_area = TilePosition.None;
 
 //    private static int first_suppleX_array[] = null;// new int [];//{29, 52, 96, 102, 93, 55, 12, 23};
 //    private static int first_suppleY_array[] = null;//new int []{19, 23, 21,   61, 95, 94, 97, 54};
@@ -65,12 +64,10 @@ public class BlockingEntrance {
 //
 //    private static int fix_supplyX[] = null; //new int []{26, 54, 98, 104, 90, 52, 14, 20};
 //    private static int fix_supplyY[] = null; //new int []{21, 25, 23,   63, 97, 96, 99, 56};
-
-//    private int starting_int = 0;
-    public TilePosition supply_area = TilePosition.None;
     public TilePosition starport1 = TilePosition.None;
     public TilePosition starport2 = TilePosition.None;
     public Location loc = Location.START;
+    private Game broodwar;
     private Map mapName = null;
     private HashMap<Integer, TilePosition> postitionStorage = new HashMap<>();
     
@@ -101,9 +98,9 @@ public class BlockingEntrance {
         }
 
 //        mapName = Map.CIRCUITBREAKER;
-        if (MapUtils.getMapSpecificInformation().getMap() == MapSpecificInformation.GameMap.FIGHTING_SPIRITS) {
+        if (MapUtils.getMap() == GameMap.FIGHTING_SPIRITS) {
             mapName = Map.FIGHTING_SPIRITS;
-        } else if (MapUtils.getMapSpecificInformation().getMap() == MapSpecificInformation.GameMap.CIRCUITBREAKER) {
+        } else if (MapUtils.getMap() == GameMap.CIRCUITBREAKER) {
             mapName = Map.CIRCUITBREAKER;
         } else {
             mapName = Map.UNKNOWN;
@@ -156,7 +153,7 @@ public class BlockingEntrance {
             yinc = false;
         }
 
-        if (MapUtils.getMapSpecificInformation().getMap() == MapSpecificInformation.GameMap.FIGHTING_SPIRITS) {
+        if (MapUtils.getMap() == GameMap.FIGHTING_SPIRITS) {
             xinc = true;
             yinc = true;
         }
@@ -171,10 +168,10 @@ public class BlockingEntrance {
     public void SetBlockingTilePosition() {
 
 //		서킷브레이커만 4X4
-        if (MapUtils.getMapSpecificInformation().getMap() == MapSpecificInformation.GameMap.CIRCUITBREAKER) {
+        if (MapUtils.getMap() == GameMap.CIRCUITBREAKER) {
             maxSupplyCntX = 7;
             maxSupplyCntY = 2;
-        } else if (MapUtils.getMapSpecificInformation().getMap() == MapSpecificInformation.GameMap.FIGHTING_SPIRITS) {
+        } else if (MapUtils.getMap() == GameMap.FIGHTING_SPIRITS) {
             maxSupplyCntX = 2;
             maxSupplyCntY = 7;
         }
@@ -206,7 +203,7 @@ public class BlockingEntrance {
 
 
 //    	맵 : Over_wath
-        if (MapUtils.getMapSpecificInformation().getMap() == MapSpecificInformation.GameMap.OVERWATCH) {
+        if (MapUtils.getMap() == GameMap.OVERWATCH) {
     		
     		
 			/*int[] fix_supplyXX = { 0, 115, 94, 0, 21 };
@@ -293,7 +290,7 @@ public class BlockingEntrance {
             }
 
 
-        } else if (MapUtils.getMapSpecificInformation().getMap() == MapSpecificInformation.GameMap.CIRCUITBREAKER) {
+        } else if (MapUtils.getMap() == GameMap.CIRCUITBREAKER) {
 
             postitionStorage.put(combine(Map.CIRCUITBREAKER, Location.One, Building.SUPPLY_AREA), new TilePosition(115, 0));
             postitionStorage.put(combine(Map.CIRCUITBREAKER, Location.Five, Building.SUPPLY_AREA), new TilePosition(115, 125));
@@ -405,7 +402,7 @@ public class BlockingEntrance {
             postitionStorage.put(combine(Map.CIRCUITBREAKER, Location.Five, Building.BARRACK_LAND), new TilePosition(105, 95));
             postitionStorage.put(combine(Map.CIRCUITBREAKER, Location.Seven, Building.BARRACK_LAND), new TilePosition(18, 95));
             postitionStorage.put(combine(Map.CIRCUITBREAKER, Location.Eleven, Building.BARRACK_LAND), new TilePosition(17, 31));
-        } else if (MapUtils.getMapSpecificInformation().getMap() == MapSpecificInformation.GameMap.FIGHTING_SPIRITS) {
+        } else if (MapUtils.getMap() == GameMap.FIGHTING_SPIRITS) {
 
 //    		System.out.println("맵 ==>> 투혼");
 
@@ -653,7 +650,7 @@ public class BlockingEntrance {
             yinc = false;
         }
 
-        if (MapUtils.getMapSpecificInformation().getMap() == MapSpecificInformation.GameMap.FIGHTING_SPIRITS) {
+        if (MapUtils.getMap() == GameMap.FIGHTING_SPIRITS) {
             xinc = true;
             yinc = true;
         }

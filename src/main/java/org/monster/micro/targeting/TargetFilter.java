@@ -21,7 +21,7 @@ public class TargetFilter {
     public static final int INVISIBLE = 256;
 
     public static boolean excludeByFilter(UnitInfo eui, int targetFilter) {
-        Unit target = UnitUtils.unitInSight(eui);
+        Unit target = UnitUtils.enemyUnitInSight(eui);
 
         if (target != null) {
             if (!UnitUtils.isValidUnit(target)) {

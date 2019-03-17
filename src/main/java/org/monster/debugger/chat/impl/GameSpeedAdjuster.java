@@ -1,16 +1,20 @@
 package org.monster.debugger.chat.impl;
 
-import org.monster.main.Monster;
+import bwapi.Game;
 import org.monster.debugger.chat.ChatExecuter;
+import org.monster.bootstrap.Monster;
 
 public class GameSpeedAdjuster extends ChatExecuter {
-    public GameSpeedAdjuster(char type) {
+    protected Game Broodwar;
+
+    public GameSpeedAdjuster(char type, Game Broodwar) {
         super(type);
+        this.Broodwar = Broodwar;
     }
 
     @Override
     public void execute(String option) {
         int optionInt = stringToInteger(option);
-        Monster.Broodwar.setLocalSpeed(optionInt);
+        Broodwar.setLocalSpeed(optionInt);
     }
 };

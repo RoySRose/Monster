@@ -3,15 +3,22 @@ package org.monster.common.util;
 import bwapi.Game;
 import bwapi.Player;
 import bwapi.Position;
+import bwapi.Race;
 import bwapi.TilePosition;
 import bwapi.Unit;
 import bwapi.UnitType;
 import bwta.BWTA;
 import bwta.BaseLocation;
-import bwta.Chokepoint;
 import bwta.Region;
 import org.monster.common.UnitInfo;
 import org.monster.common.constant.CommonCode;
+import org.monster.common.constant.EnemyUnitVisibleStatus;
+import org.monster.common.constant.RegionType;
+import org.monster.common.util.internal.IConditions;
+import org.monster.finder.position.dynamic.EnemyReadyToAttackPosFinder;
+import org.monster.finder.position.dynamic.MyReadyToAttackPosFinder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,106 +29,231 @@ import java.util.Set;
 
 public class BaseInfoCollector implements InfoCollector {
 
-    private static BaseInfoCollector instance = new BaseInfoCollector();
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    public static BaseInfoCollector Instance() {
+    private static BaseInfoCollector instance = new BaseInfoCollector();
+    protected static BaseInfoCollector Instance() {
         return instance;
     }
 
-    Game Broodwar;
-
+    private Game Broodwar;
+    private Player selfPlayer;
+    private Player enemyPlayer;
+    private EnemyBaseLocator enemyBaseLocator = new EnemyBaseLocator();;
+    private ChokeInfoCollector chokeInfoCollector;
+    private RegionInfoCollector regionInfoCollector;
 
     protected Map<Player, BaseLocation> mainBaseLocation = new HashMap();
     protected Map<Player, Boolean> mainBaseLocationChanged = new HashMap();
-    /// 해당 Player가 점령하고 있는 Region 이 있는 BaseLocation<br>
-    /// 건물 여부를 기준으로 파악하기 때문에 부적절하게 판단할수도 있습니다
     protected Map<Player, List<BaseLocation>> occupiedBaseLocations = new HashMap();
     protected Map<Player, BaseLocation> firstExpansionLocation = new HashMap();
     protected List<BaseLocation> islandBaseLocations = new ArrayList();
-
-    protected Map<Player, Chokepoint> firstChokePoint = new HashMap();
-    protected Map<Player, Chokepoint> secondChokePoint = new HashMap();
-
-    protected Map<Player, Region> thirdRegion = new HashMap();
-    protected Map<Player, Set<Region>> occupiedRegions = new HashMap();
-
-    protected BaseLocation enemyBaseExpected; // 적base 예상 지점
-
     //TODO needed?
     protected List<BaseLocation> otherExpansionLocations = new ArrayList();
-
-    private Player selfPlayer;
-    private Player enemyPlayer;
-
-    private EnemyBaseFinder enemyBaseFinder = new EnemyBaseFinder(Broodwar);;
-
-    ChokeInfoCollector chokeInfoCollector = ChokeInfoCollector.Instance();
-//    ChokeInfoCollector chokeInfoCollector = ChokeInfoCollector.Instance();
 
     @Override
     public void onStart(Game Broodwar) {
         this.Broodwar = Broodwar;
-        selfPlayer = Broodwar.self();
-        enemyPlayer = Broodwar.enemy();
+        this.selfPlayer = Broodwar.self();
+        this.enemyPlayer = Broodwar.enemy();
+        this.chokeInfoCollector = ChokeInfoCollector.Instance();
+        this.regionInfoCollector = RegionInfoCollector.Instance();
 
-        initialize();
+        this.occupiedBaseLocations.put(selfPlayer, new ArrayList<>());
+        this.occupiedBaseLocations.put(enemyPlayer, new ArrayList<>());
 
         updateIslandBases();
-        updateMyMainBase();
-
-        mainBaseLocation.put(enemyPlayer, null);
-        mainBaseLocationChanged.put(enemyPlayer, new Boolean(false));
+        initilizeBaseLocations();
 
         //TODO
         //updateChokePointAndExpansionLocation();
     }
 
-    private void initialize(){
-        occupiedBaseLocations.put(selfPlayer, new ArrayList<>());
-        occupiedBaseLocations.put(enemyPlayer, new ArrayList<>());
+    private void updateIslandBases() {
+        for (BaseLocation targetBaseLocation : BWTA.getBaseLocations()) {
+            if (targetBaseLocation.isIsland()) {
+                islandBaseLocations.add(targetBaseLocation);
+            }
+        }
     }
 
-    private void updateMyMainBase() {
+    private void initilizeBaseLocations() {
         mainBaseLocation.put(selfPlayer, BWTA.getStartLocation(selfPlayer));
         mainBaseLocationChanged.put(selfPlayer, new Boolean(true));
-        occupiedBaseLocations.get(selfPlayer).add(mainBaseLocation.get(selfPlayer));
-
-        checkChangesOfBase(selfPlayer);
+        mainBaseLocation.put(enemyPlayer, null);
+        mainBaseLocationChanged.put(enemyPlayer, new Boolean(false));
     }
 
-    private void checkChangesOfBase(Player player) {
+    @Override
+    public void update() {
+        findEnemyBaseLocation();
+        checkMainBases();
+        checkMainBases();
+        initializeAndUpdateOccupiedBase();
+    }
 
-        if (player == PlayerUtils.enemyPlayer()) {
-//            this.updateReadyToAttackPosition();
-//            this.updateOtherExpansionLocation(enemySourceBaseLocation);
+    private void findEnemyBaseLocation() {
+        enemyBaseLocator.search();
+    }
+
+    private void checkMainBases() {
+        checkMainBaseIfDestroyed(selfPlayer);
+        checkMainBaseIfDestroyed(enemyPlayer);
+
+        updateInfoByMainBaseChange(selfPlayer);
+        updateInfoByMainBaseChange(enemyPlayer);
+    }
+
+    private void checkMainBaseIfDestroyed(Player player) {
+
+        if (mainBaseLocation.get(player) != null) {
+
+            TilePosition baseTile = mainBaseLocation.get(player).getTilePosition();
+            if (player == PlayerUtils.enemyPlayer() && !Broodwar.isExplored(baseTile)) {
+                return;
+            }
+            if (existsPlayerBuildingInRegion(BWTA.getRegion(baseTile), player) == false) {
+                repickMainBase(player);
+            }
         }
+    }
+
+    private void repickMainBase(Player player) {
+        for (BaseLocation location : occupiedBaseLocations.get(player)) {
+            if (existsPlayerBuildingInRegion(BWTA.getRegion(location.getTilePosition()), player)) {
+                mainBaseLocation.put(player, location);
+                mainBaseLocationChanged.put(player, new Boolean(true));
+                break;
+            }
+        }
+    }
+
+    private void updateInfoByMainBaseChange(Player player) {
+
         if (mainBaseLocationChanged.get(player).booleanValue() == true) {
 
             if (mainBaseLocation.get(player) != null) {
                 BaseLocation myMainBaseLocation = mainBaseLocation.get(player);
-                System.out.println("* my MainBase changed" + myMainBaseLocation.getTilePosition());
+                logger.debug(player.getName() + "'s mains base changed" + myMainBaseLocation.getTilePosition());
 
                 //TODO 뒷마당 있는 맵에서는 vector 로 처리하거나, center air distance 추가 필요
                 BaseLocation myFirstExpansionLocation = findClosestBase(myMainBaseLocation);
                 firstExpansionLocation.put(player, myFirstExpansionLocation);
 
                 chokeInfoCollector.updateClosestChokePoints(player, myMainBaseLocation);
-                calculateThirdRegion(player);
+                regionInfoCollector.calculateThirdRegion(player);
 
+                //TODO 이게 정말 필요한것인가?
                 //this.updateOtherExpansionLocation(myMainBaseLocation);
             }
             mainBaseLocationChanged.put(player, new Boolean(false));
             TimeInfoCollector.Instance().clearBaseToBaseFrame();
+
+            if(player == PlayerUtils.enemyPlayer()) {
+                EnemyReadyToAttackPosFinder.setCalculate(true);
+            }else if(player == PlayerUtils.myPlayer()){
+                MyReadyToAttackPosFinder.setCalculate(true);
+            }
         }
     }
 
-    private void calculateThirdRegion(Player player) {
-        double radian = MicroUtils.targetDirectionRadian(
-                firstExpansionLocation.get(player).getPosition(),
-                secondChokePoint.get(player).getCenter());
-        Region myThirdRegion = BWTA.getRegion(
-                MicroUtils.getMovePosition(secondChokePoint.get(player).getCenter(), radian, 100));
-        thirdRegion.put(player, myThirdRegion);
+    private boolean existsPlayerBuildingInRegion(Region region, Player player) {
+        // invalid regions aren't considered the same, but they will both be null
+        if (region == null || player == null) {
+            return false;
+        }
+
+        if (player == PlayerUtils.myPlayer()) {
+            for (Unit unit : UnitUtils.getUnitList()) {
+                if (unit.getType().isBuilding()) {
+
+                    // Terran 종족의 Lifted 건물의 경우, BWTA.getRegion 결과가 null 이다
+                    if (BWTA.getRegion(unit.getPosition()) == null)
+                        continue;
+
+                    if (BWTA.getRegion(unit.getPosition()) == region) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        if (player == PlayerUtils.enemyPlayer()) {
+            for (UnitInfo unitInfo : UnitUtils.getEnemyUnitInfoList()) {
+
+                if (unitInfo.getType().isBuilding()) {
+
+                    //TODO 아래 로직으로 감지 안될거 같아서 isFlying 추가후 테스트 못함.
+                    // Terran 종족의 Lifted 건물의 경우, BWTA.getRegion 결과가 null 이다
+                    if (unitInfo.isFlying() && BWTA.getRegion(unitInfo.getLastPosition()) == null)
+                        continue;
+
+                    if (BWTA.getRegion(unitInfo.getLastPosition()) == region) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean hasBuildingAroundBaseLocation(BaseLocation baseLocation, Player player) {
+        return hasBuildingAroundBaseLocation(baseLocation, player, 10);
+    }
+
+    protected boolean hasBuildingAroundBaseLocation(BaseLocation baseLocation, Player player, int radius) {
+
+        // invalid regions aren't considered the same, but they will both be null
+        if (baseLocation == null) {
+            return false;
+        }
+
+        if (radius > 10) {
+            logger.error("radius 10 is almost everything on the screen");
+            radius = 10;
+        }
+
+        if (player == PlayerUtils.myPlayer()) {
+            for (Unit ui : UnitUtils.getUnitList()) {
+                if (ui.getType().isBuilding()) {
+
+                    TilePosition buildingPosition = ui.getTilePosition();
+
+                    if (BWTA.getRegion(buildingPosition) != BWTA.getRegion(baseLocation.getTilePosition())) {
+                        continue;
+                    }
+
+                    if (buildingPosition.getX() >= baseLocation.getTilePosition().getX() - radius
+                            && buildingPosition.getX() <= baseLocation.getTilePosition().getX() + radius
+                            && buildingPosition.getY() >= baseLocation.getTilePosition().getY() - radius
+                            && buildingPosition.getY() <= baseLocation.getTilePosition().getY() + radius) {
+                        return true;
+                    }
+                }
+            }
+        }
+
+        if (player == PlayerUtils.enemyPlayer()) {
+            for (UnitInfo ui : UnitUtils.getEnemyUnitInfoList()) {
+
+                if (ui.getType().isBuilding()) {
+
+                    TilePosition buildingPosition = ui.getLastPosition().toTilePosition();
+
+                    if (BWTA.getRegion(buildingPosition) != BWTA.getRegion(baseLocation.getTilePosition())) {
+                        continue;
+                    }
+
+                    if (buildingPosition.getX() >= baseLocation.getTilePosition().getX() - radius
+                            && buildingPosition.getX() <= baseLocation.getTilePosition().getX() + radius
+                            && buildingPosition.getY() >= baseLocation.getTilePosition().getY() - radius
+                            && buildingPosition.getY() <= baseLocation.getTilePosition().getY() + radius) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     protected BaseLocation findClosestBase(BaseLocation sourceBase) {
@@ -143,58 +275,13 @@ public class BaseInfoCollector implements InfoCollector {
         return closestFirstExpansion;
     }
 
-    private void updateIslandBases() {
-        for (BaseLocation targetBaseLocation : BWTA.getBaseLocations()) {
-            if (targetBaseLocation.isIsland()) {
-                islandBaseLocations.add(targetBaseLocation);
-            }
-        }
-    }
-
-
-    @Override
-    public void update() {
-        updateBaseLocationInfo();
-
-        //TODO 위치가 맞을지
-        updateChokePointAndExpansionLocation();
-        //TODO 위치가 맞을지
-        updateChokePointAndExpansionLocationEnemy();
-        checkChangesOfBases();
-        //TODO 위와 같이 나눔
-        //updateChokePointAndExpansionLocation();
-    }
-
-    private void checkChangesOfBases() {
-        checkChangesOfBase(selfPlayer);
-        checkChangesOfBase(enemyPlayer);
-    }
-
-
-    private void initializeOccupiedBaseNRegion() {
-        if (occupiedRegions.get(selfPlayer) != null) {
-            occupiedRegions.get(selfPlayer).clear();
-        }
-        if (occupiedRegions.get(enemyPlayer) != null) {
-            occupiedRegions.get(enemyPlayer).clear();
-        }
+    private void initializeAndUpdateOccupiedBase() {
         if (occupiedBaseLocations.get(selfPlayer) != null) {
             occupiedBaseLocations.get(selfPlayer).clear();
         }
         if (occupiedBaseLocations.get(enemyPlayer) != null) {
             occupiedBaseLocations.get(enemyPlayer).clear();
         }
-    }
-
-
-    public void updateBaseLocationInfo() {
-        initializeOccupiedBaseNRegion();
-
-        // enemy 의 startLocation을 아직 모르는 경우
-        if (mainBaseLocation.get(enemyPlayer) == null) {
-            findEnemyBaseLocation();
-        }
-
         // update occupied base location
         // 어떤 Base Location 에는 아군 건물, 적군 건물 모두 혼재해있어서 동시에 여러 Player 가 Occupy 하고
         // 있는 것으로 판정될 수 있다
@@ -207,431 +294,348 @@ public class BaseInfoCollector implements InfoCollector {
                 occupiedBaseLocations.get(selfPlayer).add(baseLocation);
             }
         }
+    }
 
-        if (mainBaseLocation.get(enemyPlayer) != null) {
+    protected BaseLocation getClosestBaseFromPosition(List<BaseLocation> baseList, Position position) {
+        return getClosestBaseFromPosition(baseList, position, new IConditions.BaseCondition() {
+            @Override
+            public boolean correspond(BaseLocation base) {
+                return true;
+            }
+        });
+    }
 
-            // 적 MainBaseLocation 업데이트 로직 버그 수정
-            // 적군의 빠른 앞마당 건물 건설 + 아군의 가장 마지막 정찰 방문의 경우,
-            // enemy의 mainBaseLocations를 방문안한 상태에서는 건물이 하나도 없다고 판단하여 mainBaseLocation 을 변경하는
-            // 현상이 발생해서 enemy의 mainBaseLocations을 실제 방문했었던 적이 한번은 있어야 한다라는 조건 추가.
-            TilePosition enemyBaseTile = mainBaseLocation.get(enemyPlayer).getTilePosition();
-            if (Broodwar.isExplored(enemyBaseTile)) {
-                if (existsPlayerBuildingInRegion(BWTA.getRegion(enemyBaseTile), enemyPlayer) == false) {
-                    System.out.println("not exist in enemy region. tile=" + enemyBaseTile);
+    /**
+     * baseList 중 position에 가장 가까운 base 리턴
+     */
+    private BaseLocation getClosestBaseFromPosition(List<BaseLocation> baseList, Position position, IConditions.BaseCondition baseCondition) {
+        if (baseList.size() == 0) {
+            return null;
+        }
 
-                    // 적이 차지한 곳 중에서 빌딩이 있는 지역을 enemyBase로 설정
-                    BaseLocation enemyBaseLocation = null;
-                    for (BaseLocation loaction : occupiedBaseLocations.get(enemyPlayer)) {
-                        if (existsPlayerBuildingInRegion(BWTA.getRegion(loaction.getTilePosition()), enemyPlayer)) {
-                            enemyBaseLocation = loaction;
-                            break;
-                        }
-                    }
+        if (!PositionUtils.isValidPosition(position)) {
+            return baseList.get(0);
+        }
 
-                    // 방문한 적이 없는 starting location으로 설정 (최초 정찰이 실패하여 적 지역 예측했을 때)
-                    if (enemyBaseLocation == null) {
-                        for (BaseLocation loaction : BWTA.getStartLocations()) {
-                            if (!Broodwar.isExplored(loaction.getTilePosition())) {
-                                enemyBaseLocation = loaction;
-                                break;
-                            }
-                        }
-                    }
+        BaseLocation closestBase = null;
+        double closestDist = CommonCode.DOUBLE_MAX;
 
-                    if (enemyBaseLocation != null) {
-                        mainBaseLocation.put(enemyPlayer, enemyBaseLocation);
-                        mainBaseLocationChanged.put(enemyPlayer, new Boolean(true));
-                    }
-                }
+        for (BaseLocation base : baseList) {
+            if (!baseCondition.correspond(base)) {
+                continue;
+            }
+            double dist = base.getPosition().getDistance(position);
+            if (dist > 0 && dist < closestDist) {
+                closestBase = base;
+                closestDist = dist;
+            }
+        }
+        return closestBase;
+    }
+
+    /**
+     * baseList 중 position에 가장 가까운 base 리턴
+     */
+    protected BaseLocation getGroundClosestBaseFromPosition(List<BaseLocation> baseList, BaseLocation fromBase, IConditions.BaseCondition baseCondition) {
+        if (baseList.size() == 0) {
+            return null;
+        }
+
+        BaseLocation closestBase = null;
+        double closestDist = CommonCode.DOUBLE_MAX;
+
+        for (BaseLocation base : baseList) {
+            if (equals(base, fromBase)) {
+                closestBase = base;
+                break;
+            }
+            if (!baseCondition.correspond(base)) {
+                continue;
+            }
+            double dist = base.getGroundDistance(fromBase);
+            if (dist > 0 && dist < closestDist) {
+                closestBase = base;
+                closestDist = dist;
+            }
+        }
+        return closestBase;
+    }
+
+    /**
+     * baseList 중 position에 가장 먼 base 리턴
+     */
+    protected BaseLocation getGroundFarthestBaseFromPosition(List<BaseLocation> baseList, BaseLocation fromBase, IConditions.BaseCondition baseCondition) {
+        if (baseList.size() == 0) {
+            return null;
+        }
+
+        BaseLocation farthestBase = null;
+        double farthestDistance = 0;
+
+        for (BaseLocation base : baseList) {
+            if (!baseCondition.correspond(base)) {
+                continue;
+            }
+            double dist = base.getGroundDistance(fromBase);
+            if (dist > 0 && dist > farthestDistance) {
+                farthestBase = base;
+                farthestDistance = dist;
+            }
+        }
+        return farthestBase;
+    }
+
+    protected boolean equals(BaseLocation a, BaseLocation b) {
+        if (a.getTilePosition().equals(b.getTilePosition())) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private class EnemyBaseLocator {
+
+        private boolean enemyStartLocationFound;
+        private Set<TilePosition> exploredStartLocations;
+
+        public EnemyBaseLocator() {
+            enemyStartLocationFound = false;
+            exploredStartLocations = new HashSet<>();
+        }
+
+        public void search() {
+            if (enemyStartLocationFound) {
+                return;
+            }
+
+            BaseLocation enemyMainBase = locateEnemyMainBase();
+            if (enemyMainBase != null) {
+                logger.debug("[Looking Enemy Base] Setting EnemyBase");
+                updateEnemyMainBaseInfo(enemyMainBase);
             }
         }
 
-        // self의 mainBaseLocations에 대해, 그곳에 있는 건물이 모두 파괴된 경우
-        // _occupiedBaseLocations 중에서 _mainBaseLocations 를 선정한다
-        if (mainBaseLocation.get(selfPlayer) != null) {
-            if (existsPlayerBuildingInRegion(BWTA.getRegion(mainBaseLocation.get(selfPlayer).getTilePosition()),
-                    selfPlayer) == false) {
-                for (BaseLocation location : occupiedBaseLocations.get(selfPlayer)) {
-                    if (existsPlayerBuildingInRegion(BWTA.getRegion(location.getTilePosition()), selfPlayer)) {
-                        mainBaseLocation.put(selfPlayer, location);
-                        //secondStartPosition = null;
-                        mainBaseLocationChanged.put(selfPlayer, new Boolean(true));
+        private BaseLocation locateEnemyMainBase() {
+            // an unexplored base location holder
+            BaseLocation unexplored = null;
+
+            BaseLocation myBaseLocation = mainBaseLocation.get(selfPlayer);
+            for (BaseLocation startLocation : BWTA.getStartLocations()) {
+
+                if (myBaseLocation.getTilePosition() != startLocation.getTilePosition() && existsPlayerBuildingInRegion(BWTA.getRegion(startLocation.getTilePosition()), enemyPlayer)) {
+                    logger.debug("[Looking Enemy Base] Found EnemyBase : Enemy Building in Region");
+                    return startLocation;
+                }
+
+                if (!exploredStartLocations.contains(startLocation.getTilePosition()) && Broodwar.isExplored(startLocation.getTilePosition())) {
+                    exploredStartLocations.add(startLocation.getTilePosition());
+                    // exploredStartLocations++;
+                    logger.debug("[Looking Enemy Base] Expect EnemyBase : explored Base increment to {}", exploredStartLocations);
+                } else {
+                    // otherwise set it as unexplored base
+                    unexplored = startLocation;
+                }
+            }
+
+            // if we've explored every start location except one, it's the enemy
+            if (!enemyStartLocationFound && exploredStartLocations.size() == (BWTA.getStartLocations().size() - 1)) {
+                logger.debug("[Looking Enemy Base] Expect EnemyBase : Last base not explored");
+                return unexplored;
+            }
+
+            // 끝까지 상대 location 못 찾았을때
+            if (TimeUtils.afterTime(4, 0)) {
+                BaseLocation expectBase = null;
+
+                BaseLocation enemyBaseExpected = predict();
+                if (enemyBaseExpected != null) {
+                    expectBase = enemyBaseExpected;
+                } else {
+                    BaseLocation myBase = BaseUtils.myMainBase();
+                    for (BaseLocation startLocation : BWTA.getStartLocations()) {
+                        if (startLocation.getTilePosition().equals(myBase.getTilePosition())) {
+                            continue;
+                        }
+                        if (Broodwar.isExplored(startLocation.getTilePosition())) {
+                            continue;
+                        }
+                        expectBase = startLocation;
                         break;
                     }
                 }
+
+                if (expectBase != null) {
+                    logger.debug("[Looking Enemy Base] Expect EnemyBase : assume since it's too late");
+                    return expectBase;
+                }
             }
+
+            return null;
         }
 
-        for (UnitInfo ui : UnitUtils.getEnemyUnitInfoList()) {
-
-            if (ui.getType().isBuilding()) {
-                updateOccupiedRegions(BWTA.getRegion(ui.getLastPosition().toTilePosition()),
-                        Broodwar.enemy());
-            }
+        private void updateEnemyMainBaseInfo(BaseLocation startLocation) {
+            enemyStartLocationFound = true;
+            mainBaseLocation.put(enemyPlayer, startLocation);
+            mainBaseLocationChanged.put(enemyPlayer, new Boolean(true));
         }
 
-        for (Unit ui : UnitUtils.getUnitList()) {
-            if (ui.getType().isBuilding()) {
-                if (UnitUtils.isCompleteValidUnit(ui) && ui.isLifted()
-                        && (ui.getType() == UnitType.Terran_Barracks
-                        || ui.getType() == UnitType.Terran_Engineering_Bay)) {
+        //TODO 구조가 마음에 안드네
+        private BaseLocation predict() {
+            BaseLocation predictedByBuilding = predictedByBuilding();
+            if (predictedByBuilding != null) {
+                return predictedByBuilding;
+            }
+
+            BaseLocation predictedByScout = predictedByUnit();
+            if (predictedByScout != null) {
+                return predictedByScout;
+            }
+
+            BaseLocation rand = null;
+            for (BaseLocation startLocation : BWTA.getStartLocations()) {
+                if (BaseUtils.equals(startLocation, BaseUtils.myMainBase())) {
+                    continue;
+                }
+                if (Broodwar.isExplored(startLocation.getTilePosition())) {
+                    continue;
+                }
+                rand = startLocation;
+            }
+            return rand;
+        }
+
+        private BaseLocation predictedByBuilding() {
+            BaseLocation baseExpected = null;
+
+            for (BaseLocation startLocation : BWTA.getStartLocations()) {
+                if (BaseUtils.equals(startLocation, BaseUtils.myMainBase())) {
+                    continue;
+                }
+                if (Broodwar.isExplored(startLocation.getTilePosition())) {
                     continue;
                 }
 
-                updateOccupiedRegions(BWTA.getRegion(ui.getPosition().toTilePosition()),
-                        Broodwar.self());
-            }
-        }
-    }
-
-    private void findEnemyBaseLocation() {
-        // how many start locations have we explored
-        int exploredStartLocations = 0;
-        boolean enemyStartLocationFound = false;
-
-        // an unexplored base location holder
-        BaseLocation unexplored = null;
-
-        Region myRegion = BWTA.getRegion(mainBaseLocation.get(selfPlayer).getPosition());
-        for (BaseLocation startLocation : BWTA.getStartLocations()) {
-            Region startLocationRegion = BWTA.getRegion(startLocation.getTilePosition());
-            if (myRegion != startLocationRegion && existsPlayerBuildingInRegion(startLocationRegion, enemyPlayer)) {
-                if (enemyStartLocationFound == false) {
-                    enemyStartLocationFound = true;
-                    mainBaseLocation.put(enemyPlayer, startLocation);
-                    mainBaseLocationChanged.put(enemyPlayer, new Boolean(true));
+                baseExpected = searchWithBuilding(startLocation, UnitTypeUtils.getBasicResourceDepotBuildingType(PlayerUtils.enemyRace()));
+                if (baseExpected == null) {
+                    baseExpected = searchWithBuilding(startLocation, UnitTypeUtils.getBasicDefenseBuildingType(PlayerUtils.enemyRace()));
+                }
+                if (baseExpected == null) {
+                    baseExpected = searchWithBuilding(startLocation, UnitTypeUtils.getBasicProduceBuildingType(PlayerUtils.enemyRace()));
+                }
+                if (baseExpected == null) {
+                    baseExpected = searchWithBuilding(startLocation, UnitTypeUtils.getBasicSupplyBuildingType(PlayerUtils.enemyRace()));
                 }
             }
 
-            if (Broodwar.isExplored(startLocation.getTilePosition())) {
-                // if it's explored, increment
-                exploredStartLocations++;
+            return baseExpected;
+        }
+
+        private BaseLocation searchWithBuilding(BaseLocation startLocation, UnitType searchType) {
+
+            BaseLocation baseExpected = null;
+
+            int minimumDistance = CommonCode.INT_MAX;
+
+            for (UnitInfo unitInfo : UnitUtils.getEnemyUnitInfoList(searchType)) {
+                if (!unitInfo.getType().isBuilding()) {
+                    continue;
+                }
+                if (unitInfo.getLastPosition().getDistance(CommonCode.CENTER_POS) < 500) {
+                    continue;
+                }
+
+                int dist = PositionUtils.getGroundDistance(unitInfo.getLastPosition(), startLocation.getPosition());
+                if (dist < minimumDistance) {
+                    baseExpected = startLocation;
+                    minimumDistance = dist;
+                }
+            }
+            return baseExpected;
+        }
+
+        private BaseLocation predictedByUnit() {
+            int scoutLimitFrames;
+            if (PlayerUtils.enemyRace() == Race.Protoss) {
+                scoutLimitFrames = TimeUtils.timeToFrames(1, 25); // 9파일런 서치 한번에 왔을때 약 1분 20초
+            } else if (PlayerUtils.enemyRace() == Race.Zerg) {
+                scoutLimitFrames = TimeUtils.timeToFrames(2, 35); // 9드론 서치 한번에 왔을때 약 2분 30초
             } else {
-                // otherwise set it as unexplored base
-                unexplored = startLocation;
+                scoutLimitFrames = TimeUtils.timeToFrames(2, 0);
             }
-        }
 
-        // if we've explored every start location except one, it's the enemy
-        if (!enemyStartLocationFound && exploredStartLocations == (BWTA.getStartLocations().size() - 1)) {
-            mainBaseLocation.put(enemyPlayer, unexplored);
-            mainBaseLocationChanged.put(enemyPlayer, new Boolean(true));
-            // C++ : _occupiedBaseLocations[_enemy].push_back(unexplored);
-            if (occupiedBaseLocations.get(enemyPlayer) == null) {
-                occupiedBaseLocations.put(enemyPlayer, new ArrayList<BaseLocation>());
+            if (TimeUtils.after(scoutLimitFrames)) {
+                return null;
             }
-            occupiedBaseLocations.get(enemyPlayer).add(unexplored);
-        }
 
-        // 끝까지 상대 location 못 찾았을때
-        if (TimeUtils.afterTime(4, 0)) {
-            BaseLocation expectBase = null;
+            List<UnitInfo> euiList = UnitUtils.getEnemyUnitInfoList(EnemyUnitVisibleStatus.ALL
+                    , UnitType.Protoss_Probe, UnitType.Zerg_Drone, UnitType.Terran_SCV, UnitType.Zerg_Overlord
+                    , UnitType.Zerg_Zergling, UnitType.Protoss_Zealot, UnitType.Terran_Marine);
 
-            BaseLocation enemyBaseExpected = enemyBaseFinder.find();
-            if (enemyBaseExpected != null) {
-                expectBase = enemyBaseExpected;
-            } else {
-                BaseLocation myBase = BaseUtils.myMainBase();
-                for (BaseLocation startLocation : BWTA.getStartLocations()) {
-                    if (startLocation.getTilePosition().equals(myBase.getTilePosition())) {
-                        continue;
-                    }
-                    if (Broodwar.isExplored(startLocation.getTilePosition())) {
-                        continue;
-                    }
-                    expectBase = startLocation;
-                    break;
+            if (euiList.isEmpty()) {
+                return null;
+            }
+
+            Position scoutPosition = euiList.get(0).getLastPosition();
+            RegionType regionType = PositionUtils.positionToRegionType(scoutPosition);
+
+
+            if (regionType != RegionType.MY_BASE && regionType != RegionType.MY_FIRST_EXPANSION) {
+                return null;
+            }
+
+            Position fromPosition = BaseUtils.myMainBase().getPosition();
+            BaseLocation closestBase = null;
+            int minimumDistance = CommonCode.INT_MAX;
+            BaseLocation myBase = BaseUtils.myMainBase();
+            for (BaseLocation startLocation : BWTA.getStartLocations()) {
+                if (startLocation.getTilePosition().equals(myBase.getTilePosition())) {
+                    continue;
+                }
+                if (Broodwar.isExplored(startLocation.getTilePosition())) {
+                    continue;
+                }
+
+                int groundDistance = PositionUtils.getGroundDistance(startLocation.getPosition(), fromPosition);
+                if (groundDistance < minimumDistance) {
+                    closestBase = startLocation;
+                    minimumDistance = groundDistance;
                 }
             }
-
-            if (expectBase != null) {
-                mainBaseLocation.put(enemyPlayer, expectBase);
-                mainBaseLocationChanged.put(enemyPlayer, new Boolean(true));
-            }
+            return closestBase;
         }
     }
 
-    /// 해당 Region 에 해당 Player의 건물이 존재하는지 리턴합니다
-    public boolean existsPlayerBuildingInRegion(Region region, Player player) {
-        // invalid regions aren't considered the same, but they will both be null
-        if (region == null || player == null) {
-            return false;
-        }
-
-        if (player == PlayerUtils.myPlayer()) {
-            for (Unit ui : UnitUtils.getUnitList()) {
-                if (ui.getType().isBuilding()) {
-
-                    // Terran 종족의 Lifted 건물의 경우, BWTA.getRegion 결과가 null 이다
-                    if (BWTA.getRegion(ui.getPosition()) == null)
-                        continue;
-
-                    if (BWTA.getRegion(ui.getPosition()) == region) {
-                        return true;
-                    }
-                }
-            }
-        }
-
-        if (player == PlayerUtils.enemyPlayer()) {
-            for (UnitInfo ui : UnitUtils.getEnemyUnitInfoList()) {
-
-                if (ui.getType().isBuilding()) {
-
-                    // Terran 종족의 Lifted 건물의 경우, BWTA.getRegion 결과가 null 이다
-                    if (BWTA.getRegion(ui.getLastPosition()) == null)
-                        continue;
-
-                    if (BWTA.getRegion(ui.getLastPosition()) == region) {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
-    /// 해당 BaseLocation 주위 10타일 반경 내에 player의 건물이 존재하는지 리턴합니다
-    /// @param baseLocation 대상 BaseLocation
-    /// @param player 아군 / 적군
-    public boolean hasBuildingAroundBaseLocation(BaseLocation baseLocation, Player player) {
-        return hasBuildingAroundBaseLocation(baseLocation, player, 10);
-    }
-
-    public boolean hasBuildingAroundBaseLocation(BaseLocation baseLocation, Player player, int radius) {
-
-        // invalid regions aren't considered the same, but they will both be null
-        if (baseLocation == null) {
-            return false;
-        }
-        // 반지름 10 (TilePosition 단위) 이면 거의 화면 가득이다
-        if (radius > 10) {
-            radius = 10;
-        }
-
-
-        if (player == PlayerUtils.myPlayer()) {
-            for (Unit ui : UnitUtils.getUnitList()) {
-                if (ui.getType().isBuilding()) {
-
-                    TilePosition buildingPosition = ui.getTilePosition();
-
-                    if (BWTA.getRegion(buildingPosition) != BWTA.getRegion(baseLocation.getTilePosition())) { // basicbot
-                        // 1.2
-                        continue;
-                    }
-
-                    if (buildingPosition.getX() >= baseLocation.getTilePosition().getX() - radius
-                            && buildingPosition.getX() <= baseLocation.getTilePosition().getX() + radius
-                            && buildingPosition.getY() >= baseLocation.getTilePosition().getY() - radius
-                            && buildingPosition.getY() <= baseLocation.getTilePosition().getY() + radius) {
-                        return true;
-                    }
-                }
-            }
-        }
-
-        if (player == PlayerUtils.enemyPlayer()) {
-            for (UnitInfo ui : UnitUtils.getEnemyUnitInfoList()) {
-
-                if (ui.getType().isBuilding()) {
-
-                    TilePosition buildingPosition = ui.getLastPosition().toTilePosition();
-
-                    if (BWTA.getRegion(buildingPosition) != BWTA.getRegion(baseLocation.getTilePosition())) { // basicbot
-                        // 1.2
-                        continue;
-                    }
-
-                    if (buildingPosition.getX() >= baseLocation.getTilePosition().getX() - radius
-                            && buildingPosition.getX() <= baseLocation.getTilePosition().getX() + radius
-                            && buildingPosition.getY() >= baseLocation.getTilePosition().getY() - radius
-                            && buildingPosition.getY() <= baseLocation.getTilePosition().getY() + radius) {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
-    public void updateChokePointAndExpansionLocation() {
-
-        Position Center = new Position(2048, 2048);
-        if (mainBaseLocationChanged.get(selfPlayer).booleanValue() == true) {
-
-            if (mainBaseLocation.get(selfPlayer) != null) {
-                BaseLocation sourceBaseLocation = mainBaseLocation.get(selfPlayer);
-                System.out.println("* my base changed" + sourceBaseLocation.getTilePosition());
-
-                firstChokePoint.put(selfPlayer, BWTA.getNearestChokepoint(sourceBaseLocation.getTilePosition()));
-
-                double tempDistance;
-                double closestDistance = 1000000000;
-                for (BaseLocation targetBaseLocation : BWTA.getBaseLocations()) {
-                    if (targetBaseLocation.getTilePosition().equals(mainBaseLocation.get(selfPlayer).getTilePosition()))
-                        continue;
-
-                    tempDistance = PositionUtils.getGroundDistance(sourceBaseLocation.getPosition(), targetBaseLocation.getPosition());
-
-                    if (tempDistance < closestDistance && tempDistance > 0) {
-                        closestDistance = tempDistance;
-                        firstExpansionLocation.put(selfPlayer, targetBaseLocation);
-                    }
-                }
-
-                closestDistance = 1000000000;
-                for (Chokepoint chokepoint : BWTA.getChokepoints()) {
-                    if (chokepoint.getCenter().equals(firstChokePoint.get(selfPlayer).getCenter()))
-                        continue;
-
-                    tempDistance = PositionUtils.getGroundDistance(sourceBaseLocation.getPosition(),
-                            chokepoint.getPoint()) * 1.1;
-                    tempDistance += PositionUtils.getGroundDistance(Center, chokepoint.getPoint());
-//					tempDistance = BWTA.getGroundDistance(sourceBaseLocation.getTilePosition(), chokepoint.getCenter().toTilePosition()); //욱스가 주석 남기라고 함
-                    if (tempDistance < closestDistance && tempDistance > 0) {
-                        closestDistance = tempDistance;
-                        secondChokePoint.put(selfPlayer, chokepoint);
-
-                        double radian = MicroUtils.targetDirectionRadian(
-                                firstExpansionLocation.get(selfPlayer).getPosition(),
-                                secondChokePoint.get(selfPlayer).getCenter());
-                        Region myThirdRegion = BWTA.getRegion(
-                                MicroUtils.getMovePosition(secondChokePoint.get(selfPlayer).getCenter(), radian, 100));
-                        thirdRegion.put(selfPlayer, myThirdRegion);
-                    }
-                }
-                updateOtherExpansionLocation(sourceBaseLocation);
-            }
-            mainBaseLocationChanged.put(selfPlayer, new Boolean(false));
-        }
-
-
-
-
-    }
-
-    public void updateOtherExpansionLocation(BaseLocation baseLocation) {
-
-        final BaseLocation myBase = mainBaseLocation.get(selfPlayer);
-        final BaseLocation myFirstExpansion = firstExpansionLocation.get(selfPlayer);
-
-        final BaseLocation enemyBase = mainBaseLocation.get(enemyPlayer);
-        final BaseLocation enemyFirstExpansion = firstExpansionLocation.get(enemyPlayer);
-
-        if (myBase == null || myFirstExpansion == null || enemyBase == null || enemyFirstExpansion == null) {
-            return;
-        }
-
-        otherExpansionLocations.clear();
-
-        Set<TilePosition> tileSet = new HashSet<>();
-        tileSet.add(myBase.getTilePosition());
-        tileSet.add(myFirstExpansion.getTilePosition());
-        tileSet.add(enemyBase.getTilePosition());
-        tileSet.add(enemyFirstExpansion.getTilePosition());
-
-        for (BaseLocation base : BWTA.getBaseLocations()) {
-            // BaseLocation을 equal로 비교하면 오류가 있을 수 있다.
-            if (tileSet.contains(base.getTilePosition())) {
-                System.out.println(tileSet + " skiped");
-                continue;
-            }
-            if (base.minerals() < 1000) {
-                System.out.println(tileSet + " skiped(mineral)");
-                continue;
-            }
-            otherExpansionLocations.add(base);
-        }
-
-//		System.out.println("tileSet: " + tileSet);
-//		System.out.println("otherExpansionLocations: " + otherExpansionLocations);
-    }
-
-    public void updateChokePointAndExpansionLocationEnemy() {
-
-        if (mainBaseLocationChanged.get(enemyPlayer).booleanValue() == true) {
-
-            if (mainBaseLocation.get(enemyPlayer) != null && mainBaseLocation.get(selfPlayer) != null) {
-                BaseLocation enemySourceBaseLocation = mainBaseLocation.get(enemyPlayer);
-                BaseLocation mySourceBaseLocation = mainBaseLocation.get(selfPlayer);
-                System.out.println("* enemy base changed" + enemySourceBaseLocation.getTilePosition());
-
-                firstChokePoint.put(enemyPlayer, BWTA.getNearestChokepoint(enemySourceBaseLocation.getTilePosition()));
-
-                double tempDistance;
-                double closestDistance = 1000000000;
-                for (BaseLocation targetBaseLocation : BWTA.getBaseLocations()) {
-                    if (targetBaseLocation.getTilePosition()
-                            .equals(mainBaseLocation.get(enemyPlayer).getTilePosition()))
-                        continue;
-
-                    tempDistance = PositionUtils.getGroundDistance(enemySourceBaseLocation.getPosition(),
-                            targetBaseLocation.getPosition());
-                    if (tempDistance < closestDistance && tempDistance > 0) {
-                        closestDistance = tempDistance;
-                        firstExpansionLocation.put(enemyPlayer, targetBaseLocation);
-                    }
-                }
-
-                closestDistance = 1000000000;
-                for (Chokepoint chokepoint : BWTA.getChokepoints()) {
-                    if (chokepoint.getCenter().equals(firstChokePoint.get(enemyPlayer).getCenter()))
-                        continue;
-
-                    tempDistance = PositionUtils.getGroundDistance(enemySourceBaseLocation.getPosition(),
-                            chokepoint.getPoint()) * 1.1;
-                    tempDistance += PositionUtils.getGroundDistance(CommonCode.Center, chokepoint.getPoint());
-                    if (tempDistance < closestDistance && tempDistance > 0) {
-                        closestDistance = tempDistance;
-                        secondChokePoint.put(enemyPlayer, chokepoint);
-
-                        double radian = MicroUtils.targetDirectionRadian(
-                                firstExpansionLocation.get(enemyPlayer).getPosition(),
-                                secondChokePoint.get(enemyPlayer).getCenter());
-                        Region enemyThirdRegion = BWTA.getRegion(
-                                MicroUtils.getMovePosition(secondChokePoint.get(enemyPlayer).getCenter(), radian, 100));
-                        thirdRegion.put(enemyPlayer, enemyThirdRegion);
-                    }
-                }
-
-                double tempDistanceFromSelf;
-                double tempDistanceFromEnemy;
-                double tempDistanceForHunter = 0;
-                closestDistance = 1000000000;
-                for (Chokepoint chokepoint : BWTA.getChokepoints()) {
-                    tempDistanceFromSelf = PositionUtils.getGroundDistance(mySourceBaseLocation.getPosition(),
-                            chokepoint.getPoint());
-                    tempDistanceFromEnemy = PositionUtils.getGroundDistance(enemySourceBaseLocation.getPosition(),
-                            chokepoint.getPoint());
-//						tempDistance = BWTA.getGroundDistance(sourceBaseLocation.getTilePosition(), chokepoint.getCenter().toTilePosition()); //욱스가 주석 남기라고 함
-                    if (tempDistanceForHunter < closestDistance && tempDistanceFromEnemy - tempDistanceFromSelf > 0) {
-                        closestDistance = tempDistanceForHunter;
-                    }
-                }
-
-                //TODO needed?
-                //this.updateReadyToAttackPosition();
-                this.updateOtherExpansionLocation(enemySourceBaseLocation);
-
-                //TODO needed?
-                // this.updateMySecondBaseLocation();
-            }
-            mainBaseLocationChanged.put(enemyPlayer, new Boolean(false));
-        }
-    }
-
-
-
-    public void updateOccupiedRegions(Region region, Player player) {
-        // if the region is valid (flying buildings may be in null regions)
-        if (region != null) {
-            // add it to the list of occupied regions
-            if (occupiedRegions.get(player) == null) {
-                occupiedRegions.put(player, new HashSet<Region>());
-            }
-            occupiedRegions.get(player).add(region);
-        }
-    }
-
+//    public void updateOtherExpansionLocation(BaseLocation baseLocation) {
+//
+//        final BaseLocation myBase = mainBaseLocation.get(selfPlayer);
+//        final BaseLocation myFirstExpansion = firstExpansionLocation.get(selfPlayer);
+//
+//        final BaseLocation enemyBase = mainBaseLocation.get(enemyPlayer);
+//        final BaseLocation enemyFirstExpansion = firstExpansionLocation.get(enemyPlayer);
+//
+//        if (myBase == null || myFirstExpansion == null || enemyBase == null || enemyFirstExpansion == null) {
+//            return;
+//        }
+//
+//        otherExpansionLocations.clear();
+//
+//        Set<TilePosition> tileSet = new HashSet<>();
+//        tileSet.add(myBase.getTilePosition());
+//        tileSet.add(myFirstExpansion.getTilePosition());
+//        tileSet.add(enemyBase.getTilePosition());
+//        tileSet.add(enemyFirstExpansion.getTilePosition());
+//
+//        for (BaseLocation base : BWTA.getBaseLocations()) {
+//            // BaseLocation을 equal로 비교하면 오류가 있을 수 있다.
+//            if (tileSet.contains(base.getTilePosition())) {
+//                System.out.println(tileSet + " skiped");
+//                continue;
+//            }
+//            if (base.minerals() < 1000) {
+//                System.out.println(tileSet + " skiped(mineral)");
+//                continue;
+//            }
+//            otherExpansionLocations.add(base);
+//        }
+//    }
 }

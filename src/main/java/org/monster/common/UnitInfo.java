@@ -15,9 +15,11 @@ public class UnitInfo {
     private int lastShields;
     private Player player;
     private Position lastPosition;
+    private boolean isFlying;
     private boolean completed;
     private int updateFrame;
     private int remainingBuildTime;
+    private boolean visible;
 
     public UnitInfo() {
         unitID = 0;
@@ -28,6 +30,7 @@ public class UnitInfo {
         lastPosition = Position.None;
         completed = false;
         updateFrame = 0;
+        visible = false;
     }
 
     public UnitInfo(Unit unit) {
@@ -41,13 +44,15 @@ public class UnitInfo {
         this.setUnitType(unit.getType());
         this.setCompleted(unit.isCompleted());
         this.setRemainingBuildTime(unit.getRemainingBuildTime());
+        this.setVisible(unit.isVisible());
+        this.setFlying(unit.isFlying());
     }
 
     public UnitType getType() {
         return type;
     }
 
-    public void setUnitType(UnitType type) {
+    private void setUnitType(UnitType type) {
         this.type = type;
     }
 
@@ -59,7 +64,7 @@ public class UnitInfo {
         return completed || (remainingBuildTime < TimeUtils.getFrame() - updateFrame);
     }
 
-    public void setCompleted(boolean completed) {
+    private void setCompleted(boolean completed) {
         this.completed = completed;
     }
 
@@ -67,7 +72,7 @@ public class UnitInfo {
         return lastPosition;
     }
 
-    public void setLastPosition(Position lastPosition) {
+    private void setLastPosition(Position lastPosition) {
         this.lastPosition = lastPosition;
     }
 
@@ -75,7 +80,7 @@ public class UnitInfo {
         return unitID;
     }
 
-    public void setUnitID(int unitID) {
+    private void setUnitID(int unitID) {
         this.unitID = unitID;
     }
 
@@ -83,7 +88,7 @@ public class UnitInfo {
         return lastHealth;
     }
 
-    public void setLastHealth(int lastHealth) {
+    private void setLastHealth(int lastHealth) {
         this.lastHealth = lastHealth;
     }
 
@@ -91,7 +96,7 @@ public class UnitInfo {
         return lastShields;
     }
 
-    public void setLastShields(int lastShields) {
+    private void setLastShields(int lastShields) {
         this.lastShields = lastShields;
     }
 
@@ -99,7 +104,7 @@ public class UnitInfo {
         return player;
     }
 
-    public void setPlayer(Player player) {
+    private void setPlayer(Player player) {
         this.player = player;
     }
 
@@ -118,6 +123,24 @@ public class UnitInfo {
         this.setUnitType(unit.getType());
         this.setCompleted(unit.isCompleted());
         this.setRemainingBuildTime(unit.getRemainingBuildTime());
+        this.setVisible(unit.isVisible());
+        this.setFlying(unit.isFlying());
+    }
+
+    public boolean isVisible() {
+        return visible;
+    }
+
+    private void setVisible(boolean visible) {
+        this.visible = visible;
+    }
+
+    public boolean isFlying() {
+        return isFlying;
+    }
+
+    private void setFlying(boolean isFlying) {
+        this.isFlying = isFlying;
     }
 
     public int getRemainingBuildTime() {

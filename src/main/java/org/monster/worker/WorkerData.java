@@ -8,8 +8,8 @@ import bwta.BaseLocation;
 import bwta.Region;
 import org.monster.common.util.BaseUtils;
 import org.monster.common.util.CommandUtils;
-import org.monster.main.Monster;
-import org.monster.micro.Minerals;
+import org.monster.common.util.MapUtils;
+import org.monster.common.util.PlayerUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,12 +23,9 @@ public class WorkerData {
     //CC에 배정된 일꾼 수
     public static Map<Integer, Integer> depotWorkerCount = new HashMap<Integer, Integer>();
 
-    ;
-    //수리중인 일꾼
     //CC에 배정된 미네랄 리스트(미네랄 트릭 위해)
     public static Map<Unit, List<Minerals>> depotMineral = new HashMap<Unit, List<Minerals>>();
 
-    ;
     /// 일꾼 목록
     public ArrayList<Unit> workers = new ArrayList<Unit>();
     //Gas 에 배정된 일꾼 수
@@ -56,9 +53,9 @@ public class WorkerData {
     private Map<Integer, WorkerMoveData> workerMoveMap = new HashMap<Integer, WorkerMoveData>();
     //미네랄 일꾼
     private Map<Integer, Unit> workerMineralMap = new HashMap<Integer, Unit>();
-    public WorkerData() {
 
-        for (Unit unit : Monster.Broodwar.getAllUnits()) {
+    public WorkerData() {
+        for (Unit unit : MapUtils.getStaticMinerals()) {
             if ((unit.getType() == UnitType.Resource_Mineral_Field)) {
                 workersOnMineralPatch.put(unit.getID(), 0);
             }
@@ -71,8 +68,6 @@ public class WorkerData {
 
     public void workerDestroyed(Unit unit) {
 
-        // BasicBot 1.1 Patch Start ////////////////////////////////////////////////
-
         // workers, depotWorkerCount, refineryWorkerCount 등 자료구조에서 사망한 일꾼 정보를 제거합니다
         for (Iterator<Unit> it = workers.iterator(); it.hasNext(); ) {
             Unit worker = it.next();
@@ -80,7 +75,7 @@ public class WorkerData {
             if (worker == null) {
                 workers.remove(worker);
             } else {
-                if (worker.getType().isWorker() == false || worker.getPlayer() != Monster.Broodwar.self()
+                if (worker.getType().isWorker() == false || worker.getPlayer() != PlayerUtils.myPlayer()
                         || worker.exists() == false || worker.getHitPoints() == 0) {
 
                     clearPreviousJob(worker);
@@ -141,7 +136,6 @@ public class WorkerData {
                 }
             }
         }
-        // BasicBot 1.1 Patch End //////////////////////////////////////////////////
 
         if (unit == null) {
             return;
@@ -516,7 +510,7 @@ public class WorkerData {
         int radius = 320;
         int c = 0;
         ArrayList<Minerals> mineralList = new ArrayList<Minerals>();
-        for (Unit unit : Monster.Broodwar.getMinerals()) {
+        for (Unit unit : MapUtils.getMinerals()) {
             if (unit.getType() == UnitType.Resource_Mineral_Field && unit.getDistance(depot) < radius) {
                 //mineralsNearDepot.add(unit);
                 Minerals newMineral = new Minerals();
@@ -529,7 +523,7 @@ public class WorkerData {
 
         if (mineralList.size() == 0) {
             mineralList = new ArrayList<Minerals>();
-            for (Unit unit : Monster.Broodwar.getMinerals()) {
+            for (Unit unit : MapUtils.getMinerals()) {
 	        	/*if(unit.getDistance(enemyBaseLocation) < radius)
 	        		continue;*/
                 if ((unit.getType() == UnitType.Resource_Mineral_Field)) {
@@ -553,7 +547,7 @@ public class WorkerData {
 
         int mineralsNearDepot = 0;
 
-        for (Unit unit : Monster.Broodwar.getAllUnits()) {
+        for (Unit unit : MapUtils.getStaticMinerals()) {
             if ((unit.getType() == UnitType.Resource_Mineral_Field) && unit.getDistance(depot) < 320) {
                 mineralsNearDepot++;
             }
@@ -570,7 +564,7 @@ public class WorkerData {
 
         int mineralsNearDepot = 0;
 
-        for (Unit unit : Monster.Broodwar.getMinerals()) {
+        for (Unit unit : MapUtils.getMinerals()) {
             if (unit.getDistance(depot) < 320) {
                 mineralsNearDepot += unit.getResources();
             }
@@ -584,7 +578,7 @@ public class WorkerData {
             return null;
         }
 
-        for (Unit geyser : Monster.Broodwar.getGeysers()) {
+        for (Unit geyser : MapUtils.getGeysers()) {
             if (geyser.getDistance(base) < 320) {
                 return geyser;
             }
@@ -617,14 +611,11 @@ public class WorkerData {
         if (depot == null) {
             return null;
         }
+
         Minerals bestMineral = null;
         double bestDist = 100000000;
         double bestNumAssigned = 10000000;
         int workerCnt = depotWorkerCount.get(depot.getID());
-        //아직 cc와 미네랄간의 배정이 안끝났을경우 ex) 본진에서 cc짓고 멀티 보낸다던지 null값 나오므로
-        if (depotMineral.get(depot) == null) {
-            return null;
-        }
 
         int minCnt = depotMineral.get(depot).size();
         if (workerCnt > minCnt) {
@@ -633,7 +624,9 @@ public class WorkerData {
 
         for (Minerals minr : depotMineral.get(depot)) {
             double dist = minr.mineralUnit.getDistance(depot);
-            double numAssigned = workersOnMineralPatch.get(minr.unitId);
+            workersOnMineralPatch.get(minr.unitId);
+
+            int numAssigned = workersOnMineralPatch.getOrDefault(minr.unitId, 0);
 
             if (workerCnt <= minCnt) {
                 if (numAssigned < bestNumAssigned) {
@@ -702,7 +695,7 @@ public class WorkerData {
 
 		if (depot)
 		{
-			BOOST_FOREACH (BWAPI::Unit unit, Monster.Broodwar.getAllUnits())
+			BOOST_FOREACH (BWAPI::Unit unit, UnitUtils.getUnitList())
 			{
 				if (unit.getType() == BWAPI::UnitTypes::Resource_Mineral_Field && unit.getResources() > 0)
 				{

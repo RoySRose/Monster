@@ -1,13 +1,13 @@
 package org.monster.strategy.analyse.zerg;
 
 import bwapi.UnitType;
-import org.monster.decisions.constant.EnemyStrategy;
 import org.monster.common.UnitInfo;
-import org.monster.common.constant.CommonCode;
+import org.monster.common.constant.RegionType;
+import org.monster.strategy.constant.EnemyStrategy;
 import org.monster.strategy.analyse.Clue;
 import org.monster.strategy.analyse.UnitAnalyser;
 import org.monster.strategy.manage.ClueManager;
-import org.monster.strategy.manage.StrategyAnalyseManager;
+import org.monster.strategy.manage.EnemyStrategyAnalyzer;
 
 import java.util.List;
 
@@ -23,7 +23,7 @@ public class ExtractorAnalyser extends UnitAnalyser {
         int overPoolFrame = EnemyStrategy.ZERG_OVERPOOL_GAS.buildTimeMap.frame(UnitType.Zerg_Extractor, 20);
         int doubleHatchFrame = EnemyStrategy.ZERG_2HAT_GAS.buildTimeMap.frame(UnitType.Zerg_Extractor, 20);
 
-        List<UnitInfo> found = found(CommonCode.RegionType.ENEMY_BASE);
+        List<UnitInfo> found = found(RegionType.ENEMY_BASE);
         if (!found.isEmpty()) {
             int buildFrame = buildStartFrameDefaultJustBefore(found.get(0));
             if (buildFrame < nineDroneFrame) {
@@ -36,7 +36,7 @@ public class ExtractorAnalyser extends UnitAnalyser {
                 ClueManager.Instance().addClueInfo(Clue.ClueInfo.EXTRACTOR_LATE);
             }
         } else {
-            int gasLastCheckFrame = StrategyAnalyseManager.Instance().lastCheckFrame(StrategyAnalyseManager.LastCheckLocation.GAS);
+            int gasLastCheckFrame = EnemyStrategyAnalyzer.Instance().lastCheckFrame(EnemyStrategyAnalyzer.LastCheckLocation.GAS);
             if (gasLastCheckFrame > doubleHatchFrame) {
                 ClueManager.Instance().addClueInfo(Clue.ClueInfo.NO_EXTRACTOR);
             }

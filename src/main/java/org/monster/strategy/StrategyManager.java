@@ -4,33 +4,21 @@ import bwapi.Unit;
 import bwapi.UnitType;
 import bwta.BaseLocation;
 import org.monster.board.StrategyBoard;
-import org.monster.common.LagObserver;
-import org.monster.common.constant.CommonCode;
+import org.monster.bootstrap.GameManager;
 import org.monster.common.util.BaseUtils;
-import org.monster.common.util.TimeUtils;
 import org.monster.common.util.UnitUtils;
-import org.monster.main.GameManager;
 import org.monster.micro.constant.MicroConfig;
-import org.monster.strategy.manage.ActionManager;
-import org.monster.strategy.manage.AirForceManager;
-import org.monster.strategy.manage.DefenseTowerTimer;
-import org.monster.strategy.manage.InitialAction;
-import org.monster.strategy.manage.PositionFinder;
-import org.monster.strategy.manage.SpiderMineManger;
-import org.monster.strategy.manage.StrategyAnalyseManager;
-import org.monster.strategy.manage.TankPositionManager;
-import org.monster.strategy.manage.VultureTravelManager;
+import org.monster.strategy.manage.EnemyStrategyAnalyzer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-/// 상황을 판단하여, 정찰, 빌드, 공격, 방어 등을 수행하도록 총괄 지휘를 하는 class <br>
-/// InformationManager 에 있는 정보들로부터 상황을 판단하고, <br>
-/// BuildManager 의 buildQueue에 빌드 (건물 건설 / 유닛 훈련 / 테크 리서치 / 업그레이드) 명령을 입력합니다.<br>
-/// 정찰, 빌드, 공격, 방어 등을 수행하는 코드가 들어가는 class
 public class StrategyManager extends GameManager {
 
-    private static StrategyManager instance = new StrategyManager();
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    private static StrategyManager instance = new StrategyManager();
     public static StrategyManager Instance() {
         return instance;
     }
@@ -42,32 +30,31 @@ public class StrategyManager extends GameManager {
     }
 
     public void update() {
-        if (TimeUtils.executeRotation(LagObserver.managerExecuteRotation(LagObserver.MANAGER1, 0), LagObserver.managerRotationSize())) {
-            // 전략 파악
-            InitialAction.Instance().update();
-            StrategyAnalyseManager.Instance().update();
-            ActionManager.Instance().update();
-            DefenseTowerTimer.Instance().update();
 
-            SpiderMineManger.Instance().update();
-            VultureTravelManager.Instance().update();
-            TankPositionManager.Instance().update();
-        }
+        EnemyStrategyAnalyzer.Instance().update();
+        //TODO
+        //My Strategy??
+        changeMainSquadMode();
 
-        if (TimeUtils.executeRotation(LagObserver.managerExecuteRotation(LagObserver.MANAGER1, 1), LagObserver.managerRotationSize())) {
-            AirForceManager.Instance().update();
-            PositionFinder.Instance().update();
-
-            expansionOkay();
-            changeMainSquadMode();
-        }
+//        if (TimeUtils.executeRotation(LagObserver.managerExecuteRotation(LagObserver.MANAGER1, 0), LagObserver.managerRotationSize())) {
+//            DefenseTowerTimer.Instance().update();
+//            SpiderMineManger.Instance().update();
+//            TankPositionManager.Instance().update();
+//        }
+//        if (TimeUtils.executeRotation(LagObserver.managerExecuteRotation(LagObserver.MANAGER1, 1), LagObserver.managerRotationSize())) {
+//            AirForceManager.Instance().update();
+//            PositionFinder.Instance().update();
+//
+//            expansionOkay();
+//
+//        }
     }
 
     /// 테스트용 임시 공격 타이밍
     private void changeMainSquadMode() {
         //TODO 일단 무조건 공격
 //        if (AttackDecisionMaker.Instance().decision == Decision.NO_MERCY_ATTACK) {
-            StrategyBoard.mainSquadMode = MicroConfig.MainSquadMode.NO_MERCY;
+        StrategyBoard.mainSquadMode = MicroConfig.MainSquadMode.ATTCK;
 
 //        } else if (AttackDecisionMaker.Instance().decision == Decision.FULL_ATTACK) {
 //            if (StrategyBoard.buildTimeMap.featureEnabled(EnemyStrategyOptions.BuildTimeMap.Feature.QUICK_ATTACK)) {
@@ -81,10 +68,11 @@ public class StrategyManager extends GameManager {
 //        }
     }
 
+    @Deprecated
     private void expansionOkay() {
         boolean expansionOkay = false;
         BaseLocation myFirstExpansion = BaseUtils.myFirstExpansion();
-        List<Unit> commandCenterList = UnitUtils.getUnitList(CommonCode.UnitFindRange.COMPLETE, UnitType.Terran_Command_Center);
+        List<Unit> commandCenterList = UnitUtils.getCompletedUnitList(UnitType.Terran_Command_Center);
         for (Unit commandCenter : commandCenterList) {
             if (commandCenter.isLifted()) {
                 continue;

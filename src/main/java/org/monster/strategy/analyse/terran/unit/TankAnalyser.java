@@ -1,13 +1,13 @@
 package org.monster.strategy.analyse.terran.unit;
 
 import bwapi.UnitType;
-import org.monster.strategy.analyse.UnitAnalyser;
-import org.monster.decisions.constant.EnemyStrategy;
 import org.monster.common.UnitInfo;
-import org.monster.common.constant.CommonCode;
+import org.monster.common.constant.EnemyUnitVisibleStatus;
 import org.monster.common.util.TimeUtils;
 import org.monster.common.util.UnitUtils;
+import org.monster.strategy.constant.EnemyStrategy;
 import org.monster.strategy.analyse.Clue;
+import org.monster.strategy.analyse.UnitAnalyser;
 import org.monster.strategy.manage.ClueManager;
 
 import java.util.List;
@@ -21,7 +21,7 @@ public class TankAnalyser extends UnitAnalyser {
     @Override
     public void analyse() {
         // 시즈탱크는 부득이하게 UnitUtils, TimeUtils를 써야겠다.
-        List<UnitInfo> enemyTanks = UnitUtils.getEnemyUnitInfoList(CommonCode.EnemyUnitFindRange.ALL,
+        List<UnitInfo> enemyTanks = UnitUtils.getEnemyUnitInfoList(EnemyUnitVisibleStatus.ALL,
                 UnitType.Terran_Siege_Tank_Tank_Mode, UnitType.Terran_Siege_Tank_Siege_Mode);
 
         if (!enemyTanks.isEmpty()) {

@@ -15,7 +15,7 @@ public class TankTargetCalculator extends TargetScoreCalculator {
 
     @Override
     public int calculate(Unit mechanicUnit, UnitInfo eui) {
-        Unit enemy = UnitUtils.unitInSight(eui);
+        Unit enemy = UnitUtils.enemyUnitInSight(eui);
         if (enemy == null) {
             return 0;
         }

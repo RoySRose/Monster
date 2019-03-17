@@ -2,10 +2,10 @@ package org.monster.micro.control.airforce;
 
 import bwapi.Position;
 import bwapi.Unit;
+import org.monster.board.StrategyBoard;
 import org.monster.common.UnitInfo;
 import org.monster.common.util.CommandUtils;
 import org.monster.common.util.MicroUtils;
-import org.monster.board.StrategyBoard;
 import org.monster.common.util.PositionUtils;
 import org.monster.micro.FleeOption;
 import org.monster.micro.KitingOption;

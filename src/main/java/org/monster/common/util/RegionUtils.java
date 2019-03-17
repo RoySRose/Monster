@@ -7,11 +7,26 @@ import java.util.Set;
 public class RegionUtils {
 
     public static Set<Region> myOccupiedRegions() {
-        return BaseInfoCollector.Instance().occupiedRegions.get(PlayerUtils.myRace());
+        return RegionInfoCollector.Instance().occupiedRegions.get(PlayerUtils.myPlayer());
     }
 
     public static Set<Region> enemyOccupiedRegions() {
-        return BaseInfoCollector.Instance().occupiedRegions.get(PlayerUtils.enemyRace());
+        return RegionInfoCollector.Instance().occupiedRegions.get(PlayerUtils.enemyPlayer());
+    }
+
+    public static Region myThirdRegion() {
+        return RegionInfoCollector.Instance().thirdRegion.get(PlayerUtils.myPlayer());
+    }
+
+    public static Region enemyThirdRegion() {
+        return RegionInfoCollector.Instance().thirdRegion.get(PlayerUtils.enemyPlayer());
+    }
+
+    public static boolean equals(Region region1, Region region2) {
+        if (region1 == null || region2 == null) {
+            return false;
+        }
+        return region1.getCenter().equals(region2.getCenter());
     }
 
 }

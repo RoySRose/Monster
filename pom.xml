@@ -11,9 +11,23 @@
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+        <powermock.version>1.7.1</powermock.version>
+        <!--<basedir></basedir>-->
     </properties>
 
-     <dependencies>
+    <dependencies>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-module-junit4</artifactId>
+            <version>${powermock.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-api-mockito2</artifactId>
+            <version>${powermock.version}</version>
+            <scope>test</scope>
+        </dependency>
 
         <dependency>
             <groupId>org.monster</groupId>
@@ -32,7 +46,7 @@
          <dependency>
              <groupId>org.mockito</groupId>
              <artifactId>mockito-core</artifactId>
-             <version> 2.7.22</version>
+             <version>2.7.13</version>
              <scope>test</scope>
          </dependency>
 
@@ -41,20 +55,53 @@
              <groupId>org.slf4j</groupId>
              <artifactId>slf4j-api</artifactId>
              <version>1.7.21</version>
-             <scope>test</scope>
          </dependency>
          <dependency>
              <groupId>org.slf4j</groupId>
              <artifactId>slf4j-log4j12</artifactId>
              <version>1.7.21</version>
-             <scope>test</scope>
          </dependency>
          <dependency>
              <groupId>log4j</groupId>
              <artifactId>log4j</artifactId>
              <version>1.2.17</version>
-             <scope>test</scope>
          </dependency>
     </dependencies>
 
+    <!--<build>-->
+        <!--<resources>-->
+            <!--<resource>-->
+                <!--<directory>${basedir}/src/main/java</directory>-->
+                <!--<excludes>-->
+                    <!--<exclude>**/*.java</exclude>-->
+                <!--</excludes>-->
+            <!--</resource>-->
+            <!--<resource>-->
+                <!--<filtering>true</filtering>-->
+                <!--<directory>${basedir}/src/main/resources</directory>-->
+            <!--</resource>-->
+            <!--<resource>-->
+                <!--<directory>${basedir}/src/main/resources-${env}</directory>-->
+            <!--</resource>-->
+        <!--</resources>-->
+    <!--</build>-->
+
+    <profiles>
+        <profile>
+            <id>local</id>
+            <properties>
+                <env>local</env>
+            </properties>
+        </profile>
+        <profile>
+            <id>release</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <env>release</env>
+            </properties>
+        </profile>
+
+    </profiles>
 </project>

@@ -2,16 +2,16 @@ package org.monster.micro.squad;
 
 import bwapi.Unit;
 import bwapi.UnitType;
+import org.monster.board.StrategyBoard;
 import org.monster.common.LagObserver;
 import org.monster.common.UnitInfo;
 import org.monster.common.util.TimeUtils;
 import org.monster.common.util.UnitUtils;
+import org.monster.strategy.manage.AirForceManager;
+import org.monster.strategy.manage.AirForceTeam;
 import org.monster.micro.constant.MicroConfig;
 import org.monster.micro.control.airforce.AirForceControl;
 import org.monster.micro.targeting.TargetFilter;
-import org.monster.board.StrategyBoard;
-import org.monster.strategy.manage.AirForceManager;
-import org.monster.strategy.manage.AirForceTeam;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -56,7 +56,7 @@ public class AirForceSquad extends Squad {
 
         // 리더유닛이 먼저 실행되면 member 유닛들은 그 후 같은 명령을 실행한다.
         for (Unit leaderAirunit : leaderAirunits) {
-            if (!TimeUtils.executeUnitRotation(leaderAirunit, airForceGroupSize)) {
+            if (!TimeUtils.isExecuteFrame(leaderAirunit, airForceGroupSize)) {
                 continue;
             }
 

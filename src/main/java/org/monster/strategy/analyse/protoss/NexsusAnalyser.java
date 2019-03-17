@@ -1,14 +1,13 @@
 package org.monster.strategy.analyse.protoss;
 
 import bwapi.UnitType;
-import org.monster.decisions.constant.EnemyStrategy;
 import org.monster.common.UnitInfo;
-import org.monster.common.constant.CommonCode;
-
+import org.monster.common.constant.RegionType;
+import org.monster.strategy.constant.EnemyStrategy;
 import org.monster.strategy.analyse.Clue;
 import org.monster.strategy.analyse.UnitAnalyser;
 import org.monster.strategy.manage.ClueManager;
-import org.monster.strategy.manage.StrategyAnalyseManager;
+import org.monster.strategy.manage.EnemyStrategyAnalyzer;
 
 import java.util.List;
 
@@ -31,7 +30,7 @@ public class NexsusAnalyser extends UnitAnalyser {
         int doubleFrame = EnemyStrategy.PROTOSS_DOUBLE.buildTimeMap.frame(UnitType.Protoss_Nexus, 20);
         int forgeDoubleFrame = EnemyStrategy.PROTOSS_FORGE_DOUBLE.buildTimeMap.frame(UnitType.Protoss_Nexus, 20);
 
-        List<UnitInfo> found = found(CommonCode.RegionType.ENEMY_FIRST_EXPANSION);
+        List<UnitInfo> found = found(RegionType.ENEMY_FIRST_EXPANSION);
         if (!found.isEmpty()) {
             int buildFrame = buildStartFrameDefaultJustBefore(found.get(0));
 
@@ -42,7 +41,7 @@ public class NexsusAnalyser extends UnitAnalyser {
                 ClueManager.Instance().addClueInfo(Clue.ClueInfo.NEXSUS_FAST_DOUBLE);
             }
         } else {
-            int expansionLastCheckFrame = StrategyAnalyseManager.Instance().lastCheckFrame(StrategyAnalyseManager.LastCheckLocation.FIRST_EXPANSION);
+            int expansionLastCheckFrame = EnemyStrategyAnalyzer.Instance().lastCheckFrame(EnemyStrategyAnalyzer.LastCheckLocation.FIRST_EXPANSION);
             if (expansionLastCheckFrame > forgeDoubleFrame) { // 더블 타이밍 지남
                 ClueManager.Instance().addClueInfo(Clue.ClueInfo.NEXSUS_NOT_DOUBLE);
             }

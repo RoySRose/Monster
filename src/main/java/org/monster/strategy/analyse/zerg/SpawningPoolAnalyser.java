@@ -1,13 +1,13 @@
 package org.monster.strategy.analyse.zerg;
 
 import bwapi.UnitType;
-import org.monster.decisions.constant.EnemyStrategy;
 import org.monster.common.UnitInfo;
-import org.monster.common.constant.CommonCode;
+import org.monster.common.constant.RegionType;
+import org.monster.strategy.constant.EnemyStrategy;
 import org.monster.strategy.analyse.Clue;
 import org.monster.strategy.analyse.UnitAnalyser;
 import org.monster.strategy.manage.ClueManager;
-import org.monster.strategy.manage.StrategyAnalyseManager;
+import org.monster.strategy.manage.EnemyStrategyAnalyzer;
 
 import java.util.List;
 
@@ -32,7 +32,7 @@ public class SpawningPoolAnalyser extends UnitAnalyser {
         int overPoolFrame = EnemyStrategy.ZERG_OVERPOOL.buildTimeMap.frame(UnitType.Zerg_Spawning_Pool, 20); // 오버풀,11풀,12풀
         int doubleFrame = EnemyStrategy.ZERG_2HAT_GAS.buildTimeMap.frame(UnitType.Zerg_Spawning_Pool, 10);
 
-        List<UnitInfo> found = found(CommonCode.RegionType.ENEMY_BASE);
+        List<UnitInfo> found = found(RegionType.ENEMY_BASE);
         if (!found.isEmpty()) {
             int buildFrame = buildStartFrameDefaultJustBefore(found.get(0));
             if (buildFrame < fiveDroneFrame) {
@@ -48,7 +48,7 @@ public class SpawningPoolAnalyser extends UnitAnalyser {
             }
 
         } else {
-            int baseLastCheckFrame = StrategyAnalyseManager.Instance().lastCheckFrame(StrategyAnalyseManager.LastCheckLocation.BASE);
+            int baseLastCheckFrame = EnemyStrategyAnalyzer.Instance().lastCheckFrame(EnemyStrategyAnalyzer.LastCheckLocation.BASE);
             if (baseLastCheckFrame > doubleFrame) { // 더블 타이밍 지남
                 ClueManager.Instance().addClueInfo(Clue.ClueInfo.LATE_POOL);
             }

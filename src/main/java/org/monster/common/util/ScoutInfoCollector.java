@@ -7,7 +7,6 @@ import bwta.BWTA;
 import bwta.BaseLocation;
 import bwta.Region;
 import org.monster.common.util.internal.MapTools;
-import org.monster.main.Monster;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -15,16 +14,16 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
-public class ScoutInfoCollector implements InfoCollector{
+public class ScoutInfoCollector implements InfoCollector {
 
     private static ScoutInfoCollector instance = new ScoutInfoCollector();
     protected static ScoutInfoCollector Instance() {
         return instance;
     }
-    Game Broodwar;
 
-    /*Info*/
-    private static Map<Position, Vector<Position>> baseRegionVerticesMap = new HashMap<>();
+    private Game Broodwar;
+
+    protected static Map<Position, Vector<Position>> baseRegionVerticesMap = new HashMap<>();
 
     @Override
     public void onStart(Game Broodwar) {
@@ -38,13 +37,9 @@ public class ScoutInfoCollector implements InfoCollector{
     }
 
     private void updateBaseRegionVerticesMap() {
-		for (BaseLocation base : BWTA.getStartLocations()) {
-			calculateEnemyRegionVertices(base);
-		}
-	}
-
-    protected Vector<Position> getRegionVertices(BaseLocation base) {
-        return baseRegionVerticesMap.get(base.getPosition());
+        for (BaseLocation base : BWTA.getStartLocations()) {
+            calculateEnemyRegionVertices(base);
+        }
     }
 
     // Enemy MainBaseLocation 이 있는 Region 의 가장자리를 enemyBaseRegionVertices 에 저장한다
@@ -60,7 +55,7 @@ public class ScoutInfoCollector implements InfoCollector{
 
         Vector<Position> regionVertices = new Vector<>();
 
-        final Position basePosition = Monster.Broodwar.self().getStartLocation().toPosition();
+        final Position basePosition = BaseUtils.myMainBase().getPosition();
         final Vector<TilePosition> closestTobase = MapTools.Instance().getClosestTilesTo(basePosition);
         Set<Position> unsortedVertices = new HashSet<Position>();
 
@@ -75,19 +70,19 @@ public class ScoutInfoCollector implements InfoCollector{
             // 2) in all 4 directions there's a buildable tile
             boolean surrounded = true;
             if (BWTA.getRegion(new TilePosition(tp.getX() + 1, tp.getY())) != enemyRegion
-                    || !Monster.Broodwar.isBuildable(new TilePosition(tp.getX() + 1, tp.getY()))
+                    || !MapUtils.isBuildable(new TilePosition(tp.getX() + 1, tp.getY()))
                     || BWTA.getRegion(new TilePosition(tp.getX(), tp.getY() + 1)) != enemyRegion
-                    || !Monster.Broodwar.isBuildable(new TilePosition(tp.getX(), tp.getY() + 1))
+                    || !MapUtils.isBuildable(new TilePosition(tp.getX(), tp.getY() + 1))
                     || BWTA.getRegion(new TilePosition(tp.getX() - 1, tp.getY())) != enemyRegion
-                    || !Monster.Broodwar.isBuildable(new TilePosition(tp.getX() - 1, tp.getY()))
+                    || !MapUtils.isBuildable(new TilePosition(tp.getX() - 1, tp.getY()))
                     || BWTA.getRegion(new TilePosition(tp.getX(), tp.getY() - 1)) != enemyRegion
-                    || !Monster.Broodwar.isBuildable(new TilePosition(tp.getX(), tp.getY() - 1))) {
+                    || !MapUtils.isBuildable(new TilePosition(tp.getX(), tp.getY() - 1))) {
                 surrounded = false;
             }
 
             // push the tiles that aren't surrounded
             // Region의 가장자리 타일들만 추가한다
-            if (!surrounded && Monster.Broodwar.isBuildable(tp)) {
+            if (!surrounded && MapUtils.isBuildable(tp)) {
                 unsortedVertices.add(new Position(tp.toPosition().getX() + 16, tp.toPosition().getY() + 16));
             }
         }

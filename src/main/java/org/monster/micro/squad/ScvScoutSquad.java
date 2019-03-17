@@ -4,7 +4,7 @@ import bwapi.Unit;
 import bwapi.UnitType;
 import bwta.Chokepoint;
 import org.monster.board.StrategyBoard;
-import org.monster.common.util.ChokePointUtils;
+import org.monster.common.util.ChokeUtils;
 import org.monster.common.util.UnitUtils;
 import org.monster.micro.constant.MicroConfig;
 import org.monster.micro.control.ScvScoutControl;
@@ -30,7 +30,7 @@ public class ScvScoutSquad extends Squad {
     public List<Unit> recruit(List<Unit> assignableUnitList) {
         List<Unit> recruitList = new ArrayList<>();
         if (StrategyBoard.assignScoutScv) {
-            Chokepoint firstChoke = ChokePointUtils.myFirstChoke();
+            Chokepoint firstChoke = ChokeUtils.myFirstChoke();
             Unit scvNearFirstChoke = UnitUtils.getClosestMineralWorkerToPosition(assignableUnitList, firstChoke.getCenter());
             if (scvNearFirstChoke != null) {
                 recruitList.add(scvNearFirstChoke);

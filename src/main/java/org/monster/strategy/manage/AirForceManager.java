@@ -6,19 +6,22 @@ import bwapi.Unit;
 import bwapi.UnitType;
 import bwta.BWTA;
 import bwta.BaseLocation;
+import org.monster.board.StrategyBoard;
 import org.monster.common.UnitInfo;
-import org.monster.common.util.BaseUtils;
-import org.monster.main.Monster;
 import org.monster.common.constant.CommonCode;
+import org.monster.common.constant.EnemyUnitVisibleStatus;
+import org.monster.common.constant.UnitFindStatus;
+import org.monster.common.util.BaseUtils;
+import org.monster.common.util.MapUtils;
 import org.monster.common.util.MicroUtils;
 import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.PositionUtils;
 import org.monster.common.util.TimeUtils;
+import org.monster.common.util.UnitTypeUtils;
 import org.monster.common.util.UnitUtils;
-import org.monster.worker.WorkerManager;
+import org.monster.micro.compute.WraithFightPredictor;
 import org.monster.micro.constant.MicroConfig;
-import org.monster.micro.predictor.WraithFightPredictor;
-import org.monster.board.StrategyBoard;
+import org.monster.worker.WorkerManager;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -28,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+@Deprecated
 public class AirForceManager {
 
     public static final int AIR_FORCE_TEAM_MERGE_DISTANCE = 80;
@@ -133,14 +137,14 @@ public class AirForceManager {
     }
 
     private void defenseModeChange() {
-        List<Unit> wraithList = UnitUtils.getUnitList(CommonCode.UnitFindRange.COMPLETE, UnitType.Terran_Wraith);
+        List<Unit> wraithList = UnitUtils.getCompletedUnitList(UnitType.Terran_Wraith);
         List<UnitInfo> airEuiList = new ArrayList<>();
         if (PlayerUtils.enemyRace() == Race.Zerg) {
-            airEuiList = UnitUtils.getEnemyUnitInfoList(CommonCode.EnemyUnitFindRange.ALL, UnitType.Zerg_Mutalisk, UnitType.Zerg_Scourge, UnitType.Zerg_Devourer);
+            airEuiList = UnitUtils.getEnemyUnitInfoList(EnemyUnitVisibleStatus.ALL, UnitType.Zerg_Mutalisk, UnitType.Zerg_Scourge, UnitType.Zerg_Devourer);
         } else if (PlayerUtils.enemyRace() == Race.Terran) {
-            airEuiList = UnitUtils.getEnemyUnitInfoList(CommonCode.EnemyUnitFindRange.ALL, UnitType.Terran_Wraith, UnitType.Terran_Valkyrie);
+            airEuiList = UnitUtils.getEnemyUnitInfoList(EnemyUnitVisibleStatus.ALL, UnitType.Terran_Wraith, UnitType.Terran_Valkyrie);
         } else if (PlayerUtils.enemyRace() == Race.Protoss) {
-            airEuiList = UnitUtils.getEnemyUnitInfoList(CommonCode.EnemyUnitFindRange.ALL, UnitType.Protoss_Scout, UnitType.Protoss_Corsair);
+            airEuiList = UnitUtils.getEnemyUnitInfoList(EnemyUnitVisibleStatus.ALL, UnitType.Protoss_Scout, UnitType.Protoss_Corsair);
         }
 
         int powerOfAirForce = WraithFightPredictor.powerOfAirForce(wraithList, false);
@@ -152,14 +156,14 @@ public class AirForceManager {
         // System.out.println("airforce defense mode = " + powerOfAirForce + " / " + powerOfEnemies);
         if (powerOfAirForce > powerOfEnemies) { // airBattlePredict
             if (TimeUtils.before(waitingEndFrame)) { // 역레이스 준비시간
-                int myTankCount = UnitUtils.getUnitCount(CommonCode.UnitFindRange.COMPLETE, UnitType.Terran_Siege_Tank_Tank_Mode, UnitType.Terran_Siege_Tank_Siege_Mode);
-                int myWraithCount = UnitUtils.getUnitCount(CommonCode.UnitFindRange.COMPLETE, UnitType.Terran_Wraith);
+                int myTankCount = UnitUtils.getUnitCount(UnitFindStatus.COMPLETE, UnitType.Terran_Siege_Tank_Tank_Mode, UnitType.Terran_Siege_Tank_Siege_Mode);
+                int myWraithCount = UnitUtils.getUnitCount(UnitFindStatus.COMPLETE, UnitType.Terran_Wraith);
 
                 if (myTankCount < 8) { // 탱크가 줄어들었다면 즉시 출발
-                    waitingEndFrame = TimeUtils.elapsedFrames();
+                    waitingEndFrame = TimeUtils.getFrame();
                     airForceDefenseMode = false;
                 } else if (myWraithCount >= 8) { // 레이쓰가 충분히 모였다면 즉시 출발
-                    waitingEndFrame = TimeUtils.elapsedFrames();
+                    waitingEndFrame = TimeUtils.getFrame();
                     airForceDefenseMode = false;
                 } else {
                     airForceDefenseMode = true;
@@ -179,7 +183,7 @@ public class AirForceManager {
         }
 
         StrategyBoard.wraithCount = 8;
-        waitingEndFrame = TimeUtils.elapsedFrames() + UnitType.Terran_Wraith.buildTime() * 5; // 투스타 기준 8마리 채우는데에 1마리 여유시간
+        waitingEndFrame = TimeUtils.getFrame() + UnitType.Terran_Wraith.buildTime() * 5; // 투스타 기준 8마리 채우는데에 1마리 여유시간
     }
 
     private void setTargetPosition() {
@@ -207,11 +211,11 @@ public class AirForceManager {
         boolean enemyBaseFirstCase = BaseUtils.enemyMainBase().equals(firstBase) && BaseUtils.enemyFirstExpansion().equals(secondBase);
         boolean enemyExpansionFirstCase = BaseUtils.enemyFirstExpansion().equals(firstBase) && BaseUtils.enemyMainBase().equals(secondBase);
         if ((!enemyBaseFirstCase && !enemyExpansionFirstCase)
-                || TimeUtils.elapsedFrames(offensePositionResetFrame) > 30 * TimeUtils.SECOND) {
+                || TimeUtils.getFrame(offensePositionResetFrame) > 30 * TimeUtils.SECOND) {
             setOffensePositions();
 //			this.setRetreatPosition();
 
-            offensePositionResetFrame = TimeUtils.elapsedFrames();
+            offensePositionResetFrame = TimeUtils.getFrame();
         }
     }
 
@@ -310,7 +314,7 @@ public class AirForceManager {
             UnitInfo closeTankInfo = null;
             double closestDistance = CommonCode.DOUBLE_MAX;
 
-            List<UnitInfo> tankInfoList = UnitUtils.getEnemyUnitInfoList(CommonCode.EnemyUnitFindRange.VISIBLE, UnitType.Terran_Siege_Tank_Siege_Mode, UnitType.Terran_Siege_Tank_Tank_Mode);
+            List<UnitInfo> tankInfoList = UnitUtils.getEnemyUnitInfoList(EnemyUnitVisibleStatus.VISIBLE, UnitType.Terran_Siege_Tank_Siege_Mode, UnitType.Terran_Siege_Tank_Tank_Mode);
             for (UnitInfo eui : tankInfoList) {
                 double distance = eui.getLastPosition().getDistance(position);
 
@@ -417,8 +421,8 @@ public class AirForceManager {
     }
 
     private void setRetreatPositionForUseMapSetting() {
-        int width = Monster.Broodwar.mapWidth() * 32 - 1;
-        int height = Monster.Broodwar.mapHeight() * 32 - 1;
+        int width = MapUtils.mapWidth() * 32 - 1;
+        int height = MapUtils.mapHeight() * 32 - 1;
 
         List<Position> positions = new ArrayList<>();
         positions.add(new Position(0, 0));
@@ -451,7 +455,7 @@ public class AirForceManager {
                 continue;
             }
 
-            Set<UnitInfo> enemyDefTowerList = UnitUtils.getCompleteEnemyInfosInRadiusForAir(targetPosition, 20, UnitUtils.enemyAirDefenseUnitType());
+            Set<UnitInfo> enemyDefTowerList = UnitUtils.getCompleteEnemyInfosInRadiusForAir(targetPosition, 20, UnitTypeUtils.enemyAirDefenseUnitType());
             if (enemyDefTowerList.isEmpty()) {
                 continue;
             }
@@ -474,19 +478,19 @@ public class AirForceManager {
         boolean levelUp = false;
         if (strikeLevelStartFrame == CommonCode.NONE
                 || AirForceManager.StrikeLevel.SORE_SPOT >= strikeLevel && achievementEffectiveFrame > 0) {
-            strikeLevelStartFrame = TimeUtils.elapsedFrames();
+            strikeLevelStartFrame = TimeUtils.getFrame();
         }
 
-        int airunitCount = UnitUtils.getUnitCount(CommonCode.UnitFindRange.COMPLETE, UnitType.Terran_Wraith);
+        int airunitCount = UnitUtils.getUnitCount(UnitFindStatus.COMPLETE, UnitType.Terran_Wraith);
         if (strikeLevel == AirForceManager.StrikeLevel.CRITICAL_SPOT) {
             if (PlayerUtils.enemyRace() == Race.Terran) {
-                if (TimeUtils.elapsedFrames(strikeLevelStartFrame) > 50 * TimeUtils.SECOND) { // 레이쓰가 활동한지 일정시간 지남
+                if (TimeUtils.getFrame(strikeLevelStartFrame) > 50 * TimeUtils.SECOND) { // 레이쓰가 활동한지 일정시간 지남
                     levelDown = true;
                 } else if (UnitUtils.enemyCompleteUnitDiscovered(UnitType.Terran_Wraith, UnitType.Terran_Goliath, UnitType.Terran_Armory, UnitType.Terran_Medic)) { // 골리앗 발견, 완성된 아모리 발견
                     levelDown = true;
                 }
             } else if (PlayerUtils.enemyRace() == Race.Zerg) {
-                if (TimeUtils.elapsedFrames(strikeLevelStartFrame) > 100 * TimeUtils.SECOND) { // 레이쓰가 활동한지 일정시간 지남
+                if (TimeUtils.getFrame(strikeLevelStartFrame) > 100 * TimeUtils.SECOND) { // 레이쓰가 활동한지 일정시간 지남
                     levelDown = true;
                 } else if (UnitUtils.enemyCompleteUnitDiscovered(UnitType.Zerg_Hydralisk)) { // 히드라 발견
                     levelDown = true;
@@ -498,7 +502,7 @@ public class AirForceManager {
         } else if (strikeLevel == AirForceManager.StrikeLevel.SORE_SPOT) {
             // TODO 레이쓰가 일정 수 파괴되었을 때로 할지 고민
             int levelDownSeconds = Math.max(10 - airunitCount, 1);
-            if (TimeUtils.elapsedFrames(strikeLevelStartFrame) > levelDownSeconds * TimeUtils.SECOND) {
+            if (TimeUtils.getFrame(strikeLevelStartFrame) > levelDownSeconds * TimeUtils.SECOND) {
                 levelDown = true;
             } else if (achievementEffectiveFrame <= -50) {
                 levelDown = true;
@@ -516,12 +520,12 @@ public class AirForceManager {
 
         if (levelDown) {
             strikeLevel--;
-            strikeLevelStartFrame = TimeUtils.elapsedFrames();
+            strikeLevelStartFrame = TimeUtils.getFrame();
             setOffensePositions();
 
         } else if (levelUp) {
             strikeLevel++;
-            strikeLevelStartFrame = TimeUtils.elapsedFrames();
+            strikeLevelStartFrame = TimeUtils.getFrame();
             setOffensePositions();
         }
     }
@@ -575,7 +579,7 @@ public class AirForceManager {
             upAchievement *= 5;
         }
 
-        int wraithCount = UnitUtils.getUnitCount(CommonCode.UnitFindRange.ALL, UnitType.Terran_Wraith);
+        int wraithCount = UnitUtils.getUnitCount(UnitFindStatus.ALL, UnitType.Terran_Wraith);
 
         // 실제 레이쓰 수와 유지 수가 너무 큰 차이가 나지 않도록 한다.
         int maxWraitCount = Math.min(wraithCount + 2, 8);
@@ -613,7 +617,7 @@ public class AirForceManager {
         List<Integer> invalidUnitIds = new ArrayList<>();
 
         for (Integer airunitId : airForceTeamMap.keySet()) {
-            Unit airunit = Monster.Broodwar.getUnit(airunitId);
+            Unit airunit = UnitUtils.enemyUnitInSight(airunitId);
             if (!UnitUtils.isCompleteValidUnit(airunit)) {
                 invalidUnitIds.add(airunitId);
             } else if (airForceTeamMap.get(airunitId).leaderUnit == null) {
@@ -686,7 +690,7 @@ public class AirForceManager {
         List<Integer> uncloakedAirunitList = new ArrayList<>(); // 언클락 유닛
 
         for (Integer airunitId : airForceTeamMap.keySet()) {
-            Unit airunit = Monster.Broodwar.getUnit(airunitId);
+            Unit airunit = UnitUtils.enemyUnitInSight(airunitId);
             if (airunit.getHitPoints() <= 50) { // repair hit points
                 AirForceTeam repairTeam = airForceTeamMap.get(airunitId);
                 if (repairTeam == null || repairTeam.repairCenter == null) {
@@ -710,7 +714,7 @@ public class AirForceManager {
 
         // create separated team for no energy airunit
         for (Integer airunitId : uncloakedAirunitList) {
-            Unit airunit = Monster.Broodwar.getUnit(airunitId);
+            Unit airunit = UnitUtils.enemyUnitInSight(airunitId);
             AirForceTeam uncloackedForceTeam = new AirForceTeam(airunit);
             uncloackedForceTeam.memberList.add(airunit);
 
@@ -719,7 +723,7 @@ public class AirForceManager {
 
         // create repair airforce team
         for (Integer airunitId : needRepairAirunitList) {
-            Unit airunit = Monster.Broodwar.getUnit(airunitId);
+            Unit airunit = UnitUtils.enemyUnitInSight(airunitId);
             AirForceTeam needRepairTeam = new AirForceTeam(airunit);
             needRepairTeam.memberList.add(airunit);
             needRepairTeam.repairCenter = airunitRepairCenterMap.get(airunit.getID());

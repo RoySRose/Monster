@@ -1,7 +1,27 @@
 package org.monster.decisions.items.photonrush;
 
+import org.monster.board.Decision;
+import org.monster.decisions.DecisionMaker;
+import org.monster.decisions.DefaultDecisionMaker;
+
 //TODO gas 러쉬를 당했는지 판단하기 위한 클래스
-public class PhotonRushed {
+public class PhotonRushed extends DefaultDecisionMaker implements DecisionMaker {
+
+
+    public PhotonRushed() {
+        super(Decision.PhotonRushed);
+    }
+
+    @Override
+    public boolean calculateDecision() {
+        return false;
+    }
+
+    @Override
+    public void decisionLogic() {
+
+    }
+
 
 //    private boolean photonRushed;
 //    photonRushed = false;
@@ -16,7 +36,7 @@ public class PhotonRushed {
 //    // 10000프레임 이전까지만 포톤러쉬 확인.
 //        if (TimeUtils.getFrame() < 10000) {
 //            // 1. 본진에 적 포톤캐논이 있는지 본다.
-//            List<UnitInfo> enemyUnitsInRegion = InfoUtils.euiListInMyRegion(BaseUtils.myMainBase().getRegion());
+//            List<UnitInfo> enemyUnitsInRegion = UnitTypeUtils.euiListInMyRegion(BaseUtils.myMainBase().getRegion());
 //            if (enemyUnitsInRegion.size() >= 1) {
 //                for (int enemy = 0; enemy < enemyUnitsInRegion.size(); enemy++) {
 //                    if (enemyUnitsInRegion.get(enemy).getType() == getAdvancedRushBuildingType(enemyRace)) {

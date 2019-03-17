@@ -1,6 +1,7 @@
 package org.monster.common.constant;
 
 import bwapi.Position;
+import bwapi.TilePosition;
 
 public class CommonCode {
 
@@ -11,21 +12,6 @@ public class CommonCode {
     public static final int INT_MAX = Integer.MAX_VALUE;
     public static final double DOUBLE_MAX = Double.MAX_VALUE;
 
-    public static final Position Center = new Position(2048, 2048);
-
-    public static enum UnitFindRange {
-        COMPLETE, INCOMPLETE, ALL, CONSTRUCTION_QUEUE, ALL_AND_CONSTRUCTION_QUEUE
-    }
-
-    public static enum PlayerRange {
-        SELF, ENEMY, NEUTRAL, ALL
-    }
-
-    public static enum EnemyUnitFindRange {
-        VISIBLE, ALL
-    }
-
-    public static enum RegionType {
-        MY_BASE, MY_FIRST_EXPANSION, MY_THIRD_REGION, ENEMY_BASE, ENEMY_FIRST_EXPANSION, ENEMY_THIRD_REGION, ETC, UNKNOWN
-    }
+    public static final Position CENTER_POS = new Position(2048, 2048);
+    public static final TilePosition CENTER_TILE_POS = new TilePosition(2048, 2048);
 }

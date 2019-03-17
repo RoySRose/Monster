@@ -9,12 +9,11 @@ import bwta.BWTA;
 import bwta.Region;
 import org.monster.board.StrategyBoard;
 import org.monster.common.UnitInfo;
-import org.monster.common.constant.CommonCode;
-
+import org.monster.common.constant.PlayerRange;
+import org.monster.common.util.MapUtils;
 import org.monster.common.util.MicroUtils;
 import org.monster.common.util.PlayerUtils;
 import org.monster.common.util.UnitUtils;
-import org.monster.main.Monster;
 import org.monster.micro.constant.MicroConfig;
 import org.monster.micro.targeting.TargetPriority;
 
@@ -29,7 +28,7 @@ public class MicroDecisionMakerPrebot1 {
         // int dangerousSiegeTankCount = 0;
 
         for (UnitInfo enemyInfo : enemiesInfo) {
-            Unit enemy = UnitUtils.unitInSight(enemyInfo);
+            Unit enemy = UnitUtils.enemyUnitInSight(enemyInfo);
 
             // 접근하면 안되는 적이 있는지 판단 (성큰, 포톤캐논, 시즈탱크, 벙커)
             double distanceToNearEnemy = mechanicUnit.getDistance(enemyInfo.getLastPosition());
@@ -49,11 +48,11 @@ public class MicroDecisionMakerPrebot1 {
             if (enemyIsComplete && saveUnitLevel >= 1) {
                 if (enemyUnitType == UnitType.Zerg_Sunken_Colony || enemyUnitType == UnitType.Protoss_Photon_Cannon || enemyUnitType == UnitType.Terran_Siege_Tank_Siege_Mode
                         || enemyUnitType == UnitType.Terran_Bunker || (enemyUnitType == UnitType.Zerg_Lurker && enemy != null && enemy.isBurrowed() && !enemy.isDetected())
-                        || (saveUnitLevel >= 2 && allRangeUnitType(Monster.Broodwar.enemy(), enemyUnitType))) {
+                        || (saveUnitLevel >= 2 && allRangeUnitType(PlayerUtils.enemyPlayer(), enemyUnitType))) {
 
                     int enemyGroundWeaponRange = enemyUnitType.groundWeapon().maxRange();
                     if (enemyUnitType == UnitType.Terran_Bunker) {
-                        enemyGroundWeaponRange = Monster.Broodwar.enemy().weaponMaxRange(UnitType.Terran_Marine.groundWeapon()) + 64; // 32->64(엄청 뚜두려맞아서 올림)
+                        enemyGroundWeaponRange = PlayerUtils.enemyPlayer().weaponMaxRange(UnitType.Terran_Marine.groundWeapon()) + 64; // 32->64(엄청 뚜두려맞아서 올림)
                     }
                     double safeDistance = enemyGroundWeaponRange;
                     if (enemyUnitType == UnitType.Terran_Siege_Tank_Tank_Mode || enemyUnitType == UnitType.Terran_Siege_Tank_Siege_Mode) {
@@ -114,7 +113,7 @@ public class MicroDecisionMakerPrebot1 {
 
                 // 시즈에 붙어있는 밀리유닛 : +200점
                 if (enemyUnitType.groundWeapon().maxRange() <= MicroConfig.Tank.SIEGE_MODE_MIN_RANGE) {
-                    List<Unit> nearSiege = UnitUtils.getUnitsInRadius(CommonCode.PlayerRange.SELF, enemyPosition, MicroConfig.Tank.SIEGE_MODE_MIN_RANGE, UnitType.Terran_Siege_Tank_Siege_Mode);
+                    List<Unit> nearSiege = UnitUtils.getUnitsInRadius(PlayerRange.SELF, enemyPosition, MicroConfig.Tank.SIEGE_MODE_MIN_RANGE, UnitType.Terran_Siege_Tank_Siege_Mode);
                     if (!nearSiege.isEmpty()) {
                         specialScore += 100;
                     }
@@ -166,10 +165,10 @@ public class MicroDecisionMakerPrebot1 {
         int closestTooFarTargetDistance = 0;
 
         for (UnitInfo enemyInfo : enemiesInfo) {
-            Unit enemy = UnitUtils.unitInSight(enemyInfo);
+            Unit enemy = UnitUtils.enemyUnitInSight(enemyInfo);
             if (enemy == null) {
                 if (bestTargetInfo == null && !enemyInfo.getType().isBuilding()) {
-                    if (!Monster.Broodwar.isVisible(enemyInfo.getLastPosition().toTilePosition())) {
+                    if (!MapUtils.isVisible(enemyInfo.getLastPosition().toTilePosition())) {
                         int distanceToTarget = mechanicUnit.getDistance(enemyInfo.getLastPosition());
                         if (saveUnitLevel == 0 && distanceToTarget <= MicroConfig.Tank.SIEGE_MODE_MAX_RANGE + 5) {
                             bestTargetInfo = enemyInfo;
@@ -281,7 +280,7 @@ public class MicroDecisionMakerPrebot1 {
                 if (cloakTargetUnit.getType() == UnitType.Protoss_Dark_Templar) {
                     //TODO disable
                     //if (InformationManager.Instance().isBlockingEnterance()) {
-                    if(true){
+                    if (true) {
                         Region darkRegion = BWTA.getRegion(cloakTargetUnit.getPosition());
                         Region tankRegion = BWTA.getRegion(mechanicUnit.getPosition());
                         if (darkRegion != tankRegion) {

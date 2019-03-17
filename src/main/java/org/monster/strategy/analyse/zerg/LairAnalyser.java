@@ -2,15 +2,15 @@ package org.monster.strategy.analyse.zerg;
 
 import bwapi.Unit;
 import bwapi.UnitType;
-import org.monster.decisions.constant.EnemyStrategy;
 import org.monster.common.UnitInfo;
 import org.monster.common.util.TimeUtils;
 import org.monster.common.util.UnitUtils;
+import org.monster.strategy.constant.EnemyStrategy;
 import org.monster.strategy.analyse.Clue;
 import org.monster.strategy.analyse.UnitAnalyser;
 import org.monster.strategy.manage.ClueManager;
 import org.monster.strategy.manage.EnemyBuildTimer;
-import org.monster.strategy.manage.StrategyAnalyseManager;
+import org.monster.strategy.manage.EnemyStrategyAnalyzer;
 
 import java.util.List;
 
@@ -59,7 +59,7 @@ public class LairAnalyser extends UnitAnalyser {
         List<UnitInfo> found = found();
         if (!found.isEmpty()) {
             UnitInfo lairInfo = found.get(0);
-            Unit lairInSight = UnitUtils.unitInSight(lairInfo);
+            Unit lairInSight = UnitUtils.enemyUnitInSight(lairInfo);
             if (lairInSight != null && lairInSight.isCompleted()) {
                 ClueManager.Instance().addClueInfo(Clue.ClueInfo.LAIR_COMPLETE);
             } else {
@@ -73,8 +73,8 @@ public class LairAnalyser extends UnitAnalyser {
 
         } else {
             int lairExpect = EnemyBuildTimer.Instance().getBuildStartFrameExpect(UnitType.Zerg_Lair) + 5 * TimeUtils.SECOND;
-            int baseLastBaseCheckFrame = StrategyAnalyseManager.Instance().lastCheckFrame(StrategyAnalyseManager.LastCheckLocation.BASE);
-            int baseLastExpansionCheckFrame = StrategyAnalyseManager.Instance().lastCheckFrame(StrategyAnalyseManager.LastCheckLocation.FIRST_EXPANSION);
+            int baseLastBaseCheckFrame = EnemyStrategyAnalyzer.Instance().lastCheckFrame(EnemyStrategyAnalyzer.LastCheckLocation.BASE);
+            int baseLastExpansionCheckFrame = EnemyStrategyAnalyzer.Instance().lastCheckFrame(EnemyStrategyAnalyzer.LastCheckLocation.FIRST_EXPANSION);
 
             if (baseLastBaseCheckFrame > lairExpect && baseLastExpansionCheckFrame > lairExpect) {
                 ClueManager.Instance().addClueInfo(Clue.ClueInfo.NO_LAIR);

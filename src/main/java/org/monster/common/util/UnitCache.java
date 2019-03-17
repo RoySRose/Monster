@@ -1,13 +1,13 @@
 package org.monster.common.util;
 
 import bwapi.Game;
+import bwapi.TilePosition;
 import bwapi.Unit;
 import bwapi.UnitType;
 import org.monster.build.base.ConstructionManager;
 import org.monster.build.base.ConstructionTask;
 import org.monster.common.MapGrid;
 import org.monster.common.UnitInfo;
-import org.monster.main.Monster;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,11 +20,11 @@ import java.util.Vector;
 public class UnitCache implements InfoCollector {
 
     private static UnitCache unitCache = new UnitCache();
-
     public static UnitCache getCurrentCache() {
         return unitCache;
     }
 
+    private Game Broodwar;
     // 아군 UnitType 발견 여부
     private Map<UnitType, Boolean> selfUnitDiscovered = new HashMap<>();
     private Map<UnitType, Boolean> selfCompleteUnitDiscovered = new HashMap<>();
@@ -37,24 +37,17 @@ public class UnitCache implements InfoCollector {
     private Map<UnitType, List<Unit>> selfCompleteUnitByTypeMap = new HashMap<>(); /// 아군 완성 유닛
     private Map<UnitType, List<Unit>> selfIncompleteUnitByTypeMap = new HashMap<>(); /// 아군 미완성 유닛
     private Map<UnitType, List<ConstructionTask>> selfConstructionTaskMap = new HashMap<>(); /// 아군 건설큐의 건물
-
     // 적군  UnitType 발견 여부
     private Map<UnitType, Boolean> enemyUnitDiscovered = new HashMap<>();
     private Map<UnitType, Boolean> enemyCompleteUnitDiscovered = new HashMap<>();
-
     //TODO completed, incompleted enemey unit list 가 필요할까?
     // 적군 맵
     private Map<Integer, UnitInfo> enemyAllUnitInfoMap = new HashMap<>(); /// 적군 모든 유닛정보
     // 적군 UnitType별 맵
     private Map<UnitType, List<UnitInfo>> enemyAllUnitInfoByTypeMap = new HashMap<>(); /// 적군 모든 유닛정보
     private Map<UnitType, List<UnitInfo>> enemyVisibleUnitInfoByTypeMap = new HashMap<>(); /// 보이는 적군 유닛정보
-
-    private int supplyUsed;
-
+    //TODO badUnitstoRemove needed?
     private Vector<Integer> badUnitstoRemove = new Vector<Integer>();
-
-    private Game Broodwar;
-    ////////////////////// 아군 유닛 리스트 관련
 
     @Override
     public void onStart(Game Broodwar) {
@@ -68,6 +61,12 @@ public class UnitCache implements InfoCollector {
         //putEnemyData();
         removeBadUnits();
         updateDiscoveredMap();
+
+        //TODO issue 11?
+        cacheToUnmodifiable();
+    }
+
+    private void cacheToUnmodifiable() {
     }
 
     protected Map<UnitType, Boolean> selfUnitDiscovered() {
@@ -187,9 +186,13 @@ public class UnitCache implements InfoCollector {
         }
     }
 
+    protected List<Unit> getEnemyUnitList() {
+        return Broodwar.enemy().getUnits();
+    }
+
     protected List<UnitInfo> enemyVisibleUnits(UnitType unitType) {
         if (unitType == UnitType.AllUnits) {
-            return new ArrayList(Broodwar.enemy().getUnits());
+            return new ArrayList(enemyAllUnitInfoMap.values());
         } else {
             if (enemyVisibleUnitInfoByTypeMap.size() == 0) {
                 //create enemyVisibleUnitInfoByTypeMap at first request in frame
@@ -201,7 +204,7 @@ public class UnitCache implements InfoCollector {
                     enemyVisibleUnitInfoByTypeMap.put(unit.getType(), unitInfoList);
                 }
             }
-            return new ArrayList<>(enemyVisibleUnitInfoByTypeMap.get(unitType));
+            return new ArrayList<>(enemyVisibleUnitInfoByTypeMap.getOrDefault(unitType, new ArrayList<>()));
         }
     }
 
@@ -418,7 +421,7 @@ public class UnitCache implements InfoCollector {
             return true;
         }
 
-        if (ui.getType().isBuilding() && Monster.Broodwar.isVisible(ui.getLastPosition().getX() / 32, ui.getLastPosition().getY() / 32) && (!ui.getUnit().isTargetable() || !ui.getUnit().isVisible())) {
+        if (ui.getType().isBuilding() && Broodwar.isVisible(ui.getLastPosition().getX() / 32, ui.getLastPosition().getY() / 32) && (!ui.getUnit().isTargetable() || !ui.getUnit().isVisible())) {
             if (MapGrid.Instance().scanAbnormalTime()) {
                 return false;
             } else {
@@ -458,5 +461,49 @@ public class UnitCache implements InfoCollector {
     /// 유닛이 파괴/사망한 경우, 해당 유닛 정보를 삭제합니다
     public void onUnitDestroy(Unit unit) {
         destroyedUnitInfo(unit);
+    }
+
+    protected Unit enemyUnitInSight(UnitInfo eui) {
+
+        Unit enemyUnit = Broodwar.getUnit(eui.getUnitID());
+        if (UnitUtils.isValidUnit(enemyUnit)) {
+            return enemyUnit;
+        } else {
+            return null;
+        }
+    }
+
+    protected Unit enemyUnitInSight(int euiId) {
+
+        Unit enemyUnit = Broodwar.getUnit(euiId);
+        if (UnitUtils.isValidUnit(enemyUnit)) {
+            return enemyUnit;
+        } else {
+            return null;
+        }
+    }
+
+    protected List<Unit> getUnitsOnTile(TilePosition tilePosition) {
+        return Broodwar.getUnitsOnTile(tilePosition);
+    }
+
+    protected boolean canMake(UnitType unitType, Unit unit) {
+        return Broodwar.canMake(unitType, unit);
+    }
+
+    protected boolean canMake(UnitType unitType) {
+        return Broodwar.canMake(unitType);
+    }
+
+    protected Unit getUnit(int unitId) {
+        return Broodwar.getUnit(unitId);
+    }
+
+    protected int myDeadNumUnits(UnitType unitType) {
+        return Broodwar.self().deadUnitCount(unitType);
+    }
+
+    protected int enemyDeadNumUnits(UnitType unitType) {
+        return Broodwar.enemy().deadUnitCount(unitType);
     }
 }

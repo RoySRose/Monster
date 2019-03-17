@@ -6,8 +6,10 @@ import bwapi.Unit;
 import bwapi.UnitType;
 import bwapi.Unitset;
 import bwta.BWTA;
+import org.monster.common.util.BaseUtils;
+import org.monster.common.util.MapUtils;
 import org.monster.common.util.TimeUtils;
-import org.monster.main.Monster;
+import org.monster.common.util.UnitUtils;
 
 import java.util.Vector;
 
@@ -15,7 +17,6 @@ public class DistanceMap {
 
     private static DistanceMap instance = new DistanceMap();
 
-    ;
     private int cellSize;
     private int mapWidth;
     private int mapHeight;
@@ -32,16 +33,16 @@ public class DistanceMap {
     private Vector<TilePosition> sorted = new Vector<TilePosition>();
 
     public DistanceMap() {
-        this.dist = new int[Monster.Broodwar.mapWidth() * Monster.Broodwar.mapHeight()];
+        this.dist = new int[MapUtils.mapWidth() * MapUtils.mapHeight()];
         for (int i = 0; i < this.dist.length; i++) {
             this.dist[i] = -1;
         }
-        this.moveTo = new char[Monster.Broodwar.mapWidth() * Monster.Broodwar.mapHeight()];
+        this.moveTo = new char[MapUtils.mapWidth() * MapUtils.mapHeight()];
         for (int j = 0; j < this.moveTo.length; j++) {
             this.moveTo[j] = 'X';
         }
-        this.rows = Monster.Broodwar.mapHeight();
-        this.cols = Monster.Broodwar.mapWidth();
+        this.rows = MapUtils.mapHeight();
+        this.cols = MapUtils.mapWidth();
         this.startRow = -1;
         this.startCol = -1;
     }
@@ -105,11 +106,11 @@ public class DistanceMap {
                 Position cellCenter = getCellCenter(r, c);
 
                 // don't worry about places that aren't connected to our start locatin
-                if (!BWTA.isConnected(cellCenter.toTilePosition(), Monster.Broodwar.self().getStartLocation())) {
+                if (!BWTA.isConnected(cellCenter.toTilePosition(), BaseUtils.myMainBase().getTilePosition())) {
                     continue;
                 }
 
-                Position home = Monster.Broodwar.self().getStartLocation().toPosition();
+                Position home = BaseUtils.myMainBase().getPosition();
                 double dist = home.getDistance(getCellByIndex(r, c).center);
                 int lastVisited = getCellByIndex(r, c).timeLastVisited;
                 if (lastVisited < minSeen || ((lastVisited == minSeen) && (dist > minSeenDist))) {
@@ -186,16 +187,16 @@ public class DistanceMap {
         // clear the grid
         clearGrid();
 
-        //Monster.Broodwar.printf("MapGrid info: WH(%d, %d)  CS(%d)  RC(%d, %d)  C(%d)", mapWidth, mapHeight, cellSize, rows, cols, cells.size());
+        //PlayerUtils.printf("MapGrid info: WH(%d, %d)  CS(%d)  RC(%d, %d)  C(%d)", mapWidth, mapHeight, cellSize, rows, cols, cells.size());
 
         // add our units to the appropriate cell
-        for (Unit unit : Monster.Broodwar.self().getUnits()) {
+        for (Unit unit : UnitUtils.getUnitList()) {
             getCell(unit).ourUnits.getLoadedUnits().add(unit);
             getCell(unit).timeLastVisited = TimeUtils.getFrame();
         }
 
         // add enemy units to the appropriate cell
-        for (Unit unit : Monster.Broodwar.enemy().getUnits()) {
+        for (Unit unit : UnitUtils.getEnemyUnitList()) {
             if (unit.getHitPoints() > 0) {
                 getCell(unit).oppUnits.getLoadedUnits().add(unit);
                 getCell(unit).timeLastOpponentSeen = TimeUtils.getFrame();
